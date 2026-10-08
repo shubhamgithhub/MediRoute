@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7fafc">
+  <meta name="description" content="MediRoute helps international patients explore relevant hospitals in India with AI-assisted hospital matching and clear, patient-friendly information.">
+  <title>MediRoute — Find the Right Hospital for Your Treatment in India</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header class="site-header" id="top">
+    <nav class="navbar container" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="MediRoute home">
+        <span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span>
+        <span>Medi<span class="brand-accent">Route</span></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+        <i data-lucide="menu" aria-hidden="true"></i>
+      </button>
+      <div class="nav-menu" id="primary-navigation">
+        <div class="nav-links">
+          <a href="#how-it-works">How It Works</a>
+          <a href="#features">Features</a>
+          <a href="#why-mediroute">Why MediRoute</a>
+          <a href="#for-hospitals">For Hospitals</a>
+          <a href="#about">About</a>
+        </div>
+        <div class="nav-actions">
+          <a class="nav-signin" href="#footer">Sign In</a>
+          <a class="button button-small button-primary" href="patient.html">Find My Hospital <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero section-shell">
+      <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> AI-POWERED HEALTHCARE NAVIGATION</div>
+          <h1>Find the <span class="text-highlight">Right Hospital</span> for Your Treatment in India</h1>
+          <p class="hero-description">MediRoute helps international patients understand their healthcare needs and discover relevant hospitals in India using AI-assisted matching and information retrieval.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="patient.html">Find My Hospital <span aria-hidden="true">→</span></a>
+            <a class="button button-secondary" href="#how-it-works"><span class="play-icon" aria-hidden="true"><i data-lucide="play"></i></span> How It Works</a>
+          </div>
+          <div class="hero-reassurance">
+            <span class="reassurance-icon"><i data-lucide="shield-check" aria-hidden="true"></i></span>
+            <p><strong>No diagnosis. No treatment prescription.</strong><br>Just clearer hospital discovery.</p>
+          </div>
+          <div class="hero-footnote"><span class="footnote-line"></span> A clearer way to explore care in India</div>
+        </div>
+
+        <div class="hero-visual reveal reveal-delay">
+          <div class="orbit orbit-one" aria-hidden="true"></div>
+          <div class="orbit orbit-two" aria-hidden="true"></div>
+          <div class="floating-note floating-note-top"><span class="floating-icon"><i data-lucide="sparkles" aria-hidden="true"></i></span><span><strong>AI-assisted</strong><small>Healthcare navigation</small></span></div>
+          <article class="recommendation-card" aria-label="Illustrative AI recommendation dashboard demo">
+            <div class="dashboard-head">
+              <div class="dashboard-title"><span class="dashboard-symbol"><i data-lucide="scan-search" aria-hidden="true"></i></span><span><strong>AI Recommendation</strong><small>Personalized discovery preview</small></span></div>
+              <span class="status-dot" aria-label="Demo"></span>
+            </div>
+            <div class="request-box">
+              <div class="field-label"><i data-lucide="message-square-text" aria-hidden="true"></i> PATIENT REQUIREMENT</div>
+              <p>“Cardiac treatment in Mumbai”</p>
+            </div>
+            <div class="context-row">
+              <div class="context-item"><span class="field-label">DETECTED SPECIALTY</span><span class="context-value"><i data-lucide="heart-pulse" aria-hidden="true"></i> Cardiology</span></div>
+              <div class="context-item"><span class="field-label">LOCATION</span><span class="context-value"><i data-lucide="map-pin" aria-hidden="true"></i> Mumbai, India</span></div>
+            </div>
+            <div class="hospital-preview">
+              <div class="hospital-avatar" aria-hidden="true"><i data-lucide="building-2"></i></div>
+              <div class="hospital-info"><span class="field-label">RECOMMENDED HOSPITAL</span><strong>Example Multispecialty Hospital</strong><span class="hospital-location">Mumbai, Maharashtra</span></div>
+              <div class="match-score"><strong>94<small>%</small></strong><span>Match</span></div>
+            </div>
+            <div class="specialty-tags"><span>Cardiology</span><span>Cardiac Surgery</span></div>
+            <div class="match-breakdown">
+              <div class="breakdown-heading"><span>Match factors</span><span class="info-mark" title="Illustrative match factors">i</span></div>
+              <div class="metric"><span>Medical fit</span><div class="metric-track"><span style="width:94%"></span></div><strong>94%</strong></div>
+              <div class="metric"><span>Location</span><div class="metric-track"><span style="width:90%"></span></div><strong>90%</strong></div>
+              <div class="metric"><span>Facilities</span><div class="metric-track"><span style="width:88%"></span></div><strong>88%</strong></div>
+            </div>
+            <button class="button button-card" type="button" data-discovery-trigger>View Details <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+          </article>
+          <div class="floating-note floating-note-bottom"><span class="verified-icon"><i data-lucide="check" aria-hidden="true"></i></span><span><strong>Clearer choices</strong><small>Information you can explore</small></span></div>
+          <p class="demo-caption"><span></span> Illustrative demo data</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST -->
+    <section class="trust-section">
+      <div class="container">
+        <p class="trust-heading">Built around trustworthy healthcare information</p>
+        <div class="trust-items">
+          <div class="trust-item"><span><i data-lucide="database-check" aria-hidden="true"></i></span>Verified Data Sources</div>
+          <div class="trust-item"><span><i data-lucide="scan-text" aria-hidden="true"></i></span>Retrieval-Grounded Matching</div>
+          <div class="trust-item"><span><i data-lucide="list-checks" aria-hidden="true"></i></span>Transparent Recommendations</div>
+        </div>
+        <p class="trust-disclaimer"><i data-lucide="info" aria-hidden="true"></i> MediRoute provides informational recommendations and does not replace professional medical advice.</p>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="section problem-section" id="about">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">A clearer starting point</span>
+          <h2>Finding treatment abroad<br class="desktop-break"> shouldn't be this complicated.</h2>
+          <p>International patients may need to search across multiple sources before they can understand which hospitals and specialties may be relevant to their needs.</p>
+        </div>
+        <div class="problem-grid">
+          <article class="problem-card reveal"><span class="icon-tile icon-blue"><i data-lucide="database" aria-hidden="true"></i></span><h3>Scattered Information</h3><p>Hospital information can be spread across different websites, directories and sources.</p><span class="card-index">01</span></article>
+          <article class="problem-card reveal"><span class="icon-tile icon-teal"><i data-lucide="target" aria-hidden="true"></i></span><h3>Generic Hospital Search</h3><p>Traditional hospital directories often do not match information to a patient's specific healthcare requirement.</p><span class="card-index">02</span></article>
+          <article class="problem-card reveal"><span class="icon-tile icon-violet"><i data-lucide="languages" aria-hidden="true"></i></span><h3>Language Barriers</h3><p>Patients may need to translate healthcare information before they can compare their options.</p><span class="card-index">03</span></article>
+          <article class="problem-card reveal"><span class="icon-tile icon-amber"><i data-lucide="coins" aria-hidden="true"></i></span><h3>Cost Confusion</h3><p>Reference cost information may be presented in formats that are difficult for international patients to understand.</p><span class="card-index">04</span></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section process-section" id="how-it-works">
+      <div class="container">
+        <div class="section-heading section-heading-centered reveal">
+          <span class="section-kicker">A simple four-step journey</span>
+          <h2>From your healthcare needs<br> to a clearer hospital shortlist.</h2>
+          <p>A guided way to organize your needs and explore hospitals that may be relevant.</p>
+        </div>
+        <div class="process-grid">
+          <article class="process-step reveal"><div class="step-top"><span class="step-number">01</span><span class="step-icon"><i data-lucide="notebook-pen" aria-hidden="true"></i></span></div><h3>Tell Us What You Need</h3><p>Enter your symptoms, healthcare requirement or treatment-related question.</p><span class="step-connector" aria-hidden="true"><i data-lucide="arrow-right"></i></span></article>
+          <article class="process-step reveal"><div class="step-top"><span class="step-number">02</span><span class="step-icon"><i data-lucide="file-up" aria-hidden="true"></i></span></div><h3>Upload Your Report</h3><p>Optionally upload a medical report for AI-assisted information extraction.</p><span class="step-connector" aria-hidden="true"><i data-lucide="arrow-right"></i></span></article>
+          <article class="process-step reveal"><div class="step-top"><span class="step-number">03</span><span class="step-icon"><i data-lucide="scan-search" aria-hidden="true"></i></span></div><h3>Find Relevant Hospitals</h3><p>Identify relevant specialties and retrieve hospitals with matching services.</p><span class="step-connector" aria-hidden="true"><i data-lucide="arrow-right"></i></span></article>
+          <article class="process-step reveal"><div class="step-top"><span class="step-number">04</span><span class="step-icon"><i data-lucide="clipboard-check" aria-hidden="true"></i></span></div><h3>Understand Your Options</h3><p>Review ranked recommendations, match reasons and patient-friendly information.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECOMMENDATION PREVIEW -->
+    <section class="section preview-section">
+      <div class="container">
+        <div class="section-heading section-heading-centered reveal">
+          <span class="section-kicker">A look inside MediRoute</span>
+          <h2>See how MediRoute turns a healthcare<br class="desktop-break"> request into recommendations.</h2>
+          <p>Example only. These fictional hospitals and match scores are illustrative demo data.</p>
+        </div>
+        <div class="preview-shell reveal">
+          <div class="preview-request">
+            <div class="preview-topline"><span class="preview-icon"><i data-lucide="message-square-text" aria-hidden="true"></i></span><span class="demo-pill">DEMO DATA</span></div>
+            <span class="field-label">PATIENT REQUEST</span>
+            <blockquote>“I am looking for cardiac treatment in Mumbai.”</blockquote>
+            <div class="detected-context">
+              <h3><i data-lucide="sparkles" aria-hidden="true"></i> Detected Medical Context</h3>
+              <div class="detected-row"><span>Specialty</span><strong><i data-lucide="heart-pulse" aria-hidden="true"></i> Cardiology</strong></div>
+              <div class="detected-row"><span>Location</span><strong><i data-lucide="map-pin" aria-hidden="true"></i> Mumbai</strong></div>
+            </div>
+            <p class="context-note"><i data-lucide="info" aria-hidden="true"></i> AI-assisted information organization, not a diagnosis.</p>
+          </div>
+          <div class="preview-results">
+            <div class="results-heading"><div><span class="field-label">YOUR SHORTLIST</span><h3>Recommended Hospitals</h3></div><span class="results-count">3 examples</span></div>
+            <article class="result-card result-card-featured"><span class="result-rank">01</span><span class="hospital-avatar avatar-teal"><i data-lucide="building-2" aria-hidden="true"></i></span><div class="result-details"><h4>Example Multispecialty Hospital</h4><span><i data-lucide="map-pin" aria-hidden="true"></i> Mumbai</span><div class="specialty-tags"><span>Cardiology</span><span>Cardiac Surgery</span></div></div><div class="result-match"><strong>94<small>%</small></strong><span>Match</span></div></article>
+            <article class="result-card"><span class="result-rank">02</span><span class="hospital-avatar avatar-blue"><i data-lucide="building-2" aria-hidden="true"></i></span><div class="result-details"><h4>Example Heart Institute</h4><span><i data-lucide="map-pin" aria-hidden="true"></i> Mumbai</span><div class="specialty-tags"><span>Cardiology</span></div></div><div class="result-match"><strong>89<small>%</small></strong><span>Match</span></div></article>
+            <article class="result-card"><span class="result-rank">03</span><span class="hospital-avatar avatar-violet"><i data-lucide="building-2" aria-hidden="true"></i></span><div class="result-details"><h4>Example Medical Centre</h4><span><i data-lucide="map-pin" aria-hidden="true"></i> Pune</span><div class="specialty-tags"><span>Cardiology</span></div></div><div class="result-match"><strong>82<small>%</small></strong><span>Match</span></div></article>
+          </div>
+        </div>
+        <p class="ranking-note"><i data-lucide="info" aria-hidden="true"></i> Ranking is based on multiple factors such as medical fit, location and facilities. Ranking weights will be evaluated during the project.</p>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section features-section" id="features">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Designed around your journey</span>
+          <h2>Everything you need to make<br class="desktop-break"> a clearer hospital shortlist.</h2>
+          <p>Useful information and thoughtful tools, brought together in one place.</p>
+        </div>
+        <div class="features-grid">
+          <article class="feature-card reveal"><span class="feature-icon feature-teal"><i data-lucide="brain-circuit" aria-hidden="true"></i></span><h3>AI-Assisted Medical Context</h3><p>Understand relevant information from patient queries and uploaded reports.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
+          <article class="feature-card reveal"><span class="feature-icon feature-blue"><i data-lucide="hospital" aria-hidden="true"></i></span><h3>Hospital Requirement Matching</h3><p>Match healthcare requirements with hospital specialties and services.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
+          <article class="feature-card reveal"><span class="feature-icon feature-violet"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span><h3>Smart Ranking</h3><p>Rank candidate hospitals using medical fit, location and facility-related factors.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
+          <article class="feature-card reveal"><span class="feature-icon feature-amber"><i data-lucide="languages" aria-hidden="true"></i></span><h3>Multilingual Results</h3><p>Prepare patient-friendly translated information to help make comparisons clearer.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
+          <article class="feature-card reveal"><span class="feature-icon feature-cyan"><i data-lucide="badge-indian-rupee" aria-hidden="true"></i></span><h3>Reference Cost Information</h3><p>Help patients understand available cost reference information.</p><span class="reference-label">Reference information, not a live quotation.</span><span class="feature-arrow" aria-hidden="true">↗</span></article>
+          <article class="feature-card reveal"><span class="feature-icon feature-rose"><i data-lucide="notebook-tabs" aria-hidden="true"></i></span><h3>Patient Summary</h3><p>Prepare a consolidated summary of the interaction and recommendations.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY MEDIROUTE -->
+    <section class="section comparison-section" id="why-mediroute">
+      <div class="container">
+        <div class="section-heading section-heading-centered reveal">
+          <span class="section-kicker">Why MediRoute</span>
+          <h2>More than a hospital directory.</h2>
+          <p>Move from scattered research to a more organized way to explore your options.</p>
+        </div>
+        <div class="comparison-grid reveal">
+          <article class="comparison-column traditional">
+            <div class="comparison-title"><span class="comparison-title-icon"><i data-lucide="search" aria-hidden="true"></i></span><div><span class="field-label">THE OLD WAY</span><h3>Traditional Search</h3></div></div>
+            <ul>
+              <li><i data-lucide="minus" aria-hidden="true"></i> Generic hospital listings</li>
+              <li><i data-lucide="minus" aria-hidden="true"></i> Manual research</li>
+              <li><i data-lucide="minus" aria-hidden="true"></i> Information across multiple sources</li>
+              <li><i data-lucide="minus" aria-hidden="true"></i> Separate translation</li>
+              <li><i data-lucide="minus" aria-hidden="true"></i> Separate cost research</li>
+              <li><i data-lucide="minus" aria-hidden="true"></i> Limited personalization</li>
+            </ul>
+          </article>
+          <article class="comparison-column mediroute-column">
+            <span class="recommended-label"><i data-lucide="sparkles" aria-hidden="true"></i> A MORE GUIDED APPROACH</span>
+            <div class="comparison-title"><span class="comparison-title-icon"><i data-lucide="route" aria-hidden="true"></i></span><div><span class="field-label">THE MEDIROUTE WAY</span><h3>MediRoute</h3></div></div>
+            <ul>
+              <li><i data-lucide="check" aria-hidden="true"></i> Healthcare requirement-based matching</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> AI-assisted report understanding</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Relevant hospital retrieval</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Ranking based on multiple factors</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Patient-friendly results</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Consolidated information</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESPONSIBLE AI -->
+    <section class="responsible-section" id="responsible-ai">
+      <div class="responsible-decoration responsible-decoration-one" aria-hidden="true"></div>
+      <div class="responsible-decoration responsible-decoration-two" aria-hidden="true"></div>
+      <div class="container responsible-content">
+        <div class="responsible-copy reveal">
+          <span class="section-kicker kicker-light"><span></span> Built with care</span>
+          <h2>AI that helps you<br> understand your options.</h2>
+          <p>MediRoute is designed to assist with hospital discovery and information organization. It does not replace qualified medical professionals and does not provide diagnosis or treatment prescriptions.</p>
+          <a class="text-link text-link-light" href="#get-started">Explore how it works <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="principles-grid">
+          <article class="principle-card reveal"><span class="principle-icon"><i data-lucide="layers-3" aria-hidden="true"></i></span><div><h3>Grounded</h3><p>Hospital recommendations should be based on retrieved hospital information rather than unsupported model knowledge.</p></div><span class="principle-index">01</span></article>
+          <article class="principle-card reveal"><span class="principle-icon"><i data-lucide="scan-eye" aria-hidden="true"></i></span><div><h3>Transparent</h3><p>Show why a hospital was recommended and expose relevant information where possible.</p></div><span class="principle-index">02</span></article>
+          <article class="principle-card reveal"><span class="principle-icon"><i data-lucide="heart-handshake" aria-hidden="true"></i></span><div><h3>Responsible</h3><p>Keep the system focused on information discovery rather than medical diagnosis or treatment decisions.</p></div><span class="principle-index">03</span></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="cta-section" id="get-started">
+      <div class="cta-orb cta-orb-one" aria-hidden="true"></div><div class="cta-orb cta-orb-two" aria-hidden="true"></div>
+      <div class="container cta-content reveal">
+        <span class="section-kicker">Your next step, made clearer</span>
+        <h2>Your treatment journey starts<br class="desktop-break"> with better information.</h2>
+        <p>Tell MediRoute what you need and explore hospitals that may be relevant to your healthcare requirements.</p>
+        <div class="cta-actions">
+          <a class="button button-primary" href="patient.html">Find My Hospital <span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="#how-it-works">See How It Works</a>
+        </div>
+        <span class="cta-note"><i data-lucide="shield-check" aria-hidden="true"></i> Informational discovery. Not a diagnosis or medical advice.</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" id="footer">
+    <div class="container">
+      <div class="footer-main">
+        <div class="footer-brand-block">
+          <a class="brand brand-footer" href="#top" aria-label="MediRoute home"><span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span><span>Medi<span class="brand-accent">Route</span></span></a>
+          <p>AI-assisted hospital discovery for international patients exploring treatment in India.</p>
+          <a class="footer-email" href="mailto:hello@mediroute.example"><i data-lucide="mail" aria-hidden="true"></i> Get in touch</a>
+        </div>
+        <div class="footer-column"><h3>Product</h3><a href="#how-it-works">How It Works</a><a href="#features">Features</a><a href="#features">Hospital Matching</a><a href="#features">Patient Summary</a></div>
+        <div class="footer-column" id="for-hospitals"><h3>For Hospitals</h3><a href="#for-hospitals">Hospital Experience</a><a href="mailto:hello@mediroute.example">Enquiries</a></div>
+        <div class="footer-column"><h3>Company</h3><a href="#about">About</a><a href="mailto:hello@mediroute.example">Contact</a></div>
+        <div class="footer-column"><h3>Legal</h3><a href="#legal-disclaimer">Privacy</a><a href="#legal-disclaimer">Terms</a><a href="#legal-disclaimer">Medical Disclaimer</a></div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 MediRoute. Prototype project.</p>
+        <p id="legal-disclaimer"><i data-lucide="info" aria-hidden="true"></i> MediRoute provides informational recommendations and does not constitute medical advice.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

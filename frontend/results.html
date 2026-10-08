@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7fafc">
+  <meta name="description" content="Review illustrative MediRoute hospital discovery results for your healthcare requirements.">
+  <title>Your Hospital Recommendations | MediRoute</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/results.css">
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="js/results.js" defer></script>
+</head>
+<body class="results-page">
+  <!-- NAVBAR -->
+  <header class="site-header results-header">
+    <nav class="navbar container" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="MediRoute home">
+        <span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span>
+        <span>Medi<span class="brand-accent">Route</span></span>
+      </a>
+      <div class="results-nav-actions">
+        <a class="button button-small button-secondary" href="patient.html"><i data-lucide="pencil" aria-hidden="true"></i> Edit Information</a>
+        <a class="button button-small button-primary" href="index.html">Back to Home</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="results-main">
+    <!-- PROGRESS -->
+    <div class="results-container">
+      <nav class="progress-card results-progress" aria-label="Your progress">
+        <div class="progress-topline"><span>YOUR DISCOVERY JOURNEY</span><span id="progress-step-label">Step 3 of 3</span></div>
+        <ol class="progress-steps">
+          <li class="progress-step is-complete"><span class="progress-number"><i data-lucide="check" aria-hidden="true"></i></span><span class="progress-copy"><strong>Step 1</strong><span>Your Information</span></span></li>
+          <li class="progress-connector is-complete" aria-hidden="true"><span></span></li>
+          <li class="progress-step is-complete"><span class="progress-number"><i data-lucide="check" aria-hidden="true"></i></span><span class="progress-copy"><strong>Step 2</strong><span>AI Analysis</span></span></li>
+          <li class="progress-connector is-complete" aria-hidden="true"><span></span></li>
+          <li class="progress-step is-active" aria-current="step"><span class="progress-number"><i data-lucide="building-2" aria-hidden="true"></i></span><span class="progress-copy"><strong>Step 3</strong><span>Recommendations</span></span></li>
+        </ol>
+      </nav>
+
+      <!-- ERROR STATE -->
+      <section class="no-data-card" id="no-data-state" aria-labelledby="no-data-heading" hidden>
+        <span class="no-data-icon"><i data-lucide="clipboard-x" aria-hidden="true"></i></span>
+        <span class="section-kicker">Patient information needed</span>
+        <h1 id="no-data-heading">No patient information found</h1>
+        <p>Please provide your healthcare requirements before viewing recommendations.</p>
+        <a class="button button-primary" href="patient.html">Start Hospital Discovery <span aria-hidden="true">→</span></a>
+      </section>
+
+      <div id="results-content">
+        <!-- PAGE HEADER -->
+        <section class="results-intro">
+          <div class="results-intro-copy">
+            <span class="section-kicker">YOUR MEDIROUTE RESULTS</span>
+            <h1>Your Hospital Recommendations</h1>
+            <p>Based on the healthcare information you provided, MediRoute has prepared a demonstration shortlist of potentially relevant hospitals.</p>
+          </div>
+          <div class="demo-results-badge"><i data-lucide="flask-conical" aria-hidden="true"></i><span><strong>DEMO RESULTS</strong><small>Illustrative prototype data</small></span></div>
+          <p class="demo-disclaimer"><i data-lucide="info" aria-hidden="true"></i> These recommendations use illustrative data for the current prototype.</p>
+        </section>
+
+        <!-- PATIENT SUMMARY -->
+        <section class="results-section request-summary-section" aria-labelledby="request-summary-heading">
+          <div class="results-section-heading"><div><span class="section-kicker">YOUR REQUEST</span><h2 id="request-summary-heading">Patient request summary</h2></div><a class="text-action" href="patient.html"><i data-lucide="pencil" aria-hidden="true"></i> Edit Information</a></div>
+          <div class="request-summary-card">
+            <div class="request-summary-item request-summary-requirement"><span class="summary-icon"><i data-lucide="message-square-text" aria-hidden="true"></i></span><div><span class="summary-label">Healthcare requirement</span><p id="summary-requirement"></p></div></div>
+            <div class="request-summary-item"><span class="summary-icon"><i data-lucide="map-pin" aria-hidden="true"></i></span><div><span class="summary-label">Preferred location</span><p id="summary-location"></p></div></div>
+            <div class="request-summary-item"><span class="summary-icon"><i data-lucide="languages" aria-hidden="true"></i></span><div><span class="summary-label">Preferred language</span><p id="summary-language"></p></div></div>
+            <div class="request-summary-item"><span class="summary-icon"><i data-lucide="file-text" aria-hidden="true"></i></span><div><span class="summary-label">Medical report</span><p id="summary-report"></p></div></div>
+            <div class="request-summary-item request-summary-preference"><span class="summary-icon"><i data-lucide="list-filter" aria-hidden="true"></i></span><div><span class="summary-label">Additional preference</span><p id="summary-preference"></p></div></div>
+          </div>
+        </section>
+
+        <!-- DEMO MEDICAL CONTEXT -->
+        <section class="medical-context-card" aria-labelledby="medical-context-heading">
+          <div class="context-head">
+            <span class="context-icon"><i data-lucide="brain-circuit" aria-hidden="true"></i></span>
+            <div class="context-title"><span class="section-kicker">ILLUSTRATIVE CONTEXT</span><h2 id="medical-context-heading">AI-Assisted Medical Context</h2></div>
+            <span class="demo-analysis-badge"><i data-lucide="sparkles" aria-hidden="true"></i> DEMO ANALYSIS</span>
+          </div>
+          <div class="context-values">
+            <div><span>Relevant specialty</span><strong><i data-lucide="heart-pulse" aria-hidden="true"></i> Cardiology</strong></div>
+            <div><span>Care category</span><strong><i data-lucide="stethoscope" aria-hidden="true"></i> Cardiac Care</strong></div>
+            <div><span>Location preference</span><strong><i data-lucide="map-pin" aria-hidden="true"></i><span id="context-location"></span></strong></div>
+          </div>
+          <p class="context-disclaimer"><i data-lucide="info" aria-hidden="true"></i> This medical context is illustrative in the current frontend prototype. It has not been generated by a medical AI model.</p>
+        </section>
+
+        <!-- HOSPITAL RECOMMENDATIONS -->
+        <section class="results-section hospital-results-section" aria-labelledby="recommendations-heading">
+          <div class="recommendation-toolbar">
+            <div><span class="section-kicker">EXPLORE YOUR OPTIONS</span><h2 id="recommendations-heading">Hospital recommendations <span class="result-count" id="result-count">3 hospitals found</span></h2></div>
+            <label class="sort-control" for="sort-select"><span>Sort by:</span><span class="sort-select-wrap"><select id="sort-select" name="sort"><option value="overallScore">Best Match</option><option value="medicalFit">Medical Fit</option><option value="locationScore">Location</option><option value="facilitiesScore">Facilities</option></select><i data-lucide="chevron-down" aria-hidden="true"></i></span></label>
+          </div>
+          <p class="selection-message" id="selection-message" role="status" aria-live="polite"></p>
+          <div class="hospital-list" id="hospital-list" aria-live="polite"></div>
+        </section>
+
+        <!-- RANKING EXPLANATION -->
+        <section class="ranking-explanation" aria-labelledby="ranking-heading">
+          <div class="ranking-heading"><span class="ranking-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span><div><span class="section-kicker">A TRANSPARENT APPROACH</span><h2 id="ranking-heading">How were these recommendations ranked?</h2></div></div>
+          <p>For the current MediRoute project, ranking is designed around multiple factors including:</p>
+          <div class="weight-grid">
+            <div class="weight-item"><span>Medical Fit</span><div class="weight-track"><span style="width:60%"></span></div><strong>60%</strong></div>
+            <div class="weight-item"><span>Location</span><div class="weight-track"><span style="width:20%"></span></div><strong>20%</strong></div>
+            <div class="weight-item"><span>Facilities</span><div class="weight-track"><span style="width:20%"></span></div><strong>20%</strong></div>
+          </div>
+          <p class="weight-note"><i data-lucide="info" aria-hidden="true"></i> These weights are experimental and will be evaluated during the AI/ML evaluation stage. Demo overall scores shown above were not produced by this ranking formula.</p>
+        </section>
+
+        <!-- RESPONSIBLE AI NOTICE -->
+        <aside class="important-notice" aria-labelledby="important-heading">
+          <span class="important-icon"><i data-lucide="shield-alert" aria-hidden="true"></i></span>
+          <div><h2 id="important-heading">Important information</h2><p>MediRoute helps organize hospital information and identify potentially relevant options. Recommendations are informational and do not constitute medical advice, diagnosis, or treatment recommendations.</p><p>For this prototype, hospital names, match scores, facilities and cost information displayed on this page are illustrative demo data.</p></div>
+        </aside>
+      </div>
+
+      <!-- COMPARISON -->
+      <aside class="comparison-bar" id="comparison-bar" aria-label="Hospital comparison" hidden>
+        <span class="compare-count"><i data-lucide="columns-2" aria-hidden="true"></i><strong id="compare-count">2 hospitals selected</strong></span>
+        <span class="comparison-message" id="comparison-message" role="status" aria-live="polite"></span>
+        <button class="button button-primary compare-button" id="compare-button" type="button">Compare Hospitals <i data-lucide="arrow-right" aria-hidden="true"></i></button>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="results-footer">
+    <div class="container"><a class="brand brand-footer" href="index.html" aria-label="MediRoute home"><span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span><span>Medi<span class="brand-accent">Route</span></span></a><p>MediRoute provides informational recommendations and does not constitute medical advice.</p></div>
+  </footer>
+</body>
+</html>

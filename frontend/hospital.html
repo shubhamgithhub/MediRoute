@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7fafc">
+  <meta name="description" content="Review illustrative hospital profile details and match information in the MediRoute prototype.">
+  <title>Hospital Details | MediRoute</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/hospital.css">
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="js/hospital.js" defer></script>
+</head>
+<body class="hospital-page">
+  <!-- NAVBAR -->
+  <header class="site-header hospital-header">
+    <nav class="navbar container" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="MediRoute home">
+        <span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span>
+        <span>Medi<span class="brand-accent">Route</span></span>
+      </a>
+      <div class="hospital-nav-actions">
+        <a class="button button-small button-secondary" href="results.html" aria-label="Back to Recommendations"><i data-lucide="arrow-left" aria-hidden="true"></i><span>Back to Recommendations</span></a>
+        <a class="button button-small button-primary" href="index.html">Home</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="hospital-main">
+    <div class="hospital-container">
+      <!-- BREADCRUMB -->
+      <nav class="hospital-breadcrumb" aria-label="Breadcrumb">
+        <a href="results.html">Recommendations</a><i data-lucide="chevron-right" aria-hidden="true"></i><span aria-current="page">Hospital Details</span>
+      </nav>
+
+      <!-- ERROR STATE -->
+      <section class="hospital-error-state" id="hospital-error-state" aria-labelledby="hospital-error-heading" hidden>
+        <span class="hospital-error-icon"><i data-lucide="building-2" aria-hidden="true"></i></span>
+        <span class="section-kicker">Recommendation not selected</span>
+        <h1 id="hospital-error-heading">No hospital selected</h1>
+        <p>Please return to your recommendations and select a hospital.</p>
+        <a class="button button-primary" href="results.html">View Recommendations <span aria-hidden="true">→</span></a>
+      </section>
+
+      <div class="hospital-content" id="hospital-content" hidden>
+        <!-- HOSPITAL HERO -->
+        <section class="hospital-hero-card" aria-labelledby="hospital-name">
+          <div class="hospital-hero-topline"><span class="recommendation-rank"><i data-lucide="medal" aria-hidden="true"></i><span id="hospital-rank">Recommendation #1</span></span><span class="demo-data-badge"><i data-lucide="flask-conical" aria-hidden="true"></i> DEMO DATA</span></div>
+          <div class="hospital-hero-main">
+            <span class="hospital-hero-icon"><i data-lucide="building-2" aria-hidden="true"></i></span>
+            <div class="hospital-hero-copy">
+              <h1 id="hospital-name"></h1>
+              <p class="hospital-hero-location"><i data-lucide="map-pin" aria-hidden="true"></i><span id="hospital-location"></span></p>
+              <div class="hospital-hero-badges" id="hero-badges"></div>
+            </div>
+            <div class="hero-match-score"><strong id="hero-score"></strong><span>Overall Match</span></div>
+          </div>
+          <p class="hero-demo-note"><i data-lucide="info" aria-hidden="true"></i>This hospital profile contains illustrative information for the current MediRoute prototype.</p>
+        </section>
+
+        <!-- MATCH EXPLANATION -->
+        <section class="hospital-section match-section" aria-labelledby="match-heading">
+          <div class="hospital-section-heading">
+            <span class="section-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span>
+            <div><span class="section-kicker">MATCH BREAKDOWN</span><h2 id="match-heading">Why this hospital may be relevant to you</h2><p>Illustrative matching factors, not a clinical assessment.</p></div>
+          </div>
+          <div class="match-score-grid" id="match-score-grid"></div>
+          <div class="match-reasons-card"><h3><i data-lucide="list-checks" aria-hidden="true"></i> Why it matched</h3><ul id="match-reasons"></ul></div>
+        </section>
+
+        <!-- PATIENT REQUIREMENT CONNECTION -->
+        <section class="hospital-section patient-match-section" id="patient-match-section" aria-labelledby="patient-match-heading">
+          <div class="hospital-section-heading">
+            <span class="section-icon"><i data-lucide="user-round-search" aria-hidden="true"></i></span>
+            <div><span class="section-kicker">YOUR REQUEST</span><h2 id="patient-match-heading">Matched Against Your Requirements</h2><p>Patient information is used here to explain the illustrative match.</p></div>
+          </div>
+          <div class="patient-match-grid">
+            <div class="patient-match-summary">
+              <div class="patient-match-item"><span>Your healthcare requirement</span><p id="patient-requirement"></p></div>
+              <div class="patient-match-item"><span>Preferred location</span><p id="patient-location"></p></div>
+              <div class="patient-match-item"><span>Additional preference</span><p id="patient-preference"></p></div>
+            </div>
+            <div class="relevant-info-card"><h3>Relevant hospital information</h3><p>Illustrative specialties and facilities associated with this profile.</p><div class="relevant-info-tags" id="relevant-info-tags"></div></div>
+          </div>
+        </section>
+
+        <!-- ABOUT THE HOSPITAL -->
+        <section class="hospital-section about-section" aria-labelledby="about-hospital-heading">
+          <div class="hospital-section-heading">
+            <span class="section-icon"><i data-lucide="landmark" aria-hidden="true"></i></span>
+            <div><span class="section-kicker">HOSPITAL PROFILE</span><h2 id="about-hospital-heading">About this hospital</h2><p>Fictional information prepared for this frontend demonstration.</p></div>
+          </div>
+          <div class="about-card">
+            <div class="about-card-banner"><span class="about-building-icon"><i data-lucide="hospital" aria-hidden="true"></i></span><span><strong id="about-hospital-name"></strong><small id="about-hospital-type"></small></span><span class="fictional-pill">FICTIONAL PROFILE</span></div>
+            <dl class="about-details">
+              <div><dt><i data-lucide="map-pin" aria-hidden="true"></i> Location</dt><dd id="about-location"></dd></div>
+              <div><dt><i data-lucide="badge-check" aria-hidden="true"></i> Accreditation</dt><dd id="about-accreditation"></dd></div>
+              <div><dt><i data-lucide="building-2" aria-hidden="true"></i> Hospital Type</dt><dd id="about-type"></dd></div>
+              <div><dt><i data-lucide="heart-handshake" aria-hidden="true"></i> Patient Services</dt><dd id="about-services"></dd></div>
+            </dl>
+            <p class="fictional-note"><i data-lucide="info" aria-hidden="true"></i> This is fictional prototype information, not a real hospital listing.</p>
+          </div>
+        </section>
+
+        <!-- SPECIALTIES -->
+        <section class="hospital-section" aria-labelledby="specialties-heading">
+          <div class="hospital-section-heading">
+            <span class="section-icon"><i data-lucide="stethoscope" aria-hidden="true"></i></span>
+            <div><span class="section-kicker">AREAS OF CARE</span><h2 id="specialties-heading">Relevant Specialties</h2><p>Specialties shown are illustrative and do not indicate clinical suitability.</p></div>
+          </div>
+          <div class="specialties-grid" id="specialties-grid"></div>
+        </section>
+
+        <!-- FACILITIES -->
+        <section class="hospital-section" aria-labelledby="facilities-heading">
+          <div class="hospital-section-heading">
+            <span class="section-icon"><i data-lucide="panels-top-left" aria-hidden="true"></i></span>
+            <div><span class="section-kicker">HOSPITAL SERVICES</span><h2 id="facilities-heading">Relevant Facilities</h2><p>Facility information shown here is illustrative demo data.</p></div>
+          </div>
+          <div class="facilities-grid" id="facilities-grid"></div>
+          <p class="section-footnote"><i data-lucide="info" aria-hidden="true"></i> Facility information shown here is illustrative demo data.</p>
+        </section>
+
+        <!-- REFERENCE COST -->
+        <section class="hospital-section cost-section" aria-labelledby="cost-heading">
+          <div class="hospital-section-heading">
+            <span class="section-icon"><i data-lucide="indian-rupee" aria-hidden="true"></i></span>
+            <div><span class="section-kicker">COST TRANSPARENCY</span><h2 id="cost-heading">Reference Cost Information</h2><p>Reference ranges are not a quote or promise of actual cost.</p></div>
+          </div>
+          <div class="cost-card">
+            <div class="cost-card-main"><span class="cost-icon"><i data-lucide="receipt-text" aria-hidden="true"></i></span><div><span class="cost-label">Cardiac Care / Procedure Reference</span><strong id="reference-cost"></strong><span class="cost-caveat">Illustrative reference only — not a live hospital quotation.</span></div><span class="reference-badge">REFERENCE ONLY</span></div>
+            <div class="cost-info-box"><i data-lucide="info" aria-hidden="true"></i><p>Actual treatment costs can vary based on the patient's condition, procedure, hospital pricing and other clinical factors. MediRoute should present available cost information as a reference, not as a guaranteed treatment price.</p></div>
+          </div>
+        </section>
+
+        <!-- RANKING -->
+        <section class="hospital-section ranking-section" aria-labelledby="ranking-heading">
+          <div class="hospital-section-heading">
+            <span class="section-icon"><i data-lucide="scale" aria-hidden="true"></i></span>
+            <div><span class="section-kicker">HOW RANKING IS DESIGNED</span><h2 id="ranking-heading">How was this hospital ranked?</h2><p>The score breakdown below is a separate illustrative example.</p></div>
+          </div>
+          <div class="ranking-card">
+            <div class="weight-list">
+              <div class="weight-row"><span>Medical Fit</span><div class="weight-track"><span style="width:60%"></span></div><strong>60% weighting</strong></div>
+              <div class="weight-row"><span>Location</span><div class="weight-track"><span style="width:20%"></span></div><strong>20% weighting</strong></div>
+              <div class="weight-row"><span>Facilities</span><div class="weight-track"><span style="width:20%"></span></div><strong>20% weighting</strong></div>
+            </div>
+            <div class="calculation-card"><span class="calculation-label"><i data-lucide="calculator" aria-hidden="true"></i> ILLUSTRATIVE RANKING EXAMPLE</span><div class="calculation-row"><span>Medical Fit</span><strong><span id="calculation-medical-fit"></span> × 0.60</strong></div><div class="calculation-row"><span>Location</span><strong><span id="calculation-location"></span> × 0.20</strong></div><div class="calculation-row"><span>Facilities</span><strong><span id="calculation-facilities"></span> × 0.20</strong></div></div>
+            <p class="ranking-note"><i data-lucide="info" aria-hidden="true"></i> These weights are experimental and will be evaluated during the MediRoute AI/ML evaluation stage. The displayed demo score was not produced by a production AI system.</p>
+          </div>
+        </section>
+
+        <!-- DATA SOURCES -->
+        <section class="hospital-section sources-section" aria-labelledby="sources-heading">
+          <div class="hospital-section-heading">
+            <span class="section-icon"><i data-lucide="database" aria-hidden="true"></i></span>
+            <div><span class="section-kicker">INFORMATION TRANSPARENCY</span><h2 id="sources-heading">Where does MediRoute get its information?</h2><p>What may inform a future service, and what is represented on this demo page.</p></div>
+          </div>
+          <div class="sources-grid">
+            <article class="source-card"><span class="source-icon"><i data-lucide="building-2" aria-hidden="true"></i></span><h3>Hospital Information</h3><p>Hospital names, location, accreditation, specialties and services will eventually come from the project's prepared hospital dataset.</p><span class="source-status">Future data source</span></article>
+            <article class="source-card"><span class="source-icon source-icon-cyan"><i data-lucide="book-open-check" aria-hidden="true"></i></span><h3>Cost References</h3><p>Available government/public cost-reference information can be used as a standardized reference where appropriate.</p><span class="source-status">Future data source</span></article>
+            <article class="source-card"><span class="source-icon source-icon-violet"><i data-lucide="clipboard-list" aria-hidden="true"></i></span><h3>Patient Information</h3><p>The patient's healthcare requirement, location and preferences come from the Patient Input Page.</p><span class="source-status source-status-current">Provided for this session</span></article>
+          </div>
+          <p class="source-disclaimer"><i data-lucide="info" aria-hidden="true"></i> This prototype does not retrieve hospital or cost information live. Hospital details and cost data shown here are fictional illustrative demo content.</p>
+        </section>
+
+        <!-- TRANSPARENCY FLOW -->
+        <section class="hospital-section transparency-section" aria-labelledby="transparency-heading">
+          <div class="hospital-section-heading">
+            <span class="section-icon"><i data-lucide="workflow" aria-hidden="true"></i></span>
+            <div><span class="section-kicker">A CLEARER MATCH EXPLANATION</span><h2 id="transparency-heading">Why am I seeing this hospital?</h2><p>This is an explanatory visualization only, not a live system trace.</p></div>
+          </div>
+          <ol class="transparency-flow">
+            <li><span class="flow-icon"><i data-lucide="message-square-text" aria-hidden="true"></i></span><span class="flow-step">YOUR REQUIREMENT</span><strong id="flow-requirement">Cardiac treatment</strong></li>
+            <li class="flow-arrow" aria-hidden="true"><i data-lucide="arrow-down"></i></li>
+            <li><span class="flow-icon"><i data-lucide="heart-pulse" aria-hidden="true"></i></span><span class="flow-step">RELEVANT SPECIALTY</span><strong>Cardiology</strong></li>
+            <li class="flow-arrow" aria-hidden="true"><i data-lucide="arrow-down"></i></li>
+            <li><span class="flow-icon"><i data-lucide="search-check" aria-hidden="true"></i></span><span class="flow-step">HOSPITAL RETRIEVAL</span><strong>Matching specialties/services</strong></li>
+            <li class="flow-arrow" aria-hidden="true"><i data-lucide="arrow-down"></i></li>
+            <li><span class="flow-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span><span class="flow-step">RANKING</span><strong>Medical Fit + Location + Facilities</strong></li>
+            <li class="flow-arrow" aria-hidden="true"><i data-lucide="arrow-down"></i></li>
+            <li class="flow-final"><span class="flow-icon"><i data-lucide="hospital" aria-hidden="true"></i></span><span class="flow-step">THIS HOSPITAL</span><strong id="flow-hospital-name"></strong></li>
+          </ol>
+        </section>
+
+        <!-- RESPONSIBLE AI -->
+        <aside class="important-information" aria-labelledby="important-information-heading">
+          <span class="important-information-icon"><i data-lucide="shield-alert" aria-hidden="true"></i></span>
+          <div><h2 id="important-information-heading">Important Information</h2><p>MediRoute provides informational hospital discovery and ranking support. It does not provide medical diagnosis, treatment advice, or guarantees regarding hospital suitability or treatment outcomes.</p><p>The hospital information, scores, facilities and costs displayed on this prototype page are illustrative demo data. Patients should verify relevant information with qualified medical professionals and hospitals before making healthcare decisions.</p></div>
+        </aside>
+
+        <!-- ACTIONS -->
+        <div class="hospital-bottom-actions">
+          <a class="button button-secondary back-results-button" href="results.html"><i data-lucide="arrow-left" aria-hidden="true"></i> Back to Recommendations</a>
+          <button class="button button-primary select-hospital-button" id="select-hospital-button" type="button">Select This Hospital <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="hospital-action-message" id="hospital-action-message" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="hospital-footer">
+    <div class="container"><a class="brand brand-footer" href="index.html" aria-label="MediRoute home"><span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span><span>Medi<span class="brand-accent">Route</span></span></a><p>MediRoute provides informational recommendations and does not constitute medical advice.</p></div>
+  </footer>
+</body>
+</html>
