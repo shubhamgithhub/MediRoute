@@ -475,14 +475,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // FORM SUBMISSION
-  form.addEventListener("submit", (event) => {
+// FORM SUBMISSION
+form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
     if (!validateForm()) {
-      return;
+        return;
     }
+
     if (!storeRequest()) {
-      return;
+        return;
+    }
+
+    // Read the saved patient data from Session Storage
+    const patientData = JSON.parse(
+        sessionStorage.getItem("mediroute_patient_request")
+    );
+
+    // Send patient data to FastAPI backend
+    try {
+        const backendResponse = await sendPatientRequestToBackend(patientData);
+
+        console.log("MediRoute backend response:");
+        console.log(backendResponse);
+
+    } catch (error) {
+        console.error("Backend connection failed:", error);
     }
 
     form.hidden = true;
@@ -496,7 +514,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     submissionTimer = window.setTimeout(showSuccessState, 2000);
-  });
+});
 
   // LOADING STATE
   function showSuccessState() {
@@ -555,3 +573,24 @@ document.addEventListener("DOMContentLoaded", () => {
     setError(fileInput, "Previously saved information could not be fully restored. Please review the form before continuing.", "report-error");
   });
 });
+
+async function sendPatientRequestToBackend(patientData) {
+    const response = await fetch(
+        "http://127.0.0.1:8000/api/analyze",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(patientData)
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("MediRoute backend request failed");
+    }
+
+    return await response.json();
+}
