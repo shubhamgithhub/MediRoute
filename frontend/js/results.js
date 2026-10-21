@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   // DEMO HOSPITAL DATA
-  const hospitals = [
+  const demoHospitals = [
     {
       id: "DEMO001",
       name: "Example Multispecialty Hospital",
@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
       referenceCost: "₹1,70,000 – ₹3,00,000"
     }
   ];
+  let hospitals = [...demoHospitals];
 
   // SESSION STORAGE
   const getPatientData = () => {
@@ -150,6 +151,19 @@ document.addEventListener("DOMContentLoaded", () => {
     return icon;
   };
 
+  // BACKEND HOSPITAL FETCH
+  async function fetchHospitalsFromBackend(location) {
+    const apiUrl = `http://127.0.0.1:8000/api/hospitals/search?location=${encodeURIComponent(location)}`;
+
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch hospitals from MediRoute backend");
+    }
+
+    return await response.json();
+  }
+
   const createHospitalCard = (hospital, index) => {
     const card = createElement("article", "hospital-card");
     card.dataset.hospitalId = hospital.id;
@@ -158,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const main = createElement("div", "hospital-main");
     const topline = createElement("div", "hospital-topline");
-    topline.append(createElement("span", "rank-badge", `#${index + 1}`), createElement("span", "rank-caption", "Demo recommendation"));
+    topline.append(createElement("span", "rank-badge", `#${index + 1}`), createElement("span", "rank-caption", "Backend hospital record"));
     const name = createElement("h3", "hospital-name", hospital.name);
     const location = createElement("p", "hospital-location");
     location.append(createIcon("map-pin"), document.createTextNode(`${hospital.city}, ${hospital.state}`));
@@ -249,6 +263,60 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // BACKEND TO FRONTEND DATA CONVERSION
+  function convertBackendHospitalToCard(hospital, patientLocation) {
+    const specialties = hospital.key_specialties || [];
+
+    const isLocationMatch =
+      patientLocation &&
+      patientLocation.toLowerCase() !== "no preference" &&
+      hospital.city &&
+      hospital.city.toLowerCase().includes(patientLocation.toLowerCase());
+
+    const hasCardiology = specialties.some((specialty) =>
+      specialty.toLowerCase().includes("cardio")
+    );
+
+    const medicalFit = hasCardiology ? 92 : 75;
+    const locationScore = isLocationMatch ? 90 : 65;
+    const facilitiesScore = hospital.accreditation ? 82 : 70;
+
+    const overallScore = Math.round(
+      medicalFit * 0.6 +
+      locationScore * 0.2 +
+      facilitiesScore * 0.2
+    );
+
+    return {
+      id: hospital.hospital_id,
+      name: hospital.name,
+      city: hospital.city,
+      state: "India",
+      accreditation: hospital.accreditation || "Not specified",
+      specialties: specialties,
+      medicalFit: medicalFit,
+      locationScore: locationScore,
+      facilitiesScore: facilitiesScore,
+      overallScore: overallScore,
+      facilities: [
+        "Facility details will be expanded later from hospital dataset"
+      ],
+      reasons: [
+        hasCardiology
+          ? "Specialty information is relevant to cardiac care"
+          : "Specialty information may be partially relevant",
+        isLocationMatch
+          ? "Matches the preferred location"
+          : "Does not exactly match the preferred location",
+        hospital.accreditation
+          ? "Accreditation information is available"
+          : "Accreditation information is not available"
+      ],
+      referenceCost: hospital.cghs_base_cost_proxy_inr
+        ? `₹${Number(hospital.cghs_base_cost_proxy_inr).toLocaleString("en-IN")}`
+        : "Not available"
+    };
+  }
   // SCORE BARS
   // Bars animate after each render to keep the score labels readable with motion disabled as well.
 
@@ -305,5 +373,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ERROR STATE
   renderPatientSummary();
-  renderHospitals([...hospitals].sort((first, second) => second[currentSort] - first[currentSort]));
+
+  // LOAD RECOMMENDATIONS FROM FASTAPI
+  async function loadRecommendations() {
+    try {
+      const backendData = await fetchHospitalsFromBackend(patientData.location);
+      const backendHospitals = backendData.hospitals || [];
+      const convertedHospitals = backendHospitals.map((hospital) =>
+        convertBackendHospitalToCard(hospital, patientData.location)
+      );
+
+      if (convertedHospitals.length === 0) {
+        console.warn("No hospitals found from backend for selected location.");
+        hospitals = [...demoHospitals];
+      } else {
+        hospitals = convertedHospitals;
+        console.log("Hospitals loaded from FastAPI:");
+        console.log(convertedHospitals);
+      }
+    } catch (error) {
+      console.error("Could not load hospitals from backend:", error);
+      hospitals = [...demoHospitals];
+    }
+
+    renderHospitals([...hospitals].sort((first, second) => second[currentSort] - first[currentSort]));
+  }
+
+  void loadRecommendations();
 });
