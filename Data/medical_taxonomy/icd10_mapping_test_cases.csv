@@ -1,0 +1,10 @@
+test_id,input_type,input_value,expected_icd10_code,expected_specialty
+T001,condition,heart attack,I21,Cardiology
+T002,condition,myocardial infarction,I21,Cardiology
+T003,condition,breast cancer,C50,Oncology
+T004,condition,type 2 diabetes,E11,Endocrinology
+T005,condition,knee osteoarthritis,M17,Orthopaedics
+T006,condition,ischemic stroke,I63,Neurology
+T007,icd10_code,I21,I21,Cardiology
+T008,icd10_code,C50,C50,Oncology
+T009,condition,unknown disease,,

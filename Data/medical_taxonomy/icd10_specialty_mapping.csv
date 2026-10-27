@@ -1,0 +1,14 @@
+mapping_id,icd10_code,icd10_title,condition_alias,canonical_specialty,secondary_specialty,mapping_level,mapping_status,taxonomy_source,source_url,mapping_notes
+MAP001,I21,Acute myocardial infarction,heart attack,Cardiology,,alias,reviewed,WHO ICD-10,,Acute coronary condition routed to Cardiology
+MAP002,I21,Acute myocardial infarction,myocardial infarction,Cardiology,,exact,reviewed,WHO ICD-10,,Primary cardiology routing
+MAP003,I25,Chronic ischemic heart disease,coronary artery disease,Cardiology,,alias,reviewed,WHO ICD-10,,Chronic coronary disease
+MAP004,I50,Heart failure,heart failure,Cardiology,,exact,reviewed,WHO ICD-10,,Cardiac medical condition
+MAP005,I63,Cerebral infarction,ischemic stroke,Neurology,,alias,reviewed,WHO ICD-10,,Stroke routed to Neurology
+MAP006,I64,Stroke not specified as hemorrhage or infarction,stroke,Neurology,,alias,reviewed,WHO ICD-10,,General stroke routing
+MAP007,C50,Malignant neoplasm of breast,breast cancer,Oncology,,alias,reviewed,WHO ICD-10,,Cancer routed to Oncology
+MAP008,C34,Malignant neoplasm of bronchus and lung,lung cancer,Oncology,,alias,reviewed,WHO ICD-10,,Cancer routed to Oncology
+MAP009,E11,Type 2 diabetes mellitus,type 2 diabetes,Endocrinology,,alias,reviewed,WHO ICD-10,,Diabetes routed to Endocrinology
+MAP010,K21,Gastro-oesophageal reflux disease,acid reflux,Gastroenterology,,alias,reviewed,WHO ICD-10,,Digestive condition
+MAP011,K80,Cholelithiasis,gallstones,Gastroenterology,,alias,review_needed,WHO ICD-10,,May later require surgical routing depending on treatment
+MAP012,M17,Gonarthrosis,knee osteoarthritis,Orthopaedics,,alias,reviewed,WHO ICD-10,,Musculoskeletal condition
+MAP013,M16,Coxarthrosis,hip osteoarthritis,Orthopaedics,,alias,reviewed,WHO ICD-10,,Musculoskeletal condition

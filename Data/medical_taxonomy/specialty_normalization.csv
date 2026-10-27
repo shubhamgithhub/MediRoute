@@ -1,0 +1,32 @@
+raw_specialty,canonical_specialty,normalization_status,notes
+Adult Interventional Cardiology,Cardiology,reviewed,Interventional cardiology grouped under Cardiology
+Assisted Reproduction (IVF),Reproductive Medicine,reviewed,IVF and assisted reproduction grouped under Reproductive Medicine
+Ayurveda & Modern Medicine,,review_needed,Mixed service category; not suitable as a canonical specialty without manual review
+Bariatric & Minimal Access Surgery,Bariatric Surgery,reviewed,Bariatric surgical service
+BMT,Hematology & Bone Marrow Transplant,reviewed,BMT interpreted as Bone Marrow Transplant
+Bone & Joint,Orthopaedics,reviewed,Bone and joint care grouped under Orthopaedics
+Bone Marrow & Stem Cell Transplant,Hematology & Bone Marrow Transplant,reviewed,Transplant service closely associated with hematology
+Bone Marrow Transplant,Hematology & Bone Marrow Transplant,reviewed,Bone marrow transplant service
+Cancer,Oncology,reviewed,General cancer service grouped under Oncology
+Cardiac Sciences,Cardiology,reviewed,Broad cardiac department label
+Cardiac Surgery,Cardiothoracic Surgery,reviewed,Cardiac surgical specialty
+Cardiology,Cardiology,reviewed,Already canonical
+Cardiology & Cardiac Surgery,Cardiology,reviewed,Mixed cardiology and surgical department; route primarily through Cardiology
+Cardiology & Cardiothoracic Surgery,Cardiology,reviewed,Mixed cardiology and surgical department
+Cardiology & CTVS,Cardiology,reviewed,Mixed cardiology and cardiothoracic vascular surgery service
+Cardiology & CVTS,Cardiology,reviewed,Mixed cardiology and cardiothoracic vascular surgery service
+Cardiology & Heart Transplants,Cardiology,reviewed,Broad cardiac service including transplant care
+Cardiothoracic Surgery,Cardiothoracic Surgery,reviewed,Already canonical
+Children's Heart Centre,Pediatric Cardiology,reviewed,Pediatric cardiac care
+Cosmetic,Plastic & Reconstructive Surgery,reviewed,Cosmetic care usually delivered through plastic surgery
+Critical Care,Critical Care,reviewed,Already canonical
+Diabetes & Endocrinology,Endocrinology,reviewed,Diabetes commonly managed under Endocrinology
+Digestive & Hepatobiliary,Gastroenterology,review_needed,Could involve gastroenterology hepatology or GI surgery depending on hospital
+Digestive & Liver Diseases,Gastroenterology,reviewed,Broad digestive and liver medicine service
+Digestive Diseases,Gastroenterology,reviewed,General digestive medicine
+Electrophysiology,Cardiology,reviewed,Cardiac electrophysiology is a cardiology subspecialty
+Emergency,Emergency Medicine,reviewed,Emergency clinical service
+Emergency & Trauma,Emergency Medicine,reviewed,Emergency and trauma service
+Emergency Care,Emergency Medicine,reviewed,Emergency clinical service
+Endocrinology,Endocrinology,reviewed,Already canonical
+Gastro Sciences,Gastroenterology,reviewed,Broad gastroenterology service
