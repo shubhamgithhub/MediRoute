@@ -12,3 +12,7 @@ MAP010,K21,Gastro-oesophageal reflux disease,acid reflux,Gastroenterology,,alias
 MAP011,K80,Cholelithiasis,gallstones,Gastroenterology,,alias,review_needed,WHO ICD-10,,May later require surgical routing depending on treatment
 MAP012,M17,Gonarthrosis,knee osteoarthritis,Orthopaedics,,alias,reviewed,WHO ICD-10,,Musculoskeletal condition
 MAP013,M16,Coxarthrosis,hip osteoarthritis,Orthopaedics,,alias,reviewed,WHO ICD-10,,Musculoskeletal condition
+MAP014,I49.9,Cardiac arrhythmia unspecified,arrhythmia,Cardiology,,reviewed,WHO ICD-10,MediRoute routing rule,,Cardiac rhythm disorder routed to Cardiology
+MAP015,R00.1,Bradycardia unspecified,bradycardia,Cardiology,,reviewed,WHO ICD-10,MediRoute routing rule,,Slow heart rate routed to Cardiology
+MAP016,R00.0,Tachycardia unspecified,tachycardia,Cardiology,,reviewed,WHO ICD-10,MediRoute routing rule,,Fast heart rate routed to Cardiology
+MAP017,I10,Essential primary hypertension,hypertension,Cardiology,,reviewed,WHO ICD-10,MediRoute routing rule,,Hypertension routed to Cardiology for current MediRoute development dataset

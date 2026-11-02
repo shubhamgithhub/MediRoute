@@ -1,11 +1,14 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PatientRequest(BaseModel):
     requirement: str
     location: str
     language: str
-    additionalPreference: Optional[str] = None
-    reportName: Optional[str] = None
+    additionalPreference: str
+
+    reportName: list[str] = Field(
+        default_factory=list
+    )

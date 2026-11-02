@@ -152,8 +152,22 @@ class PDFParser:
         combined_text = "\n".join(
             combined_text_parts
         ).strip()
+        if len(documents) == 0:
+            overall_status = "error"
 
+        elif successful_files == len(documents):
+            overall_status = "success"
+
+        elif successful_files > 0:
+            overall_status = "partial_success"
+
+        elif needs_ocr_files > 0:
+            overall_status = "needs_ocr"
+
+        else:
+            overall_status = "error"
         return {
+            "overall_status": overall_status,
             "total_files": len(documents),
             "successful_files": successful_files,
             "needs_ocr_files": needs_ocr_files,

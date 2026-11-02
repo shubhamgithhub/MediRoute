@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const otherLocationField = document.querySelector("#other-location-field");
   const languageSelect = document.querySelector("#language");
   const disclaimerInput = document.querySelector("#medical-disclaimer");
-  const fileInput = document.querySelector("#report-file");
+  const fileInput = document.querySelector("#medicalReports");
   const uploadZone = document.querySelector("#upload-zone");
   const selectedFilesList = document.querySelector("#selected-files");
   const analyzeButton = document.querySelector("#analyze-button");
@@ -475,6 +475,48 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+// Upload all selected PDF reports in one multipart request.
+const parseMedicalReports = async (reports) => {
+    if (!reports || reports.length === 0) {
+        // No PDFs selected, so reports are optional and submission can continue.
+        window.sessionStorage.removeItem("mediroute_report_parse_result");
+        return;
+    }
+
+    try {
+        const formData = new FormData();
+
+        // Append every selected PDF with the backend's expected field name.
+        reports.forEach((report) => {
+            formData.append("files", report.file);
+        });
+
+        const response = await fetch("http://127.0.0.1:8000/api/reports/parse", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`Report parsing request failed with status ${response.status}`);
+        }
+
+        const parseResult = await response.json();
+        window.sessionStorage.setItem(
+            "mediroute_report_parse_result",
+            JSON.stringify(parseResult)
+        );
+
+        if (parseResult.overall_status === "partial_success") {
+            console.warn("Some uploaded reports require OCR.");
+        } else if (parseResult.overall_status === "needs_ocr") {
+            console.warn("The uploaded reports require OCR.");
+        }
+    } catch (error) {
+        console.error("MediRoute PDF report parsing failed:", error);
+        // The existing patient request stays saved when report parsing fails.
+    }
+};
+
 // FORM SUBMISSION
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -486,6 +528,9 @@ form.addEventListener("submit", async (event) => {
     if (!storeRequest()) {
         return;
     }
+
+    // Parse selected PDFs before continuing the normal submission flow.
+    await parseMedicalReports(selectedReports);
 
     // Read the saved patient data from Session Storage
     const patientData = JSON.parse(
