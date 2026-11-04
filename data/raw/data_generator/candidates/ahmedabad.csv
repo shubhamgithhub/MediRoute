@@ -1,0 +1,9 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H085,"Marengo CIMS Hospital, Sola",Ahmedabad,Gujarat,Tier 1,Tier 1,Multispeciality quaternary,Private,CIMS,,Marengo Asia Healthcare Private Limited,,,,Drafted candidate list (Pravin's city)
+H086,"Apollo Hospitals International, Bhat (Gandhinagar)",Ahmedabad,Gujarat,Tier 1,Tier 1,Multispeciality quaternary,Private,Apollo Hospitals International,,Apollo Hospitals International Limited,https://www.apollohospitals.com/ahmedabad,,NABH lists only the ethics committee (EC-CT-2018-0024) for this hospital,Drafted candidate list (Pravin's city)
+H087,"Zydus Hospital, Thaltej",Ahmedabad,Gujarat,Tier 1,Tier 1,Multispeciality quaternary,Private,Zydus,,NONE,https://www.zydushospitals.com/,,,Drafted candidate list (Pravin's city)
+H088,"Sterling Hospital, Gurukul",Ahmedabad,Gujarat,Tier 1,Tier 2,Multispeciality tertiary,Private,Sterling,,NONE,,,,Drafted candidate list (Pravin's city)
+H089,"Shalby Hospital, SG Highway",Ahmedabad,Gujarat,Tier 1,Tier 2,Multispeciality tertiary,Private,Shalby,,NONE,https://www.shalby.org/,,,Drafted candidate list (Pravin's city)
+H090,"HCG Cancer Centre, Ahmedabad",Ahmedabad,Gujarat,Tier 1,Tier 2,Single-speciality oncology,Private,HCG,,NONE,,,"Two HCG hospital certificates in Ahmedabad: HCG Aastha Cancer Centre, Sola (H-2025-1621) and HCG Hospitals, Ellisbridge (H-2013-0185)",Drafted candidate list (Pravin's city)
+H091,Apex Heart Institute,Ahmedabad,Gujarat,Tier 1,Tier 2,Cardiac speciality tertiary,Private,Apex Heart,,Apex Heart Institute (A Unit of TCVS Pvt. Ltd.),,,,Drafted candidate list (Pravin's city)
+H092,"Civil Hospital, Asarwa",Ahmedabad,Gujarat,Tier 1,Tier 2,Tertiary academic,Government,Civil Hospital,Asarwa,NONE,,,,Drafted candidate list (Pravin's city)

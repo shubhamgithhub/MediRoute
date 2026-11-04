@@ -1,0 +1,7 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H063,Max Super Speciality Hospital Nagpur (Alexis),Nagpur,Maharashtra,Tier 2,Tier 2,Multispeciality tertiary,Private,Alexis,,Max Super Speciality Hospital [A unit of Alexis Multi-Speciality Hospital Private Limited],,,,Drafted candidate list (Aniket's city)
+H064,KIMS-Kingsway Hospitals,Nagpur,Maharashtra,Tier 2,Tier 2,Multispeciality tertiary,Private,Kingsway,,NONE,,,,Drafted candidate list (Aniket's city)
+H065,All India Institute of Medical Sciences (AIIMS) Nagpur,Nagpur,Maharashtra,Tier 2,Tier 2,Tertiary academic,Government,All India Institute,,NONE,https://aiimsnagpur.edu.in/,,,Drafted candidate list (Aniket's city)
+H066,"CARE Hospitals, Ramdaspeth",Nagpur,Maharashtra,Tier 2,Tier 2,Multispeciality tertiary,Private,Ganga Care,Panchsheel,NONE,,,NABH lists it as 'Ganga Care Hospital Ltd. (Care Hospital)',Drafted candidate list (Aniket's city)
+H067,Orange City Hospital & Research Institute,Nagpur,Maharashtra,Tier 2,Tier 2,Multispeciality tertiary,Private,Orange City,,NONE,,,,Drafted candidate list (Aniket's city)
+H068,Government Medical College and Hospital Nagpur,Nagpur,Maharashtra,Tier 2,Tier 2,Tertiary academic,Government,Government Medical College,,NONE,,,NABH lists only the ethics committee for this hospital,Drafted candidate list (Aniket's city)

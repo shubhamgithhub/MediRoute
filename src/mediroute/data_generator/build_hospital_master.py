@@ -46,7 +46,7 @@ SCHEMA = ["hospital_id", "hospital_name", "city", "state", "City_Tier", "Hospita
           "verification_status", "evidence_quality_score", "cost_band_inr"]
 EVIDENCE = ["nabh_certificate_no", "nabh_listed_name", "nabh_certificate_url", "nabh_match",
             "jci_ihco_id", "jci_listed_name", "website_status", "specialties_all_found",
-            "data_collected_on", "notes"]
+            "data_collected_on", "source", "notes"]
 TAXONOMY = TAXONOMY_DIR / "specialty_normalization.csv"
 MAX_SPECIALTIES = 6
 
@@ -137,6 +137,9 @@ SPEC_WORDS = [["specialities", "specialties", "centres of excellence", "centers 
 
 
 # ---------------------------------------------------------------- NABH / JCI
+GENERIC_WORDS = {"institute", "medical", "sciences", "science", "healthcare", "health", "multispeciality",
+                 "multi", "clinic", "nursing", "home", "memorial", "general", "city", "international",
+                 "national", "government", "college", "india", "private", "services", "foundation"}
 def nabh_lookup(page, cand, cache, delay_ms=2500):
     name_for_judge = cand["hospital_name"].split(",")[0]
     if cand.get("branch_hint"):
@@ -162,7 +165,9 @@ def nabh_lookup(page, cand, cache, delay_ms=2500):
         for c in cache[term]:
             # A card must share a distinctive word with the hospital name or query; otherwise
             # it is just another hospital in the same city (e.g. 'Iswarya' for 'Rajiv Gandhi').
-            if not (nabh.tokens(core) | nabh.tokens(term)) & nabh.tokens(c["nabh_name"]):
+            # Generic words don't count: 'Institute' once linked NIMS to an unrelated
+            # 'Hitam Ayurvedic Anorectal Institute'.
+            if not ((nabh.tokens(core) | nabh.tokens(term)) & nabh.tokens(c["nabh_name"])) - GENERIC_WORDS:
                 continue
             # Judge against the full name first (picks 'Medical Centre' over 'Hospital'),
             # then against the query, since NABH often lists a legal name ('MIOT Hospitals').
@@ -189,12 +194,32 @@ def load_jci(path):
         return list(csv.DictReader(f))
 
 
+# JCI spells cities inconsistently; a team city covers its metro-area spellings.
+JCI_CITY_GROUPS = {
+    "new delhi": {"new delhi", "delhi"}, "gurugram": {"gurugram", "gurgaon"},
+    "chandigarh": {"chandigarh", "mohali", "panchkula"}, "mumbai": {"mumbai", "navi mumbai"},
+    "navi mumbai": {"navi mumbai", "mumbai"}, "kolkata": {"kolkata", "howrah"},
+    "ahmedabad": {"ahmedabad", "gandhinagar"}, "bengaluru": {"bengaluru", "bangalore"},
+    "hyderabad": {"hyderabad", "secunderabad"}, "visakhapatnam": {"visakhapatnam", "vizag"},
+}
+
+
 def jci_lookup(cand, jci_rows):
-    """Explicit `jci_name` in the candidate file wins (chains list several entries per city).
+    """Explicit `jci_name` in the candidate file wins (chains list several entries per city);
+    `NONE` means it was reviewed against the JCI list and is not accredited.
     Otherwise the distinctive query word must appear in the JCI name, so 'MGM Healthcare Malar'
     is not credited with 'MGM Healthcare Pvt. Ltd.' accreditation."""
-    if cand.get("jci_name"):
-        return next((r for r in jci_rows if r["Organization"].strip().lower() == cand["jci_name"].strip().lower()), None)
+    city = cand["city"].strip().lower()
+    allowed = JCI_CITY_GROUPS.get(city, {city})
+    jci_rows = [r for r in jci_rows if not r.get("City") or r["City"].strip().lower() in allowed]
+    name = (cand.get("jci_name") or "").strip()
+    if name.upper() == "NONE":
+        return None
+    if name:
+        hit = next((r for r in jci_rows if r["Organization"].strip().lower() == name.lower()), None)
+        if hit is None:
+            print(f"  WARNING {cand['hospital_id']}: jci_name '{name}' not in JCI list for {cand['city']}")
+        return hit
     want = nabh.tokens(cand["hospital_name"].split(",")[0]) | nabh.tokens(cand.get("nabh_query", ""))
     must = nabh.tokens(cand.get("nabh_query", ""))
     branch = (cand.get("branch_hint") or "").lower()
@@ -228,84 +253,103 @@ def build_rows(cands, jci_rows, headed=False):
                                               "(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36")).new_page()
         cache = {}
         for cand in cands:
-            notes = []
-            verdict, card = nabh_lookup(nabh_page, cand, cache)
-            if verdict == "confident":
-                nabh_status = "Accredited" if card.get("status", "").lower() == "accredited" else card.get("status", "")
-            elif verdict == "review":
-                nabh_status = "Needs verification"
-                notes.append(f"NABH: closest record in city is {card.get('certificate_no')} ({card.get('nabh_name','')[:60]}), "
-                             "not a hospital certificate for this branch")
-            else:
-                nabh_status = "Not found in NABH directory"
-
-            jci = jci_lookup(cand, jci_rows)
-            jci_status = "Accredited" if jci else "Not listed"
-
-            # Website: candidate file first, then the site listed on the JCI / NABH record.
-            options = [("candidate", cand.get("official_source_url", "")),
-                       ("JCI-listed", jci.get("Visit website", "") if jci else ""),
-                       ("NABH-listed", card.get("website", ""))]
-            site_status, final_url, text, links, url, tried = "no URL", "", "", [], "", []
-            for label, u in options:
-                if not u or u in [t[1] for t in tried]:
-                    continue
-                site_status, final_url, text, links = visit(web, u)
-                tried.append((label, u, site_status))
-                url = u
-                if site_status == "OK":
-                    if label != "candidate":
-                        notes.append(f"website taken from {label} record")
-                    break
-            if site_status != "OK" and tried:
-                notes.append("website unreachable: " + "; ".join(f"{u} ({s})" for _, u, s in tried))
-
-            intl = ""
-            if cand.get("url_international"):
-                st, intl_final, _, _ = visit(web, cand["url_international"])
-                if st == "OK":
-                    intl = intl_final
-                else:
-                    notes.append(f"url_international {cand['url_international']} {st}")
-            if not intl and links:
-                intl = pick_link(links, final_url, INTL_WORDS)
-            spec_page = pick_link(links, final_url, SPEC_WORDS) if links else ""
-            if spec_page:
-                _, _, spec_text, _ = visit(web, spec_page)
-                text += "\n" + spec_text
-            specs = find_specialties(text, patterns) if text else []
-
-            strong = [verdict == "confident" or bool(jci), site_status == "OK", bool(specs)]
-            quality = {3: "High", 2: "Medium"}.get(sum(strong), "Low")
-            if verdict == "confident" and site_status == "OK":
-                vstatus = "Verified"
-            elif verdict == "confident" or jci:
-                vstatus = "Partially verified"
-            else:
-                vstatus = "Needs verification"
-            notes.append("Hospital_Tier/hospital_type/ownership_type from candidate list (manual judgement)")
-
-            rows.append({
-                "hospital_id": cand["hospital_id"], "hospital_name": cand["hospital_name"],
-                "city": cand["city"], "state": cand["state"], "City_Tier": cand.get("City_Tier", ""),
-                "Hospital_Tier": cand.get("Hospital_Tier", ""), "hospital_type": cand.get("hospital_type", ""),
-                "ownership_type": cand.get("ownership_type", ""), "nabh_status": nabh_status,
-                "jci_status": jci_status, "verified_specialties": "; ".join(specs[:MAX_SPECIALTIES]) or "NA",
-                "international_patient_service": "Available" if intl else "Not found on website",
-                "official_source_url": final_url if site_status == "OK" else url,
-                "url_Internantional_patients": intl or "NA",
-                "verification_status": vstatus, "evidence_quality_score": quality, "cost_band_inr": "NA",
-                "nabh_certificate_no": card.get("certificate_no", ""), "nabh_listed_name": card.get("nabh_name", ""),
-                "nabh_certificate_url": card.get("certificate_url", ""), "nabh_match": verdict,
-                "jci_ihco_id": jci["IHCO ID"] if jci else "", "jci_listed_name": jci["Organization"] if jci else "",
-                "website_status": site_status, "specialties_all_found": "; ".join(specs),
-                "data_collected_on": today, "notes": " | ".join(notes),
-            })
+            try:
+                rows.append(build_one(cand, nabh_page, web, cache, jci_rows, patterns, today))
+            except Exception as e:  # one bad site must not lose a whole city's run
+                print(f"{cand['hospital_id']} FAILED: {type(e).__name__}: {str(e).splitlines()[0][:150]}")
+                rows.append({**{k: cand.get(k, "") for k in SCHEMA}, "verification_status": "Needs verification",
+                             "evidence_quality_score": "Low", "data_collected_on": today,
+                             "source": cand.get("source", "candidate list"),
+                             "notes": f"pipeline error: {type(e).__name__}"})
+                try:  # the NABH page may be in a bad state; reload it
+                    nabh_page.goto(nabh.URL, wait_until="load", timeout=60000)
+                except Exception:
+                    pass
+                continue
             r = rows[-1]
             print(f"{r['hospital_id']} {r['hospital_name'][:40]:40} NABH={r['nabh_status'][:12]:12} "
-                  f"JCI={jci_status:10} site={site_status:8} intl={'Y' if intl else '-'} specs={len(specs)}")
+                  f"JCI={r['jci_status']:10} site={r['website_status'][:8]:8} "
+                  f"intl={'Y' if r['url_Internantional_patients'] != 'NA' else '-'} "
+                  f"specs={len(r['specialties_all_found'].split('; ')) if r['specialties_all_found'] else 0}")
         browser.close()
     return rows
+
+
+def build_one(cand, nabh_page, web, cache, jci_rows, patterns, today):
+    notes = [cand["review_note"]] if cand.get("review_note") else []
+    verdict, card = nabh_lookup(nabh_page, cand, cache)
+    if verdict == "confident":
+        nabh_status = "Accredited" if card.get("status", "").lower() == "accredited" else card.get("status", "")
+    elif verdict == "review":
+        nabh_status = "Needs verification"
+        notes.append(f"NABH: closest record in city is {card.get('certificate_no')} ({card.get('nabh_name','')[:60]}), "
+                     "not a hospital certificate for this branch")
+    else:
+        nabh_status = "Not found in NABH directory"
+
+    jci = jci_lookup(cand, jci_rows)
+    jci_status = "Accredited" if jci else "Not listed"
+
+    # Website: candidate file first, then the site listed on the JCI / NABH record.
+    options = [("candidate", cand.get("official_source_url", "")),
+               ("JCI-listed", jci.get("Visit website", "") if jci else ""),
+               ("NABH-listed", card.get("website", ""))]
+    site_status, final_url, text, links, url, tried = "no URL", "", "", [], "", []
+    for label, u in options:
+        if not u or u in [t[1] for t in tried]:
+            continue
+        site_status, final_url, text, links = visit(web, u)
+        tried.append((label, u, site_status))
+        url = u
+        if site_status == "OK":
+            if label != "candidate":
+                notes.append(f"website taken from {label} record")
+            break
+    if site_status != "OK" and tried:
+        notes.append("website unreachable: " + "; ".join(f"{u} ({s})" for _, u, s in tried))
+
+    intl = ""
+    if cand.get("url_international"):
+        st, intl_final, _, _ = visit(web, cand["url_international"])
+        if st == "OK":
+            intl = intl_final
+        else:
+            notes.append(f"url_international {cand['url_international']} {st}")
+    if not intl and links:
+        intl = pick_link(links, final_url, INTL_WORDS)
+    spec_page = pick_link(links, final_url, SPEC_WORDS) if links else ""
+    if spec_page:
+        _, _, spec_text, _ = visit(web, spec_page)
+        text += "\n" + spec_text
+    specs = find_specialties(text, patterns) if text else []
+
+    strong = [verdict == "confident" or bool(jci), site_status == "OK", bool(specs)]
+    quality = {3: "High", 2: "Medium"}.get(sum(strong), "Low")
+    if verdict == "confident" and site_status == "OK":
+        vstatus = "Verified"
+    elif verdict == "confident" or jci:
+        vstatus = "Partially verified"
+    else:
+        vstatus = "Needs verification"
+    notes.append("Hospital_Tier/hospital_type/ownership_type from candidate list (manual judgement)")
+
+    return {
+        "hospital_id": cand["hospital_id"], "hospital_name": cand["hospital_name"],
+        "city": cand["city"], "state": cand["state"], "City_Tier": cand.get("City_Tier", ""),
+        "Hospital_Tier": cand.get("Hospital_Tier", ""), "hospital_type": cand.get("hospital_type", ""),
+        "ownership_type": cand.get("ownership_type", ""), "nabh_status": nabh_status,
+        "jci_status": jci_status, "verified_specialties": "; ".join(specs[:MAX_SPECIALTIES]) or "NA",
+        "international_patient_service": "Available" if intl else "Not found on website",
+        "official_source_url": final_url if site_status == "OK" else url,
+        "url_Internantional_patients": intl or "NA",
+        "verification_status": vstatus, "evidence_quality_score": quality, "cost_band_inr": "NA",
+        "nabh_certificate_no": card.get("certificate_no", ""), "nabh_listed_name": card.get("nabh_name", ""),
+        "nabh_certificate_url": card.get("certificate_url", ""), "nabh_match": verdict,
+        "jci_ihco_id": jci["IHCO ID"] if jci else "", "jci_listed_name": jci["Organization"] if jci else "",
+        "website_status": site_status, "specialties_all_found": "; ".join(specs),
+        "data_collected_on": today, "source": cand.get("source", "candidate list"),
+        "notes": " | ".join(notes),
+    }
 
 
 def write_xlsx(rows, out):
@@ -330,21 +374,48 @@ def write_xlsx(rows, out):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--candidates", required=True)
-    ap.add_argument("--jci", help="CSV written by jci_scraper.py for the same city")
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--candidates", required=True, nargs="+", help="one or more candidate CSVs (one per city)")
+    ap.add_argument("--jci", help="CSV written by jci_scraper.py (with a City column) covering these cities")
+    ap.add_argument("--out", help="output .xlsx when a single candidates file is given")
+    ap.add_argument("--out-dir", help="with several candidate files: write <stem>_master.csv/.xlsx here")
+    ap.add_argument("--force", action="store_true", help="rebuild cities whose output already exists")
+    ap.add_argument("--ids", nargs="+", help="rebuild only these hospital_ids and replace them in the existing city output")
     ap.add_argument("--headed", action="store_true")
     args = ap.parse_args()
-    with open(args.candidates, newline="", encoding="utf-8-sig") as f:
-        cands = list(csv.DictReader(f))
-    rows = build_rows(cands, load_jci(args.jci), headed=args.headed)
-    out = Path(args.out)
-    write_xlsx(rows, out)
-    with open(out.with_suffix(".csv"), "w", newline="", encoding="utf-8-sig") as f:
-        w = csv.DictWriter(f, fieldnames=SCHEMA + EVIDENCE)
-        w.writeheader()
-        w.writerows(rows)
-    print(f"Saved {len(rows)} rows -> {out} and {out.with_suffix('.csv')}")
+    if not args.out and not args.out_dir:
+        ap.error("give --out or --out-dir")
+    jci_rows = load_jci(args.jci)
+    for cand_file in args.candidates:
+        cand_path = Path(cand_file)
+        out = Path(args.out) if args.out else Path(args.out_dir) / f"{cand_path.stem}_master.xlsx"
+        with open(cand_path, newline="", encoding="utf-8-sig") as f:
+            cands = list(csv.DictReader(f))
+        if args.ids:
+            wanted = [c for c in cands if c["hospital_id"] in args.ids]
+            if not wanted:
+                continue
+            existing = []
+            if out.with_suffix(".csv").exists():
+                with open(out.with_suffix(".csv"), newline="", encoding="utf-8-sig") as f:
+                    existing = list(csv.DictReader(f))
+            print(f"== {cand_path.name}: rebuilding {[c['hospital_id'] for c in wanted]}")
+            fresh = {r["hospital_id"]: r for r in build_rows(wanted, jci_rows, headed=args.headed)}
+            order = [c["hospital_id"] for c in cands]
+            merged = {r["hospital_id"]: r for r in existing}
+            merged.update(fresh)
+            rows = [merged[i] for i in order if i in merged]
+        elif out.with_suffix(".csv").exists() and not args.force:
+            print(f"skip {cand_path.name}: {out.with_suffix('.csv')} exists (use --force)")
+            continue
+        else:
+            print(f"== {cand_path.name}: {len(cands)} hospitals")
+            rows = build_rows(cands, jci_rows, headed=args.headed)
+        write_xlsx(rows, out)
+        with open(out.with_suffix(".csv"), "w", newline="", encoding="utf-8-sig") as f:
+            w = csv.DictWriter(f, fieldnames=SCHEMA + EVIDENCE)
+            w.writeheader()
+            w.writerows(rows)
+        print(f"Saved {len(rows)} rows -> {out} and {out.with_suffix('.csv')}")
 
 
 if __name__ == "__main__":

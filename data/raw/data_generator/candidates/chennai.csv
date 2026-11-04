@@ -1,13 +1,13 @@
-﻿"hospital_id","hospital_name","city","state","City_Tier","Hospital_Tier","hospital_type","ownership_type","nabh_query","branch_hint","jci_name","official_source_url","url_international"
-"CHN-01","Apollo Hospitals, Greams Road","Chennai","Tamil Nadu","Tier 1","Tier 1","Multispeciality quaternary","Private","Greams","Greams","Apollo Hospital, Chennai","https://www.apollohospitals.com/chennai","https://www.apollohospitals.com/international-patient-services"
-"CHN-02","Apollo Proton Cancer Centre, Taramani","Chennai","Tamil Nadu","Tier 1","Tier 2","Single-speciality oncology","Private","Proton","Taramani","Apollo Proton Cancer Centre","",""
-"CHN-03","MGM Healthcare, Aminjikarai","Chennai","Tamil Nadu","Tier 1","Tier 1","Multispeciality quaternary","Private","MGM Healthcare","Aminjikarai","MGM Healthcare Pvt. Ltd.","https://www.mgmhealthcare.in/",""
-"CHN-04","MGM Healthcare Malar, Adyar","Chennai","Tamil Nadu","Tier 1","Tier 2","Multispeciality tertiary","Private","Malar","Adyar","","",""
-"CHN-05","Kauvery Hospital, Alwarpet","Chennai","Tamil Nadu","Tier 1","Tier 2","Multispeciality tertiary","Private","Kauvery","Luz Church","Kauvery Hospital Alwarpet","",""
-"CHN-06","Gleneagles HealthCity Chennai, Perumbakkam","Chennai","Tamil Nadu","Tier 1","Tier 1","Multispeciality quaternary","Private","Gleneagles","Perumbakkam","","",""
-"CHN-07","MIOT International, Manapakkam","Chennai","Tamil Nadu","Tier 1","Tier 1","Multispeciality quaternary","Private","MIOT","Manapakkam","","https://www.miotinternational.com/",""
-"CHN-08","Sri Ramachandra Medical Centre, Porur","Chennai","Tamil Nadu","Tier 1","Tier 1","Tertiary academic","Private (deemed university)","Ramachandra","Porur","","https://srmc.sriramachandra.edu/",""
-"CHN-09","Dr. Rela Institute & Medical Centre, Chromepet","Chennai","Tamil Nadu","Tier 1","Tier 2","Multispeciality tertiary","Private","Rela","Chromepet","","",""
-"CHN-10","SIMS Hospital, Vadapalani","Chennai","Tamil Nadu","Tier 1","Tier 2","Multispeciality tertiary","Private","SRM Institutes","Vadapalani","","https://www.simshospitals.com/",""
-"CHN-11","Rajiv Gandhi Government General Hospital","Chennai","Tamil Nadu","Tier 1","Tier 2","Tertiary academic","Government","Rajiv Gandhi","Park Town","","",""
-"CHN-12","Dr. Humayun Speciality Hospital","Chennai","Tamil Nadu","Tier 1","Tier 2","Speciality hospital","Private","Humayun","","Dr. Humayun Speciality Hospital","",""
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H021,"Apollo Hospitals, Greams Road",Chennai,Tamil Nadu,Tier 1,Tier 1,Multispeciality quaternary,Private,Greams,Greams,"Apollo Hospital, Chennai",https://www.apollohospitals.com/chennai,https://www.apollohospitals.com/international-patient-services,,Drafted candidate list (Pravin's city)
+H022,"Apollo Proton Cancer Centre, Taramani",Chennai,Tamil Nadu,Tier 1,Tier 2,Single-speciality oncology,Private,Proton,Taramani,Apollo Proton Cancer Centre,,,,Drafted candidate list (Pravin's city)
+H023,"MGM Healthcare, Aminjikarai",Chennai,Tamil Nadu,Tier 1,Tier 1,Multispeciality quaternary,Private,MGM Healthcare,Aminjikarai,MGM Healthcare Pvt. Ltd.,https://www.mgmhealthcare.in/,,,Drafted candidate list (Pravin's city)
+H024,"MGM Healthcare Malar, Adyar",Chennai,Tamil Nadu,Tier 1,Tier 2,Multispeciality tertiary,Private,Malar,Adyar,NONE,,,Formerly Fortis Malar Hospital,Drafted candidate list (Pravin's city)
+H025,"Kauvery Hospital, Alwarpet",Chennai,Tamil Nadu,Tier 1,Tier 2,Multispeciality tertiary,Private,Kauvery,Luz Church,Kauvery Hospital Alwarpet,,,,Drafted candidate list (Pravin's city)
+H026,"Gleneagles HealthCity Chennai, Perumbakkam",Chennai,Tamil Nadu,Tier 1,Tier 1,Multispeciality quaternary,Private,Gleneagles,Perumbakkam,NONE,,,,Drafted candidate list (Pravin's city)
+H027,"MIOT International, Manapakkam",Chennai,Tamil Nadu,Tier 1,Tier 1,Multispeciality quaternary,Private,MIOT,Manapakkam,NONE,https://www.miotinternational.com/,,,Drafted candidate list (Pravin's city)
+H028,"Sri Ramachandra Medical Centre, Porur",Chennai,Tamil Nadu,Tier 1,Tier 1,Tertiary academic,Private (deemed university),Ramachandra,Porur,NONE,https://srmc.sriramachandra.edu/,,,Drafted candidate list (Pravin's city)
+H029,"Dr. Rela Institute & Medical Centre, Chromepet",Chennai,Tamil Nadu,Tier 1,Tier 2,Multispeciality tertiary,Private,Rela,Chromepet,NONE,,,,Drafted candidate list (Pravin's city)
+H030,"SIMS Hospital, Vadapalani",Chennai,Tamil Nadu,Tier 1,Tier 2,Multispeciality tertiary,Private,SRM Institute,Vadapalani,NONE,https://www.simshospitals.com/,,NABH lists it as 'SRM Institute for Medical Science',Drafted candidate list (Pravin's city)
+H031,Rajiv Gandhi Government General Hospital,Chennai,Tamil Nadu,Tier 1,Tier 2,Tertiary academic,Government,Rajiv Gandhi,Park Town,NONE,,,,Drafted candidate list (Pravin's city)
+H032,Dr. Humayun Speciality Hospital,Chennai,Tamil Nadu,Tier 1,Tier 2,Speciality hospital,Private,Humayun,,Dr. Humayun Speciality Hospital,,,,Drafted candidate list (Pravin's city)

@@ -202,16 +202,24 @@ CITY_ALIASES = {
     "bengaluru": ["bengaluru", "bangalore"],
     "gurugram": ["gurugram", "gurgaon"],
     "new delhi": ["delhi"],
-    "mumbai": ["mumbai", "bombay"],
+    "mumbai": ["mumbai", "bombay", "navi mumbai"],
     "chennai": ["chennai", "madras"],
-    "hyderabad": ["hyderabad", "secunderabad"],
+    "hyderabad": ["hyderabad", "secunderabad", "rangareddy", "ranga reddy"],
+    "kolkata": ["kolkata", "calcutta", "howrah"],
+    "kochi": ["kochi", "cochin", "ernakulam", "aluva"],
+    "visakhapatnam": ["visakhapatnam", "vizag"],
+    "chandigarh": ["chandigarh", "mohali", "sas nagar", "panchkula"],
+    "ahmedabad": ["ahmedabad", "gandhinagar"],
+    "navi mumbai": ["navi mumbai", "vashi", "thane"],
 }
 STOPWORDS = {"hospital", "hospitals", "the", "and", "&", "of", "pvt", "ltd", "limited",
              "centre", "center", "research", "super", "speciality", "specialty", "-", "a", "unit"}
 
 
 def tokens(text):
-    return {t for t in re.findall(r"[a-z0-9]+", text.lower()) if t not in STOPWORDS}
+    # len > 1: apostrophes split "Nizam's" / "Children's" into a lone "s", which once made
+    # NIMS match an unrelated children's hospital.
+    return {t for t in re.findall(r"[a-z0-9]+", text.lower()) if t not in STOPWORDS and len(t) > 1}
 
 
 def city_terms(city):

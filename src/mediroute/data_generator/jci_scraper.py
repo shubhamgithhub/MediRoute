@@ -21,11 +21,15 @@ def normalize_space(value: str) -> str:
 
 
 def city_matches(location_text: str, city: str) -> bool:
-    """Match the exact city on a location line, not as a substring."""
+    """Match the city as a whole comma-separated part of a location line, not as a substring.
+
+    JCI writes locations inconsistently: 'Chennai, India', 'Aluva, Kochi, Kerala, India',
+    'Hosur Road, Anekal taluk, Bangalore, Karnataka, India'. Matching only the first part
+    missed the last two (Narayana Health City among them)."""
     wanted = normalize_space(city).casefold()
     for line in location_text.splitlines():
-        line = normalize_space(line).casefold().strip(" ,")
-        if line == wanted or line.startswith(wanted + ","):
+        parts = [normalize_space(p).casefold() for p in line.split(",")]
+        if wanted in parts:
             return True
     return False
 
