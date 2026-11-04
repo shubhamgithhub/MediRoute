@@ -10,7 +10,38 @@ Team T09: Anand Chavan, Aniket More, Pravin Patil, RaviTeja Karri, Shubham Thaka
 | `T09_MediRoute_MidSem_Project_Document.docx` | Our mid-semester report: problem, scope, data, intelligence and evaluation plan (4 Oct 2026) |
 | `T09_MediRoute_MidSem_Presentation_v2.0.pptx` | Our mid-semester presentation (5 slides) |
 | `Team_9_Feedbacks.docx` | TA's mid-semester review. Overall readiness: **"Needs improvements"** |
-| _(to be added)_ | Professor's project documentation guideline |
+| `capstone_guidelines.pdf` | Course capstone guidelines. **Kept local only (gitignored):** the PDF is watermarked for personal use, so ask the course team for your own copy |
+
+---
+
+## What the course grades (our notes on the capstone guidelines)
+
+- **Final review, 5 Dec 2026, carries 100% of the marks.** It's held on campus: a 20-minute
+  presentation, a demo and an individual viva. The marks are roughly equal parts scope and
+  impact, technical depth and execution, presentation, and viva.
+- **Three layers are expected:** Intelligence (RAG, agent or LangGraph), **Evaluation** (gold
+  dataset, metrics, baselines, LLM-as-judge using a *different* model, hallucination and
+  faithfulness, latency, cost per query) and **Deployment** (FastAPI serving, containers, CI/CD,
+  and an observability dashboard for latency, cost and errors).
+- **One thing working end to end beats many half-built features.** Execution and scope are
+  graded, not novelty.
+- **For a health project, evaluation is mandatory.** The question is whether an expert would
+  trust the answers.
+- **Viva is about each person's own contribution.** Keep a contribution log from day one.
+- **Engineering habits:** version prompts, rules and configs; change one thing per evaluation run;
+  keep an experiments log; report negative results.
+- **Final checklist:**
+  - someone outside the team has used the system
+  - evaluation results compared against a baseline
+  - deployed, with a dashboard
+  - contribution log
+  - limitations slide, each with a fix path
+  - backup demo recording
+  - rehearsed within the time limit
+- **Budget:** ₹40,000 per team for APIs, compute or paid data.
+- **AI-assisted coding is allowed.** The team must own the design, the architecture, the
+  evaluation choices and the interpretation of results, and be able to defend every box in the
+  architecture.
 
 ---
 
