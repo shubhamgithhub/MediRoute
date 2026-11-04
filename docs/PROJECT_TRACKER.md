@@ -8,6 +8,8 @@ Final review: **5 Dec 2026**. Owners are tentative.
 
 | # | Task | What needs to be done | Owner | State |
 |---|------|-----------------------|-------|-------|
+| **Step 0: Team alignment (do this first, before starting any task below)** | | | | |
+| 0 | Same platform, structure and schema for everyone | Everyone pulls the `pravin` branch, creates a venv, runs `pip install -e ".[dev]"`, and starts the API and tests successfully. Walk through the project structure together (who owns which folder). Agree the shared schemas: one specialty name list, the Step 1 → Step 2 data format (`MedicalContext`), and the hospital data columns | All | Not started |
 | 1 | Project structure, packaging, README | Done: `src/` layout, `pyproject.toml`, README, architecture section | Pravin | Done |
 | **Step 1: Patient input → Specialty** | | | | |
 | 2 | Patient query + PDF report intake | Done: `/api/analyze`, `/api/reports/parse` (PyMuPDF). Add OCR fallback only if time permits | Pravin | Done |
