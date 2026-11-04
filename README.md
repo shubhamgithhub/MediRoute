@@ -388,7 +388,8 @@ To rebuild just one city, pass its candidate file with `--force`, e.g.
 - `City_Tier`, `Hospital_Tier`, `hospital_type` and `ownership_type` are manual judgements from
   the candidate list. Each row's `notes` column says so.
 - `cost_band_inr` is `NA` until a band definition is agreed. The intended source is the CGHS sheet
-  in the workbook.
+  in the workbook. The draft design for treatment cost data (one hospital to many treatment costs)
+  is in [docs/design/treatment_cost_data_design.md](docs/design/treatment_cost_data_design.md).
 - Specialties are ranked by how often they appear on the website, so they show what the site
   highlights, not clinical capacity. The full list is in `specialties_all_found`.
 - Some hospitals' websites are down or block automated browsers. Those rows show the error in
