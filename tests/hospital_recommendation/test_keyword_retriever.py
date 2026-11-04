@@ -1,9 +1,9 @@
-from mediroute.backend.services.faiss_retriever import (
-    FaissHospitalRetriever,
+from mediroute.hospital_recommendation.retrieval.keyword_retriever import (
+    KeywordHospitalRetriever,
 )
 
 
-retriever = FaissHospitalRetriever()
+retriever = KeywordHospitalRetriever()
 
 results = retriever.search(
     query=(
@@ -13,12 +13,14 @@ results = retriever.search(
     top_k=5
 )
 
+
 for hospital in results:
 
     print()
+
     print(
         "Rank:",
-        hospital["semantic_rank"]
+        hospital["keyword_rank"]
     )
 
     print(
@@ -33,7 +35,7 @@ for hospital in results:
 
     print(
         "Score:",
-        hospital["semantic_score"]
+        hospital["keyword_score"]
     )
 
     print(

@@ -5,7 +5,7 @@ import numpy as np
 
 from sentence_transformers import SentenceTransformer
 
-from mediroute.backend.services.retrieval_config import (
+from mediroute.hospital_recommendation.retrieval.retrieval_config import (
     FAISS_INDEX_FILE,
     METADATA_FILE,
     FAISS_MANIFEST_FILE,

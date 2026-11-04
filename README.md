@@ -71,16 +71,21 @@ The pipeline has two steps. Each box is either an **LLM/embedding** component (p
 
 ### How the code maps to the architecture
 
+Each step of the architecture is its own package. The two packages never import each other.
+They share only `common/` (the `MedicalContext` hand-off object) and `utils/`.
+
 | Architecture stage | Module(s) in `src/mediroute/` |
 |--------------------|-------------------------------|
-| Patient input + reports | `backend/main.py` (`/api/analyze`, `/api/reports/parse`), `backend/services/pdf_parser.py` |
-| 1.1 Extract condition | `backend/services/medical_context_extractor.py`, `patient_context_aggregator.py` |
-| 1.2 Map to ICD-10 | `backend/services/icd10_mapper.py`, `specialty_routing.py` (rules, then embeddings, then zero-shot, then Ollama LLM) |
-| 1.3 Validate | `backend/services/patient_context_validator.py` |
-| 1.4 Specialty | `backend/services/specialty_filter.py`, `data/medical_taxonomy/` |
-| 2.1 Filter + retrieve | `backend/services/faiss_retriever.py`, `filtered_faiss_retriever.py`, `keyword_retriever.py`, `semantic_query_builder.py` |
-| 2.2 Rank | `backend/services/hospital_reranker.py`, `hospital_recommendation_engine.py` (AHP-TOPSIS is planned) |
-| Orchestration | `backend/workflow/routing_state.py` (LangGraph state) |
+| **Step 1** | **`specialty_routing/`** (API routes in `specialty_routing/api.py`) |
+| Patient input + reports | `/api/analyze`, `/api/reports/parse`, `extraction/pdf_parser.py` |
+| 1.1 Extract condition | `extraction/medical_context_extractor.py`, `extraction/patient_context_aggregator.py` |
+| 1.2 Map to ICD-10 / specialty | `icd10_mapper.py`, `router.py` (rules, then embedding candidates, then Ollama LLM, then zero-shot) |
+| 1.3 Validate | `extraction/patient_context_validator.py` |
+| **Hand-off** | **`common/medical_context.py`** (`MedicalContext`) |
+| **Step 2** | **`hospital_recommendation/`** (API routes in `hospital_recommendation/api.py`) |
+| 2.1 Filter + retrieve | `specialty_filter.py`, `retrieval/` (FAISS, filtered FAISS, TF-IDF keyword, semantic query builder) |
+| 2.2 Rank | `ranking/hospital_reranker.py`, `engine.py` (AHP-TOPSIS is planned) |
+| App + orchestration | `backend/main.py` (assembles the FastAPI app), `backend/workflow/routing_state.py` (LangGraph state) |
 | Hospital data (NABH, JCI) | `data_generator/` (scrapers, master-dataset and FAISS index builders) |
 
 See [docs/PROJECT_TRACKER.md](docs/PROJECT_TRACKER.md) for what is done and what is pending.
@@ -92,11 +97,23 @@ See [docs/PROJECT_TRACKER.md](docs/PROJECT_TRACKER.md) for what is done and what
 ```
 MediRoute/
 ├── src/mediroute/                 # Python package (src layout)
-│   ├── backend/                   # FastAPI application
-│   │   ├── main.py                # API routes and app entry point
-│   │   ├── models.py, recommendation_models.py, medical_context.py   # Pydantic schemas
-│   │   ├── services/              # Extraction, ICD-10, specialty routing, retrieval, ranking
-│   │   ├── ingestion/             # Runtime hospital loader
+│   ├── specialty_routing/         # STEP 1: patient input → specialty
+│   │   ├── api.py                 # /api/analyze, /api/medical-context, /api/reports/parse, /api/icd10/*
+│   │   ├── router.py              # SpecialtyRAGRouter (rules → embeddings → LLM → zero-shot)
+│   │   ├── icd10_mapper.py        # ICD-10 ↔ condition ↔ specialty
+│   │   ├── schemas.py             # PatientRequest
+│   │   └── extraction/            # PDF parser, context extractor, aggregator, validator
+│   ├── hospital_recommendation/   # STEP 2: specialty → ranked hospitals
+│   │   ├── api.py                 # /api/hospitals/*
+│   │   ├── engine.py              # Filter → retrieve → rerank
+│   │   ├── specialty_filter.py, hospital_loader.py
+│   │   ├── schemas.py             # HospitalRecommendationRequest
+│   │   ├── retrieval/             # FAISS, filtered FAISS, keyword, semantic query builder
+│   │   └── ranking/               # Reranker (AHP-TOPSIS planned)
+│   ├── common/
+│   │   └── medical_context.py     # MedicalContext: the Step 1 → Step 2 contract
+│   ├── backend/                   # FastAPI app assembly
+│   │   ├── main.py                # Creates the app, CORS, includes both step routers
 │   │   └── workflow/              # LangGraph routing state
 │   ├── data_generator/            # Offline pipelines that build the files in data/
 │   │   ├── jci_scraper.py, nabh_finder_scraper.py        # Accreditation scrapers (Playwright)
@@ -106,9 +123,12 @@ MediRoute/
 │   │   ├── build_specialty_vocabulary.py, validate_specialty_normalization.py
 │   │   └── build_hospital_embedding_dataset.py, build_faiss_index.py   # Vector store
 │   └── utils/
-│       └── paths.py               # Single source of truth for all project paths
+│       ├── paths.py               # Single source of truth for all project paths
+│       └── logging_config.py      # Shared "mediroute" logger (file + console)
 ├── frontend/                      # Static HTML/CSS/JS UI (patient, results, hospital pages)
-├── tests/                         # pytest test suite
+├── tests/
+│   ├── specialty_routing/         # Step 1 tests
+│   └── hospital_recommendation/   # Step 2 tests
 ├── data/
 │   ├── raw/                       # Source datasets and scraper inputs
 │   ├── interim/                   # Scraper outputs (JCI, NABH, per-city masters)
@@ -209,14 +229,16 @@ python -m mediroute.data_generator.build_faiss_index
 ## 6. How to test
 
 ```powershell
-pytest                       # Whole suite (tests/)
-pytest tests/test_icd10_mapping.py -v
-python -m tests.test_retrieval_pipeline     # Each test file also runs as a script with a printed report
+pytest                                   # Whole suite
+pytest tests/specialty_routing           # Step 1 only
+pytest tests/hospital_recommendation     # Step 2 only
+python tests/hospital_recommendation/test_retrieval_pipeline.py   # Each file also runs as a script with a printed report
 ```
 
-- `tests/` covers ICD-10 mapping, medical context extraction, context validation, specialty
-  inference, the semantic query builder, keyword and FAISS retrieval, and the end-to-end
-  recommendation pipeline.
+- `tests/specialty_routing/` covers ICD-10 mapping, medical context extraction, context
+  validation and specialty inference.
+- `tests/hospital_recommendation/` covers the semantic query builder, keyword and FAISS
+  retrieval, and the end-to-end recommendation pipeline.
 - Test cases are kept as data in `data/medical_taxonomy/*_test_cases.csv`.
 - To run end-to-end API smoke checks, start a server and then run
   `python scripts/smoke_test_api.py`, or run `python scripts/verify_specialty_route.py`, which

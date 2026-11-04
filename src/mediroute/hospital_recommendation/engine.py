@@ -1,8 +1,8 @@
-from mediroute.backend.services.faiss_retriever import FaissHospitalRetriever
-from mediroute.backend.services.filtered_faiss_retriever import FilteredFaissHospitalRetriever
-from mediroute.backend.services.specialty_filter import SpecialtyFilter
-from mediroute.backend.services.semantic_query_builder import SemanticQueryBuilder
-from mediroute.backend.services.hospital_reranker import HospitalReranker
+from mediroute.hospital_recommendation.retrieval.faiss_retriever import FaissHospitalRetriever
+from mediroute.hospital_recommendation.retrieval.filtered_faiss_retriever import FilteredFaissHospitalRetriever
+from mediroute.hospital_recommendation.specialty_filter import SpecialtyFilter
+from mediroute.hospital_recommendation.retrieval.semantic_query_builder import SemanticQueryBuilder
+from mediroute.hospital_recommendation.ranking.hospital_reranker import HospitalReranker
 
 
 class HospitalRecommendationEngine:

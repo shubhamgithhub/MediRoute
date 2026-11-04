@@ -1,4 +1,4 @@
-from mediroute.backend.medical_context import MedicalContext
+from mediroute.common.medical_context import MedicalContext
 
 
 class PatientContextAggregator:

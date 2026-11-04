@@ -1,5 +1,5 @@
-from mediroute.backend.medical_context import MedicalContext
-from mediroute.backend.services.icd10_mapper import ICD10Mapper
+from mediroute.common.medical_context import MedicalContext
+from mediroute.specialty_routing.icd10_mapper import ICD10Mapper
 
 
 class MedicalContextExtractor:

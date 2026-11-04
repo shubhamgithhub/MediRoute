@@ -23,7 +23,7 @@ Last updated: **2026-11-05**. Update this file in the same PR as the work it des
 
 | ID | Task | Status | Implementation / next action |
 |----|------|--------|------------------------------|
-| S1.0 | Patient query and PDF report intake | ✅ | `/api/analyze`, `/api/reports/parse`, `services/pdf_parser.py` (PyMuPDF) |
+| S1.0 | Patient query and PDF report intake | ✅ | `specialty_routing/api.py`, `specialty_routing/extraction/pdf_parser.py` (PyMuPDF) |
 | S1.1 | Extract condition (symptoms, urgency, confidence) | 🟡 | `medical_context_extractor.py` and `patient_context_aggregator.py` are rule- and lookup-based. **Next:** LLM extraction into the `MedicalContext` schema |
 | S1.2 | Map to ICD-10 (retrieve, then LLM picks) | 🟡 | `icd10_mapper.py` does CSV lookup. `specialty_routing.py` chains rules, embeddings, zero-shot and Ollama. **Next:** retrieve top-k ICD codes, then constrained LLM choice |
 | S1.3 | Validate, else ask user | 🟡 | `patient_context_validator.py` flags low confidence (`requires_human_review`). **Next:** clarifying-question loop in API and UI |
@@ -91,4 +91,5 @@ Last updated: **2026-11-05**. Update this file in the same PR as the work it des
 
 | Date | Change |
 |------|--------|
+| 2026-11-05 | Split the code into the two architecture steps: `specialty_routing/` (Step 1) and `hospital_recommendation/` (Step 2), each with its own `api.py` router and tests folder. They share only `common/medical_context.py`. `backend/main.py` now just assembles the app. API URLs are unchanged |
 | 2026-11-05 | Restructured repo into `src/mediroute/{backend,data_generator,utils}`, `tests/`, `scripts/`, `docs/` and `data/{raw,interim,processed}`. Added packaging, README and this tracker |

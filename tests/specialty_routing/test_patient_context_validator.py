@@ -1,8 +1,8 @@
-from mediroute.backend.medical_context import MedicalContext
-from mediroute.backend.services.patient_context_aggregator import (
+from mediroute.common.medical_context import MedicalContext
+from mediroute.specialty_routing.extraction.patient_context_aggregator import (
     PatientContextAggregator,
 )
-from mediroute.backend.services.patient_context_validator import (
+from mediroute.specialty_routing.extraction.patient_context_validator import (
     PatientContextValidator,
 )
 

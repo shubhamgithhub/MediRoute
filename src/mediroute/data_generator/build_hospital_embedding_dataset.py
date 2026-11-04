@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 import pandas as pd
 
-from mediroute.backend.services.hospital_search_text_builder import (
+from mediroute.hospital_recommendation.retrieval.hospital_search_text_builder import (
     HospitalSearchTextBuilder,
 )
 

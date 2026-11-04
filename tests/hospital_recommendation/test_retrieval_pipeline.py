@@ -1,8 +1,8 @@
-from mediroute.backend.services.faiss_retriever import (
+from mediroute.hospital_recommendation.retrieval.faiss_retriever import (
     FaissHospitalRetriever,
 )
 
-from mediroute.backend.services.keyword_retriever import (
+from mediroute.hospital_recommendation.retrieval.keyword_retriever import (
     KeywordHospitalRetriever,
 )
 

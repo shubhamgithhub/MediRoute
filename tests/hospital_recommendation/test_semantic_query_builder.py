@@ -1,5 +1,5 @@
-from mediroute.backend.medical_context import MedicalContext
-from mediroute.backend.services.semantic_query_builder import (
+from mediroute.common.medical_context import MedicalContext
+from mediroute.hospital_recommendation.retrieval.semantic_query_builder import (
     SemanticQueryBuilder,
 )
 

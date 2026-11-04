@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from mediroute.backend.medical_context import MedicalContext
+from mediroute.common.medical_context import MedicalContext
 
 
 class HospitalRecommendationRequest(BaseModel):

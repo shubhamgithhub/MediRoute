@@ -1,4 +1,4 @@
-from mediroute.backend.main import infer_medical_context
+from mediroute.specialty_routing.api import infer_medical_context
 
 
 def test_blurry_vision_maps_to_ophthalmology():

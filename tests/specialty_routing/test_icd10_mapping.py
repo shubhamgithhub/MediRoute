@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 
-from mediroute.backend.services.icd10_mapper import ICD10Mapper
+from mediroute.specialty_routing.icd10_mapper import ICD10Mapper
 
 
 from mediroute.utils.paths import PROJECT_ROOT  # noqa: E402

@@ -1,8 +1,8 @@
-from mediroute.backend.medical_context import MedicalContext
-from mediroute.backend.services.hospital_recommendation_engine import (
+from mediroute.common.medical_context import MedicalContext
+from mediroute.hospital_recommendation.engine import (
     HospitalRecommendationEngine,
 )
-from mediroute.backend.services.specialty_filter import SpecialtyFilter
+from mediroute.hospital_recommendation.specialty_filter import SpecialtyFilter
 
 
 def run_tests():

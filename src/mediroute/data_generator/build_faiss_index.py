@@ -7,7 +7,7 @@ import pandas as pd
 
 from sentence_transformers import SentenceTransformer
 
-from mediroute.backend.services.retrieval_config import (
+from mediroute.hospital_recommendation.retrieval.retrieval_config import (
     EMBEDDING_DATASET_FILE,
     METADATA_FILE,
     FAISS_INDEX_FILE,

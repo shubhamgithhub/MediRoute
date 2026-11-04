@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import (
     cosine_similarity,
 )
 
-from mediroute.backend.services.retrieval_config import (
+from mediroute.hospital_recommendation.retrieval.retrieval_config import (
     METADATA_FILE,
     DEFAULT_TOP_K,
 )

@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 
-from mediroute.backend.services.medical_context_extractor import (
+from mediroute.specialty_routing.extraction.medical_context_extractor import (
     MedicalContextExtractor,
 )
 
