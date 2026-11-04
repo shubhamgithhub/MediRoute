@@ -540,7 +540,9 @@ form.addEventListener("submit", async (event) => {
     // Send patient data to FastAPI backend
     try {
         const backendResponse = await sendPatientRequestToBackend(patientData);
-
+        if (backendResponse && backendResponse.medicalContext) {
+            sessionStorage.setItem("mediroute_medical_context", JSON.stringify(backendResponse.medicalContext));
+        }
         console.log("MediRoute backend response:");
         console.log(backendResponse);
 

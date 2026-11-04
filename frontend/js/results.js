@@ -117,6 +117,35 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // PATIENT SUMMARY
+  const renderMedicalContext = () => {
+    let contextData = {};
+    try {
+      contextData = JSON.parse(window.sessionStorage.getItem("mediroute_medical_context") || "{}");
+    } catch (error) {
+      contextData = {};
+    }
+
+    const specialty = typeof contextData.relevantSpecialty === "string" && contextData.relevantSpecialty.trim()
+      ? contextData.relevantSpecialty.trim()
+      : "Cardiology";
+    const careCategory = typeof contextData.careCategory === "string" && contextData.careCategory.trim()
+      ? contextData.careCategory.trim()
+      : "Cardiac Care";
+
+    const specialtyElement = document.querySelector("#context-specialty");
+    if (specialtyElement) {
+      specialtyElement.innerHTML = `<i data-lucide="heart-pulse" aria-hidden="true"></i> ${specialty}`;
+    }
+    const careCategoryElement = document.querySelector("#context-care-category");
+    if (careCategoryElement) {
+      careCategoryElement.innerHTML = `<i data-lucide="stethoscope" aria-hidden="true"></i> ${careCategory}`;
+    }
+
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  };
+
   const renderPatientSummary = () => {
     const location = typeof patientData.location === "string" && patientData.location.trim()
       ? patientData.location.trim()
@@ -127,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setText("#summary-report", displayReportNames(patientData.reportName));
     setText("#summary-preference", typeof patientData.additionalPreference === "string" && patientData.additionalPreference.trim() ? patientData.additionalPreference.trim() : "None provided");
     setText("#context-location", location);
+    renderMedicalContext();
   };
 
   // HOSPITAL RENDERING
