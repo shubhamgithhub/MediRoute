@@ -137,7 +137,53 @@ At most a teammate could note anecdotal prices by hand. We don't recommend it.
 | Hospital-published | ~0 automated; manual entries only |
 | Government user charges | AIIMS / PGIMER if the current lists are found |
 
-## 5. Constraints we followed
+## 5. MediGence as a comparator, related GitHub work, academic references
+
+### 5.1 MediGence does what MediRoute does, commercially
+
+From [medigence.com](https://medigence.com/) and its [about page](https://medigence.com/about-us):
+
+- **What it is:** a medical-tourism platform, "Free for patients", that earns from hospitals
+  ("Hospitals pay us only after you arrive safely"). It covers 20+ destinations including India.
+- **Intake:** a "Describe your Medical Condition" form plus report upload. A "doctor-trained
+  coordinator" replies.
+- **Matching:** hospitals are ranked by an AI engine ("Salus") by "best-fit success rate for
+  patients like you". The method, outcome data and validation are not published.
+- **Extras:** fixed USD package prices, visa, travel and recovery services.
+
+It is the closest commercial comparator to MediRoute and fits the README's "opaque AI matching"
+baseline. Its prices are partner-hospital marketing prices, which is a further reason to label them
+"reported by MediGence" (decision 5).
+
+### 5.2 GitHub search (2026-11-06)
+
+Searched GitHub repositories for MediGence, medical tourism in India, hospital recommendation, CGHS
+rates, PM-JAY packages and treatment cost in India.
+
+| Repo | What it is | Useful for us? |
+|------|-----------|----------------|
+| Repos named "medigence" (e.g. [abhipatil1403/MedBridge-MediGence](https://github.com/abhipatil1403/MedBridge-MediGence), [Rishabh4179/MedigenceAI](https://github.com/Rishabh4179/MedigenceAI)) | Interview assignments and unrelated apps; none uses MediGence data | No |
+| [naseeya/MediRoute-INDIA](https://github.com/naseeya/MediRoute-INDIA), [niteshpr85/AI-HealthCare](https://github.com/niteshpr85/AI-HealthCare) | **Other projects also called "MediRoute"**: AI healthcare navigator and cost estimator for India (symptoms → ICD-10 → hospitals → cost). The second says it uses "JSON-based mock datasets" | Name clash to be aware of; no reusable verified data |
+| [SUKUMAR-PUBLICHEALTH/PMJAY_Price_Variation_Analysis](https://github.com/SUKUMAR-PUBLICHEALTH/PMJAY_Price_Variation_Analysis) | Claims private cardiac prices are **2–4× PM-JAY rates**, from "market-reported" prices | Supports the market-factor range, but the data folder is empty, so it can't be verified |
+| [yahiyabinhadi7-del/CGHS-RATES](https://github.com/yahiyabinhadi7-del/CGHS-RATES) | Encoded JSON of CGHS rates (2025 structure, incl. implant and ward-charge categories) | Optional cross-check of our sheet |
+| [krishgarg97/insurancesetu](https://github.com/krishgarg97/insurancesetu) | Insurance-claim checker that audits bills against government rate cards; its `RESEARCH.md` lists literature on Indian healthcare costs | Reading list (below) |
+
+### 5.3 Academic references for the market factor (`f_market`)
+
+| Reference | Finding | Use |
+|-----------|---------|-----|
+| Babu et al., *Hospital Topics* 2024, [doi:10.1080/00185868.2024.2359553](https://informahealthcare.com/doi/full/10.1080/00185868.2024.2359553) | Government package amounts cover only 26–52% of costs at private medical-college hospitals; they need 25–50% more than current rates | Cost floor: private cost ≥ 1.3–2× package rate |
+| Karnataka costing vs CGHS vs PM-JAY ([Deccan Herald, 2018](https://www.deccanherald.com/india/private-hospitals-oppose-ayushman-bharat-package-674807.html)) | Bypass: ₹1.88 L state cost vs ₹1.13 L CGHS vs ₹1.10 L PM-JAY (~1.7×). Knee replacement: ₹1.98 L vs ₹1.49 L CGHS (~1.3×) vs ₹0.80 L PM-JAY (~2.5×) | Cost (not price) ratio to CGHS: 1.3–1.7× |
+| Health-benefit package costing study, [Springer AHEHP 2020](https://link.springer.com/doi/10.1007/s40258-020-00631-3) | 61% of PM-JAY HBP prices were raised and 18% lowered after cost evidence; PM-JAY rates set ~15–20% below CGHS | Relation between PM-JAY and CGHS |
+| [Manipal study on UHC and private hospitals](https://impressions.manipal.edu/open-access-archive/10968/) | Private-hospital view of government package adequacy | Background |
+
+**Implication:** published evidence puts private **cost** at about 1.3–2× CGHS. Private
+**prices** to self-paying international patients sit above cost. The design's starting
+`f_market` (private Tier 1 = 2.5, Tier 2 = 1.8, trust = 1.4) sits at the upper end of this evidence.
+Keep these values as the starting point, cite the studies above, and calibrate against MediGence
+prices if decision 5 allows.
+
+## 6. Constraints we followed
 
 - `robots.txt` was checked before reading any site, and blocked sites were not retried. A
   browser-based retry of sites that refused automated clients was stopped by the session's safety
