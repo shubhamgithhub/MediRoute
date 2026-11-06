@@ -6,12 +6,16 @@ class PatientRoutingState(TypedDict, total=False):
     # -------------------------------------------------
     # Patient input
     # -------------------------------------------------
-
+    top_k: int
     patient_request: dict[str, Any]
 
     preferred_city: Optional[str]
 
     preferred_state: Optional[str]
+    
+    # Temporary report data used during workflow execution.
+    # Do not persist this later in production checkpoints.
+    report_files: list[dict[str, Any]]
 
     # -------------------------------------------------
     # Step 8 — PDF parsing
