@@ -1,403 +1,259 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // DEMO HOSPITAL DATA
-  const demoHospitals = [
-    {
-      id: "DEMO001",
-      name: "Example Multispecialty Hospital",
-      city: "Mumbai",
-      state: "Maharashtra",
-      accreditation: "NABH Accredited",
-      hospitalType: "Multispecialty Hospital",
-      specialties: ["Cardiology", "Cardiac Surgery", "Internal Medicine"],
-      medicalFit: 96,
-      locationScore: 92,
-      facilitiesScore: 88,
-      overallScore: 94,
-      facilities: ["Cardiac ICU", "Cath Lab", "Emergency Cardiac Care", "Intensive Care Unit", "Diagnostic Imaging", "24/7 Emergency Department"],
-      reasons: [
-        "Relevant cardiology and cardiac surgery services",
-        "Matches preferred treatment location",
-        "Relevant cardiac care facilities"
-      ],
-      referenceCost: "₹2,00,000 – ₹3,50,000"
-    },
-    {
-      id: "DEMO002",
-      name: "Example Heart Institute",
-      city: "Mumbai",
-      state: "Maharashtra",
-      accreditation: "NABH Accredited",
-      hospitalType: "Cardiac Specialty Hospital",
-      specialties: ["Cardiology"],
-      medicalFit: 91,
-      locationScore: 92,
-      facilitiesScore: 85,
-      overallScore: 89,
-      facilities: ["Cardiac ICU", "Diagnostic Cardiology"],
-      reasons: [
-        "Relevant cardiology specialization",
-        "Matches preferred location",
-        "Relevant diagnostic facilities"
-      ],
-      referenceCost: "₹1,80,000 – ₹3,20,000"
-    },
-    {
-      id: "DEMO003",
-      name: "Example Medical Centre",
-      city: "Pune",
-      state: "Maharashtra",
-      accreditation: "NABH Accredited",
-      hospitalType: "Multispecialty Hospital",
-      specialties: ["Cardiology", "Internal Medicine"],
-      medicalFit: 87,
-      locationScore: 65,
-      facilitiesScore: 86,
-      overallScore: 82,
-      facilities: ["ICU", "Cardiology Unit"],
-      reasons: [
-        "Relevant cardiology services",
-        "Relevant hospital facilities",
-        "Located outside the preferred city"
-      ],
-      referenceCost: "₹1,70,000 – ₹3,00,000"
-    }
-  ];
-  let hospitals = [...demoHospitals];
-
-  // SESSION STORAGE
-  const getPatientData = () => {
+  const patientData = (() => {
     try {
-      const stored = window.sessionStorage.getItem("mediroute_patient_request");
-      if (!stored) {
-        return null;
-      }
-      const patientData = JSON.parse(stored);
-      if (!patientData || typeof patientData !== "object" || Array.isArray(patientData)) {
-        return null;
-      }
-      return patientData;
+      const raw = window.sessionStorage.getItem("mediroute_patient_request");
+      const parsed = raw ? JSON.parse(raw) : null;
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
     } catch (error) {
-      console.error("Unable to read MediRoute patient information from session storage.", error);
       return null;
     }
-  };
+  })();
 
-  const patientData = getPatientData();
+  const routingResult = (() => {
+    try {
+      const raw = window.sessionStorage.getItem("mediroute_routing_result");
+      const parsed = raw ? JSON.parse(raw) : null;
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
+    } catch (error) {
+      return null;
+    }
+  })();
+
   const noDataState = document.querySelector("#no-data-state");
   const resultsContent = document.querySelector("#results-content");
-  if (!patientData) {
-    noDataState.hidden = false;
-    resultsContent.hidden = true;
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
+  const setText = (selector, value) => {
+    const element = document.querySelector(selector);
+    if (element) element.textContent = value;
+  };
+
+  if (!patientData || !routingResult) {
+    if (noDataState) noDataState.hidden = false;
+    if (resultsContent) resultsContent.hidden = true;
+    if (window.lucide) window.lucide.createIcons();
     return;
   }
 
-  const selectedHospitalIds = new Set();
-  let currentSort = "overallScore";
+  document.querySelector(".demo-results-badge")?.remove();
+  document.querySelector(".demo-disclaimer")?.remove();
+  document.querySelector(".medical-context-card")?.remove();
+  document.querySelector(".ranking-explanation")?.remove();
+  document.querySelector(".important-notice")?.remove();
+
+  const location = typeof patientData.location === "string" && patientData.location.trim()
+    ? patientData.location.trim()
+    : "No preference";
+  setText("#summary-requirement", patientData.requirement?.trim() || "Not provided");
+  setText("#summary-location", location);
+  setText("#summary-language", patientData.language?.trim() || "Not specified");
+  setText("#summary-report", Array.isArray(patientData.reportName)
+    ? (patientData.reportName.join(", ") || "Not uploaded")
+    : "Not uploaded");
+  setText("#summary-preference", patientData.additionalPreference?.trim() || "None provided");
+
   const hospitalList = document.querySelector("#hospital-list");
+  const recommendationSection = document.querySelector(".hospital-results-section");
+  const toolbar = document.querySelector(".recommendation-toolbar");
   const sortSelect = document.querySelector("#sort-select");
-  const selectionMessage = document.querySelector("#selection-message");
-  const comparisonBar = document.querySelector("#comparison-bar");
-  const comparisonMessage = document.querySelector("#comparison-message");
+  if (sortSelect?.closest("label")) sortSelect.closest("label").hidden = true;
 
-  const setText = (selector, value) => {
-    const element = document.querySelector(selector);
-    if (element) {
-      element.textContent = value;
+  const splitValues = (value) => {
+    if (Array.isArray(value)) return value.filter((item) => typeof item === "string" && item.trim());
+    if (typeof value === "string" && value.trim()) {
+      return value.split(/[,;|]/).map((item) => item.trim()).filter(Boolean);
     }
+    return [];
   };
 
-  const displayReportNames = (names) => {
-    const normalizedNames = Array.isArray(names) ? names : (typeof names === "string" && names ? [names] : []);
-    return normalizedNames.length ? normalizedNames.join(", ") : "Not uploaded";
+  const isPositiveStatus = (value) => {
+    const text = typeof value === "string" ? value.toLowerCase() : "";
+    return text.includes("accredited") || text.includes("certified") || text.includes("yes") || text.includes("verified");
   };
 
-  // PATIENT SUMMARY
-  const renderPatientSummary = () => {
-    const location = typeof patientData.location === "string" && patientData.location.trim()
-      ? patientData.location.trim()
-      : "No preference";
-    setText("#summary-requirement", typeof patientData.requirement === "string" && patientData.requirement.trim() ? patientData.requirement.trim() : "Not provided");
-    setText("#summary-location", location);
-    setText("#summary-language", typeof patientData.language === "string" && patientData.language.trim() ? patientData.language.trim() : "Not specified");
-    setText("#summary-report", displayReportNames(patientData.reportName));
-    setText("#summary-preference", typeof patientData.additionalPreference === "string" && patientData.additionalPreference.trim() ? patientData.additionalPreference.trim() : "None provided");
-    setText("#context-location", location);
-  };
+  const hospitals = routingResult.recommendation_result?.status === "success"
+    ? (routingResult.recommendation_result.results || []).map((hospital, index) => ({
+        id: String(hospital.hospital_id || `hospital-${index + 1}`),
+        name: hospital.hospital_name || "Hospital name unavailable",
+        city: hospital.city || "City unavailable",
+        state: hospital.state || "",
+        specialties: splitValues(hospital.verified_specialties),
+        procedures: splitValues(hospital.verified_procedures),
+        internationalPatientService: hospital.international_patient_service || "",
+        costBand: hospital.cost_band_inr || "",
+        nabhStatus: hospital.nabh_status || "",
+        jciStatus: hospital.jci_status || "",
+        website: hospital.official_source_url || "",
+        rankingReasons: Array.isArray(hospital.ranking_reasons)
+          ? hospital.ranking_reasons.filter((reason) => typeof reason === "string")
+          : [],
+        semanticScore: hospital.semantic_score,
+        finalScore: hospital.final_score,
+        rank: Number.isInteger(hospital.final_rank) ? hospital.final_rank : index + 1
+      }))
+    : [];
 
-  // HOSPITAL RENDERING
   const createElement = (tagName, className, text) => {
     const element = document.createElement(tagName);
-    if (className) {
-      element.className = className;
-    }
-    if (text !== undefined) {
-      element.textContent = text;
-    }
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
     return element;
   };
 
-  const createIcon = (name, className = "") => {
+  const createIcon = (name) => {
     const icon = document.createElement("i");
     icon.setAttribute("data-lucide", name);
     icon.setAttribute("aria-hidden", "true");
-    if (className) {
-      icon.className = className;
-    }
     return icon;
   };
 
-  // BACKEND HOSPITAL FETCH
-  async function fetchHospitalsFromBackend(location) {
-    const apiUrl = `http://127.0.0.1:8000/api/hospitals/search?location=${encodeURIComponent(location)}`;
-
-    const response = await fetch(apiUrl);
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch hospitals from MediRoute backend");
-    }
-
-    return await response.json();
-  }
+  const createInfoRow = (label, value) => {
+    const row = createElement("div", "routing-info-row");
+    row.append(createElement("span", "", label), createElement("strong", "", value || "Not specified in the hospital record"));
+    return row;
+  };
 
   const createHospitalCard = (hospital, index) => {
     const card = createElement("article", "hospital-card");
     card.dataset.hospitalId = hospital.id;
-    card.classList.toggle("is-selected", selectedHospitalIds.has(hospital.id));
-    card.style.animationDelay = `${Math.min(index, 5) * 65}ms`;
 
     const main = createElement("div", "hospital-main");
-    const topline = createElement("div", "hospital-topline");
-    topline.append(createElement("span", "rank-badge", `#${index + 1}`), createElement("span", "rank-caption", "Backend hospital record"));
-    const name = createElement("h3", "hospital-name", hospital.name);
-    const location = createElement("p", "hospital-location");
-    location.append(createIcon("map-pin"), document.createTextNode(`${hospital.city}, ${hospital.state}`));
-    const accreditation = createElement("span", "accreditation-badge");
-    accreditation.append(createIcon("badge-check"), document.createTextNode(hospital.accreditation));
-    const specialties = createElement("div", "hospital-specialties");
-    specialties.setAttribute("aria-label", "Specialties");
-    hospital.specialties.forEach((specialty) => specialties.append(createElement("span", "", specialty)));
-    main.append(topline, name, location, accreditation, specialties);
+    const rankCaption = `Backend rank #${hospital.rank || index + 1}`;
+    main.append(
+      createElement("span", "rank-badge", rankCaption),
+      createElement("h3", "hospital-name", hospital.name),
+      createElement("p", "hospital-location", `${hospital.city}${hospital.state ? `, ${hospital.state}` : ""}`)
+    );
 
-    const scores = createElement("div", "hospital-scores");
-    const scoreHeader = createElement("div", "score-header");
-    scoreHeader.append(createElement("h4", "", "Match factors"));
-    const overall = createElement("div", "overall-score");
-    overall.append(createElement("strong", "", `${hospital.overallScore}%`), createElement("span", "", "Overall Match"));
-    scoreHeader.append(overall);
-    scores.append(scoreHeader);
-    [
-      ["Medical Fit", hospital.medicalFit],
-      ["Location", hospital.locationScore],
-      ["Facilities", hospital.facilitiesScore]
-    ].forEach(([label, score]) => {
-      const row = createElement("div", "score-row");
-      row.append(createElement("span", "", label));
-      const track = createElement("div", "score-track");
-      track.setAttribute("aria-label", `${label}: ${score}%`);
-      const bar = createElement("span");
-      bar.style.setProperty("--score-width", `${score}%`);
-      track.append(bar);
-      row.append(track, createElement("strong", "", `${score}%`));
-      scores.append(row);
-    });
+    if (hospital.specialties.length) {
+      const specialties = createElement("div", "hospital-specialties");
+      hospital.specialties.forEach((specialty) => specialties.append(createElement("span", "", specialty)));
+      main.append(specialties);
+    }
+
+    const accreditation = [];
+    if (isPositiveStatus(hospital.nabhStatus)) accreditation.push("NABH status: positive in hospital record");
+    if (isPositiveStatus(hospital.jciStatus)) accreditation.push("JCI status: positive in hospital record");
+    if (accreditation.length) main.append(createElement("p", "accreditation-badge", accreditation.join(" • ")));
 
     const extra = createElement("div", "hospital-extra");
-    extra.append(createElement("h4", "", "Why this hospital may be relevant"));
-    const reasons = createElement("ul", "relevance-list");
-    hospital.reasons.forEach((reason) => {
-      const item = createElement("li");
-      item.append(createIcon("check"), document.createTextNode(reason));
-      reasons.append(item);
-    });
-    extra.append(reasons);
-    const facilities = createElement("div", "hospital-facilities");
-    facilities.setAttribute("aria-label", "Facilities");
-    hospital.facilities.forEach((facility) => facilities.append(createElement("span", "", facility)));
-    extra.append(facilities);
-    const referenceCost = createElement("div", "reference-cost");
-    referenceCost.append(
-      createElement("span", "", "Reference Cost"),
-      createElement("strong", "", hospital.referenceCost),
-      createElement("small", "", "Illustrative reference only — not a live hospital quotation.")
-    );
-    extra.append(referenceCost);
+    if (hospital.procedures.length) extra.append(createInfoRow("Relevant procedures", hospital.procedures.join(", ")));
+    extra.append(createInfoRow("International patient service", hospital.internationalPatientService));
+    extra.append(createInfoRow("Cost band", hospital.costBand));
+    extra.append(createInfoRow("NABH status", hospital.nabhStatus));
+    extra.append(createInfoRow("JCI status", hospital.jciStatus));
+
+    if (hospital.rankingReasons.length) {
+      extra.append(createElement("h4", "", "Why the backend ranked this hospital"));
+      const reasons = createElement("ul", "relevance-list");
+      hospital.rankingReasons.forEach((reason) => {
+        const item = createElement("li");
+        item.append(createIcon("check"), document.createTextNode(reason));
+        reasons.append(item);
+      });
+      extra.append(reasons);
+    }
+
+    if (typeof hospital.semanticScore === "number" || typeof hospital.finalScore === "number") {
+      const labels = [];
+      if (typeof hospital.semanticScore === "number") labels.push(`Semantic development score: ${hospital.semanticScore}`);
+      if (typeof hospital.finalScore === "number") labels.push(`Final development score: ${hospital.finalScore}`);
+      extra.append(createElement("p", "development-score-note", labels.join(" • ") + " — not a probability of treatment success."));
+    }
+
+    if (hospital.website) {
+      const link = createElement("a", "official-hospital-link", "Visit official hospital website");
+      link.href = hospital.website;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      extra.append(link);
+    }
 
     const actions = createElement("div", "hospital-actions");
-    const detailsButton = createElement("button", "button button-primary details-button");
+    const detailsButton = createElement("button", "button button-primary details-button", "View Hospital Details ");
     detailsButton.type = "button";
-    detailsButton.append(document.createTextNode("View Hospital Details "), createIcon("arrow-right"));
-    detailsButton.addEventListener("click", () => showDetailsMessage(hospital.id, card));
-    const compareLabel = createElement("label", "compare-label");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = selectedHospitalIds.has(hospital.id);
-    checkbox.disabled = !checkbox.checked && selectedHospitalIds.size >= 2;
-    checkbox.setAttribute("aria-label", `Compare ${hospital.name}`);
-    checkbox.addEventListener("change", () => selectHospital(hospital, checkbox.checked));
-    compareLabel.append(checkbox, document.createTextNode("Compare"));
-    actions.append(detailsButton, compareLabel);
+    detailsButton.append(createIcon("arrow-right"));
+    detailsButton.addEventListener("click", () => {
+      try {
+        window.sessionStorage.setItem("mediroute_selected_hospital", hospital.id);
+        window.location.href = "hospital.html";
+      } catch (error) {
+        card.querySelector(".hospital-card-message").textContent = "The hospital selection could not be saved. Please enable session storage and try again.";
+      }
+    });
     const message = createElement("p", "hospital-card-message");
     message.setAttribute("role", "status");
-    message.setAttribute("aria-live", "polite");
-
-    card.append(main, scores, extra, actions, message);
+    actions.append(detailsButton);
+    card.append(main, extra, actions, message);
     return card;
   };
 
-  const renderHospitals = (hospitalData = hospitals) => {
-    hospitalList.replaceChildren();
-    hospitalData.forEach((hospital, index) => {
-      hospitalList.append(createHospitalCard(hospital, index));
-    });
-    setText("#result-count", `${hospitalData.length} hospitals found`);
-    requestAnimationFrame(() => {
-      hospitalList.querySelectorAll(".score-track span").forEach((bar) => bar.classList.add("is-animated"));
-    });
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
-  };
+  const showClarification = () => {
+    if (toolbar) toolbar.hidden = true;
+    hospitalList?.replaceChildren();
+    if (!recommendationSection) return;
 
-  // BACKEND TO FRONTEND DATA CONVERSION
-  function convertBackendHospitalToCard(hospital, patientLocation) {
-    const specialties = hospital.key_specialties || [];
+    const type = String(routingResult.clarification_type || "").toLowerCase();
+    const reason = routingResult.clarification_reason || "More information is needed before MediRoute can recommend hospitals.";
+    const parseStatus = String(routingResult.parse_summary?.overall_status || "").toLowerCase();
+    const card = createElement("section", "clarification-card");
+    card.setAttribute("role", "alert");
+    card.append(createElement("span", "section-kicker", "Additional information needed"));
+    card.append(createElement("h2", "", "MediRoute needs your help"));
 
-    const isLocationMatch =
-      patientLocation &&
-      patientLocation.toLowerCase() !== "no preference" &&
-      hospital.city &&
-      hospital.city.toLowerCase().includes(patientLocation.toLowerCase());
-
-    const hasCardiology = specialties.some((specialty) =>
-      specialty.toLowerCase().includes("cardio")
-    );
-
-    const medicalFit = hasCardiology ? 92 : 75;
-    const locationScore = isLocationMatch ? 90 : 65;
-    const facilitiesScore = hospital.accreditation ? 82 : 70;
-
-    const overallScore = Math.round(
-      medicalFit * 0.6 +
-      locationScore * 0.2 +
-      facilitiesScore * 0.2
-    );
-
-    return {
-      id: hospital.hospital_id,
-      name: hospital.name,
-      city: hospital.city,
-      state: "India",
-      accreditation: hospital.accreditation || "Not specified",
-      specialties: specialties,
-      medicalFit: medicalFit,
-      locationScore: locationScore,
-      facilitiesScore: facilitiesScore,
-      overallScore: overallScore,
-      facilities: [
-        "Facility details will be expanded later from hospital dataset"
-      ],
-      reasons: [
-        hasCardiology
-          ? "Specialty information is relevant to cardiac care"
-          : "Specialty information may be partially relevant",
-        isLocationMatch
-          ? "Matches the preferred location"
-          : "Does not exactly match the preferred location",
-        hospital.accreditation
-          ? "Accreditation information is available"
-          : "Accreditation information is not available"
-      ],
-      referenceCost: hospital.cghs_base_cost_proxy_inr
-        ? `₹${Number(hospital.cghs_base_cost_proxy_inr).toLocaleString("en-IN")}`
-        : "Not available"
-    };
-  }
-  // SCORE BARS
-  // Bars animate after each render to keep the score labels readable with motion disabled as well.
-
-  // SORTING
-  const sortHospitals = () => {
-    currentSort = sortSelect.value;
-    const sortedHospitals = [...hospitals].sort((first, second) => second[currentSort] - first[currentSort]);
-    renderHospitals(sortedHospitals);
-  };
-  sortSelect.addEventListener("change", sortHospitals);
-
-  // HOSPITAL SELECTION
-  const selectHospital = (hospital, isSelected) => {
-    if (isSelected && selectedHospitalIds.size >= 2) {
-      selectionMessage.textContent = "You can compare up to 2 hospitals at a time.";
-      renderHospitals([...hospitals].sort((first, second) => second[currentSort] - first[currentSort]));
-      return;
-    }
-    if (isSelected) {
-      selectedHospitalIds.add(hospital.id);
-    } else {
-      selectedHospitalIds.delete(hospital.id);
-      comparisonMessage.textContent = "";
-    }
-    selectionMessage.textContent = selectedHospitalIds.size >= 2 ? "You have selected the maximum of 2 hospitals." : "";
-    updateComparison();
-    renderHospitals([...hospitals].sort((first, second) => second[currentSort] - first[currentSort]));
-  };
-
-  const showDetailsMessage = (hospitalId, card) => {
-    const message = card.querySelector(".hospital-card-message");
-    try {
-      window.sessionStorage.setItem("mediroute_selected_hospital", hospitalId);
-      window.location.href = "hospital.html";
-    } catch (error) {
-      console.error("Unable to save the selected MediRoute hospital.", error);
-      message.textContent = "Your browser could not save this selection. Please check session storage and try again.";
-    }
-  };
-
-  // COMPARISON
-  const updateComparison = () => {
-    const count = selectedHospitalIds.size;
-    comparisonBar.hidden = count !== 2;
-    setText("#compare-count", `${count} hospitals selected`);
-    hospitalList.querySelectorAll(".compare-label input").forEach((checkbox) => {
-      checkbox.disabled = !checkbox.checked && count >= 2;
-    });
-  };
-
-  document.querySelector("#compare-button").addEventListener("click", () => {
-    comparisonMessage.textContent = "Hospital comparison will be implemented later.";
-  });
-
-  // ERROR STATE
-  renderPatientSummary();
-
-  // LOAD RECOMMENDATIONS FROM FASTAPI
-  async function loadRecommendations() {
-    try {
-      const backendData = await fetchHospitalsFromBackend(patientData.location);
-      const backendHospitals = backendData.hospitals || [];
-      const convertedHospitals = backendHospitals.map((hospital) =>
-        convertBackendHospitalToCard(hospital, patientData.location)
-      );
-
-      if (convertedHospitals.length === 0) {
-        console.warn("No hospitals found from backend for selected location.");
-        hospitals = [...demoHospitals];
+    let friendlyReason = reason;
+    let actionText = "";
+    if (parseStatus === "needs_ocr") {
+      friendlyReason = "The uploaded PDF was blank, unreadable, or did not contain readable report text. Upload a clearer PDF with readable text and try again.";
+      actionText = "Upload a different or clearer PDF.";
+    } else if (/missing|no valid medical pdf|no pdf|no report/i.test(reason) || type === "report" && /no valid/i.test(reason)) {
+      if (/missing|no pdf|no report/i.test(reason)) {
+        friendlyReason = "No medical report was provided. Upload a PDF or describe the treatment requirement, then review and submit again.";
+        actionText = "Upload a different or clearer medical report.";
       } else {
-        hospitals = convertedHospitals;
-        console.log("Hospitals loaded from FastAPI:");
-        console.log(convertedHospitals);
+        friendlyReason = "The uploaded PDF was blank or unreadable. Upload a clearer PDF so MediRoute can read the report.";
+        actionText = "Upload a different PDF.";
       }
-    } catch (error) {
-      console.error("Could not load hospitals from backend:", error);
-      hospitals = [...demoHospitals];
+    } else if (/specialty|specialties|conflict|multiple/i.test(reason) || type.includes("specialty")) {
+      friendlyReason = `${reason} Please identify the patient’s primary treatment priority; the reports do not make a single specialty selection automatic.`;
+      actionText = "Review the reports and state the primary treatment priority in the healthcare requirement.";
+    } else if (/location|no matching|no location/i.test(reason) || type.includes("location")) {
+      friendlyReason = `${reason} Try a broader location preference or return to patient input to change the selected city.`;
+      actionText = "Review or change the location preference.";
+    } else if (type.includes("unreadable") || /readable|ocr/i.test(reason)) {
+      friendlyReason = "The report could not be read. Upload a clearer PDF and try again.";
+      actionText = "Upload a different or clearer PDF.";
     }
 
-    renderHospitals([...hospitals].sort((first, second) => second[currentSort] - first[currentSort]));
+    card.append(createElement("p", "clarification-reason", friendlyReason));
+    if (actionText) card.append(createElement("p", "clarification-action", actionText));
+
+    const actions = createElement("div", "clarification-actions");
+    const upload = createElement("a", "button button-primary", "Upload or Change Information");
+    upload.href = "patient.html";
+    const home = createElement("a", "button button-secondary", "Review Hospital Search Input");
+    home.href = "patient.html";
+    actions.append(upload, home);
+    card.append(actions);
+    recommendationSection.insertBefore(card, hospitalList);
+  };
+
+  if (routingResult.workflow_status === "waiting_for_clarification" || routingResult.clarification_required) {
+    showClarification();
+  } else if (hospitals.length > 0) {
+    setText("#result-count", `${hospitals.length} hospitals found`);
+    hospitalList.replaceChildren();
+    hospitals.forEach((hospital, index) => hospitalList.append(createHospitalCard(hospital, index)));
+  } else {
+    if (toolbar) toolbar.hidden = true;
+    const card = createElement("section", "clarification-card");
+    card.append(createElement("h2", "", "No hospital recommendations are available"));
+    card.append(createElement("p", "", "Routing was not ready and no hospital list can be displayed. Return to the patient form to review the information."));
+    const actions = createElement("a", "button button-primary", "Return to Patient Input");
+    actions.href = "patient.html";
+    card.append(actions);
+    recommendationSection.insertBefore(card, hospitalList);
   }
 
-  void loadRecommendations();
+  if (window.lucide) window.lucide.createIcons();
 });

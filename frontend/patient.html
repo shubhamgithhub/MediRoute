@@ -97,7 +97,7 @@
               <span class="upload-formats">PDF only <span aria-hidden="true">·</span> Maximum file size: 10 MB per file</span>
               <input class="visually-hidden" id="medicalReports" name="report" type="file" accept=".pdf,application/pdf" multiple tabindex="-1" aria-label="Select medical report PDF files" aria-describedby="report-help report-error">
             </div>
-            <p id="report-help" class="field-help upload-help">Reports are kept in this browser to support editing and are not uploaded to a server. Use fictional or test files only.</p>
+            <p id="report-help" class="field-help upload-help">Selected reports are attached to the routing request. Use fictional or test files only.</p>
             <ul class="selected-file-list" id="selected-files" aria-label="Selected medical reports" hidden></ul>
             <p class="field-error" id="report-error" aria-live="polite"></p>
           </section>
@@ -140,14 +140,14 @@
                   <option value="Tamil">Tamil</option>
                   <option value="Telugu">Telugu</option>
                 </select><i data-lucide="chevron-down" aria-hidden="true"></i></div>
-                <p class="field-help" id="language-help">MediRoute will eventually provide patient-friendly translated results.</p>
+                <p class="field-help" id="language-help">This preference is preserved for the demo. The current routing API does not yet support language selection.</p>
                 <p class="field-error" id="language-error" aria-live="polite"></p>
               </div>
             </div>
             <div class="form-field additional-field">
               <label class="field-label-main" for="additional-preference">Anything else we should consider? <span class="optional-inline">Optional</span></label>
               <textarea id="additional-preference" name="additionalPreference" maxlength="500" rows="3" placeholder="Example: “I prefer a hospital with cardiac ICU facilities.”" aria-describedby="additional-help additional-counter additional-error"></textarea>
-              <div class="field-meta"><span id="additional-help" class="field-help">This may be used as an additional ranking preference.</span><span id="additional-counter" class="character-count">0 / 500</span></div>
+              <div class="field-meta"><span id="additional-help" class="field-help">This preference is saved for editing, but the current routing API does not yet accept it as a ranking input.</span><span id="additional-counter" class="character-count">0 / 500</span></div>
               <p class="field-error" id="additional-error" aria-live="polite"></p>
             </div>
           </section>
@@ -184,7 +184,7 @@
           <span class="state-icon state-icon-loading"><i data-lucide="sparkles" aria-hidden="true"></i></span>
           <span class="section-kicker">Step 2 · AI analysis preview</span>
           <h2 id="loading-heading">Understanding your healthcare requirement...</h2>
-          <p>This is a demonstration only. No AI service or external API is contacted.</p>
+          <p>Sending your request securely to the local MediRoute routing service.</p>
           <ol class="loading-checklist">
             <li class="is-complete"><span><i data-lucide="check" aria-hidden="true"></i></span>Reading your information</li>
             <li class="is-current"><span class="loading-spinner" aria-hidden="true"></span>Preparing medical context</li>
@@ -199,7 +199,7 @@
           <span class="state-icon state-icon-success"><i data-lucide="check" aria-hidden="true"></i></span>
           <span class="section-kicker">Step 1 complete</span>
           <h2 id="success-heading">Your information is ready</h2>
-          <p class="success-lead">MediRoute has received your request in this local prototype. No information was sent to a server.</p>
+          <p class="success-lead">MediRoute has completed the routing request. Review the result before choosing a hospital.</p>
           <div class="summary-card" aria-label="Your submitted information">
             <h3><i data-lucide="clipboard-list" aria-hidden="true"></i> Your request summary</h3>
             <dl>

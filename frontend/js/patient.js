@@ -1,6 +1,9 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Change this single value for a different FastAPI deployment.
+  const MEDIROUTE_API_BASE_URL = "http://127.0.0.1:8000";
+  const PATIENT_ROUTING_URL = `${MEDIROUTE_API_BASE_URL}/api/patient-routing`;
   const form = document.querySelector("#patient-form");
   const requirementInput = document.querySelector("#requirement");
   const additionalInput = document.querySelector("#additional-preference");
@@ -28,7 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedReports = [];
   let nextReportId = 0;
   let submissionTimer = null;
+  let isSubmitting = false;
   const maxReportBytes = 10 * 1024 * 1024;
+  const maxReportCount = 5;
+  const maxTotalReportBytes = 30 * 1024 * 1024;
   const reportDatabaseName = "mediroute-prototype";
   const reportStoreName = "patient-reports";
 
@@ -310,9 +316,27 @@ document.addEventListener("DOMContentLoaded", () => {
         errors.push(`${file.name}: please upload a PDF file.`);
         continue;
       }
+      if (file.type && file.type !== "application/pdf" && file.type !== "application/x-pdf") {
+        errors.push(`${file.name}: the selected file is not a PDF.`);
+        continue;
+      }
 
       if (file.size > maxReportBytes) {
         errors.push(`${file.name}: file size must be 10 MB or less.`);
+        continue;
+      }
+
+      const currentCount = selectedReports.filter((report) =>
+        !(report.file.name === file.name && report.file.size === file.size && report.file.lastModified === file.lastModified)
+      ).length;
+      if (currentCount >= maxReportCount || selectedReports.length >= maxReportCount) {
+        errors.push(`You can upload at most 5 PDF files. ${file.name} was not added.`);
+        continue;
+      }
+
+      const totalBytes = selectedReports.reduce((sum, report) => sum + report.file.size, 0) + file.size;
+      if (totalBytes > maxTotalReportBytes) {
+        errors.push("The selected PDFs are larger than the 30 MB combined limit.");
         continue;
       }
 
@@ -475,51 +499,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-// Upload all selected PDF reports in one multipart request.
-const parseMedicalReports = async (reports) => {
-    if (!reports || reports.length === 0) {
-        // No PDFs selected, so reports are optional and submission can continue.
-        window.sessionStorage.removeItem("mediroute_report_parse_result");
-        return;
-    }
-
-    try {
-        const formData = new FormData();
-
-        // Append every selected PDF with the backend's expected field name.
-        reports.forEach((report) => {
-            formData.append("files", report.file);
-        });
-
-        const response = await fetch("http://127.0.0.1:8000/api/reports/parse", {
-            method: "POST",
-            body: formData
-        });
-
-        if (!response.ok) {
-            throw new Error(`Report parsing request failed with status ${response.status}`);
-        }
-
-        const parseResult = await response.json();
-        window.sessionStorage.setItem(
-            "mediroute_report_parse_result",
-            JSON.stringify(parseResult)
-        );
-
-        if (parseResult.overall_status === "partial_success") {
-            console.warn("Some uploaded reports require OCR.");
-        } else if (parseResult.overall_status === "needs_ocr") {
-            console.warn("The uploaded reports require OCR.");
-        }
-    } catch (error) {
-        console.error("MediRoute PDF report parsing failed:", error);
-        // The existing patient request stays saved when report parsing fails.
-    }
-};
-
 // FORM SUBMISSION
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
 
     if (!validateForm()) {
         return;
@@ -529,24 +515,10 @@ form.addEventListener("submit", async (event) => {
         return;
     }
 
-    // Parse selected PDFs before continuing the normal submission flow.
-    await parseMedicalReports(selectedReports);
-
-    // Read the saved patient data from Session Storage
-    const patientData = JSON.parse(
-        sessionStorage.getItem("mediroute_patient_request")
-    );
-
-    // Send patient data to FastAPI backend
-    try {
-        const backendResponse = await sendPatientRequestToBackend(patientData);
-
-        console.log("MediRoute backend response:");
-        console.log(backendResponse);
-
-    } catch (error) {
-        console.error("Backend connection failed:", error);
-    }
+    isSubmitting = true;
+    analyzeButton.disabled = true;
+    window.sessionStorage.removeItem("mediroute_routing_result");
+    window.sessionStorage.removeItem("mediroute_report_parse_result");
 
     form.hidden = true;
     loadingState.hidden = false;
@@ -558,7 +530,124 @@ form.addEventListener("submit", async (event) => {
     progressConnectors[0]?.classList.add("is-complete");
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    submissionTimer = window.setTimeout(showSuccessState, 2000);
+    try {
+      const formData = new FormData();
+      selectedReports.forEach((report) => formData.append("files", report.file));
+      formData.append("requirement", requirementInput.value.trim());
+      formData.append("top_k", "5");
+
+      const location = locationSelect.value === "Other"
+        ? ""
+        : locationSelect.value;
+      const locationMap = {
+        "Mumbai": { city: "Mumbai", state: "Maharashtra" },
+        "Bengaluru": { city: "Bengaluru", state: "Karnataka" },
+        "Hyderabad": { city: "Hyderabad", state: "Telangana" },
+        "Chennai": { city: "Chennai", state: "Tamil Nadu" },
+        "Pune": { city: "Pune", state: "Maharashtra" }
+      };
+      if (locationMap[location]) {
+        formData.append("preferred_city", locationMap[location].city);
+        formData.append("preferred_state", locationMap[location].state);
+      }
+      // Delhi NCR, Other and unrecognized text are not sent as invented city/state values.
+
+      let response;
+      try {
+        response = await fetch(PATIENT_ROUTING_URL, { method: "POST", body: formData });
+      } catch (error) {
+        throw new Error("The MediRoute server could not be reached. Check that FastAPI is running at http://127.0.0.1:8000, then try again.");
+      }
+
+      let result = null;
+      try {
+        result = await response.json();
+      } catch (error) {
+        throw new Error("The backend returned an unreadable response. Please try again.");
+      }
+
+      if (!response.ok) {
+        const detail = typeof result?.detail === "string" ? result.detail : null;
+        throw new Error(detail || `The backend request failed (HTTP ${response.status}). Please check your files and try again.`);
+      }
+
+      if (!result || typeof result !== "object" || !result.workflow_status) {
+        throw new Error("The backend response was incomplete or malformed. No routing result was available.");
+      }
+
+      const completedWithRecommendations =
+        result.workflow_status === "completed" &&
+        result.recommendation_result?.status === "success" &&
+        Array.isArray(result.recommendation_result.results);
+      const isClarification =
+        result.workflow_status === "waiting_for_clarification" ||
+        result.clarification_required === true;
+
+      if (!completedWithRecommendations && !isClarification) {
+        throw new Error("The backend could not produce recommendations or a clarification request. Please review your information and try again.");
+      }
+
+      const routingView = completedWithRecommendations
+        ? {
+            workflow_status: result.workflow_status,
+            routing_ready: result.routing_ready === true,
+            clarification_required: false,
+            recommendation_result: {
+              status: result.recommendation_result.status,
+              count: result.recommendation_result.count,
+              results: result.recommendation_result.results.map((hospital) => ({
+                hospital_id: hospital.hospital_id,
+                hospital_name: hospital.hospital_name,
+                city: hospital.city,
+                state: hospital.state,
+                verified_specialties: hospital.verified_specialties,
+                verified_procedures: hospital.verified_procedures,
+                international_patient_service: hospital.international_patient_service,
+                cost_band_inr: hospital.cost_band_inr,
+                nabh_status: hospital.nabh_status,
+                jci_status: hospital.jci_status,
+                official_source_url: hospital.official_source_url,
+                semantic_score: hospital.semantic_score,
+                final_score: hospital.final_score,
+                final_rank: hospital.final_rank,
+                ranking_reasons: hospital.ranking_reasons
+              }))
+            }
+          }
+        : {
+            workflow_status: result.workflow_status,
+            routing_ready: false,
+            clarification_required: true,
+            clarification_type: result.clarification_type || null,
+            clarification_reason: result.clarification_reason || "More information is needed before MediRoute can recommend hospitals.",
+            parse_summary: result.parse_summary || null,
+            recommendation_result: { status: "clarification_required", results: [] }
+          };
+
+      window.sessionStorage.setItem("mediroute_routing_result", JSON.stringify(routingView));
+      if (submissionTimer !== null) window.clearTimeout(submissionTimer);
+      submissionTimer = window.setTimeout(showSuccessState, 900);
+    } catch (error) {
+      loadingState.hidden = true;
+      form.hidden = false;
+      progressLabel.textContent = "Step 1 of 3";
+      progressSteps.forEach((step, index) => {
+        step.classList.toggle("is-active", index === 0);
+        step.classList.remove("is-complete");
+        if (index === 0) step.setAttribute("aria-current", "step");
+        else step.removeAttribute("aria-current");
+      });
+      progressConnectors.forEach((connector) => connector.classList.remove("is-complete"));
+      analyzeButton.disabled = false;
+      isSubmitting = false;
+      if (errorSummary) {
+        errorSummary.hidden = false;
+        errorSummary.textContent = error instanceof Error ? error.message : "The routing request could not be completed.";
+      }
+      setError(fileInput, "", "report-error");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
 });
 
   // LOADING STATE
@@ -607,6 +696,8 @@ form.addEventListener("submit", async (event) => {
     });
     progressConnectors.forEach((connector) => connector.classList.remove("is-complete"));
     document.querySelector("#recommendation-message").textContent = "";
+    analyzeButton.disabled = false;
+    isSubmitting = false;
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
@@ -618,24 +709,3 @@ form.addEventListener("submit", async (event) => {
     setError(fileInput, "Previously saved information could not be fully restored. Please review the form before continuing.", "report-error");
   });
 });
-
-async function sendPatientRequestToBackend(patientData) {
-    const response = await fetch(
-        "http://127.0.0.1:8000/api/analyze",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(patientData)
-        }
-    );
-
-    if (!response.ok) {
-        throw new Error("MediRoute backend request failed");
-    }
-
-    return await response.json();
-}
