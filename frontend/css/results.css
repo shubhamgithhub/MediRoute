@@ -317,3 +317,14 @@
 @media (prefers-reduced-motion: reduce) {
   .results-page *, .results-page *::before, .results-page *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+/* ROUTING RESULT STATES */
+.clarification-card { margin-top: 18px; padding: 28px; border: 1px solid #f0c9a5; border-radius: 14px; background: #fffaf4; }
+.clarification-card h2 { margin: 8px 0 10px; color: var(--navy); }
+.clarification-reason { color: #4e6474; line-height: 1.7; }
+.clarification-action { color: #7a5b3f; font-weight: 700; }
+.clarification-actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.routing-info-row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid #edf1f3; }
+.routing-info-row span { color: #82929d; font-size: 9px; }
+.routing-info-row strong { color: #38566b; font-size: 10px; text-align: right; }
+.development-score-note { color: #7f909c; font-size: 9px; line-height: 1.5; }
+.official-hospital-link { display: inline-block; margin-top: 12px; color: var(--teal-dark); font-size: 11px; font-weight: 800; }

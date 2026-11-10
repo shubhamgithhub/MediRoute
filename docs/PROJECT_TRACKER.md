@@ -13,19 +13,19 @@ Final review: **5 Dec 2026**. Owners are tentative.
 | 1 | Project structure, packaging, README | Done: `src/` layout, `pyproject.toml`, README, architecture section | Pravin | Done |
 | **Step 1: Patient input → Specialty** | | | | |
 | 2 | Patient query + PDF report intake | Done: `/api/analyze`, `/api/reports/parse` (PyMuPDF). Add OCR fallback only if time permits | Pravin | Done |
-| 3 | Specialty routing pipeline | Make each mode (rules, embeddings, LLM, zero-shot) runnable on its own with a `mode` switch. Create the router once at startup, not per request | Pravin | In progress |
-| 4 | Fix zero-shot overriding the rule result | When rules match confidently, don't let a weaker zero-shot result win. Make `test_blurry_vision_maps_to_ophthalmology` pass | Pravin | Not started |
-| 5 | Validate the LLM's answer | Accept the LLM's specialty only if it's in the candidate list. Otherwise fall back and set `requires_human_review` | Pravin | Not started |
-| 6 | Extract condition with an LLM | Prompt the LLM to fill `MedicalContext` (symptoms, diagnoses, urgency, confidence) from query and report text. Return JSON with schema validation | Pravin | Not started |
-| 7 | Map to ICD-10 | Retrieve top-k ICD-10 codes by embedding similarity, then have the LLM pick one from that list only. Expand `icd10_specialty_mapping.csv` (only 16 rows today) | Pravin | In progress |
-| 8 | Validate, else ask the user | If confidence is low or the code is invalid, return a clarifying question instead of a specialty. Add `clarification_required` to the `/api/analyze` response | Pravin | In progress |
-| 9 | One shared specialty list | Merge the 3 lists (router keywords, `specialty_vocabulary.csv`, `specialty_normalization.csv`) into one canonical list in `common/`. Both steps must use it | Pravin | Not started |
+| 3 | Specialty routing pipeline | Done: `MEDIROUTE_ROUTING_MODE` = vote (default) / rules / llm / hybrid; router built once at startup with warm-up | Pravin | Done |
+| 4 | Fix zero-shot overriding the rule result | Done: zero-shot removed from the live path; `test_blurry_vision_maps_to_ophthalmology` passes | Pravin | Done |
+| 5 | Validate the LLM's answer | Done: V3 is constrained to the speciality list (JSON-schema enum) and code rejects other names | Pravin | Done |
+| 6 | Extract condition with an LLM | Done as evidence extraction: LLM copies conditions, procedures, body parts; code keeps only phrases found in the text | Pravin | Done |
+| 7 | Map to ICD-10 | Partly: ICD-10-CM 2026 (9,314 categories) + CGHS procedures mapped to specialities in the Step 1 lookup list (draft tables, doctor review pending) | Pravin | In progress |
+| 8 | Validate, else ask the user | Done: majority + evidence, else clarification form (2 rounds), then user picks; `decision` in the response | Pravin | Done |
+| 9 | One shared specialty list | Done: `data/medical_taxonomy/specialties.csv` + `common/specialties.py`, used by Step 1 | Pravin | Done |
 | **Step 2: Specialty → Ranked hospitals** | | | | |
 | 10 | Filter hospitals by specialty and location | Done: `specialty_filter.py`, filtered FAISS | Shubham | Done |
 | 11 | Hybrid retrieval (FAISS + keyword) | Done: FAISS index + TF-IDF keyword retriever | Shubham | Done |
 | 12 | AHP-TOPSIS ranking | Define criteria (specialty match, accreditation, facilities, location), derive AHP weights, implement TOPSIS in `ranking/`. Medical fit must outweigh location | Shubham | Not started |
 | 13 | Grounded LLM explanation | For each top hospital, generate a 2–3 line reason using only fields from the retrieved record. No invented facts; cite the fields used | Shubham | Not started |
-| 14 | Connect Step 1 to Step 2 end to end | Convert the Step 1 result into `MedicalContext` and call `/api/hospitals/recommend`. The results page should show the ranked list instead of a location-only search | Shubham | Not started |
+| 14 | Connect Step 1 to Step 2 end to end | Done: `/api/patient-routing` workflow passes Step 1's speciality and evidence to the Step 2 engine; results page shows ranked hospitals (see docs/design/step1_step2_integration.md) | Shubham | Done |
 | **Data** | | | | |
 | 15 | 150-hospital dataset + FAISS index | Done. Rebuild the index when the new master data is final | Anand, Ravi | Done |
 | 16 | Specialty vocabulary + ICD-10 mapping | Done for v1. Extend with task 7 and task 9 | Anand, Ravi | Done |
@@ -46,11 +46,11 @@ Final review: **5 Dec 2026**. Owners are tentative.
 | 29 | Docker | Dockerfile for the API and docker-compose (API + frontend + Ollama), with a one-command start | Aniket | Not started |
 | 30 | CI | GitHub Actions running ruff + pytest on push, with an optional eval gate (accuracy must not drop) | Aniket | Not started |
 | 31 | Observability dashboard | Log latency, cost and errors per pipeline step. Show them on a dashboard (Grafana or a simple Streamlit page) | Aniket | Not started |
-| 32 | LangGraph orchestration | Build the graph: extract → map → validate/clarify → retrieve → rank → explain, using the existing `routing_state.py` | Aniket | In progress |
+| 32 | LangGraph orchestration | Done: Shubham's graph ported to `backend/workflow/`, medical step replaced by the Step 1 pipeline | Aniket | Done |
 | **Frontend** | | | | |
 | 33 | Patient input page | Done: query + report upload | Shubham | Done |
 | 34 | Results page | Show ranked hospitals with score, reason and source. Label costs as indicative | Shubham | In progress |
-| 35 | Clarifying-question UI | When the API returns a clarifying question, show it and resend with the user's answer | Shubham | Not started |
+| 35 | Clarifying-question UI | Done: patient page shows Step 1's form and speciality list and resends with the answers | Shubham | Done |
 | **Safety and process** | | | | |
 | 36 | Privacy note | One-page note: synthetic data only, DPDP Act points, uploaded reports not stored, retention policy | TBD | Not started |
 | 37 | Disclaimers | Show "hospital discovery, not medical advice" in the UI and API. Mark synthetic and indicative data | TBD | Not started |

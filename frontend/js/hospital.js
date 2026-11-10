@@ -1,87 +1,46 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // DEMO HOSPITAL DATA
-  const hospitals = [
-    {
-      id: "DEMO001",
-      name: "Example Multispecialty Hospital",
-      city: "Mumbai",
-      state: "Maharashtra",
-      accreditation: "NABH Accredited",
-      hospitalType: "Multispecialty Hospital",
-      patientServices: "International Patient Support — Demo",
-      specialties: ["Cardiology", "Cardiac Surgery", "Internal Medicine"],
-      facilities: ["Cardiac ICU", "Cath Lab", "Emergency Cardiac Care", "Intensive Care Unit", "Diagnostic Imaging", "24/7 Emergency Department"],
-      medicalFit: 96,
-      locationScore: 92,
-      facilitiesScore: 88,
-      overallScore: 94,
-      reasons: [
-        "Relevant cardiology and cardiac surgery services",
-        "Matches your preferred treatment location",
-        "Relevant cardiac care facilities"
-      ],
-      referenceCost: "₹2,00,000 – ₹3,50,000"
-    },
-    {
-      id: "DEMO002",
-      name: "Example Heart Institute",
-      city: "Mumbai",
-      state: "Maharashtra",
-      accreditation: "NABH Accredited",
-      hospitalType: "Cardiac Specialty Hospital",
-      patientServices: "International Patient Support — Demo",
-      specialties: ["Cardiology"],
-      facilities: ["Cardiac ICU", "Diagnostic Cardiology"],
-      medicalFit: 91,
-      locationScore: 92,
-      facilitiesScore: 85,
-      overallScore: 89,
-      reasons: [
-        "Relevant cardiology specialization",
-        "Matches your preferred treatment location",
-        "Relevant diagnostic facilities"
-      ],
-      referenceCost: "₹1,80,000 – ₹3,20,000"
-    },
-    {
-      id: "DEMO003",
-      name: "Example Medical Centre",
-      city: "Pune",
-      state: "Maharashtra",
-      accreditation: "NABH Accredited",
-      hospitalType: "Multispecialty Hospital",
-      patientServices: "International Patient Support — Demo",
-      specialties: ["Cardiology", "Internal Medicine"],
-      facilities: ["ICU", "Cardiology Unit"],
-      medicalFit: 87,
-      locationScore: 65,
-      facilitiesScore: 86,
-      overallScore: 82,
-      reasons: [
-        "Relevant cardiology services",
-        "Relevant hospital facilities",
-        "Located outside the preferred city"
-      ],
-      referenceCost: "₹1,70,000 – ₹3,00,000"
-    }
-  ];
+  const splitValues = (value) => {
+    if (Array.isArray(value)) return value.filter((item) => typeof item === "string" && item.trim());
+    if (typeof value === "string" && value.trim()) return value.split(/[,;|]/).map((item) => item.trim()).filter(Boolean);
+    return [];
+  };
+  const isPositiveStatus = (value) => {
+    const text = typeof value === "string" ? value.toLowerCase() : "";
+    return text.includes("accredited") || text.includes("certified") || text.includes("yes") || text.includes("verified");
+  };
+  let hospitals = [];
+  try {
+    const raw = window.sessionStorage.getItem("mediroute_routing_result");
+    const routing = raw ? JSON.parse(raw) : null;
+    const records = routing?.recommendation_result?.status === "success" ? routing.recommendation_result.results || [] : [];
+    hospitals = records.map((hospital, index) => ({
+      id: String(hospital.hospital_id || `hospital-${index + 1}`),
+      name: hospital.hospital_name || "Hospital name unavailable",
+      city: hospital.city || "City unavailable",
+      state: hospital.state || "",
+      accreditation: [
+        isPositiveStatus(hospital.nabh_status) ? "NABH status positive" : "",
+        isPositiveStatus(hospital.jci_status) ? "JCI status positive" : ""
+      ].filter(Boolean).join(", ") || "Accreditation not specified in record",
+      hospitalType: "Hospital record",
+      patientServices: hospital.international_patient_service || "Not specified in hospital record",
+      specialties: splitValues(hospital.verified_specialties),
+      facilities: splitValues(hospital.verified_procedures),
+      medicalFit: 0,
+      locationScore: 0,
+      facilitiesScore: 0,
+      overallScore: typeof hospital.final_score === "number" ? hospital.final_score : 0,
+      reasons: Array.isArray(hospital.ranking_reasons) ? hospital.ranking_reasons : ["Backend hospital ranking result"],
+      referenceCost: hospital.cost_band_inr || "Cost band not specified",
+      website: hospital.official_source_url || "",
+      rank: Number.isInteger(hospital.final_rank) ? hospital.final_rank : index + 1
+    }));
+  } catch (error) {
+    hospitals = [];
+  }
 
-  const facilityCatalog = [
-    { name: "Cardiac ICU", icon: "heart-pulse", detail: "Cardiac intensive care — demo" },
-    { name: "Cath Lab", icon: "activity", detail: "Cardiac diagnostics — demo" },
-    { name: "Emergency Cardiac Care", icon: "heart-handshake", detail: "Emergency service — demo" },
-    { name: "Intensive Care Unit", icon: "bed", detail: "Critical care — demo" },
-    { name: "Diagnostic Imaging", icon: "scan-line", detail: "Imaging services — demo" },
-    { name: "24/7 Emergency Department", icon: "siren", detail: "Emergency department — demo" }
-  ];
-
-  const specialtyCatalog = [
-    { name: "Cardiology", icon: "heart-pulse", detail: "Heart and circulatory care" },
-    { name: "Cardiac Surgery", icon: "heart-plus", detail: "Cardiac surgical services" },
-    { name: "Internal Medicine", icon: "stethoscope", detail: "Adult general medical care" }
-  ];
 
   const errorState = document.querySelector("#hospital-error-state");
   const hospitalContent = document.querySelector("#hospital-content");
@@ -174,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setText("#hospital-rank", `Recommendation #${getRecommendationRank(hospital)}`);
     setText("#hospital-name", hospital.name);
     setText("#hospital-location", `${hospital.city}, ${hospital.state}`);
-    setText("#hero-score", `${hospital.overallScore}%`);
+    setText("#hero-score", typeof hospital.overallScore === "number" ? String(hospital.overallScore) : "N/A");
     setText("#about-hospital-name", hospital.name);
     setText("#about-hospital-type", hospital.hospitalType);
     setText("#about-location", `${hospital.city}, ${hospital.state}`);
@@ -193,29 +152,25 @@ document.addEventListener("DOMContentLoaded", () => {
       badge.append(createIcon("stethoscope"), document.createTextNode(specialty));
       heroBadges.append(badge);
     });
+    if (hospital.website) {
+      const website = createElement("a", "");
+      website.href = hospital.website;
+      website.target = "_blank";
+      website.rel = "noopener noreferrer";
+      website.append(createIcon("external-link"), document.createTextNode("Official website"));
+      heroBadges.append(website);
+    }
   };
 
   // MATCH EXPLANATION
   const renderMatchExplanation = (hospital) => {
-    const matchScores = [
-      ["Medical Fit", hospital.medicalFit],
-      ["Location Match", hospital.locationScore],
-      ["Facilities Match", hospital.facilitiesScore]
-    ];
     const scoreGrid = document.querySelector("#match-score-grid");
-    matchScores.forEach(([label, score]) => {
-      const card = createElement("div", "match-score-card");
-      const topline = createElement("div", "match-score-topline");
-      topline.append(createElement("span", "", label), createElement("strong", "", `${score}%`));
-      const track = createElement("div", "match-bar-track");
-      track.setAttribute("role", "img");
-      track.setAttribute("aria-label", `${label}: ${score}% illustrative match`);
-      const bar = createElement("span");
-      setAnimatedBar(bar, score);
-      track.append(bar);
-      card.append(topline, track);
-      scoreGrid.append(card);
-    });
+    const card = createElement("div", "match-score-card");
+    card.append(
+      createElement("span", "", "Development ranking score"),
+      createElement("strong", "", typeof hospital.overallScore === "number" ? String(hospital.overallScore) : "N/A")
+    );
+    scoreGrid.append(card);
 
     const reasons = document.querySelector("#match-reasons");
     hospital.reasons.forEach((reason) => {
@@ -248,14 +203,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // SPECIALTIES
   const renderSpecialties = (hospital) => {
     const container = document.querySelector("#specialties-grid");
-    specialtyCatalog.forEach((specialty) => {
-      const isRelevant = hospital.specialties.includes(specialty.name);
-      const card = createElement("article", `specialty-card${isRelevant ? " is-relevant" : ""}`);
+    if (hospital.specialties.length === 0) {
+      container.append(createElement("p", "", "Verified specialties are not specified in the hospital record."));
+      return;
+    }
+    hospital.specialties.forEach((specialty) => {
+      const card = createElement("article", "specialty-card is-relevant");
       const icon = createElement("span", "small-card-icon");
-      icon.append(createIcon(specialty.icon));
+      icon.append(createIcon("stethoscope"));
       const copy = createElement("span", "");
-      copy.append(createElement("strong", "", specialty.name));
-      copy.append(createElement("small", "", isRelevant ? "Included in this demo profile" : specialty.detail));
+      copy.append(createElement("strong", "", specialty));
+      copy.append(createElement("small", "", "Listed in the hospital record"));
       card.append(icon, copy);
       container.append(card);
     });
@@ -264,23 +222,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // FACILITIES
   const renderFacilities = (hospital) => {
     const container = document.querySelector("#facilities-grid");
-    const facilityData = [
-      ...hospital.facilities.map((name) => facilityCatalog.find((facility) => facility.name === name) || {
-        name,
-        icon: "hospital",
-        detail: "Illustrative hospital service"
-      }),
-      ...facilityCatalog.filter((facility) => !hospital.facilities.includes(facility.name))
-    ];
-
-    facilityData.forEach((facility) => {
-      const included = hospital.facilities.includes(facility.name);
-      const card = createElement("article", `facility-card${included ? " is-included" : ""}`);
+    if (hospital.facilities.length === 0) {
+      container.append(createElement("p", "", "Verified procedures are not specified in the hospital record."));
+      return;
+    }
+    hospital.facilities.forEach((facilityName) => {
+      const card = createElement("article", "facility-card is-included");
       const icon = createElement("span", "small-card-icon");
-      icon.append(createIcon(facility.icon));
+      icon.append(createIcon("hospital"));
       const copy = createElement("span", "");
-      copy.append(createElement("strong", "", facility.name));
-      copy.append(createElement("small", "", included ? "Included in this demo profile" : "Illustrative facility example"));
+      copy.append(createElement("strong", "", facilityName));
+      copy.append(createElement("small", "", "Listed as a verified procedure"));
       card.append(icon, copy);
       container.append(card);
     });
@@ -291,9 +243,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // RANKING
   const renderRanking = (hospital) => {
-    setText("#calculation-medical-fit", String(hospital.medicalFit));
-    setText("#calculation-location", String(hospital.locationScore));
-    setText("#calculation-facilities", String(hospital.facilitiesScore));
+    setText("#calculation-medical-fit", String(hospital.overallScore));
+    setText("#calculation-location", "Backend");
+    setText("#calculation-facilities", "ranking result");
   };
 
   const renderTransparencyFlow = (data, hospital) => {

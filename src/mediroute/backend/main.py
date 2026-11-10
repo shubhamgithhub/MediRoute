@@ -1,8 +1,9 @@
 """MediRoute FastAPI application.
 
-This module only assembles the app. Endpoints live in the two pipeline modules:
-  * Step 1 - mediroute.specialty_routing.api       (patient input -> specialty)
-  * Step 2 - mediroute.hospital_recommendation.api (specialty -> ranked hospitals)
+This module only assembles the app. Endpoints live in:
+  * Step 1   - mediroute.specialty_routing.api       (patient input -> suggested speciality)
+  * Step 2   - mediroute.hospital_recommendation.api (speciality -> ranked hospitals)
+  * Workflow - mediroute.backend.workflow.api        (/api/patient-routing: Step 1 + Step 2, LangGraph)
 """
 
 import threading
@@ -17,6 +18,7 @@ from mediroute.utils.paths import LOG_DIR
 
 logger = configure_logger()
 
+from mediroute.backend.workflow.api import router as workflow_router  # noqa: E402
 from mediroute.hospital_recommendation.api import router as hospital_recommendation_router  # noqa: E402
 from mediroute.specialty_routing.api import router as specialty_routing_router  # noqa: E402
 
@@ -40,33 +42,51 @@ app = FastAPI(
 )
 
 
+def _mark_file_schema(prop: dict) -> None:
+    """Make an upload field `format: binary`, including inside nullable anyOf/oneOf."""
+    for union_name in ("anyOf", "oneOf"):
+        if union_name in prop:
+            for variant in prop[union_name]:
+                if isinstance(variant, dict):
+                    _mark_file_schema(variant)
+            return
+    if prop.get("type") == "array":
+        items = prop.setdefault("items", {})
+        if isinstance(items, dict):
+            items["type"] = "string"
+            items["format"] = "binary"
+            items.pop("contentEncoding", None)
+            items.pop("contentMediaType", None)
+    elif prop.get("type") == "string":
+        prop["format"] = "binary"
+        prop.pop("contentEncoding", None)
+        prop.pop("contentMediaType", None)
+
+
 def custom_openapi():
-    """Render file-upload fields as binary so Swagger UI shows a file picker."""
+    """Show multipart `files` fields as file pickers in Swagger UI.
+
+    From Shubham's Step 12 main.py: FastAPI/Pydantic may emit contentEncoding/contentMediaType
+    instead of format=binary, also inside nullable anyOf (optional uploads)."""
     if app.openapi_schema:
         return app.openapi_schema
-
-    openapi_schema = get_openapi(
-        title=app.title,
-        version=app.version,
-        description=app.description,
-        routes=app.routes,
-    )
-
-    schemas = openapi_schema.get("components", {}).get("schemas", {})
-    for schema in schemas.values():
-        for prop in schema.get("properties", {}).values():
-            # Single file
-            if prop.get("contentMediaType") == "application/octet-stream":
-                prop.pop("contentMediaType", None)
-                prop["format"] = "binary"
-            # Multiple files
-            items = prop.get("items", {})
-            if items.get("contentMediaType") == "application/octet-stream":
-                items.pop("contentMediaType", None)
-                items["format"] = "binary"
-
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
+    schema = get_openapi(title=app.title, version=app.version, description=app.description, routes=app.routes)
+    components = schema.get("components", {}).get("schemas", {})
+    for path_item in schema.get("paths", {}).values():
+        for operation in path_item.values():
+            if not isinstance(operation, dict):
+                continue
+            multipart = operation.get("requestBody", {}).get("content", {}).get("multipart/form-data")
+            if not multipart:
+                continue
+            body = multipart.get("schema", {})
+            ref = body.get("$ref")
+            target = components.get(ref.rsplit("/", 1)[-1], {}) if ref else body
+            file_prop = target.get("properties", {}).get("files")
+            if isinstance(file_prop, dict):
+                _mark_file_schema(file_prop)
+    app.openapi_schema = schema
+    return schema
 
 
 app.openapi = custom_openapi
@@ -84,6 +104,7 @@ app.add_middleware(
 
 app.include_router(specialty_routing_router)
 app.include_router(hospital_recommendation_router)
+app.include_router(workflow_router)
 
 
 @app.get("/", tags=["Service"])

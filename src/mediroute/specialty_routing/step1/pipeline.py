@@ -153,6 +153,7 @@ class Step1Pipeline:
 
         # 3. evidence (LLM, then code check) ----------------------------------
         evidence = self.extractor.extract(text)
+        trace.evidence_kept = evidence.kept
         trace.log("llm_call", stage_for="evidence_extraction",
                   **_llm_event(evidence.llm_call, self.extractor.build_prompt(text), EVIDENCE_PROMPT_VERSION))
         trace.log("evidence", method=evidence.method, kept=evidence.kept, dropped=evidence.dropped,
@@ -238,6 +239,8 @@ class Step1Pipeline:
             "care_category": care_category(specialty) if specialty else None,
             "in_hospital_data": bool(spec and spec.in_hospital_data),
             "evidence": evidence,
+            # by kind (conditions, procedures, body_parts, keyword_matches); Step 2 uses procedures
+            "evidence_detail": trace.evidence_kept,
             "reason": reason,
             "emergency": emergency["is_emergency"],
             "emergency_message": emergency["message"],

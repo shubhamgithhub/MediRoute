@@ -78,6 +78,13 @@ Measured through the API on 12 scenarios (`scripts/api_smoke_step1.py`): all rou
 including report text, emergency notice, both clarification paths and the user's choice; about
 11–20 s per request on a CPU laptop.
 
+**Step 1 → Step 2 in one call.** The frontend calls `POST /api/patient-routing`, a LangGraph
+workflow (built by Shubham, integrated with Step 1): optional reports are parsed, Step 1 suggests the
+speciality, and Step 2 ranks hospitals for it, or the flow returns a clarification (Step 1's form or
+speciality list, a location question, or "no verified hospital yet"). Before/after and test results:
+[docs/design/step1_step2_integration.md](docs/design/step1_step2_integration.md). Check all paths
+with `python scripts/api_smoke_workflow.py`.
+
 ### Step 2: Specialty to ranked hospitals
 
 | # | Stage | What it does | Type |
@@ -125,7 +132,7 @@ They share only `common/` (the `MedicalContext` hand-off object) and `utils/`.
 | **Step 2** | **`hospital_recommendation/`** (API routes in `hospital_recommendation/api.py`) |
 | 2.1 Filter + retrieve | `specialty_filter.py`, `retrieval/` (FAISS, filtered FAISS, TF-IDF keyword, semantic query builder) |
 | 2.2 Rank | `ranking/hospital_reranker.py`, `engine.py` (AHP-TOPSIS is planned) |
-| App + orchestration | `backend/main.py` (assembles the FastAPI app), `backend/workflow/routing_state.py` (LangGraph state) |
+| App + orchestration | `backend/main.py` (assembles the FastAPI app); `backend/workflow/` (LangGraph graph: `parse_reports` → `step1_route` → `recommend_hospitals` → finalize / clarification; endpoint `/api/patient-routing` in `workflow/api.py`) |
 | Hospital data (NABH, JCI) | `data_generator/` (scrapers, master-dataset and FAISS index builders) |
 
 See [docs/PROJECT_TRACKER.md](docs/PROJECT_TRACKER.md) for what is done and what is pending.
@@ -157,7 +164,7 @@ MediRoute/
 │   │   └── medical_context.py     # MedicalContext: the Step 1 → Step 2 contract
 │   ├── backend/                   # FastAPI app assembly
 │   │   ├── main.py                # Creates the app, CORS, includes both step routers
-│   │   └── workflow/              # LangGraph routing state
+│   │   └── workflow/              # LangGraph workflow (graph, nodes, decisions, state) + /api/patient-routing
 │   ├── data_generator/            # Offline pipelines that build the files in data/
 │   │   ├── jci_scraper.py, nabh_finder_scraper.py        # Accreditation scrapers (Playwright)
 │   │   ├── build_hospital_master.py                      # Verify candidates (NABH, JCI, website) per city
@@ -172,7 +179,8 @@ MediRoute/
 ├── frontend/                      # Static HTML/CSS/JS UI (patient, results, hospital pages)
 ├── tests/
 │   ├── specialty_routing/         # Step 1 tests
-│   └── hospital_recommendation/   # Step 2 tests
+│   ├── hospital_recommendation/   # Step 2 tests
+│   └── workflow/                  # Step 1 + Step 2 graph tests
 ├── data/
 │   ├── raw/                       # Source datasets and scraper inputs
 │   ├── interim/                   # Scraper outputs (JCI, NABH, per-city masters)
@@ -264,7 +272,8 @@ python -m http.server 5500 --directory frontend
 
 | Method | Path | Purpose |
 |--------|------|---------|
-| POST | `/api/analyze` | Patient text (+ report text, form answers) to suggested speciality (Step 1) — [reference](docs/api/step1_analyze_api.md) |
+| POST | `/api/patient-routing` | **End to end, used by the frontend:** optional PDFs + text + city (+ form answers) → Step 1 → Step 2 → ranked hospitals or a clarification (LangGraph workflow) — [integration notes](docs/design/step1_step2_integration.md) |
+| POST | `/api/analyze` | Step 1 only: patient text (+ report text, form answers) to suggested speciality — [reference](docs/api/step1_analyze_api.md) |
 | POST | `/api/reports/parse` | Upload PDF reports and extract text |
 | POST | `/api/medical-context` | Build a structured medical context |
 | POST | `/api/hospitals/recommend` | Medical context to ranked hospitals (Step 2) |

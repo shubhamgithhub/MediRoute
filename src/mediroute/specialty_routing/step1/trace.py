@@ -68,6 +68,7 @@ class Step1Trace:
         self.request_id = request_id or uuid.uuid4().hex[:12]
         self.parent_request_id = parent_request_id
         self.events: list[dict[str, Any]] = []
+        self.evidence_kept: dict[str, list[str]] = {}  # evidence by kind, returned as evidence_detail
         self._start = time.perf_counter()
         self._trace = _trace_logger()
         self._summary = get_logger()
