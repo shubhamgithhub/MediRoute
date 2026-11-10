@@ -258,6 +258,11 @@ python -m uvicorn mediroute.backend.main:app --reload --host 127.0.0.1 --port 80
   about 2 minutes on the very first start while the embedding cache is built).
 - Try Step 1: `python scripts/api_smoke_step1.py` (12 scenarios), or see
   [docs/api/step1_analyze_api.md](docs/api/step1_analyze_api.md).
+- **Admin page** (request history): http://127.0.0.1:5500/admin.html. Every request with its
+  input, evidence, the three votes and their lookup matches, each LLM call (timings, tokens, raw
+  output, prompt), the decision, what was served and the Step 2 outcome. Data comes from
+  `GET /api/admin/requests` and `GET /api/admin/requests/{id}`, which read
+  `logs/step1_trace.jsonl`. **No login yet:** it shows patient text, so keep the API on 127.0.0.1.
 
 **Frontend**
 

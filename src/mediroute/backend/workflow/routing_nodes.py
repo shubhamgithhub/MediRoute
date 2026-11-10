@@ -30,7 +30,10 @@ MAX_REPORT_CHARS = 6000  # keeps the Step 1 LLM prompt small
 
 
 def _log(state: PatientRoutingState, node: str, **data: Any) -> None:
-    event = {"stage": f"workflow:{node}", "request_id": state.get("workflow_id"), **data}
+    from datetime import datetime, timezone
+
+    event = {"ts": datetime.now(timezone.utc).isoformat(timespec="milliseconds"),
+             "stage": f"workflow:{node}", "request_id": state.get("workflow_id"), **data}
     _trace_logger().info(json.dumps(event, ensure_ascii=False, default=str))
     summary = json.dumps(data, ensure_ascii=False, default=str)
     logger.info("[workflow %s] %s %s", state.get("workflow_id"), node, summary[:240])

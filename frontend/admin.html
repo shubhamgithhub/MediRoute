@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7fafc">
+  <meta name="robots" content="noindex">
+  <title>Admin · Request History | MediRoute</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="js/admin.js" defer></script>
+</head>
+<body class="admin-page">
+  <header class="site-header" id="top">
+    <nav class="navbar container" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="MediRoute home">
+        <span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span>
+        <span>Medi<span class="brand-accent">Route</span> <small class="admin-tag">Admin</small></span>
+      </a>
+      <div class="nav-actions">
+        <a class="button button-small button-secondary" href="patient.html"><i data-lucide="user-round" aria-hidden="true"></i> Patient page</a>
+        <a class="button button-small button-secondary" href="index.html"><i data-lucide="arrow-left" aria-hidden="true"></i> Home</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="admin-main">
+    <p class="admin-warning" role="note"><i data-lucide="shield-alert" aria-hidden="true"></i>
+      No login yet: this page shows patient text (redacted), prompts and model outputs from <code>logs/step1_trace.jsonl</code>.
+      Use it on this computer only until authentication is added.</p>
+
+    <section class="admin-toolbar" aria-label="Filters">
+      <div class="admin-stats" id="admin-stats"></div>
+      <div class="admin-filters">
+        <input type="search" id="filter-q" placeholder="Search text, speciality or request id" aria-label="Search">
+        <select id="filter-decision" aria-label="Decision">
+          <option value="">All decisions</option>
+          <option value="majority">Majority</option>
+          <option value="clarification_required">Clarification</option>
+          <option value="needs_user_choice">User choice offered</option>
+          <option value="user_selected">User selected</option>
+        </select>
+        <select id="filter-source" aria-label="Source">
+          <option value="">All sources</option>
+          <option value="workflow">Patient page (/api/patient-routing)</option>
+          <option value="analyze">Step 1 only (/api/analyze)</option>
+        </select>
+        <label class="auto-refresh"><input type="checkbox" id="auto-refresh"> Auto-refresh</label>
+        <button class="button button-small button-primary" id="refresh-button" type="button"><i data-lucide="refresh-cw" aria-hidden="true"></i> Refresh</button>
+      </div>
+    </section>
+
+    <div class="admin-layout">
+      <section class="admin-list" aria-label="Request history">
+        <div class="admin-list-head">Request history <span id="list-count"></span></div>
+        <div id="request-list" class="request-list"><p class="muted">Loading…</p></div>
+      </section>
+      <section class="admin-detail" id="request-detail" aria-live="polite">
+        <div class="empty-detail">
+          <i data-lucide="mouse-pointer-click" aria-hidden="true"></i>
+          <p>Select a request to see its input, evidence, votes, LLM calls, decision and what was served.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
