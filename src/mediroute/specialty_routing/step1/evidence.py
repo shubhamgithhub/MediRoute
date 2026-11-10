@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from mediroute.common.specialties import load_specialties
-from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient
+from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
 
 PROMPT_DIR = Path(__file__).resolve().parents[1] / "prompts"
 EVIDENCE_PROMPT_VERSION = "evidence_v1"
@@ -131,7 +131,7 @@ def _dedupe_contained(phrases: list[str]) -> list[str]:
 
 class EvidenceExtractor:
     def __init__(self, client: OllamaClient | None = None) -> None:
-        self.client = client or OllamaClient()
+        self.client = client or make_llm_client()
         self.template = (PROMPT_DIR / f"{EVIDENCE_PROMPT_VERSION}.txt").read_text(encoding="utf-8")
         self._keywords = [(kw, spec.name) for spec in load_specialties() for kw in spec.keywords]
 

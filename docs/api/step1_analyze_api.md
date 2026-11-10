@@ -215,13 +215,18 @@ V1 0.1 s → V2 0.3 s → V3 LLM call 8.5 s → `decision` 16.8 s.
 | Variable | Default | Effect |
 |----------|---------|--------|
 | `MEDIROUTE_ROUTING_MODE` | `vote` | `vote` (this pipeline), or the baselines `rules`, `llm`, `hybrid` |
+| `MEDIROUTE_LLM_PROVIDER` | `ollama` | `ollama`, or `none` to run without any LLM. Hosted models (e.g. GPT with an API key) plug into `make_llm_client()` in `step1/ollama_client.py` |
 | `MEDIROUTE_LLM_MODEL` | `llama3.2` | Ollama model for evidence and V3 |
 | `OLLAMA_API_BASE_URL` | `http://127.0.0.1:11434` | Ollama server |
 | `MEDIROUTE_LLM_TIMEOUT_S` | `90` | Per LLM call |
 | `MEDIROUTE_LOG_PATIENT_TEXT` | `1` | `0` logs only a hash and length of the patient text. **Set to `0` before any real patient data (DPDP)** |
 
-If Ollama is down, evidence falls back to keyword matches and V3 abstains; V1 and V2 can still
-form a majority.
+If Ollama is down, not installed, or the model isn't pulled (or `MEDIROUTE_LLM_PROVIDER=none`),
+the request still succeeds: evidence falls back to keyword matches, V3 abstains, and V1 + V2 must
+agree. The startup log prints a banner, every request logs `LLM unavailable` and an `llm_status`
+trace event, and the response carries `"llm_available": false` with a `notice` the frontend shows.
+Unavailable calls are skipped instantly; availability is re-checked every 60 s. Measured with the
+LLM off: the 12 Step 1 and 9 workflow smoke scenarios give the same decisions as with it.
 
 ## 8. Known limitations
 

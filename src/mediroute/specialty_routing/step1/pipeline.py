@@ -22,15 +22,19 @@ from typing import Any
 from mediroute.common.specialties import care_category, get_specialty, specialty_names
 from mediroute.specialty_routing.step1.evidence import EVIDENCE_PROMPT_VERSION, EvidenceExtractor
 from mediroute.specialty_routing.step1.lookup import LookupIndex
-from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient
+from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
 from mediroute.specialty_routing.step1.protect import redact
 from mediroute.specialty_routing.step1.safety import check_emergency
 from mediroute.specialty_routing.step1.trace import Step1Trace, log_patient_text, text_for_log
 from mediroute.specialty_routing.step1.voters import EmbeddingVoter, KeywordVoter, LLMVoter, Vote
+from mediroute.utils.logging_config import get_logger
 
 MAX_CLARIFICATION_ROUNDS = 2
 MAJORITY = 2
 CATCH_ALL = "General Medicine"  # a majority on this triggers one clarification round first
+LLM_DOWN_NOTICE = ("The AI language model is not available on this server, so this suggestion comes from "
+                   "the two search methods only and may need an extra question.")
+_logger = get_logger()
 DISCLAIMER = ("Hospital discovery support only. This is a suggested speciality to search, "
               "not a diagnosis or medical advice. A doctor at the hospital confirms any treatment plan.")
 
@@ -92,7 +96,7 @@ def _llm_event(call: LLMCall | None, prompt: str, prompt_version: str) -> dict[s
 class Step1Pipeline:
     def __init__(self, index: LookupIndex | None = None, client: OllamaClient | None = None,
                  extractor: EvidenceExtractor | None = None, llm_voter: LLMVoter | None = None) -> None:
-        self.client = client or OllamaClient()
+        self.client = client or make_llm_client()
         self.index = index or LookupIndex()
         self.extractor = extractor or EvidenceExtractor(self.client)
         self.v1 = KeywordVoter(self.index)
@@ -119,8 +123,20 @@ class Step1Pipeline:
             self.v3.vote("knee pain")
             logger.info("Step 1 LLM warm-up done: model=%s", self.client.model)
         except Exception as exc:
-            logger.warning("Step 1 LLM warm-up failed (%s); evidence falls back to rules, V3 abstains", exc)
+            logger.warning(
+                "\n" + "=" * 78 + "\n"
+                "  Step 1 is running WITHOUT an LLM: %s\n"
+                "  The app still works: evidence comes from speciality keywords, V3 (LLM vote)\n"
+                "  abstains, and V1 keyword + V2 meaning search must agree, so it may ask more\n"
+                "  clarification questions. Each request logs 'LLM unavailable'.\n"
+                + "=" * 78, exc)
         self.ready.set()
+
+    def llm_status(self) -> dict[str, Any]:
+        status = getattr(self.client, "status", None)
+        if status is None:  # a client without status() (e.g. a test fake) is assumed to work
+            return {"provider": "custom", "model": getattr(self.client, "model", ""), "available": True, "reason": ""}
+        return status()
 
     # ------------------------------------------------------------------ request
     def analyze(self, inp: Step1Input) -> dict[str, Any]:
@@ -152,6 +168,11 @@ class Step1Pipeline:
             trace.log("decision", method="user_selected_invalid", value=inp.selected_specialty)
 
         # 3. evidence (LLM, then code check) ----------------------------------
+        llm = self.llm_status()
+        trace.log("llm_status", **llm)
+        if not llm["available"]:
+            _logger.warning("Step 1 request %s: LLM unavailable (%s); using keyword evidence and V1 + V2 only",
+                            trace.request_id, llm["reason"])
         evidence = self.extractor.extract(text)
         trace.evidence_kept = evidence.kept
         trace.log("llm_call", stage_for="evidence_extraction",
@@ -230,6 +251,7 @@ class Step1Pipeline:
         clarify = decision == "clarification_required"
         choose = decision == "needs_user_choice"
         candidates = self._candidates(votes)
+        llm_ok = self.llm_status()["available"]
         response: dict[str, Any] = {
             "request_id": trace.request_id,
             "parent_request_id": inp.parent_request_id,
@@ -257,6 +279,8 @@ class Step1Pipeline:
                 "options": candidates + [n for n in specialty_names() if n not in candidates],
             } if choose else None,
             "disclaimer": DISCLAIMER,
+            "llm_available": llm_ok,
+            "notice": None if llm_ok else LLM_DOWN_NOTICE,
             "latency_ms": trace.elapsed_ms(),
             # kept for the current frontend
             "relevantSpecialty": specialty,

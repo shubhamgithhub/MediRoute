@@ -530,6 +530,11 @@ const showEmergency = (step1) => {
   if (!emergencyBanner) return;
   emergencyBanner.hidden = !(step1 && step1.emergency);
   document.querySelector("#emergency-message").textContent = (step1 && step1.emergency_message) || "";
+  const llmNotice = document.querySelector("#llm-notice");
+  if (llmNotice) {
+    llmNotice.hidden = !(step1 && step1.notice);
+    document.querySelector("#llm-notice-message").textContent = (step1 && step1.notice) || "";
+  }
   if (window.lucide) window.lucide.createIcons();
 };
 

@@ -219,7 +219,18 @@ MediRoute/
 
 Requirements: **Python 3.10+** (developed on 3.14), Windows/macOS/Linux, and
 [Ollama](https://ollama.com) with `llama3.2` (`ollama pull llama3.2`) for Step 1's evidence and
-LLM voter. Without Ollama, Step 1 still runs on keyword evidence and the two search voters.
+LLM voter.
+
+**No Ollama? The app still runs.** If Ollama isn't installed or running, or the model isn't pulled,
+the API prints a warning banner at startup and carries on: evidence comes from speciality keywords,
+the LLM voter abstains, and the two search voters must agree. Each request logs
+`LLM unavailable`, and the patient and results pages show a short notice. Calls are skipped
+instantly (no waiting on a refused connection), and the server checks again every 60 s, so starting
+Ollama later works without a restart. To turn the LLM off on purpose:
+
+```powershell
+$env:MEDIROUTE_LLM_PROVIDER = "none"   # default "ollama"; a hosted model (GPT) will be added here
+```
 
 The Step 1 lookup list (`data/medical_taxonomy/step1_lookup.csv`) is in the repo. To rebuild it,
 download the CDC ICD-10-CM code descriptions (public domain) and run the builder:

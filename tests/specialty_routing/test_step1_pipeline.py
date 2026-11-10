@@ -221,3 +221,39 @@ def test_every_stage_is_traced_with_one_request_id():
     for stage in ["input", "emergency_check", "llm_call", "evidence", "vote", "votes_summary", "decision"]:
         assert stage in stages
     assert len(result["request_id"]) == 12
+
+
+# ---------------------------------------------------------------- running without an LLM
+def test_llm_turned_off_still_routes_with_search_voters_and_shows_a_notice():
+    from mediroute.specialty_routing.step1.ollama_client import DisabledLLMClient
+    client = DisabledLLMClient()
+    index = LookupIndex(ENTRIES, encoder=FakeEncoder(), cache=False)
+    pipeline = Step1Pipeline(index=index, client=client, extractor=EvidenceExtractor(client),
+                             llm_voter=LLMVoter(client))
+    pipeline.warm_up(__import__("logging").getLogger("test"))  # must not raise
+    result = pipeline.analyze(Step1Input(text="need cabg bypass surgery for my father", debug=True))
+    assert result["suggested_specialty"] == "Cardiothoracic Surgery"  # V1 + V2 agree
+    assert result["llm_available"] is False and "not available" in result["notice"]
+    assert result["debug"]["votes"]["V3"]["ok"] is False
+
+
+def test_unreachable_ollama_is_detected_once_and_later_calls_are_skipped_instantly():
+    import time
+    from mediroute.specialty_routing.step1.ollama_client import OllamaClient
+    client = OllamaClient(base_url="http://127.0.0.1:9")  # nothing listens on port 9
+    assert client.status()["available"] is False
+    start = time.perf_counter()
+    call = client.generate_json("x", {}, purpose="evidence_extraction")
+    assert not call.ok and call.details.get("skipped") and "LLM unavailable" in call.error
+    assert time.perf_counter() - start < 0.1
+
+
+def test_llm_provider_switch(monkeypatch):
+    from mediroute.specialty_routing.step1.ollama_client import DisabledLLMClient, OllamaClient, make_llm_client
+    monkeypatch.setenv("MEDIROUTE_LLM_PROVIDER", "none")
+    assert isinstance(make_llm_client(), DisabledLLMClient)
+    monkeypatch.setenv("MEDIROUTE_LLM_PROVIDER", "ollama")
+    assert isinstance(make_llm_client(), OllamaClient)
+    monkeypatch.setenv("MEDIROUTE_LLM_PROVIDER", "gpt-without-code")
+    with pytest.raises(ValueError):
+        make_llm_client()

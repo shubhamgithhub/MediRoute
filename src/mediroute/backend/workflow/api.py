@@ -71,7 +71,7 @@ def _step1_view(step1: dict | None) -> dict | None:
     keys = ("request_id", "parent_request_id", "decision", "suggested_specialty", "suggested_specialty_label",
             "care_category", "in_hospital_data", "evidence", "evidence_detail", "reason", "emergency",
             "emergency_message", "clarification_required", "clarification", "user_choice", "disclaimer",
-            "latency_ms")
+            "llm_available", "notice", "latency_ms")
     return {k: step1.get(k) for k in keys}
 
 

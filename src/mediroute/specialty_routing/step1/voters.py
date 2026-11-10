@@ -17,7 +17,7 @@ from typing import Any
 from mediroute.common.specialties import specialty_names
 from mediroute.specialty_routing.routes import UNCLEAR, LLMRouter
 from mediroute.specialty_routing.step1.lookup import LookupIndex
-from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient
+from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
 
 CATCH_ALL = "General Medicine"
 KEYWORD_MIN_SCORE = 0.25
@@ -98,7 +98,7 @@ class LLMVoter:
     name = "V3_llm"
 
     def __init__(self, client: OllamaClient | None = None) -> None:
-        self.client = client or OllamaClient()
+        self.client = client or make_llm_client()
         self._router = LLMRouter(model=self.client.model)  # reuses the specialty_v1 prompt and enum schema
         self.prompt_version = self._router.prompt_version
         self.valid = set(specialty_names())

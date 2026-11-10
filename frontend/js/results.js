@@ -96,6 +96,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (careCategoryElement) {
       careCategoryElement.append(createIconSafe("stethoscope"), ` ${careCategory}`);
     }
+    if (step1.notice && !document.querySelector("#llm-notice")) {
+      const notice = document.createElement("p");
+      notice.id = "llm-notice";
+      notice.className = "llm-notice";
+      notice.append(createIconSafe("info"), ` ${step1.notice}`);
+      document.querySelector(".context-values")?.after(notice);
+    }
     const location = typeof patientData.location === "string" && patientData.location.trim()
       ? patientData.location.trim()
       : "No preference";
