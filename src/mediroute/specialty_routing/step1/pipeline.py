@@ -15,6 +15,7 @@ Every stage is logged with the request id (see trace.py).
 from __future__ import annotations
 
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any
@@ -103,6 +104,8 @@ class Step1Pipeline:
         self.v2 = EmbeddingVoter(self.index)
         self.v3 = llm_voter or LLMVoter(self.client)
         self.ready = threading.Event()
+        # hosted LLMs answer calls concurrently: V3 runs alongside evidence + V1 + V2
+        self._pool = ThreadPoolExecutor(max_workers=4, thread_name_prefix="step1-v3")
 
     # ------------------------------------------------------------------ startup
     def warm_up(self, logger) -> None:
@@ -175,6 +178,10 @@ class Step1Pipeline:
         if not llm["available"]:
             _logger.warning("Step 1 request %s: LLM unavailable (%s); using keyword evidence and V1 + V2 only",
                             trace.request_id, llm["reason"])
+        v3_future, v3_started_ms = None, None
+        if llm["available"] and getattr(self.client, "parallel_calls", False):
+            v3_started_ms = trace.elapsed_ms()
+            v3_future = self._pool.submit(self.v3.vote, text)
         evidence = self.extractor.extract(text)
         trace.evidence_kept = evidence.kept
         trace.log("llm_call", stage_for="evidence_extraction",
@@ -197,9 +204,11 @@ class Step1Pipeline:
             votes["V2"] = Vote("V2_embedding", [], False, note=f"embedding search failed: {exc}")
         trace.log("vote", voter=votes["V2"].voter, method="embedding_similarity", top3=votes["V2"].top3,
                   ms=votes["V2"].ms, note=votes["V2"].note, hits=votes["V2"].hits[:24])
-        votes["V3"] = self.v3.vote(text)
-        trace.log("llm_call", stage_for="specialty_vote",
-                  **_llm_event(votes["V3"].llm_call, self.v3._router.build_prompt(text), self.v3.prompt_version))
+        votes["V3"] = v3_future.result() if v3_future else self.v3.vote(text)
+        v3_event = _llm_event(votes["V3"].llm_call, self.v3._router.build_prompt(text), self.v3.prompt_version)
+        if v3_future:
+            v3_event.update(parallel=True, started_t_ms=v3_started_ms)
+        trace.log("llm_call", stage_for="specialty_vote", **v3_event)
         trace.log("vote", voter=votes["V3"].voter, method="llm_constrained_choice", top3=votes["V3"].top3,
                   ms=votes["V3"].ms, ok=votes["V3"].ok, note=votes["V3"].note, hits=votes["V3"].hits)
 

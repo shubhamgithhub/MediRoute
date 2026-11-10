@@ -170,7 +170,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const label = e.stage === "vote" ? e.voter : e.stage === "llm_call" ? `LLM: ${e.stage_for}` : e.stage;
         const bar = el("div", "tl-bar");
         const span = el("span", e.stage === "llm_call" ? "llm" : "");
-        const start = e.stage === "llm_call" ? Math.max(0, (e.t_ms || 0) - (e.duration_ms || 0)) : prev;
+        const start = e.stage === "llm_call"
+          ? (e.started_t_ms ?? Math.max(0, (e.t_ms || 0) - (e.duration_ms || 0))) : prev;
         span.style.left = `${(start / total) * 100}%`;
         span.style.width = `${Math.max(0.6, (((e.t_ms || 0) - start) / total) * 100)}%`;
         bar.append(span);
@@ -262,10 +263,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = el("div", "llm-card");
         card.append(el("strong", "", `${c.stage_for} · ${c.model || "?"} · prompt ${c.prompt_version || "?"}`));
         const metrics = el("div", "llm-metrics");
-        [["wall", ms(c.duration_ms)], ["Ollama", ms(c.ollama_total_ms)], ["model load", ms(c.ollama_load_ms)],
-         ["read prompt", ms(c.ollama_prompt_eval_ms)], ["write answer", ms(c.ollama_generate_ms)],
+        const hosted = c.provider === "openrouter";
+        (hosted
+          ? [["wall", ms(c.duration_ms)], ["wait for first token", ms(c.first_token_ms)],
+             ["write answer", ms(c.generate_ms)], ["reasoning tokens", c.reasoning_tokens ?? "—"],
+             ["reasoning", c.reasoning_enabled ? "on" : "off"], ["parallel", c.parallel ? "yes" : "no"],
+             ["upstream", c.upstream_provider || "—"]]
+          : [["wall", ms(c.duration_ms)], ["Ollama", ms(c.ollama_total_ms)], ["model load", ms(c.ollama_load_ms)],
+             ["read prompt", ms(c.ollama_prompt_eval_ms)], ["write answer", ms(c.ollama_generate_ms)]])
+        .concat([
          ["prompt tokens", c.prompt_tokens ?? "—"], ["output tokens", c.output_tokens ?? "—"],
-         ["temperature", c.options ? c.options.temperature : "—"], ["ok", c.ok ? "yes" : `no: ${c.error}`]]
+         ["temperature", c.options ? c.options.temperature : "—"], ["ok", c.ok ? "yes" : `no: ${c.error}`]])
           .forEach(([k, v]) => metrics.append(el("span", "chip", `${k}: ${v}`)));
         card.append(metrics, el("div", "muted", "Raw response"), pre(c.raw_response || "(none)"),
           collapsible("Full prompt", pre(c.prompt || "(not logged)")));

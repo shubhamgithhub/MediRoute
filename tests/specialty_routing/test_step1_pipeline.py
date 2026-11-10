@@ -272,13 +272,16 @@ def test_openrouter_parses_json_even_inside_a_code_fence(monkeypatch):
     from mediroute.specialty_routing.step1.ollama_client import OpenRouterClient
     client = OpenRouterClient(api_key="sk-or-test", model="some/model:free")
     fence = "`" * 3
-    body = {"id": "gen-1", "model": "some/model:free", "provider": "X",
-            "usage": {"prompt_tokens": 50, "completion_tokens": 9},
-            "choices": [{"message": {"content": fence + 'json\n{"specialty": "Ophthalmology"}\n' + fence}}]}
-    monkeypatch.setattr(client, "_request", lambda path, payload=None: body)
+    body = {"id": "gen-1", "model": "some/model:free", "provider": "X", "first_token_ms": 400, "reasoning_chars": 0,
+            "usage": {"prompt_tokens": 50, "completion_tokens": 9, "completion_tokens_details": {"reasoning_tokens": 0}},
+            "content": fence + 'json\n{"specialty": "Ophthalmology"}\n' + fence}
+    sent = {}
+    monkeypatch.setattr(client, "_stream_chat", lambda payload: sent.update(payload) or body)
     call = client.generate_json("eye infection", {"type": "object"}, purpose="specialty_vote")
     assert call.ok and call.parsed == {"specialty": "Ophthalmology"}
     assert call.details["prompt_tokens"] == 50 and call.details["upstream_provider"] == "X"
+    assert call.details["first_token_ms"] == 400 and call.details["reasoning_tokens"] == 0
+    assert sent["reasoning"] == {"enabled": False}  # hidden reasoning is off by default
 
 
 def test_openrouter_rate_limit_marks_it_down_so_next_calls_skip(monkeypatch):
@@ -287,10 +290,21 @@ def test_openrouter_rate_limit_marks_it_down_so_next_calls_skip(monkeypatch):
     from mediroute.specialty_routing.step1.ollama_client import OpenRouterClient
     client = OpenRouterClient(api_key="sk-or-test")
 
-    def limited(path, payload=None):
-        raise urllib.error.HTTPError(path, 429, "Too Many Requests", {}, io.BytesIO(b'{"error":"free-models-per-day"}'))
-    monkeypatch.setattr(client, "_request", limited)
+    def limited(payload):
+        raise urllib.error.HTTPError("x", 429, "Too Many Requests", {}, io.BytesIO(b'{"error":"free-models-per-day"}'))
+    monkeypatch.setattr(client, "_stream_chat", limited)
     first = client.generate_json("x", {}, purpose="specialty_vote")
     assert not first.ok and "429" in first.error
     second = client.generate_json("x", {}, purpose="specialty_vote")
     assert second.details.get("skipped") and client.status()["available"] is False
+
+
+def test_hosted_llm_runs_v3_in_parallel_with_the_same_result():
+    class ParallelFake(FakeClient):
+        parallel_calls = True
+    client = ParallelFake(EVIDENCE, SPECIALTY)
+    index = LookupIndex(ENTRIES, encoder=FakeEncoder(), cache=False)
+    pipeline = Step1Pipeline(index=index, client=client, extractor=EvidenceExtractor(client), llm_voter=LLMVoter(client))
+    result = pipeline.analyze(Step1Input(text="osteoarthritis of the knee, knee replacement", debug=True))
+    assert result["suggested_specialty"] == "Orthopaedics"
+    assert result["debug"]["votes"]["V3"]["top3"][0][0] == "Orthopaedics"

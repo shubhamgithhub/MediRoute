@@ -243,8 +243,11 @@ $env:MEDIROUTE_LLM_PROVIDER = "openrouter"  # then start the API as usual
 ```
 
 Default model: `nvidia/nemotron-3.5-super-vl:free` (returns valid JSON for Step 1). Free tier:
-**50 requests/day, 20/min**; each Step 1 request uses 2. Calls are slower than local Ollama
-(measured: median 12.7 s, max 53 s per call, 19/19 succeeded). If the limit runs out, Step 1 falls
+**50 requests/day, 20/min**; each Step 1 request uses 2. Hidden "reasoning" is turned off (it was
+~95% of the output and most of the wait; `MEDIROUTE_OPENROUTER_REASONING=on` re-enables it), and the
+two calls run in parallel: the eye-infection query went from 37.6 s to 14.8 s. What's left is the
+free endpoint's queue (~13 s before it answers, even for a 23-token reply), visible per call as
+"wait for first token" on the admin page. If the limit runs out, Step 1 falls
 back to the two search voters like the no-LLM mode. Send only synthetic test data. Never commit the
 key.
 

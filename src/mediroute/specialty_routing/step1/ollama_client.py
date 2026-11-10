@@ -139,6 +139,9 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1"
 # A free model that returned valid JSON-schema output for Step 1 prompts (checked 2026-11-10).
 # Pin a model for evaluation runs: "openrouter/free" picks a different model per request.
 DEFAULT_OPENROUTER_MODEL = "nvidia/nemotron-3.5-super-vl:free"
+# Hidden reasoning was ~95% of the output tokens of the default model (e.g. 829 of 856) and most of
+# the wait; routing doesn't need it. Set MEDIROUTE_OPENROUTER_REASONING=on to allow it.
+REASONING_ON = os.getenv("MEDIROUTE_OPENROUTER_REASONING", "off").strip().lower() in {"on", "1", "true"}
 MAX_RETRY_WAIT_S = 20.0  # per-minute 429: wait (Retry-After) and retry once; longer limits mark it down
 CODE_FENCE = "`" * 3
 
@@ -162,6 +165,7 @@ class OpenRouterClient:
 
     provider = "openrouter"
     needs_priming = False  # no local prompt cache to warm, and each call counts against the free limit
+    parallel_calls = True  # hosted: the evidence and V3 calls can run at the same time
 
     def __init__(self, model: str | None = None, api_key: str | None = None, base_url: str = OPENROUTER_URL,
                  timeout_s: float = DEFAULT_TIMEOUT_S) -> None:
@@ -189,6 +193,40 @@ class OpenRouterClient:
         with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
             return json.loads(response.read().decode("utf-8"))
 
+    def _stream_chat(self, payload: dict) -> dict:
+        """Streams the completion so we can time the wait before the first token ourselves.
+
+        Returns content, usage, model, provider, id, first_token_ms and reasoning_chars."""
+        request = urllib.request.Request(
+            f"{self.base_url}/chat/completions", data=json.dumps({**payload, "stream": True}).encode("utf-8"),
+            headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json",
+                     "X-OpenRouter-Title": "MediRoute (capstone)"})
+        start = time.perf_counter()
+        out: dict[str, Any] = {"content": "", "usage": {}, "first_token_ms": None, "reasoning_chars": 0}
+        with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
+            for line in response:
+                line = line.decode("utf-8", "replace").strip()
+                if not line.startswith("data:"):
+                    continue  # blank lines and ": OPENROUTER PROCESSING" keep-alives
+                data = line[5:].strip()
+                if data == "[DONE]":
+                    break
+                chunk = json.loads(data)
+                if chunk.get("error"):
+                    raise RuntimeError(f"stream error: {chunk['error']}")
+                for key in ("id", "model", "provider"):
+                    out.setdefault(key, chunk.get(key))
+                if chunk.get("usage"):
+                    out["usage"] = chunk["usage"]
+                for choice in chunk.get("choices") or []:
+                    delta = choice.get("delta") or {}
+                    piece, thought = delta.get("content") or "", delta.get("reasoning") or ""
+                    if (piece or thought) and out["first_token_ms"] is None:
+                        out["first_token_ms"] = int((time.perf_counter() - start) * 1000)
+                    out["content"] += piece
+                    out["reasoning_chars"] += len(thought)
+        return out
+
     def _mark_down(self, reason: str, permanent: bool = False) -> None:
         self._down_reason = reason
         self._down_at = float("inf") if permanent else time.monotonic()
@@ -214,13 +252,15 @@ class OpenRouterClient:
             details["skipped"] = True
             return LLMCall(False, error=f"LLM unavailable: {state['reason']}", details=details)
         payload = {"model": self.model, "messages": [{"role": "user", "content": prompt}], **options,
+                   "reasoning": {"enabled": REASONING_ON},
                    "response_format": {"type": "json_schema",
                                        "json_schema": {"name": purpose, "strict": False, "schema": schema}}}
+        details["reasoning_enabled"] = REASONING_ON
         start = time.perf_counter()
         body: dict = {}
         for attempt in range(2):
             try:
-                body = self._request("/chat/completions", payload)
+                body = self._stream_chat(payload)
                 break
             except urllib.error.HTTPError as exc:
                 text = exc.read().decode("utf-8", "replace")[:300]
@@ -239,11 +279,16 @@ class OpenRouterClient:
                                duration_ms=int((time.perf_counter() - start) * 1000), details=details)
         duration = int((time.perf_counter() - start) * 1000)
         usage = body.get("usage") or {}
+        first = body.get("first_token_ms")
         details.update({"model_used": body.get("model"), "upstream_provider": body.get("provider"),
                         "generation_id": body.get("id"), "prompt_tokens": usage.get("prompt_tokens"),
-                        "output_tokens": usage.get("completion_tokens"), "cost": usage.get("cost")})
-        choices = body.get("choices") or []
-        raw = ((choices[0].get("message") or {}).get("content") or "") if choices else ""
+                        "output_tokens": usage.get("completion_tokens"), "cost": usage.get("cost"),
+                        # where the time goes: waiting for the first token (queue) vs writing tokens
+                        "first_token_ms": first,
+                        "generate_ms": duration - first if first is not None else None,
+                        "reasoning_tokens": (usage.get("completion_tokens_details") or {}).get("reasoning_tokens"),
+                        "reasoning_chars": body.get("reasoning_chars")})
+        raw = body.get("content") or ""
         cleaned = raw.strip()
         if cleaned.startswith(CODE_FENCE):  # some models wrap JSON in a code fence despite response_format
             cleaned = cleaned.strip("`").removeprefix("json").strip()
