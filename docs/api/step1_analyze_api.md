@@ -215,7 +215,8 @@ V1 0.1 s → V2 0.3 s → V3 LLM call 8.5 s → `decision` 16.8 s.
 | Variable | Default | Effect |
 |----------|---------|--------|
 | `MEDIROUTE_ROUTING_MODE` | `vote` | `vote` (this pipeline), or the baselines `rules`, `llm`, `hybrid` |
-| `MEDIROUTE_LLM_PROVIDER` | `ollama` | `ollama`, or `none` to run without any LLM. Hosted models (e.g. GPT with an API key) plug into `make_llm_client()` in `step1/ollama_client.py` |
+| `MEDIROUTE_LLM_PROVIDER` | `ollama` | `ollama`, `openrouter` (needs `OPENROUTER_API_KEY`), or `none` to run without any LLM. Other hosted models (e.g. GPT) plug into `make_llm_client()` in `step1/ollama_client.py` |
+| `MEDIROUTE_OPENROUTER_MODEL` | `nvidia/nemotron-3.5-super-vl:free` | OpenRouter model. Pin one for evaluation (`openrouter/free` picks a different model per request) |
 | `MEDIROUTE_LLM_MODEL` | `llama3.2` | Ollama model for evidence and V3 |
 | `OLLAMA_API_BASE_URL` | `http://127.0.0.1:11434` | Ollama server |
 | `MEDIROUTE_LLM_TIMEOUT_S` | `90` | Per LLM call |

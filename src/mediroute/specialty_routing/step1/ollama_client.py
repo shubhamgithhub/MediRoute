@@ -6,6 +6,9 @@ MEDIROUTE_LLM_PROVIDER:
     ollama  (default) local Ollama at OLLAMA_API_BASE_URL. If it isn't running, or the model isn't
             pulled, Step 1 logs a warning and carries on without it (evidence from keywords, V3
             abstains, V1 + V2 must agree). It re-checks every 60 s, so starting Ollama later works.
+    openrouter  hosted models via OpenRouter (free tier works). Needs OPENROUTER_API_KEY (each
+            teammate uses their own key; free tier = 50 requests/day, 20/min). Model from
+            MEDIROUTE_OPENROUTER_MODEL (default: a free model with JSON-schema support).
     none    no LLM at all, same fallback, no connection attempts.
 
 A hosted model (e.g. OpenAI with an API key) goes in make_llm_client(): any class with ``model``,
@@ -131,6 +134,127 @@ class OllamaClient:
                        duration_ms=duration, details=details)
 
 
+# ---------------------------------------------------------------------------- OpenRouter
+OPENROUTER_URL = "https://openrouter.ai/api/v1"
+# A free model that returned valid JSON-schema output for Step 1 prompts (checked 2026-11-10).
+# Pin a model for evaluation runs: "openrouter/free" picks a different model per request.
+DEFAULT_OPENROUTER_MODEL = "nvidia/nemotron-3.5-super-vl:free"
+MAX_RETRY_WAIT_S = 20.0  # per-minute 429: wait (Retry-After) and retry once; longer limits mark it down
+CODE_FENCE = "`" * 3
+
+
+def _read_api_key(name: str) -> str:
+    """From the environment, or on Windows from the user's saved variables (setx), so a terminal
+    opened before setx still works."""
+    value = os.getenv(name, "").strip()
+    if value or os.name != "nt":
+        return value
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment") as key:
+            return str(winreg.QueryValueEx(key, name)[0]).strip()
+    except OSError:
+        return ""
+
+
+class OpenRouterClient:
+    """OpenAI-compatible chat completions via OpenRouter, with the same LLMCall details as Ollama."""
+
+    provider = "openrouter"
+    needs_priming = False  # no local prompt cache to warm, and each call counts against the free limit
+
+    def __init__(self, model: str | None = None, api_key: str | None = None, base_url: str = OPENROUTER_URL,
+                 timeout_s: float = DEFAULT_TIMEOUT_S) -> None:
+        self.model = model or os.getenv("MEDIROUTE_OPENROUTER_MODEL", DEFAULT_OPENROUTER_MODEL)
+        self.api_key = api_key if api_key is not None else _read_api_key("OPENROUTER_API_KEY")
+        self.base_url = base_url.rstrip("/")
+        self.timeout_s = timeout_s
+        self.key_info: dict[str, Any] = {}
+        self._down_reason = "" if self.api_key else (
+            "OPENROUTER_API_KEY is not set (create a key at openrouter.ai/settings/keys, then setx it)")
+        self._down_at = 0.0 if self.api_key else float("inf")  # no key: never re-check
+
+    def status(self, force: bool = False) -> dict[str, Any]:
+        recheck = self._down_at != float("inf") and time.monotonic() - self._down_at > RECHECK_AFTER_S
+        if self._down_reason and recheck:
+            self._down_reason = ""  # try again; a rate limit or outage may have cleared
+        return {"provider": self.provider, "model": self.model, "available": not self._down_reason,
+                "reason": self._down_reason}
+
+    def _request(self, path: str, payload: dict | None = None) -> dict:
+        request = urllib.request.Request(
+            f"{self.base_url}{path}", data=json.dumps(payload).encode("utf-8") if payload is not None else None,
+            headers={"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json",
+                     "X-OpenRouter-Title": "MediRoute (capstone)"})
+        with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
+            return json.loads(response.read().decode("utf-8"))
+
+    def _mark_down(self, reason: str, permanent: bool = False) -> None:
+        self._down_reason = reason
+        self._down_at = float("inf") if permanent else time.monotonic()
+
+    def warm_up(self) -> None:
+        """Checks the key and the free-tier limit without spending a request."""
+        if not self.api_key:
+            raise RuntimeError(self._down_reason)
+        try:
+            info = self._request("/key").get("data", {})
+        except urllib.error.HTTPError as exc:
+            self._mark_down(f"OpenRouter key rejected (HTTP {exc.code})", permanent=exc.code == 401)
+            raise RuntimeError(self._down_reason) from exc
+        self.key_info = {k: info.get(k) for k in ("limit", "usage", "is_free_tier", "limit_remaining")}
+
+    def generate_json(self, prompt: str, schema: dict, purpose: str) -> LLMCall:
+        options = {"temperature": 0, "seed": 7}
+        details: dict[str, Any] = {"purpose": purpose, "provider": self.provider, "model": self.model,
+                                   "endpoint": f"{self.base_url}/chat/completions", "options": options,
+                                   "prompt_chars": len(prompt), "timeout_s": self.timeout_s}
+        state = self.status()
+        if not state["available"]:
+            details["skipped"] = True
+            return LLMCall(False, error=f"LLM unavailable: {state['reason']}", details=details)
+        payload = {"model": self.model, "messages": [{"role": "user", "content": prompt}], **options,
+                   "response_format": {"type": "json_schema",
+                                       "json_schema": {"name": purpose, "strict": False, "schema": schema}}}
+        start = time.perf_counter()
+        body: dict = {}
+        for attempt in range(2):
+            try:
+                body = self._request("/chat/completions", payload)
+                break
+            except urllib.error.HTTPError as exc:
+                text = exc.read().decode("utf-8", "replace")[:300]
+                wait = float(exc.headers.get("Retry-After") or 0) if exc.headers else 0.0
+                if exc.code == 429 and attempt == 0 and 0 < wait <= MAX_RETRY_WAIT_S:
+                    time.sleep(wait)
+                    continue
+                if exc.code in (401, 402, 403):
+                    self._mark_down(f"OpenRouter HTTP {exc.code}: {text}", permanent=exc.code == 401)
+                elif exc.code == 429:  # daily free limit, or the free model is busy upstream
+                    self._mark_down(f"OpenRouter rate limit (HTTP 429): {text}")
+                return LLMCall(False, error=f"HTTP {exc.code}: {text}",
+                               duration_ms=int((time.perf_counter() - start) * 1000), details=details)
+            except Exception as exc:  # network error, timeout
+                return LLMCall(False, error=f"{type(exc).__name__}: {exc}",
+                               duration_ms=int((time.perf_counter() - start) * 1000), details=details)
+        duration = int((time.perf_counter() - start) * 1000)
+        usage = body.get("usage") or {}
+        details.update({"model_used": body.get("model"), "upstream_provider": body.get("provider"),
+                        "generation_id": body.get("id"), "prompt_tokens": usage.get("prompt_tokens"),
+                        "output_tokens": usage.get("completion_tokens"), "cost": usage.get("cost")})
+        choices = body.get("choices") or []
+        raw = ((choices[0].get("message") or {}).get("content") or "") if choices else ""
+        cleaned = raw.strip()
+        if cleaned.startswith(CODE_FENCE):  # some models wrap JSON in a code fence despite response_format
+            cleaned = cleaned.strip("`").removeprefix("json").strip()
+        try:
+            parsed = json.loads(cleaned or "{}")
+        except json.JSONDecodeError as exc:
+            return LLMCall(False, raw_response=raw, error=f"bad JSON: {exc}", duration_ms=duration, details=details)
+        return LLMCall(True, parsed=parsed if isinstance(parsed, dict) else {}, raw_response=raw,
+                       duration_ms=duration, details=details)
+
+
 class DisabledLLMClient:
     """MEDIROUTE_LLM_PROVIDER=none: no LLM; Step 1 runs on keyword evidence and the two search voters."""
 
@@ -154,6 +278,8 @@ def make_llm_client():
     provider = os.getenv("MEDIROUTE_LLM_PROVIDER", "ollama").strip().lower()
     if provider == "ollama":
         return OllamaClient()
+    if provider == "openrouter":
+        return OpenRouterClient()
     if provider in {"none", "off", "disabled"}:
         return DisabledLLMClient()
-    raise ValueError(f"Unknown MEDIROUTE_LLM_PROVIDER '{provider}': use 'ollama' or 'none'")
+    raise ValueError(f"Unknown MEDIROUTE_LLM_PROVIDER '{provider}': use 'ollama', 'openrouter' or 'none'")

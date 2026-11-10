@@ -229,8 +229,24 @@ instantly (no waiting on a refused connection), and the server checks again ever
 Ollama later works without a restart. To turn the LLM off on purpose:
 
 ```powershell
-$env:MEDIROUTE_LLM_PROVIDER = "none"   # default "ollama"; a hosted model (GPT) will be added here
+$env:MEDIROUTE_LLM_PROVIDER = "none"   # default "ollama"
 ```
+
+**No Ollama, but want the LLM? Use OpenRouter's free models.** Each teammate makes their own free
+key (GitHub login, no card) at https://openrouter.ai/settings/keys, saves it once, and starts the
+API with the OpenRouter provider:
+
+```powershell
+setx OPENROUTER_API_KEY "sk-or-v1-..."      # once; reopen VS Code / the terminal afterwards
+$env:MEDIROUTE_LLM_PROVIDER = "openrouter"  # then start the API as usual
+# optional: $env:MEDIROUTE_OPENROUTER_MODEL = "<another :free model>"
+```
+
+Default model: `nvidia/nemotron-3.5-super-vl:free` (returns valid JSON for Step 1). Free tier:
+**50 requests/day, 20/min**; each Step 1 request uses 2. Calls are slower than local Ollama
+(measured: median 12.7 s, max 53 s per call, 19/19 succeeded). If the limit runs out, Step 1 falls
+back to the two search voters like the no-LLM mode. Send only synthetic test data. Never commit the
+key.
 
 The Step 1 lookup list (`data/medical_taxonomy/step1_lookup.csv`) is in the repo. To rebuild it,
 download the CDC ICD-10-CM code descriptions (public domain) and run the builder:

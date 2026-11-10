@@ -119,9 +119,11 @@ class Step1Pipeline:
             logger.warning("Step 1 embedding index failed to load (%s); V2 will be unavailable", exc)
         try:
             self.client.warm_up()
-            self.extractor.extract("knee pain")
-            self.v3.vote("knee pain")
-            logger.info("Step 1 LLM warm-up done: model=%s", self.client.model)
+            if getattr(self.client, "needs_priming", True):  # local Ollama: cache the long prompts
+                self.extractor.extract("knee pain")
+                self.v3.vote("knee pain")
+            logger.info("Step 1 LLM warm-up done: provider=%s model=%s %s", getattr(self.client, "provider", ""),
+                        self.client.model, getattr(self.client, "key_info", "") or "")
         except Exception as exc:
             logger.warning(
                 "\n" + "=" * 78 + "\n"

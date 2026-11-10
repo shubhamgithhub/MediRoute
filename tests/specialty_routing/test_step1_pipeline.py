@@ -257,3 +257,40 @@ def test_llm_provider_switch(monkeypatch):
     monkeypatch.setenv("MEDIROUTE_LLM_PROVIDER", "gpt-without-code")
     with pytest.raises(ValueError):
         make_llm_client()
+
+
+# ---------------------------------------------------------------- OpenRouter (no network: _request is faked)
+def test_openrouter_without_key_is_skipped_with_a_clear_reason():
+    from mediroute.specialty_routing.step1.ollama_client import OpenRouterClient
+    client = OpenRouterClient(api_key="")
+    assert client.status()["available"] is False and "OPENROUTER_API_KEY" in client.status()["reason"]
+    call = client.generate_json("x", {}, purpose="specialty_vote")
+    assert not call.ok and call.details["skipped"]
+
+
+def test_openrouter_parses_json_even_inside_a_code_fence(monkeypatch):
+    from mediroute.specialty_routing.step1.ollama_client import OpenRouterClient
+    client = OpenRouterClient(api_key="sk-or-test", model="some/model:free")
+    fence = "`" * 3
+    body = {"id": "gen-1", "model": "some/model:free", "provider": "X",
+            "usage": {"prompt_tokens": 50, "completion_tokens": 9},
+            "choices": [{"message": {"content": fence + 'json\n{"specialty": "Ophthalmology"}\n' + fence}}]}
+    monkeypatch.setattr(client, "_request", lambda path, payload=None: body)
+    call = client.generate_json("eye infection", {"type": "object"}, purpose="specialty_vote")
+    assert call.ok and call.parsed == {"specialty": "Ophthalmology"}
+    assert call.details["prompt_tokens"] == 50 and call.details["upstream_provider"] == "X"
+
+
+def test_openrouter_rate_limit_marks_it_down_so_next_calls_skip(monkeypatch):
+    import io
+    import urllib.error
+    from mediroute.specialty_routing.step1.ollama_client import OpenRouterClient
+    client = OpenRouterClient(api_key="sk-or-test")
+
+    def limited(path, payload=None):
+        raise urllib.error.HTTPError(path, 429, "Too Many Requests", {}, io.BytesIO(b'{"error":"free-models-per-day"}'))
+    monkeypatch.setattr(client, "_request", limited)
+    first = client.generate_json("x", {}, purpose="specialty_vote")
+    assert not first.ok and "429" in first.error
+    second = client.generate_json("x", {}, purpose="specialty_vote")
+    assert second.details.get("skipped") and client.status()["available"] is False
