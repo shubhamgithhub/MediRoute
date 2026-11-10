@@ -97,12 +97,21 @@ with `python scripts/api_smoke_workflow.py`.
 
 ### Step 2: Specialty to ranked hospitals
 
+What runs today (`hospital_recommendation/engine.py`, built by Shubham). Dashed boxes in the
+diagram are planned, not built.
+
 | # | Stage | What it does | Type |
 |---|-------|--------------|------|
-| 2.1 | **Filter hospitals** | Keep only NABH hospitals offering the required specialty, near the preferred location | Code |
-| 2.2 | **AHP weights + TOPSIS rank** | Score hospitals on expert-weighted criteria (staff, equipment, accreditation) | Code |
-| 2.3 | **Write explanation** | Explain the ranking using **only** the retrieved records (grounded RAG) | LLM |
-| 2.4 | **Result, translation, PDF** | Ranked list with CGHS cost (display only), sources, translation and a PDF export | Code |
+| 2.1 | **Hard filters** | Keep hospitals whose verified specialities include Step 1's speciality (names normalised by `specialty_normalization.csv`), then the preferred city / state. None left: say no hospital has the speciality yet, or ask whether to search other cities | Code |
+| 2.2 | **Semantic search** | Query = speciality + diagnoses + procedures + findings from Step 1. Cosine search (`multi-qa-MiniLM-L6-cos-v1`, FAISS) over the filtered hospitals only, keeping 3×K candidates | Embeddings |
+| 2.3 | **Rerank: semantic + bonus** | Final score = semantic score + a rule bonus capped at 0.20: matched procedure up to 0.08, verified 0.03, NABH 0.02, JCI 0.02, international patient services 0.02, evidence quality up to 0.03. Each bonus is shown as a ranking reason | Code |
+| 2.4 | **Result** | Top 5 hospitals with final score and reasons | Code |
+
+Known gaps: the index is the older 150-hospital dataset (no Ophthalmology, ENT, Dermatology,
+Psychiatry, General Medicine or O&G hospitals), not the verified 100-hospital master; the keyword
+retriever exists but is not used; the bonus weights are fixed, not tested. Planned: AHP-TOPSIS
+with tested weights (medical fit above location, per the TA), grounded LLM explanation per
+hospital, CGHS cost for display only.
 
 ### Design choice: rules vs LLM
 

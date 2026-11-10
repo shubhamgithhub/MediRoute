@@ -14,12 +14,13 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 U = 80  # pixels per layout unit
-W, H = 12.0, 22.5
+W, H = 12.0, 21.8
 
 STYLE = {  # fill, border, title colour, subtitle colour
     "llm": ("#EEEDFD", "#6A5ACD", "#3B2E8C", "#5B4DB0"),
     "code": ("#E3F4EE", "#2E8B6A", "#0F5C40", "#1F7A58"),
     "data": ("#F2EFEA", "#6B6B6B", "#333333", "#555555"),
+    "planned": ("#FFFFFF", "#9A9A9A", "#555555", "#777777"),
 }
 parts: list[str] = []
 
@@ -32,8 +33,9 @@ def box(cx, cy, w, h, title, sub, kind):
     fill, edge, tcol, scol = STYLE[kind]
     x, y = cx - w / 2, cy - h / 2
     parts.append(f'<rect x="{px(x)}" y="{px(y)}" width="{px(w)}" height="{px(h)}" rx="11" '
-                 f'fill="{fill}" stroke="{edge}" stroke-width="1.6"/>')
-    ty = cy - 0.12 if sub else cy + 0.07
+                 f'fill="{fill}" stroke="{edge}" stroke-width="1.6"'
+                 + (' stroke-dasharray="7 4"' if kind == "planned" else "") + '/>')
+    ty = cy - 0.12 if sub else (cy - h / 2 + 0.4 if kind == "planned" else cy + 0.07)
     parts.append(f'<text x="{px(cx)}" y="{px(ty)}" text-anchor="middle" font-size="17" font-weight="700" '
                  f'fill="{tcol}">{escape(title)}</text>')
     if sub:
@@ -123,31 +125,48 @@ text(0.55, 9.85, "re-run", size=12.5, colour="#4A4A4A")
 
 box(4.0, 13.25, 7.0, 0.85, "Per-request trace", "logs/step1_trace.jsonl: input, LLM calls, votes, decision", "data")
 
-# ------------------------------------------------------------------ Step 2
-D = 1.3  # Step 2 moved down to make room for the cleaning step
-container(0.3, 13.15 + D, 11.7, 20.05 + D, "Step 2: speciality to ranked hospitals", anchor="start")
-arrow((9.0, 12.175), (9.0, 14.225 + D))
-box(3.0, 14.75 + D, 4.6, 0.95, "Verified hospital data", "NABH / JCI + websites (100 hospitals)", "data")
-box(9.0, 14.75 + D, 4.6, 0.95, "Filter hospitals", "keep matching speciality only", "code")
-arrow((5.3, 14.75 + D), (6.7, 14.75 + D))
-box(3.0, 16.2 + D, 4.6, 0.95, "AHP weights (expert)", "staff, equipment, accreditation", "data")
-box(9.0, 16.2 + D, 4.6, 0.95, "AHP weights, TOPSIS rank", "transparent scoring", "code")
-arrow((5.3, 16.2 + D), (6.7, 16.2 + D))
-arrow((9.0, 15.225 + D), (9.0, 15.725 + D))
-box(3.0, 17.65 + D, 4.6, 0.95, "Write explanation", "from retrieved records only", "llm")
-arrow((9.0, 16.675 + D), (9.0, 17.0 + D), (3.0, 17.0 + D), (3.0, 17.175 + D))
-box(3.0, 19.1 + D, 4.6, 0.95, "CGHS cost (display only)", "indicative, deferred", "data")
-box(9.0, 19.1 + D, 4.6, 0.95, "Result", "ranked list, reasons, sources", "code")
-arrow((3.0, 18.125 + D), (3.0, 18.4 + D), (9.0, 18.4 + D), (9.0, 18.625 + D))
-arrow((5.3, 19.1 + D), (6.7, 19.1 + D))
+# ------------------------------------------------------------------ Step 2 (as built: hospital_recommendation/engine.py)
+container(0.3, 14.45, 11.7, 20.75, "Step 2: speciality to ranked hospitals (HospitalRecommendationEngine)", anchor="start")
+arrow((9.0, 12.175), (9.0, 15.075))
+
+# R1: hard filters, with the two no-match exits
+box(9.0, 15.55, 4.6, 0.95, "Hard filters", "speciality (normalised) · then city / state", "code")
+box(3.0, 15.55, 4.6, 0.95, "No match", "no speciality: say so · no city: ask to widen", "code")
+arrow((6.7, 15.55), (5.3, 15.55), label="none left", label_at=(5.45, 15.42))
+
+# R2: semantic search over the filtered hospitals only
+box(3.0, 17.0, 4.6, 0.95, "Hospital index (150)", "FAISS + metadata · to rebuild from master", "data")
+box(9.0, 17.0, 4.6, 1.2, "Semantic search", "query: speciality + diagnoses + procedures", "llm")
+text(9.0, 17.48, "multi-qa-MiniLM cosine · top 3×K candidates", size=12, anchor="middle", colour="#5B4DB0")
+arrow((9.0, 16.025), (9.0, 16.4))
+arrow((5.3, 17.0), (6.7, 17.0))
+
+# R3: transparent rule bonus
+box(9.0, 18.5, 4.6, 1.2, "Rerank: semantic + bonus", "bonus ≤ 0.20, each one listed as a reason", "code")
+text(9.0, 18.98, "procedure ≤.08 · verified .03 · NABH .02 · JCI .02 · intl .02", size=11.5, anchor="middle",
+     colour="#1F7A58")
+arrow((9.0, 17.6), (9.0, 17.9))
+
+# R4: result
+box(9.0, 19.95, 4.6, 0.95, "Ranked hospitals (top 5)", "final score + ranking reasons", "code")
+arrow((9.0, 19.1), (9.0, 19.475))
+
+# planned, not built (TA: test weights, ground explanations)
+box(3.0, 19.25, 4.6, 2.0, "Planned, not built yet", "", "planned")
+for i, item in enumerate(["AHP-TOPSIS: tested weights (fit > location)",
+                          "grounded LLM explanation per hospital",
+                          "keyword + FAISS hybrid retrieval",
+                          "CGHS cost (display only, deferred)"]):
+    text(0.95, 19.0 + i * 0.36, "· " + item, size=12.5, colour="#666666")
 
 # ------------------------------------------------------------------ legend
 for i, (kind, label) in enumerate([("llm", "LLM or embeddings"), ("code", "Deterministic code"),
-                                   ("data", "Input or data")]):
+                                   ("data", "Input or data"), ("planned", "Planned")]):
     fill, edge, _, _ = STYLE[kind]
-    x = 0.5 + i * 3.9
-    parts.append(f'<rect x="{px(x)}" y="{px(20.45 + D)}" width="22" height="22" rx="5" fill="{fill}" stroke="{edge}"/>')
-    text(x + 0.42, 20.68 + D, label, size=15, colour="#333333")
+    x = 0.5 + i * 2.95
+    dash = ' stroke-dasharray="5 3"' if kind == "planned" else ""
+    parts.append(f'<rect x="{px(x)}" y="{px(21.15)}" width="22" height="22" rx="5" fill="{fill}" stroke="{edge}"{dash}/>')
+    text(x + 0.42, 21.38, label, size=15, colour="#333333")
 
 svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{px(W)}" height="{px(H)}" viewBox="0 0 {px(W)} {px(H)}" '
        f'font-family="Inter, Segoe UI, Helvetica, Arial, sans-serif">'
