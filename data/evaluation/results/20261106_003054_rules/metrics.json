@@ -1,0 +1,164 @@
+{
+  "meta": {
+    "run_id": "20261106_003054_rules",
+    "model": null,
+    "prompt_version": "specialty_v1",
+    "routes": [
+      "rules"
+    ],
+    "gold": [
+      "step1_gold_mediroute.csv",
+      "step1_gold_gretel.csv"
+    ]
+  },
+  "metrics": {
+    "step1_gold_mediroute": {
+      "rules": {
+        "n": 84,
+        "top1_accuracy": 0.833,
+        "acceptable_accuracy": 0.881,
+        "top3_accuracy": 0.881,
+        "macro_f1": 0.88,
+        "unclear_rate": 0.095,
+        "failed_calls": 0,
+        "latency_p50_ms": 0,
+        "latency_p95_ms": 0,
+        "by_confidence": {},
+        "by_case_type": {
+          "clear": {
+            "n": 14,
+            "top1_accuracy": 1.0
+          },
+          "diagnosis": {
+            "n": 22,
+            "top1_accuracy": 0.909
+          },
+          "lay": {
+            "n": 31,
+            "top1_accuracy": 0.742
+          },
+          "misspelled": {
+            "n": 2,
+            "top1_accuracy": 0.0
+          },
+          "multi": {
+            "n": 3,
+            "top1_accuracy": 0.333
+          },
+          "report": {
+            "n": 7,
+            "top1_accuracy": 1.0
+          },
+          "vague": {
+            "n": 5,
+            "top1_accuracy": 1.0
+          }
+        },
+        "top_errors": [
+          {
+            "expected": "Cardiology",
+            "predicted": "Unclear",
+            "count": 2
+          },
+          {
+            "expected": "Orthopaedics",
+            "predicted": "Unclear",
+            "count": 2
+          },
+          {
+            "expected": "Neurology",
+            "predicted": "Unclear",
+            "count": 1
+          },
+          {
+            "expected": "Gastroenterology",
+            "predicted": "Unclear",
+            "count": 1
+          },
+          {
+            "expected": "Paediatrics",
+            "predicted": "Unclear",
+            "count": 1
+          },
+          {
+            "expected": "Pulmonology",
+            "predicted": "Unclear",
+            "count": 1
+          },
+          {
+            "expected": "Emergency Medicine",
+            "predicted": "Gastroenterology",
+            "count": 1
+          },
+          {
+            "expected": "Endocrinology",
+            "predicted": "Gastroenterology",
+            "count": 1
+          }
+        ]
+      }
+    },
+    "step1_gold_gretel": {
+      "rules": {
+        "n": 212,
+        "top1_accuracy": 0.297,
+        "acceptable_accuracy": 0.453,
+        "top3_accuracy": 0.5,
+        "macro_f1": 0.321,
+        "unclear_rate": 0.17,
+        "failed_calls": 0,
+        "latency_p50_ms": 2,
+        "latency_p95_ms": 4,
+        "by_confidence": {},
+        "by_case_type": {
+          "gretel": {
+            "n": 212,
+            "top1_accuracy": 0.297
+          }
+        },
+        "top_errors": [
+          {
+            "expected": "General Medicine",
+            "predicted": "Neurology",
+            "count": 15
+          },
+          {
+            "expected": "Orthopaedics",
+            "predicted": "Unclear",
+            "count": 10
+          },
+          {
+            "expected": "Pulmonology",
+            "predicted": "General Medicine",
+            "count": 9
+          },
+          {
+            "expected": "Cardiology",
+            "predicted": "Neurology",
+            "count": 7
+          },
+          {
+            "expected": "General Medicine",
+            "predicted": "Unclear",
+            "count": 6
+          },
+          {
+            "expected": "General Medicine",
+            "predicted": "Ophthalmology",
+            "count": 6
+          },
+          {
+            "expected": "Urology",
+            "predicted": "Unclear",
+            "count": 5
+          },
+          {
+            "expected": "Pulmonology",
+            "predicted": "Cardiology",
+            "count": 4
+          }
+        ]
+      }
+    }
+  }
+}

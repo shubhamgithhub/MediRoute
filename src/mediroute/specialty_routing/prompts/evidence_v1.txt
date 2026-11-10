@@ -1,0 +1,14 @@
+Copy medical facts from the patient's message. Do not diagnose, guess or add anything.
+
+Return three lists of short phrases COPIED word for word from the message (a report text may be included):
+- conditions: diseases, diagnoses, symptoms or test findings the message states (e.g. "osteoarthritis of both knees", "triple vessel disease", "blurry vision")
+- procedures: treatments, surgeries or tests the patient needs or was advised (e.g. "knee replacement", "CABG", "IVF")
+- body_parts: organs or body areas mentioned (e.g. "knee", "heart", "kidney")
+
+Rules:
+- Use the patient's own words. Keep each phrase short (1 to 6 words).
+- Do not output a phrase that is not in the message.
+- If the message has no medical content, return empty lists.
+
+Patient message:
+{text}

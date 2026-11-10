@@ -1,0 +1,223 @@
+{
+  "meta": {
+    "run_id": "20261106_003121_llama3.2",
+    "model": "llama3.2",
+    "prompt_version": "specialty_v1",
+    "routes": [
+      "rules",
+      "llm",
+      "hybrid"
+    ],
+    "gold": [
+      "step1_gold_mediroute.csv",
+      "step1_gold_gretel.csv"
+    ]
+  },
+  "metrics": {
+    "step1_gold_mediroute": {
+      "rules": {
+        "n": 3,
+        "top1_accuracy": 0.667,
+        "acceptable_accuracy": 0.667,
+        "top3_accuracy": 0.667,
+        "macro_f1": 0.8,
+        "unclear_rate": 0.333,
+        "failed_calls": 0,
+        "latency_p50_ms": 3,
+        "latency_p95_ms": 5,
+        "by_confidence": {},
+        "by_case_type": {
+          "diagnosis": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          },
+          "lay": {
+            "n": 1,
+            "top1_accuracy": 0.0
+          },
+          "multi": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          }
+        },
+        "top_errors": [
+          {
+            "expected": "Cardiology",
+            "predicted": "Unclear",
+            "count": 1
+          }
+        ]
+      },
+      "llm": {
+        "n": 3,
+        "top1_accuracy": 1.0,
+        "acceptable_accuracy": 1.0,
+        "top3_accuracy": 1.0,
+        "macro_f1": 1.0,
+        "unclear_rate": 0.0,
+        "failed_calls": 0,
+        "latency_p50_ms": 16294,
+        "latency_p95_ms": 45179,
+        "by_confidence": {},
+        "by_case_type": {
+          "diagnosis": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          },
+          "lay": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          },
+          "multi": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          }
+        },
+        "top_errors": []
+      },
+      "hybrid": {
+        "n": 3,
+        "top1_accuracy": 1.0,
+        "acceptable_accuracy": 1.0,
+        "top3_accuracy": 1.0,
+        "macro_f1": 1.0,
+        "unclear_rate": 0.0,
+        "failed_calls": 0,
+        "latency_p50_ms": 16295,
+        "latency_p95_ms": 45184,
+        "by_confidence": {
+          "high": {
+            "n": 2,
+            "top1_accuracy": 1.0
+          },
+          "low": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          }
+        },
+        "by_case_type": {
+          "diagnosis": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          },
+          "lay": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          },
+          "multi": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          }
+        },
+        "top_errors": []
+      }
+    },
+    "step1_gold_gretel": {
+      "rules": {
+        "n": 3,
+        "top1_accuracy": 0.333,
+        "acceptable_accuracy": 0.333,
+        "top3_accuracy": 0.333,
+        "macro_f1": 0.333,
+        "unclear_rate": 0.333,
+        "failed_calls": 0,
+        "latency_p50_ms": 4,
+        "latency_p95_ms": 5,
+        "by_confidence": {},
+        "by_case_type": {
+          "drug reaction": {
+            "n": 1,
+            "top1_accuracy": 0.0
+          },
+          "peptic ulcer disease": {
+            "n": 2,
+            "top1_accuracy": 0.5
+          }
+        },
+        "top_errors": [
+          {
+            "expected": "Gastroenterology",
+            "predicted": "ENT",
+            "count": 1
+          },
+          {
+            "expected": "General Medicine",
+            "predicted": "Unclear",
+            "count": 1
+          }
+        ]
+      },
+      "llm": {
+        "n": 3,
+        "top1_accuracy": 0.667,
+        "acceptable_accuracy": 0.667,
+        "top3_accuracy": 0.667,
+        "macro_f1": 0.5,
+        "unclear_rate": 0.0,
+        "failed_calls": 0,
+        "latency_p50_ms": 18083,
+        "latency_p95_ms": 23083,
+        "by_confidence": {},
+        "by_case_type": {
+          "drug reaction": {
+            "n": 1,
+            "top1_accuracy": 0.0
+          },
+          "peptic ulcer disease": {
+            "n": 2,
+            "top1_accuracy": 1.0
+          }
+        },
+        "top_errors": [
+          {
+            "expected": "General Medicine",
+            "predicted": "Neurology",
+            "count": 1
+          }
+        ]
+      },
+      "hybrid": {
+        "n": 3,
+        "top1_accuracy": 0.667,
+        "acceptable_accuracy": 0.667,
+        "top3_accuracy": 0.667,
+        "macro_f1": 0.5,
+        "unclear_rate": 0.0,
+        "failed_calls": 0,
+        "latency_p50_ms": 18087,
+        "latency_p95_ms": 23086,
+        "by_confidence": {
+          "high": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          },
+          "low": {
+            "n": 1,
+            "top1_accuracy": 0.0
+          },
+          "medium": {
+            "n": 1,
+            "top1_accuracy": 1.0
+          }
+        },
+        "by_case_type": {
+          "drug reaction": {
+            "n": 1,
+            "top1_accuracy": 0.0
+          },
+          "peptic ulcer disease": {
+            "n": 2,
+            "top1_accuracy": 1.0
+          }
+        },
+        "top_errors": [
+          {
+            "expected": "General Medicine",
+            "predicted": "Neurology",
+            "count": 1
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+query_id,query,report_text,expected_specialty,acceptable_alternatives,case_type,critical_details,expects_clarification,emergency,source,review_status,reviewed_by,review_notes
+C001,I was diagnosed with atrial fibrillation two years ago. Medicines are not controlling it and my doctor in Dhaka suggested an ablation.,,Cardiology,,diagnosis,body_part=heart; condition=atrial fibrillation; procedure=ablation,false,false,team_synthetic,draft,,
+C002,"My father, 67, has severe aortic stenosis and his cardiologist says he needs valve replacement surgery.",,Cardiothoracic Surgery,Cardiology,diagnosis,body_part=heart; condition=aortic stenosis; procedure=valve replacement,false,false,team_synthetic,draft,,
+C003,"My mother, 62, has severe osteoarthritis of both knees. Her surgeon recommended knee replacement.",,Orthopaedics,,diagnosis,body_part=knee; condition=osteoarthritis; procedure=knee replacement,false,false,team_synthetic,draft,,
+C004,Biopsy confirmed stage 3 colon cancer. The oncologist in Nairobi recommends surgery followed by chemotherapy.,,Oncology,Gastroenterology,diagnosis,"body_part=colon; condition=colon cancer; procedure=surgery, chemotherapy",false,false,team_synthetic,draft,,
+C005,MRI shows a 4 cm meningioma pressing on the brain and the neurosurgeon advised removal.,,Neurosurgery,Oncology,diagnosis,body_part=brain; condition=meningioma; procedure=tumour removal,false,false,team_synthetic,draft,,
+C006,I have had Parkinson's disease for 6 years. The tremors are getting worse and I want to be assessed for deep brain stimulation.,,Neurology,Neurosurgery,diagnosis,body_part=brain; condition=Parkinson's disease; procedure=deep brain stimulation,false,false,team_synthetic,draft,,
+C007,I have a burn contracture of the neck from an accident two years ago and cannot move my head properly. I need reconstruction surgery.,,Plastic & Reconstructive Surgery,,diagnosis,body_part=neck; condition=burn contracture; procedure=reconstruction,false,false,team_synthetic,draft,,
+C008,Diagnosed with severe plaque psoriasis covering most of my body. Creams are not working and I want to discuss biologic treatment.,,Dermatology,,diagnosis,body_part=skin; condition=plaque psoriasis; procedure=biologic treatment,false,false,team_synthetic,draft,,
+C009,Type 1 diabetic for 15 years with very poor sugar control. I want advice about an insulin pump.,,Endocrinology,,diagnosis,body_part=pancreas; condition=type 1 diabetes; procedure=insulin pump,false,false,team_synthetic,draft,,
+C010,"My son, 9, has beta thalassemia major and needs a bone marrow transplant. His sister is a full match.",,Hematology & Bone Marrow Transplant,Paediatrics,diagnosis,body_part=blood; condition=beta thalassemia major; procedure=bone marrow transplant,false,false,team_synthetic,draft,,
+C011,I was diagnosed with interstitial lung disease (pulmonary fibrosis) and my breathlessness is increasing.,,Pulmonology,,diagnosis,body_part=lungs; condition=pulmonary fibrosis,false,false,team_synthetic,draft,,
+C012,I have a 12 mm stone in the right ureter. The urologist suggested laser removal.,,Urology,,diagnosis,body_part=ureter; condition=kidney stone; procedure=laser removal,false,false,team_synthetic,draft,,
+C013,Looking for the best hospital for CABG surgery.,,Cardiothoracic Surgery,Cardiology,procedure_only,body_part=heart; procedure=CABG,false,false,team_synthetic,draft,,
+C014,"TAVI procedure for my mother, 81 years old.",,Cardiology,Cardiothoracic Surgery,procedure_only,body_part=heart; procedure=TAVI,false,false,team_synthetic,draft,,
+C015,Total hip replacement,,Orthopaedics,,procedure_only,body_part=hip; procedure=total hip replacement,false,false,team_synthetic,draft,,
+C016,cataract surgery for both eyes,,Ophthalmology,,procedure_only,body_part=eyes; procedure=cataract surgery,false,false,team_synthetic,draft,,
+C017,"kidney transplant, my brother will be the donor",,Organ Transplant,Nephrology;Urology,procedure_only,body_part=kidney; procedure=kidney transplant,false,false,team_synthetic,draft,,
+C018,laparoscopic hysterectomy,,Obstetrics & Gynaecology,,procedure_only,body_part=uterus; procedure=laparoscopic hysterectomy,false,false,team_synthetic,draft,,
+C019,sleeve gastrectomy for weight loss,,Bariatric Surgery,,procedure_only,body_part=stomach; condition=obesity; procedure=sleeve gastrectomy,false,false,team_synthetic,draft,,
+C020,spinal fusion surgery L4-L5,,Orthopaedics,Neurosurgery,procedure_only,body_part=lumbar spine; procedure=spinal fusion,false,false,team_synthetic,draft,,
+C021,Please see my father's angiography report.,"CORONARY ANGIOGRAPHY
+LAD: 90% proximal stenosis. LCx: 80% stenosis. RCA: 70% mid stenosis.
+IMPRESSION: Triple vessel disease.
+ADVICE: CABG.",Cardiothoracic Surgery,Cardiology,report,body_part=heart; condition=triple vessel disease; procedure=CABG,false,false,team_synthetic,draft,,
+C022,My scan report is attached. What kind of specialist should I look for?,"MRI LEFT KNEE
+Complete tear of the anterior cruciate ligament. Grade II tear of the medial meniscus.",Orthopaedics,,report,"body_part=knee; condition=ACL tear, meniscus tear",false,false,team_synthetic,draft,,
+C023,Biopsy report attached.,"HISTOPATHOLOGY: Right breast lump, core biopsy.
+DIAGNOSIS: Invasive ductal carcinoma, grade 2. ER/PR positive, HER2 negative.",Oncology,,report,body_part=breast; condition=invasive ductal carcinoma,false,false,team_synthetic,draft,,
+C024,These are my kidney reports.,"Serum creatinine 6.8 mg/dL. eGFR 8 mL/min.
+USG: bilateral small contracted kidneys.
+IMPRESSION: End-stage renal disease. On maintenance haemodialysis twice weekly.",Nephrology,Organ Transplant,report,body_part=kidneys; condition=end-stage renal disease; procedure=haemodialysis,false,false,team_synthetic,draft,,
+C025,The eye doctor's report is attached.,"FUNDUS EXAMINATION: Proliferative diabetic retinopathy in both eyes with vitreous haemorrhage in the right eye.
+ADVICE: Vitrectomy.",Ophthalmology,Endocrinology,report,body_part=eyes; condition=proliferative diabetic retinopathy; procedure=vitrectomy,false,false,team_synthetic,draft,,
+C026,"Echo report of my daughter, 4 years old.","2D ECHO: Large perimembranous VSD (8 mm) with left-to-right shunt. Mild pulmonary hypertension.
+ADVICE: Surgical closure.",Pediatric Cardiology,Cardiothoracic Surgery,report,body_part=heart; condition=ventricular septal defect; procedure=surgical closure,false,false,team_synthetic,draft,,
+C027,CT scan of my father.,"CT ABDOMEN: Cirrhotic liver with portal hypertension and moderate ascites.
+Child-Pugh class C. MELD score 24.",Gastroenterology,Organ Transplant,report,"body_part=liver; condition=cirrhosis, portal hypertension",false,false,team_synthetic,draft,,
+C028,Thyroid report attached.,"USG NECK: 3.2 cm solid nodule in the right thyroid lobe.
+FNAC: Bethesda category V, suspicious for papillary carcinoma.",Oncology,Endocrinology;ENT,report,body_part=thyroid; condition=suspected papillary thyroid carcinoma,false,false,team_synthetic,draft,,
+C029,My wife's fertility test results.,"AMH 0.6 ng/mL. HSG: bilateral tubal block.
+Husband's semen analysis: normal.
+Married 6 years, unable to conceive.",Reproductive Medicine,Obstetrics & Gynaecology,report,"body_part=fallopian tubes; condition=infertility, tubal block",false,false,team_synthetic,draft,,
+C030,"Hearing test results of my son, 2 years old.","BERA: bilateral profound sensorineural hearing loss.
+No benefit from hearing aids after 6 months of use.",ENT,Paediatrics,report,body_part=ears; condition=profound sensorineural hearing loss,false,false,team_synthetic,draft,,
+C031,plz see reprot,"Page 1 of 2  --- Dr. ______ MBBS MS (Ortho) ---
+X-RAY PELVIS AP
+FINDINGS: Avascular necro sis of the
+right femoral head (Ficat stage IV) with col-
+lapse.
+ADVICE: Total hip arthro-
+plasty.
+--- Page 2 of 2 ---",Orthopaedics,,noisy_report,body_part=hip; condition=avascular necrosis of femoral head; procedure=total hip arthroplasty,false,false,team_synthetic,draft,,
+C032,my fathers heart report,"ECHO  CARDIOGRAPHY  REPORT
+LVEF 25 %  .  Severe LV systolic  dysfunction
+Impression :Dilated cardio myopathy .
+Advised CRT-D  implant",Cardiology,,noisy_report,body_part=heart; condition=dilated cardiomyopathy; procedure=CRT-D implant,false,false,team_synthetic,draft,,
+C033,brain scan resullt,"MRI BRAIN W/ CONTRAST
+lmpression: ring enhancing lesion left fronta1 lobe, likely high grade gl ioma.
+Neurosurgica1 opinion advised.",Neurosurgery,Oncology,noisy_report,body_part=brain; condition=suspected high-grade glioma,false,false,team_synthetic,draft,,
+C034,"endoscopy report attached, which doctor?","UGI ENDOSCOPY: Oesophageal varices grade III. Fundal varices.
+Portal hypertensive gastropathy.
+Rx: EVL done (4 bands).",Gastroenterology,,noisy_report,"body_part=oesophagus; condition=oesophageal varices, portal hypertension; procedure=variceal band ligation",false,false,team_synthetic,draft,,
+C035,report for my mom,"USG pelvis: Bulky uterus 14x9 cm with multiple intramural fibroids, largest 6.2 cm. Endometrium 11 mm.
+C/o heavy menstrual bleeding x 1 yr, Hb 8.1",Obstetrics & Gynaecology,,noisy_report,"body_part=uterus; condition=uterine fibroids, heavy menstrual bleeding",false,false,team_synthetic,draft,,
+C036,I need a liver transplant for my husband. He has end-stage liver disease from hepatitis B.,,Organ Transplant,Gastroenterology,cghs_gap,"body_part=liver; condition=end-stage liver disease, hepatitis B; procedure=liver transplant",false,false,team_synthetic,draft,,
+C037,We want IVF treatment. We have been trying for a baby for 5 years.,,Reproductive Medicine,Obstetrics & Gynaecology,cghs_gap,condition=infertility; procedure=IVF,false,false,team_synthetic,draft,,
+C038,Cochlear implant surgery for my 3 year old daughter who is deaf.,,ENT,Paediatrics,cghs_gap,body_part=ears; condition=deafness; procedure=cochlear implant,false,false,team_synthetic,draft,,
+C039,Lumpectomy for early breast cancer diagnosed last month.,,Oncology,,cghs_gap,body_part=breast; condition=early breast cancer; procedure=lumpectomy,false,false,team_synthetic,draft,,
+C040,weakness,,General Medicine,Neurology,vague,,true,false,team_synthetic,draft,,
+C041,pain,,General Medicine,Orthopaedics,vague,,true,false,team_synthetic,draft,,
+C042,I need surgery in India,,General Medicine,,vague,,true,false,team_synthetic,draft,,
+C043,My report is not good and the doctor says operation.,,General Medicine,,vague,,true,false,team_synthetic,draft,,
+C044,Problem in my stomach and head for some time.,,Gastroenterology,Neurology;General Medicine,vague,"body_part=stomach, head",true,false,team_synthetic,draft,,
+C045,"My father suddenly has crushing chest pain, is sweating and cannot breathe.",,Emergency Medicine,Cardiology,emergency,"body_part=chest; condition=crushing chest pain, breathlessness",false,true,team_synthetic,draft,,
+C046,Her face is drooping on one side and she cannot speak properly since 30 minutes.,,Emergency Medicine,Neurology,emergency,"body_part=face, speech; condition=suspected stroke",false,true,team_synthetic,draft,,
+C047,I have been thinking about ending my life.,,Psychiatry,Emergency Medicine,emergency,condition=suicidal thoughts,false,true,team_synthetic,draft,,
+C048,My 6 month old baby has a hole in the heart and is not gaining weight.,,Pediatric Cardiology,Cardiothoracic Surgery;Paediatrics,paediatric,"body_part=heart; condition=hole in the heart, poor weight gain",false,false,team_synthetic,draft,,
+C049,My 8 year old son has had two seizures this year and his EEG was abnormal.,,Neurology,Paediatrics,paediatric,"body_part=brain; condition=seizures, abnormal EEG",false,false,team_synthetic,draft,,
+C050,My newborn was born at 29 weeks and needs NICU care.,,Paediatrics,,paediatric,condition=premature birth (29 weeks); procedure=NICU care,false,false,team_synthetic,draft,,

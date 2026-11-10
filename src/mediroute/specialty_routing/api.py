@@ -16,7 +16,7 @@ from mediroute.specialty_routing.extraction.patient_context_validator import (
 )
 from mediroute.specialty_routing.extraction.pdf_parser import PDFParser
 from mediroute.specialty_routing.icd10_mapper import ICD10Mapper
-from mediroute.specialty_routing.router import infer_medical_context_from_query
+from mediroute.specialty_routing.service import get_service
 from mediroute.specialty_routing.schemas import PatientRequest
 from mediroute.utils.logging_config import get_logger
 
@@ -47,19 +47,16 @@ def infer_medical_context(query: str | PatientRequest):
         request_text = query.requirement or query.additionalPreference or ""
     if not isinstance(request_text, str):
         request_text = str(request_text or "")
-    logger.info("Inferencing medical context for request: %s", request_text)
-    result = infer_medical_context_from_query(request_text)
-    logger.info("Medical context result: %s", result)
-    return result
+    return get_service().analyze(request_text)
 
 
 @router.post("/api/analyze")
 def analyze_patient(request: PatientRequest):
-    logger.info("INPUT RECEIVED: requirement=%s, location=%s, language=%s, additionalPreference=%s", request.requirement, request.location, request.language, request.additionalPreference)
-    logger.info("Querying local specialty routing with patient details: %s", request.model_dump())
-    medical_context = infer_medical_context(request)
-    logger.info("LLM / routing output handled: %s", medical_context)
-    logger.info("OUTPUT HANDLING: preparing final API response for requirement=%s", request.requirement)
+    # The Step 1 pipeline logs every stage with a request_id (logs/step1_trace.jsonl).
+    logger.info("analyze request: location=%s language=%s report_chars=%d round=%d selected=%s parent=%s",
+                request.location, request.language, len(request.reportText or ""), request.clarificationRound,
+                request.selectedSpecialty, request.parentRequestId)
+    medical_context = get_service().analyze_request(request)
     return {
         "status": "success",
         "message": "Patient request received successfully",
@@ -71,7 +68,8 @@ def analyze_patient(request: PatientRequest):
             "reportName": request.reportName,
         },
         "medicalContext": medical_context,
-        "note": "Specialty inference uses a local open-source retrieval + classification pipeline for demo purposes.",
+        "note": ("Step 1 suggests a speciality to search using three independent methods (keyword search, "
+                 "meaning search, local LLM) and a majority vote. Discovery support only, not a diagnosis."),
     }
 
 

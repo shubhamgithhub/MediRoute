@@ -475,12 +475,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-// Upload all selected PDF reports in one multipart request.
+// Upload all selected PDF reports in one multipart request. Returns the parse result (or null).
 const parseMedicalReports = async (reports) => {
     if (!reports || reports.length === 0) {
         // No PDFs selected, so reports are optional and submission can continue.
         window.sessionStorage.removeItem("mediroute_report_parse_result");
-        return;
+        return null;
     }
 
     try {
@@ -511,11 +511,167 @@ const parseMedicalReports = async (reports) => {
         } else if (parseResult.overall_status === "needs_ocr") {
             console.warn("The uploaded reports require OCR.");
         }
+        return parseResult;
     } catch (error) {
         console.error("MediRoute PDF report parsing failed:", error);
         // The existing patient request stays saved when report parsing fails.
+        return null;
     }
 };
+
+// Text of all successfully parsed reports, joined, for Step 1 (capped to keep the LLM prompt small).
+const reportTextFrom = (parseResult) => {
+    const documents = parseResult && Array.isArray(parseResult.documents) ? parseResult.documents : [];
+    return documents
+        .filter((doc) => doc.status === "success" && doc.text)
+        .map((doc) => doc.text.trim())
+        .join("\n\n")
+        .slice(0, 6000);
+};
+
+// STEP 1: state of one search across clarification rounds
+const clarifyState = document.querySelector("#clarify-state");
+const choiceState = document.querySelector("#choice-state");
+const emergencyBanner = document.querySelector("#emergency-banner");
+let step1 = { patientData: null, reportText: "", parentRequestId: null, round: 0, lastContext: null };
+
+const showStep1Panel = (panel) => {
+    [form, loadingState, successState, clarifyState, choiceState].forEach((el) => { if (el) el.hidden = el !== panel; });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+const showEmergency = (context) => {
+    if (!emergencyBanner) return;
+    emergencyBanner.hidden = !context.emergency;
+    document.querySelector("#emergency-message").textContent = context.emergency_message || "";
+    if (window.lucide) window.lucide.createIcons();
+};
+
+const setProgress = (step) => {
+    progressLabel.textContent = `Step ${step} of 3`;
+    progressSteps.forEach((el, index) => {
+        el.classList.toggle("is-complete", index < step - 1);
+        el.classList.toggle("is-active", index === step - 1);
+        if (index === step - 1) el.setAttribute("aria-current", "step"); else el.removeAttribute("aria-current");
+    });
+    progressConnectors.forEach((el, index) => el.classList.toggle("is-complete", index < step - 1));
+};
+
+// One call to POST /api/analyze; `extra` carries clarification answers or the chosen speciality.
+const runStep1 = async (extra = {}) => {
+    setProgress(2);
+    showStep1Panel(loadingState);
+    const body = {
+        ...step1.patientData,
+        reportText: step1.reportText,
+        clarificationRound: step1.round,
+        parentRequestId: step1.parentRequestId,
+        ...extra
+    };
+    let backendResponse;
+    try {
+        backendResponse = await sendPatientRequestToBackend(body);
+    } catch (error) {
+        console.error("Backend connection failed:", error);
+        showStep1Panel(form);
+        setProgress(1);
+        if (errorSummary) {
+            errorSummary.hidden = false;
+            errorSummary.textContent = "MediRoute could not reach the analysis server. Please check that the API is running (port 8000) and try again.";
+        }
+        return;
+    }
+    const context = backendResponse.medicalContext || {};
+    console.log("MediRoute Step 1 response:", context);
+    step1.lastContext = context;
+    if (!step1.parentRequestId) step1.parentRequestId = context.request_id;
+    showEmergency(context);
+
+    if (context.decision === "clarification_required") {
+        renderClarification(context);
+    } else if (context.decision === "needs_user_choice") {
+        renderChoice(context);
+    } else {
+        sessionStorage.setItem("mediroute_medical_context", JSON.stringify(context));
+        showSuccessState(context);
+    }
+};
+
+const renderClarification = (context) => {
+    const info = context.clarification || {};
+    document.querySelector("#clarify-round").textContent = `A little more detail · question ${info.round || 1} of ${info.max_rounds || 2}`;
+    document.querySelector("#clarify-reason").textContent = `${context.reason || ""} ${info.message || ""}`.trim();
+    const holder = document.querySelector("#clarify-fields");
+    holder.innerHTML = "";
+    (info.fields || []).forEach((field) => {
+        const wrap = document.createElement("div");
+        wrap.className = "clarify-field";
+        const label = document.createElement("label");
+        label.htmlFor = `clarify-${field.name}`;
+        label.textContent = field.label;
+        let input;
+        if (field.type === "select") {
+            input = document.createElement("select");
+            const blank = document.createElement("option");
+            blank.value = "";
+            blank.textContent = "Select…";
+            input.appendChild(blank);
+            (field.options || []).forEach((option) => {
+                const el = document.createElement("option");
+                el.value = option;
+                el.textContent = option;
+                input.appendChild(el);
+            });
+        } else {
+            input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = field.placeholder || "";
+            input.maxLength = 200;
+        }
+        input.id = `clarify-${field.name}`;
+        input.name = field.name;
+        wrap.append(label, input);
+        holder.appendChild(wrap);
+    });
+    showStep1Panel(clarifyState);
+    if (window.lucide) window.lucide.createIcons();
+};
+
+const renderChoice = (context) => {
+    const info = context.user_choice || {};
+    document.querySelector("#choice-message").textContent = info.message || "";
+    const select = document.querySelector("#choice-select");
+    select.innerHTML = "";
+    (info.options || []).forEach((name, index) => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = index < (info.suggested_first || []).length ? `${name} (suggested)` : name;
+        select.appendChild(option);
+    });
+    showStep1Panel(choiceState);
+    if (window.lucide) window.lucide.createIcons();
+};
+
+document.querySelector("#clarify-form")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const answers = {};
+    new FormData(event.target).forEach((value, key) => { answers[key] = String(value).trim(); });
+    step1.round += 1;
+    await runStep1({ clarification: answers, clarificationRound: step1.round });
+});
+
+document.querySelector("#choice-form")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await runStep1({ selectedSpecialty: document.querySelector("#choice-select").value });
+});
+
+const backToForm = () => {
+    if (emergencyBanner) emergencyBanner.hidden = true;
+    showStep1Panel(form);
+    setProgress(1);
+};
+document.querySelector("#clarify-edit")?.addEventListener("click", backToForm);
+document.querySelector("#choice-edit")?.addEventListener("click", backToForm);
 
 // FORM SUBMISSION
 form.addEventListener("submit", async (event) => {
@@ -528,45 +684,41 @@ form.addEventListener("submit", async (event) => {
     if (!storeRequest()) {
         return;
     }
+    if (errorSummary) errorSummary.hidden = true;
 
-    // Parse selected PDFs before continuing the normal submission flow.
-    await parseMedicalReports(selectedReports);
+    // Parse selected PDFs first, so the report text can go to Step 1.
+    setProgress(2);
+    showStep1Panel(loadingState);
+    const parseResult = await parseMedicalReports(selectedReports);
 
-    // Read the saved patient data from Session Storage
-    const patientData = JSON.parse(
-        sessionStorage.getItem("mediroute_patient_request")
-    );
-
-    // Send patient data to FastAPI backend
-    try {
-        const backendResponse = await sendPatientRequestToBackend(patientData);
-        if (backendResponse && backendResponse.medicalContext) {
-            sessionStorage.setItem("mediroute_medical_context", JSON.stringify(backendResponse.medicalContext));
-        }
-        console.log("MediRoute backend response:");
-        console.log(backendResponse);
-
-    } catch (error) {
-        console.error("Backend connection failed:", error);
-    }
-
-    form.hidden = true;
-    loadingState.hidden = false;
-    progressLabel.textContent = "Step 2 of 3";
-    progressSteps[0]?.classList.add("is-complete");
-    progressSteps[0]?.removeAttribute("aria-current");
-    progressSteps[1]?.classList.add("is-active");
-    progressSteps[1]?.setAttribute("aria-current", "step");
-    progressConnectors[0]?.classList.add("is-complete");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-
-    submissionTimer = window.setTimeout(showSuccessState, 2000);
+    step1 = {
+        patientData: JSON.parse(sessionStorage.getItem("mediroute_patient_request")),
+        reportText: reportTextFrom(parseResult),
+        parentRequestId: null,
+        round: 0,
+        lastContext: null
+    };
+    sessionStorage.removeItem("mediroute_medical_context");
+    await runStep1();
 });
 
-  // LOADING STATE
-  function showSuccessState() {
-    loadingState.hidden = true;
-    successState.hidden = false;
+  // RESULT STATE
+  function showSuccessState(context = {}) {
+    showStep1Panel(successState);
+    setProgress(3);
+    const card = document.querySelector("#suggestion-card");
+    if (card && context.suggested_specialty) {
+        card.hidden = false;
+        document.querySelector("#suggestion-label").textContent = context.suggested_specialty_label;
+        document.querySelector("#suggestion-evidence").textContent = context.evidence && context.evidence.length
+            ? `Based on: ${context.evidence.map((e) => `“${e}”`).join(", ")}`
+            : (context.reason || "");
+        document.querySelector("#suggestion-disclaimer").textContent = context.disclaimer || "";
+        document.querySelector("#suggestion-meta").textContent =
+            `Reference ID ${context.request_id} · ${context.decision === "user_selected" ? "chosen by you" : context.reason || ""}`;
+    } else if (card) {
+        card.hidden = true;
+    }
     progressLabel.textContent = "Step 3 of 3";
     progressSteps[1]?.classList.remove("is-active");
     progressSteps[1]?.classList.add("is-complete");
@@ -596,6 +748,7 @@ form.addEventListener("submit", async (event) => {
     }
     successState.hidden = true;
     loadingState.hidden = true;
+    if (emergencyBanner) emergencyBanner.hidden = true;
     form.hidden = false;
     progressLabel.textContent = "Step 1 of 3";
     progressSteps.forEach((step, index) => {

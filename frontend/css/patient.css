@@ -256,3 +256,16 @@
 @media (prefers-reduced-motion: reduce) {
   .patient-page *, .patient-page *::before, .patient-page *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+/* STEP 1: emergency notice, clarification form, speciality choice, suggestion */
+.emergency-banner { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 18px; padding: 14px 16px; border: 1px solid #f5c2c0; border-radius: 12px; background: #fff4f3; color: #8a1f17; font-size: 13px; font-weight: 600; }
+.emergency-banner svg { flex: 0 0 auto; width: 20px; height: 20px; }
+.emergency-banner p { margin: 0; }
+.clarify-reason { color: var(--muted); }
+.clarify-form { display: grid; gap: 14px; margin-top: 18px; text-align: left; }
+.clarify-field { display: grid; gap: 6px; }
+.clarify-field label, .clarify-form .field-label { color: #29475e; font-size: 12px; font-weight: 700; }
+.suggestion-card { margin: 14px 0 18px; padding: 16px 18px; border: 1px solid #cfe9e6; border-radius: 12px; background: #f3fbfa; text-align: left; }
+.suggestion-label { margin: 0 0 6px; color: var(--navy); font-family: var(--font-display); font-size: 17px; font-weight: 800; }
+.suggestion-evidence { margin: 0 0 6px; color: var(--ink); font-size: 13px; }
+.suggestion-disclaimer { margin: 0 0 6px; color: var(--muted); font-size: 12px; }
+.suggestion-meta { margin: 0; color: var(--muted-light); font-size: 11px; }

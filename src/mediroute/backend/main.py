@@ -5,6 +5,9 @@ This module only assembles the app. Endpoints live in the two pipeline modules:
   * Step 2 - mediroute.hospital_recommendation.api (specialty -> ranked hospitals)
 """
 
+import threading
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
@@ -19,7 +22,18 @@ from mediroute.specialty_routing.api import router as specialty_routing_router  
 
 logger.info("MediRoute backend logging initialized at %s", LOG_DIR / "mediroute.log")
 
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    """Build the Step 1 router once and load the LLM in the background, so the first
+    patient request is not slow and health checks answer immediately."""
+    from mediroute.specialty_routing.service import get_service
+
+    threading.Thread(target=get_service().warm_up, daemon=True).start()
+    yield
+
+
 app = FastAPI(
+    lifespan=lifespan,
     title="MediRoute API",
     description="Backend API for the MediRoute hospital routing application",
     version="1.0.0",

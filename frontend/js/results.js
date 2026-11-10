@@ -125,12 +125,12 @@ document.addEventListener("DOMContentLoaded", () => {
       contextData = {};
     }
 
-    const specialty = typeof contextData.relevantSpecialty === "string" && contextData.relevantSpecialty.trim()
-      ? contextData.relevantSpecialty.trim()
-      : "Cardiology";
+    // Step 1 result (suggested_specialty); older responses only had relevantSpecialty
+    const suggested = contextData.suggested_specialty || contextData.relevantSpecialty;
+    const specialty = typeof suggested === "string" && suggested.trim() ? suggested.trim() : "Not determined";
     const careCategory = typeof contextData.careCategory === "string" && contextData.careCategory.trim()
       ? contextData.careCategory.trim()
-      : "Cardiac Care";
+      : "—";
 
     const specialtyElement = document.querySelector("#context-specialty");
     if (specialtyElement) {

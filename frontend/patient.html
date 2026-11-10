@@ -182,16 +182,53 @@
         <!-- LOADING STATE -->
         <section class="result-state loading-state" id="loading-state" aria-labelledby="loading-heading" aria-live="polite" hidden>
           <span class="state-icon state-icon-loading"><i data-lucide="sparkles" aria-hidden="true"></i></span>
-          <span class="section-kicker">Step 2 · AI analysis preview</span>
+          <span class="section-kicker">Step 2 · AI analysis</span>
           <h2 id="loading-heading">Understanding your healthcare requirement...</h2>
-          <p>This is a demonstration only. No AI service or external API is contacted.</p>
+          <p>Three independent methods (keyword search, meaning search and a local AI model) are checking which speciality fits. This takes about 10–20 seconds.</p>
           <ol class="loading-checklist">
             <li class="is-complete"><span><i data-lucide="check" aria-hidden="true"></i></span>Reading your information</li>
-            <li class="is-current"><span class="loading-spinner" aria-hidden="true"></span>Preparing medical context</li>
-            <li><span><i data-lucide="circle" aria-hidden="true"></i></span>Finding relevant hospitals</li>
-            <li><span><i data-lucide="circle" aria-hidden="true"></i></span>Ranking options</li>
+            <li class="is-current"><span class="loading-spinner" aria-hidden="true"></span>Finding the evidence in your text</li>
+            <li><span><i data-lucide="circle" aria-hidden="true"></i></span>Comparing three methods</li>
+            <li><span><i data-lucide="circle" aria-hidden="true"></i></span>Suggesting a speciality to search</li>
           </ol>
-          <div class="loading-progress" aria-label="Demo analysis in progress"><span></span></div>
+          <div class="loading-progress" aria-label="Analysis in progress"><span></span></div>
+        </section>
+
+        <!-- EMERGENCY NOTICE (shown with any Step 1 result when red-flag words are found) -->
+        <div class="emergency-banner" id="emergency-banner" role="alert" hidden>
+          <i data-lucide="siren" aria-hidden="true"></i>
+          <p id="emergency-message"></p>
+        </div>
+
+        <!-- CLARIFICATION STATE -->
+        <section class="result-state clarify-state" id="clarify-state" aria-labelledby="clarify-heading" hidden>
+          <span class="state-icon"><i data-lucide="message-circle-question" aria-hidden="true"></i></span>
+          <span class="section-kicker" id="clarify-round">A little more detail</span>
+          <h2 id="clarify-heading">Help us suggest the right speciality</h2>
+          <p class="clarify-reason" id="clarify-reason"></p>
+          <form id="clarify-form" class="clarify-form" novalidate>
+            <div id="clarify-fields"></div>
+            <div class="success-actions">
+              <button class="button button-primary" id="clarify-submit" type="submit">Continue <span aria-hidden="true">→</span></button>
+              <button class="edit-button" id="clarify-edit" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i> Edit Information</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- USER CHOICE STATE (after two clarification rounds without agreement) -->
+        <section class="result-state choice-state" id="choice-state" aria-labelledby="choice-heading" hidden>
+          <span class="state-icon"><i data-lucide="list-checks" aria-hidden="true"></i></span>
+          <span class="section-kicker">Choose a speciality</span>
+          <h2 id="choice-heading">Which speciality is closest to your need?</h2>
+          <p id="choice-message"></p>
+          <form id="choice-form" class="clarify-form" novalidate>
+            <label class="field-label" for="choice-select">Speciality</label>
+            <select id="choice-select" required></select>
+            <div class="success-actions">
+              <button class="button button-primary" type="submit">Use this speciality <span aria-hidden="true">→</span></button>
+              <button class="edit-button" id="choice-edit" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i> Edit Information</button>
+            </div>
+          </form>
         </section>
 
         <!-- SUCCESS STATE -->
@@ -199,7 +236,13 @@
           <span class="state-icon state-icon-success"><i data-lucide="check" aria-hidden="true"></i></span>
           <span class="section-kicker">Step 1 complete</span>
           <h2 id="success-heading">Your information is ready</h2>
-          <p class="success-lead">MediRoute has received your request in this local prototype. No information was sent to a server.</p>
+          <div class="suggestion-card" id="suggestion-card" hidden>
+            <p class="suggestion-label" id="suggestion-label"></p>
+            <p class="suggestion-evidence" id="suggestion-evidence"></p>
+            <p class="suggestion-disclaimer" id="suggestion-disclaimer"></p>
+            <p class="suggestion-meta" id="suggestion-meta"></p>
+          </div>
+          <p class="success-lead" id="success-lead">MediRoute analysed your request with a local server. Nothing was sent to an external AI service.</p>
           <div class="summary-card" aria-label="Your submitted information">
             <h3><i data-lucide="clipboard-list" aria-hidden="true"></i> Your request summary</h3>
             <dl>
