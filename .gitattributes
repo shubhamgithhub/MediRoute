@@ -1,0 +1,10 @@
+# Never convert line endings in binary files. Small text-only PDFs (the synthetic test
+# reports) would otherwise be treated as text and corrupted on Windows checkouts.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.xlsx binary
+*.docx binary
+*.pptx binary
+*.faiss binary
+*.npy binary
