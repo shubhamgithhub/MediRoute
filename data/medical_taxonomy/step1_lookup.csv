@@ -10583,3 +10583,476 @@ cghs:BP037,cghs,BP037,30% to 50% Burns Subsequent Dressing,Plastic & Reconstruct
 cghs:BP038,cghs,BP038,Extensive Burn -above 50% Frist Dressing,Plastic & Reconstructive Surgery
 cghs:HC001,cghs,HC001,"Pensioner primary card holder 75 years of age and above–Male, Annual Health Check-up - CCS Group A Officer of above 40 years of age /",General Medicine
 cghs:HC002,cghs,HC002,Annual Health Check-up - CCS Group A Officer of above 40 years of age / Pensioner primary card holder 75 years of age and above - Female,General Medicine
+lay:Cardiology:chest pain,lay_term,,chest pain,Cardiology
+lay:Cardiology:angina,lay_term,,angina,Cardiology
+lay:Cardiology:heart attack,lay_term,,heart attack,Cardiology
+lay:Cardiology:myocardial infarction,lay_term,,myocardial infarction,Cardiology
+lay:Cardiology:palpitations,lay_term,,palpitations,Cardiology
+lay:Cardiology:arrhythmia,lay_term,,arrhythmia,Cardiology
+lay:Cardiology:atrial fibrillation,lay_term,,atrial fibrillation,Cardiology
+lay:Cardiology:tachycardia,lay_term,,tachycardia,Cardiology
+lay:Cardiology:bradycardia,lay_term,,bradycardia,Cardiology
+lay:Cardiology:heart failure,lay_term,,heart failure,Cardiology
+lay:Cardiology:high blood pressure,lay_term,,high blood pressure,Cardiology
+lay:Cardiology:hypertension,lay_term,,hypertension,Cardiology
+lay:Cardiology:blood pressure,lay_term,,blood pressure,Cardiology
+lay:Cardiology:coronary artery disease,lay_term,,coronary artery disease,Cardiology
+lay:Cardiology:angioplasty,lay_term,,angioplasty,Cardiology
+lay:Cardiology:stent,lay_term,,stent,Cardiology
+lay:Cardiology:pacemaker,lay_term,,pacemaker,Cardiology
+lay:Cardiology:ecg,lay_term,,ecg,Cardiology
+lay:Cardiology:echo,lay_term,,echo,Cardiology
+lay:Cardiology:cardiac,lay_term,,cardiac,Cardiology
+lay:Cardiology:heart,lay_term,,heart,Cardiology
+lay:Cardiology:heart pain,lay_term,,heart pain,Cardiology
+lay:Cardiology:heart problem,lay_term,,heart problem,Cardiology
+lay:Cardiology:irregular heartbeat,lay_term,,irregular heartbeat,Cardiology
+lay:Cardiothoracic Surgery:cabg,lay_term,,cabg,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:bypass surgery,lay_term,,bypass surgery,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:bypass,lay_term,,bypass,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:open heart surgery,lay_term,,open heart surgery,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:valve replacement,lay_term,,valve replacement,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:valve repair,lay_term,,valve repair,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:mitral valve,lay_term,,mitral valve,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:aortic valve,lay_term,,aortic valve,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:aortic stenosis,lay_term,,aortic stenosis,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:triple vessel disease,lay_term,,triple vessel disease,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:heart surgery,lay_term,,heart surgery,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:aortic aneurysm,lay_term,,aortic aneurysm,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:varicose veins,lay_term,,varicose veins,Cardiothoracic Surgery
+lay:Cardiothoracic Surgery:thoracic surgery,lay_term,,thoracic surgery,Cardiothoracic Surgery
+lay:Pediatric Cardiology:congenital heart,lay_term,,congenital heart,Pediatric Cardiology
+lay:Pediatric Cardiology:hole in the heart,lay_term,,hole in the heart,Pediatric Cardiology
+lay:Pediatric Cardiology:vsd,lay_term,,vsd,Pediatric Cardiology
+lay:Pediatric Cardiology:asd,lay_term,,asd,Pediatric Cardiology
+lay:Pediatric Cardiology:tetralogy,lay_term,,tetralogy,Pediatric Cardiology
+lay:Pediatric Cardiology:blue baby,lay_term,,blue baby,Pediatric Cardiology
+lay:Pediatric Cardiology:child heart,lay_term,,child heart,Pediatric Cardiology
+lay:Pediatric Cardiology:baby heart,lay_term,,baby heart,Pediatric Cardiology
+lay:Pediatric Cardiology:heart murmur in child,lay_term,,heart murmur in child,Pediatric Cardiology
+lay:Pediatric Cardiology:pediatric cardiac,lay_term,,pediatric cardiac,Pediatric Cardiology
+lay:Oncology:cancer,lay_term,,cancer,Oncology
+lay:Oncology:tumour,lay_term,,tumour,Oncology
+lay:Oncology:tumor,lay_term,,tumor,Oncology
+lay:Oncology:carcinoma,lay_term,,carcinoma,Oncology
+lay:Oncology:malignant,lay_term,,malignant,Oncology
+lay:Oncology:malignancy,lay_term,,malignancy,Oncology
+lay:Oncology:metastasis,lay_term,,metastasis,Oncology
+lay:Oncology:chemotherapy,lay_term,,chemotherapy,Oncology
+lay:Oncology:chemo,lay_term,,chemo,Oncology
+lay:Oncology:radiotherapy,lay_term,,radiotherapy,Oncology
+lay:Oncology:radiation therapy,lay_term,,radiation therapy,Oncology
+lay:Oncology:biopsy,lay_term,,biopsy,Oncology
+lay:Oncology:lump,lay_term,,lump,Oncology
+lay:Oncology:mass,lay_term,,mass,Oncology
+lay:Oncology:lymphoma,lay_term,,lymphoma,Oncology
+lay:Oncology:sarcoma,lay_term,,sarcoma,Oncology
+lay:Oncology:oncology,lay_term,,oncology,Oncology
+lay:Oncology:weight loss without trying,lay_term,,weight loss without trying,Oncology
+lay:Hematology & Bone Marrow Transplant:leukemia,lay_term,,leukemia,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:leukaemia,lay_term,,leukaemia,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:myeloma,lay_term,,myeloma,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:thalassemia,lay_term,,thalassemia,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:thalassaemia,lay_term,,thalassaemia,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:bone marrow transplant,lay_term,,bone marrow transplant,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:bmt,lay_term,,bmt,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:stem cell transplant,lay_term,,stem cell transplant,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:anemia,lay_term,,anemia,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:anaemia,lay_term,,anaemia,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:platelets,lay_term,,platelets,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:bruising,lay_term,,bruising,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:hemophilia,lay_term,,hemophilia,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:haemophilia,lay_term,,haemophilia,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:sickle cell,lay_term,,sickle cell,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:blood disorder,lay_term,,blood disorder,Hematology & Bone Marrow Transplant
+lay:Hematology & Bone Marrow Transplant:blood transfusion,lay_term,,blood transfusion,Hematology & Bone Marrow Transplant
+lay:Orthopaedics:knee pain,lay_term,,knee pain,Orthopaedics
+lay:Orthopaedics:knee replacement,lay_term,,knee replacement,Orthopaedics
+lay:Orthopaedics:hip replacement,lay_term,,hip replacement,Orthopaedics
+lay:Orthopaedics:joint replacement,lay_term,,joint replacement,Orthopaedics
+lay:Orthopaedics:joint pain,lay_term,,joint pain,Orthopaedics
+lay:Orthopaedics:arthritis,lay_term,,arthritis,Orthopaedics
+lay:Orthopaedics:osteoarthritis,lay_term,,osteoarthritis,Orthopaedics
+lay:Orthopaedics:fracture,lay_term,,fracture,Orthopaedics
+lay:Orthopaedics:broken bone,lay_term,,broken bone,Orthopaedics
+lay:Orthopaedics:back pain,lay_term,,back pain,Orthopaedics
+lay:Orthopaedics:slipped disc,lay_term,,slipped disc,Orthopaedics
+lay:Orthopaedics:sciatica,lay_term,,sciatica,Orthopaedics
+lay:Orthopaedics:spine,lay_term,,spine,Orthopaedics
+lay:Orthopaedics:shoulder pain,lay_term,,shoulder pain,Orthopaedics
+lay:Orthopaedics:ligament,lay_term,,ligament,Orthopaedics
+lay:Orthopaedics:acl,lay_term,,acl,Orthopaedics
+lay:Orthopaedics:sports injury,lay_term,,sports injury,Orthopaedics
+lay:Orthopaedics:bone,lay_term,,bone,Orthopaedics
+lay:Orthopaedics:spondylosis,lay_term,,spondylosis,Orthopaedics
+lay:Orthopaedics:neck pain,lay_term,,neck pain,Orthopaedics
+lay:Orthopaedics:stiff joints,lay_term,,stiff joints,Orthopaedics
+lay:Orthopaedics:joint swelling,lay_term,,joint swelling,Orthopaedics
+lay:Orthopaedics:knee swelling,lay_term,,knee swelling,Orthopaedics
+lay:Orthopaedics:back ache,lay_term,,back ache,Orthopaedics
+lay:Orthopaedics:frozen shoulder,lay_term,,frozen shoulder,Orthopaedics
+lay:Orthopaedics:bone pain,lay_term,,bone pain,Orthopaedics
+lay:Neurology:headache,lay_term,,headache,Neurology
+lay:Neurology:migraine,lay_term,,migraine,Neurology
+lay:Neurology:seizure,lay_term,,seizure,Neurology
+lay:Neurology:epilepsy,lay_term,,epilepsy,Neurology
+lay:Neurology:fits,lay_term,,fits,Neurology
+lay:Neurology:stroke,lay_term,,stroke,Neurology
+lay:Neurology:paralysis,lay_term,,paralysis,Neurology
+lay:Neurology:slurred speech,lay_term,,slurred speech,Neurology
+lay:Neurology:numbness,lay_term,,numbness,Neurology
+lay:Neurology:tingling,lay_term,,tingling,Neurology
+lay:Neurology:parkinson,lay_term,,parkinson,Neurology
+lay:Neurology:tremor,lay_term,,tremor,Neurology
+lay:Neurology:dementia,lay_term,,dementia,Neurology
+lay:Neurology:memory loss,lay_term,,memory loss,Neurology
+lay:Neurology:multiple sclerosis,lay_term,,multiple sclerosis,Neurology
+lay:Neurology:neuropathy,lay_term,,neuropathy,Neurology
+lay:Neurology:dizziness,lay_term,,dizziness,Neurology
+lay:Neurology:vertigo,lay_term,,vertigo,Neurology
+lay:Neurology:weakness in arm,lay_term,,weakness in arm,Neurology
+lay:Neurology:weakness in leg,lay_term,,weakness in leg,Neurology
+lay:Neurology:nerve,lay_term,,nerve,Neurology
+lay:Neurology:head pain,lay_term,,head pain,Neurology
+lay:Neurology:migraine attacks,lay_term,,migraine attacks,Neurology
+lay:Neurology:fainting,lay_term,,fainting,Neurology
+lay:Neurology:memory problem,lay_term,,memory problem,Neurology
+lay:Neurosurgery:brain tumour,lay_term,,brain tumour,Neurosurgery
+lay:Neurosurgery:brain tumor,lay_term,,brain tumor,Neurosurgery
+lay:Neurosurgery:brain surgery,lay_term,,brain surgery,Neurosurgery
+lay:Neurosurgery:aneurysm,lay_term,,aneurysm,Neurosurgery
+lay:Neurosurgery:spinal cord compression,lay_term,,spinal cord compression,Neurosurgery
+lay:Neurosurgery:spine surgery,lay_term,,spine surgery,Neurosurgery
+lay:Neurosurgery:decompression,lay_term,,decompression,Neurosurgery
+lay:Neurosurgery:hydrocephalus,lay_term,,hydrocephalus,Neurosurgery
+lay:Neurosurgery:craniotomy,lay_term,,craniotomy,Neurosurgery
+lay:Neurosurgery:head injury surgery,lay_term,,head injury surgery,Neurosurgery
+lay:Neurosurgery:neurosurgery,lay_term,,neurosurgery,Neurosurgery
+lay:Neurosurgery:glioma,lay_term,,glioma,Neurosurgery
+lay:Neurosurgery:meningioma,lay_term,,meningioma,Neurosurgery
+lay:Gastroenterology:stomach pain,lay_term,,stomach pain,Gastroenterology
+lay:Gastroenterology:abdominal pain,lay_term,,abdominal pain,Gastroenterology
+lay:Gastroenterology:acidity,lay_term,,acidity,Gastroenterology
+lay:Gastroenterology:acid reflux,lay_term,,acid reflux,Gastroenterology
+lay:Gastroenterology:heartburn,lay_term,,heartburn,Gastroenterology
+lay:Gastroenterology:gerd,lay_term,,gerd,Gastroenterology
+lay:Gastroenterology:indigestion,lay_term,,indigestion,Gastroenterology
+lay:Gastroenterology:ulcer,lay_term,,ulcer,Gastroenterology
+lay:Gastroenterology:gastritis,lay_term,,gastritis,Gastroenterology
+lay:Gastroenterology:vomiting,lay_term,,vomiting,Gastroenterology
+lay:Gastroenterology:diarrhoea,lay_term,,diarrhoea,Gastroenterology
+lay:Gastroenterology:diarrhea,lay_term,,diarrhea,Gastroenterology
+lay:Gastroenterology:constipation,lay_term,,constipation,Gastroenterology
+lay:Gastroenterology:blood in stool,lay_term,,blood in stool,Gastroenterology
+lay:Gastroenterology:colonoscopy,lay_term,,colonoscopy,Gastroenterology
+lay:Gastroenterology:endoscopy,lay_term,,endoscopy,Gastroenterology
+lay:Gastroenterology:crohn,lay_term,,crohn,Gastroenterology
+lay:Gastroenterology:colitis,lay_term,,colitis,Gastroenterology
+lay:Gastroenterology:ibs,lay_term,,ibs,Gastroenterology
+lay:Gastroenterology:liver,lay_term,,liver,Gastroenterology
+lay:Gastroenterology:hepatitis,lay_term,,hepatitis,Gastroenterology
+lay:Gastroenterology:cirrhosis,lay_term,,cirrhosis,Gastroenterology
+lay:Gastroenterology:jaundice,lay_term,,jaundice,Gastroenterology
+lay:Gastroenterology:gallbladder,lay_term,,gallbladder,Gastroenterology
+lay:Gastroenterology:gallstones,lay_term,,gallstones,Gastroenterology
+lay:Gastroenterology:pancreatitis,lay_term,,pancreatitis,Gastroenterology
+lay:Gastroenterology:bloating,lay_term,,bloating,Gastroenterology
+lay:Gastroenterology:stomach infection,lay_term,,stomach infection,Gastroenterology
+lay:Gastroenterology:food poisoning,lay_term,,food poisoning,Gastroenterology
+lay:Gastroenterology:loose motions,lay_term,,loose motions,Gastroenterology
+lay:Gastroenterology:gas,lay_term,,gas,Gastroenterology
+lay:Gastroenterology:piles,lay_term,,piles,Gastroenterology
+lay:Gastroenterology:fatty liver,lay_term,,fatty liver,Gastroenterology
+lay:Nephrology:kidney disease,lay_term,,kidney disease,Nephrology
+lay:Nephrology:kidney failure,lay_term,,kidney failure,Nephrology
+lay:Nephrology:ckd,lay_term,,ckd,Nephrology
+lay:Nephrology:chronic kidney,lay_term,,chronic kidney,Nephrology
+lay:Nephrology:creatinine,lay_term,,creatinine,Nephrology
+lay:Nephrology:dialysis,lay_term,,dialysis,Nephrology
+lay:Nephrology:protein in urine,lay_term,,protein in urine,Nephrology
+lay:Nephrology:proteinuria,lay_term,,proteinuria,Nephrology
+lay:Nephrology:nephrotic,lay_term,,nephrotic,Nephrology
+lay:Nephrology:renal failure,lay_term,,renal failure,Nephrology
+lay:Nephrology:swelling of feet,lay_term,,swelling of feet,Nephrology
+lay:Nephrology:puffy face,lay_term,,puffy face,Nephrology
+lay:Nephrology:kidney function,lay_term,,kidney function,Nephrology
+lay:Urology:kidney stone,lay_term,,kidney stone,Urology
+lay:Urology:urinary,lay_term,,urinary,Urology
+lay:Urology:urine infection,lay_term,,urine infection,Urology
+lay:Urology:uti,lay_term,,uti,Urology
+lay:Urology:burning urination,lay_term,,burning urination,Urology
+lay:Urology:prostate,lay_term,,prostate,Urology
+lay:Urology:psa,lay_term,,psa,Urology
+lay:Urology:bladder,lay_term,,bladder,Urology
+lay:Urology:frequent urination,lay_term,,frequent urination,Urology
+lay:Urology:blood in urine,lay_term,,blood in urine,Urology
+lay:Urology:weak stream,lay_term,,weak stream,Urology
+lay:Urology:incontinence,lay_term,,incontinence,Urology
+lay:Urology:urology,lay_term,,urology,Urology
+lay:Urology:testicular,lay_term,,testicular,Urology
+lay:Urology:kidney infection,lay_term,,kidney infection,Urology
+lay:Urology:pain while urinating,lay_term,,pain while urinating,Urology
+lay:Organ Transplant:transplant,lay_term,,transplant,Organ Transplant
+lay:Organ Transplant:kidney transplant,lay_term,,kidney transplant,Organ Transplant
+lay:Organ Transplant:liver transplant,lay_term,,liver transplant,Organ Transplant
+lay:Organ Transplant:organ transplant,lay_term,,organ transplant,Organ Transplant
+lay:Organ Transplant:donor,lay_term,,donor,Organ Transplant
+lay:Organ Transplant:living donor,lay_term,,living donor,Organ Transplant
+lay:Organ Transplant:end stage,lay_term,,end stage,Organ Transplant
+lay:Organ Transplant:heart transplant,lay_term,,heart transplant,Organ Transplant
+lay:Organ Transplant:lung transplant,lay_term,,lung transplant,Organ Transplant
+lay:Obstetrics & Gynaecology:pregnancy,lay_term,,pregnancy,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:pregnant,lay_term,,pregnant,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:delivery,lay_term,,delivery,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:childbirth,lay_term,,childbirth,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:caesarean,lay_term,,caesarean,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:periods,lay_term,,periods,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:menstrual,lay_term,,menstrual,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:heavy periods,lay_term,,heavy periods,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:fibroids,lay_term,,fibroids,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:uterus,lay_term,,uterus,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:ovarian cyst,lay_term,,ovarian cyst,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:ovary,lay_term,,ovary,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:pelvic pain,lay_term,,pelvic pain,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:hysterectomy,lay_term,,hysterectomy,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:menopause,lay_term,,menopause,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:gynaecology,lay_term,,gynaecology,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:gynecology,lay_term,,gynecology,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:vaginal,lay_term,,vaginal,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:cervix,lay_term,,cervix,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:irregular periods,lay_term,,irregular periods,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:white discharge,lay_term,,white discharge,Obstetrics & Gynaecology
+lay:Obstetrics & Gynaecology:period pain,lay_term,,period pain,Obstetrics & Gynaecology
+lay:Reproductive Medicine:infertility,lay_term,,infertility,Reproductive Medicine
+lay:Reproductive Medicine:ivf,lay_term,,ivf,Reproductive Medicine
+lay:Reproductive Medicine:icsi,lay_term,,icsi,Reproductive Medicine
+lay:Reproductive Medicine:iui,lay_term,,iui,Reproductive Medicine
+lay:Reproductive Medicine:trying for a baby,lay_term,,trying for a baby,Reproductive Medicine
+lay:Reproductive Medicine:unable to conceive,lay_term,,unable to conceive,Reproductive Medicine
+lay:Reproductive Medicine:conceive,lay_term,,conceive,Reproductive Medicine
+lay:Reproductive Medicine:fertility,lay_term,,fertility,Reproductive Medicine
+lay:Reproductive Medicine:sperm count,lay_term,,sperm count,Reproductive Medicine
+lay:Reproductive Medicine:egg freezing,lay_term,,egg freezing,Reproductive Medicine
+lay:Reproductive Medicine:surrogacy,lay_term,,surrogacy,Reproductive Medicine
+lay:Reproductive Medicine:test tube baby,lay_term,,test tube baby,Reproductive Medicine
+lay:Paediatrics:child,lay_term,,child,Paediatrics
+lay:Paediatrics:baby,lay_term,,baby,Paediatrics
+lay:Paediatrics:infant,lay_term,,infant,Paediatrics
+lay:Paediatrics:newborn,lay_term,,newborn,Paediatrics
+lay:Paediatrics:toddler,lay_term,,toddler,Paediatrics
+lay:Paediatrics:premature,lay_term,,premature,Paediatrics
+lay:Paediatrics:nicu,lay_term,,nicu,Paediatrics
+lay:Paediatrics:my son,lay_term,,my son,Paediatrics
+lay:Paediatrics:my daughter,lay_term,,my daughter,Paediatrics
+lay:Paediatrics:kid,lay_term,,kid,Paediatrics
+lay:Paediatrics:development delay,lay_term,,development delay,Paediatrics
+lay:Paediatrics:growth,lay_term,,growth,Paediatrics
+lay:Paediatrics:vaccination,lay_term,,vaccination,Paediatrics
+lay:Paediatrics:pediatric,lay_term,,pediatric,Paediatrics
+lay:Paediatrics:paediatric,lay_term,,paediatric,Paediatrics
+lay:Endocrinology:diabetes,lay_term,,diabetes,Endocrinology
+lay:Endocrinology:diabetic,lay_term,,diabetic,Endocrinology
+lay:Endocrinology:blood sugar,lay_term,,blood sugar,Endocrinology
+lay:Endocrinology:sugar level,lay_term,,sugar level,Endocrinology
+lay:Endocrinology:insulin,lay_term,,insulin,Endocrinology
+lay:Endocrinology:thyroid,lay_term,,thyroid,Endocrinology
+lay:Endocrinology:hypothyroid,lay_term,,hypothyroid,Endocrinology
+lay:Endocrinology:hyperthyroid,lay_term,,hyperthyroid,Endocrinology
+lay:Endocrinology:goitre,lay_term,,goitre,Endocrinology
+lay:Endocrinology:hormone,lay_term,,hormone,Endocrinology
+lay:Endocrinology:hormonal,lay_term,,hormonal,Endocrinology
+lay:Endocrinology:pcos,lay_term,,pcos,Endocrinology
+lay:Endocrinology:excess hair,lay_term,,excess hair,Endocrinology
+lay:Endocrinology:adrenal,lay_term,,adrenal,Endocrinology
+lay:Endocrinology:pituitary,lay_term,,pituitary,Endocrinology
+lay:Endocrinology:metabolic,lay_term,,metabolic,Endocrinology
+lay:Endocrinology:excessive thirst,lay_term,,excessive thirst,Endocrinology
+lay:Endocrinology:weight gain,lay_term,,weight gain,Endocrinology
+lay:Endocrinology:thyroid problem,lay_term,,thyroid problem,Endocrinology
+lay:Endocrinology:high sugar,lay_term,,high sugar,Endocrinology
+lay:Pulmonology:cough,lay_term,,cough,Pulmonology
+lay:Pulmonology:breathless,lay_term,,breathless,Pulmonology
+lay:Pulmonology:breathlessness,lay_term,,breathlessness,Pulmonology
+lay:Pulmonology:shortness of breath,lay_term,,shortness of breath,Pulmonology
+lay:Pulmonology:wheezing,lay_term,,wheezing,Pulmonology
+lay:Pulmonology:asthma,lay_term,,asthma,Pulmonology
+lay:Pulmonology:copd,lay_term,,copd,Pulmonology
+lay:Pulmonology:lung,lay_term,,lung,Pulmonology
+lay:Pulmonology:tuberculosis,lay_term,,tuberculosis,Pulmonology
+lay:Pulmonology:pneumonia,lay_term,,pneumonia,Pulmonology
+lay:Pulmonology:bronchitis,lay_term,,bronchitis,Pulmonology
+lay:Pulmonology:sleep apnea,lay_term,,sleep apnea,Pulmonology
+lay:Pulmonology:sleep apnoea,lay_term,,sleep apnoea,Pulmonology
+lay:Pulmonology:snoring,lay_term,,snoring,Pulmonology
+lay:Pulmonology:phlegm,lay_term,,phlegm,Pulmonology
+lay:Pulmonology:sputum,lay_term,,sputum,Pulmonology
+lay:Pulmonology:respiratory,lay_term,,respiratory,Pulmonology
+lay:Pulmonology:chest infection,lay_term,,chest infection,Pulmonology
+lay:Pulmonology:lung infection,lay_term,,lung infection,Pulmonology
+lay:Pulmonology:breathing problem,lay_term,,breathing problem,Pulmonology
+lay:Pulmonology:persistent cough,lay_term,,persistent cough,Pulmonology
+lay:Plastic & Reconstructive Surgery:burn scars,lay_term,,burn scars,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:burns,lay_term,,burns,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:reconstruction,lay_term,,reconstruction,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:reconstructive,lay_term,,reconstructive,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:cleft lip,lay_term,,cleft lip,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:cleft palate,lay_term,,cleft palate,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:plastic surgery,lay_term,,plastic surgery,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:cosmetic surgery,lay_term,,cosmetic surgery,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:scar revision,lay_term,,scar revision,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:skin graft,lay_term,,skin graft,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:rhinoplasty,lay_term,,rhinoplasty,Plastic & Reconstructive Surgery
+lay:Plastic & Reconstructive Surgery:hair transplant,lay_term,,hair transplant,Plastic & Reconstructive Surgery
+lay:Bariatric Surgery:obesity,lay_term,,obesity,Bariatric Surgery
+lay:Bariatric Surgery:obese,lay_term,,obese,Bariatric Surgery
+lay:Bariatric Surgery:morbid obesity,lay_term,,morbid obesity,Bariatric Surgery
+lay:Bariatric Surgery:bmi,lay_term,,bmi,Bariatric Surgery
+lay:Bariatric Surgery:weight loss surgery,lay_term,,weight loss surgery,Bariatric Surgery
+lay:Bariatric Surgery:bariatric,lay_term,,bariatric,Bariatric Surgery
+lay:Bariatric Surgery:gastric sleeve,lay_term,,gastric sleeve,Bariatric Surgery
+lay:Bariatric Surgery:sleeve gastrectomy,lay_term,,sleeve gastrectomy,Bariatric Surgery
+lay:Bariatric Surgery:gastric bypass,lay_term,,gastric bypass,Bariatric Surgery
+lay:Bariatric Surgery:gastric balloon,lay_term,,gastric balloon,Bariatric Surgery
+lay:Bariatric Surgery:overweight,lay_term,,overweight,Bariatric Surgery
+lay:Emergency Medicine:emergency,lay_term,,emergency,Emergency Medicine
+lay:Emergency Medicine:accident,lay_term,,accident,Emergency Medicine
+lay:Emergency Medicine:trauma,lay_term,,trauma,Emergency Medicine
+lay:Emergency Medicine:heavy bleeding,lay_term,,heavy bleeding,Emergency Medicine
+lay:Emergency Medicine:bleeding,lay_term,,bleeding,Emergency Medicine
+lay:Emergency Medicine:unconscious,lay_term,,unconscious,Emergency Medicine
+lay:Emergency Medicine:poison,lay_term,,poison,Emergency Medicine
+lay:Emergency Medicine:poisoning,lay_term,,poisoning,Emergency Medicine
+lay:Emergency Medicine:overdose,lay_term,,overdose,Emergency Medicine
+lay:Emergency Medicine:anaphylaxis,lay_term,,anaphylaxis,Emergency Medicine
+lay:Emergency Medicine:severe allergic reaction,lay_term,,severe allergic reaction,Emergency Medicine
+lay:Emergency Medicine:collapsed,lay_term,,collapsed,Emergency Medicine
+lay:Emergency Medicine:burn injury,lay_term,,burn injury,Emergency Medicine
+lay:Emergency Medicine:snake bite,lay_term,,snake bite,Emergency Medicine
+lay:Emergency Medicine:choking,lay_term,,choking,Emergency Medicine
+lay:Critical Care:icu,lay_term,,icu,Critical Care
+lay:Critical Care:intensive care,lay_term,,intensive care,Critical Care
+lay:Critical Care:ventilator,lay_term,,ventilator,Critical Care
+lay:Critical Care:sepsis,lay_term,,sepsis,Critical Care
+lay:Critical Care:septic,lay_term,,septic,Critical Care
+lay:Critical Care:multi organ failure,lay_term,,multi organ failure,Critical Care
+lay:Critical Care:critically ill,lay_term,,critically ill,Critical Care
+lay:Critical Care:life support,lay_term,,life support,Critical Care
+lay:Critical Care:oxygen falling,lay_term,,oxygen falling,Critical Care
+lay:Critical Care:critical condition,lay_term,,critical condition,Critical Care
+lay:Ophthalmology:eye,lay_term,,eye,Ophthalmology
+lay:Ophthalmology:eyes,lay_term,,eyes,Ophthalmology
+lay:Ophthalmology:vision,lay_term,,vision,Ophthalmology
+lay:Ophthalmology:blurry vision,lay_term,,blurry vision,Ophthalmology
+lay:Ophthalmology:blurred vision,lay_term,,blurred vision,Ophthalmology
+lay:Ophthalmology:cataract,lay_term,,cataract,Ophthalmology
+lay:Ophthalmology:glaucoma,lay_term,,glaucoma,Ophthalmology
+lay:Ophthalmology:retina,lay_term,,retina,Ophthalmology
+lay:Ophthalmology:retinopathy,lay_term,,retinopathy,Ophthalmology
+lay:Ophthalmology:squint,lay_term,,squint,Ophthalmology
+lay:Ophthalmology:red eye,lay_term,,red eye,Ophthalmology
+lay:Ophthalmology:floaters,lay_term,,floaters,Ophthalmology
+lay:Ophthalmology:lasik,lay_term,,lasik,Ophthalmology
+lay:Ophthalmology:cornea,lay_term,,cornea,Ophthalmology
+lay:Ophthalmology:eyesight,lay_term,,eyesight,Ophthalmology
+lay:Ophthalmology:eye infection,lay_term,,eye infection,Ophthalmology
+lay:Ophthalmology:eye pain,lay_term,,eye pain,Ophthalmology
+lay:Ophthalmology:red eyes,lay_term,,red eyes,Ophthalmology
+lay:Ophthalmology:watery eyes,lay_term,,watery eyes,Ophthalmology
+lay:Ophthalmology:itchy eyes,lay_term,,itchy eyes,Ophthalmology
+lay:Ophthalmology:eye discharge,lay_term,,eye discharge,Ophthalmology
+lay:Ophthalmology:conjunctivitis,lay_term,,conjunctivitis,Ophthalmology
+lay:Ophthalmology:pink eye,lay_term,,pink eye,Ophthalmology
+lay:Ophthalmology:stye,lay_term,,stye,Ophthalmology
+lay:Ophthalmology:swollen eyelid,lay_term,,swollen eyelid,Ophthalmology
+lay:Ophthalmology:eye allergy,lay_term,,eye allergy,Ophthalmology
+lay:Ophthalmology:poor eyesight,lay_term,,poor eyesight,Ophthalmology
+lay:Ophthalmology:double vision,lay_term,,double vision,Ophthalmology
+lay:ENT:ear,lay_term,,ear,ENT
+lay:ENT:ear pain,lay_term,,ear pain,ENT
+lay:ENT:hearing loss,lay_term,,hearing loss,ENT
+lay:ENT:deaf,lay_term,,deaf,ENT
+lay:ENT:cochlear implant,lay_term,,cochlear implant,ENT
+lay:ENT:tinnitus,lay_term,,tinnitus,ENT
+lay:ENT:nose,lay_term,,nose,ENT
+lay:ENT:blocked nose,lay_term,,blocked nose,ENT
+lay:ENT:sinus,lay_term,,sinus,ENT
+lay:ENT:sinusitis,lay_term,,sinusitis,ENT
+lay:ENT:tonsils,lay_term,,tonsils,ENT
+lay:ENT:throat,lay_term,,throat,ENT
+lay:ENT:sore throat,lay_term,,sore throat,ENT
+lay:ENT:hoarse voice,lay_term,,hoarse voice,ENT
+lay:ENT:voice,lay_term,,voice,ENT
+lay:ENT:nasal,lay_term,,nasal,ENT
+lay:ENT:adenoids,lay_term,,adenoids,ENT
+lay:ENT:ear infection,lay_term,,ear infection,ENT
+lay:ENT:ear discharge,lay_term,,ear discharge,ENT
+lay:ENT:ringing in ears,lay_term,,ringing in ears,ENT
+lay:ENT:blocked ear,lay_term,,blocked ear,ENT
+lay:ENT:nose bleed,lay_term,,nose bleed,ENT
+lay:ENT:nosebleed,lay_term,,nosebleed,ENT
+lay:ENT:throat infection,lay_term,,throat infection,ENT
+lay:ENT:tonsillitis,lay_term,,tonsillitis,ENT
+lay:ENT:snoring,lay_term,,snoring,ENT
+lay:ENT:loss of smell,lay_term,,loss of smell,ENT
+lay:Dermatology:skin,lay_term,,skin,Dermatology
+lay:Dermatology:rash,lay_term,,rash,Dermatology
+lay:Dermatology:itching,lay_term,,itching,Dermatology
+lay:Dermatology:itchy,lay_term,,itchy,Dermatology
+lay:Dermatology:eczema,lay_term,,eczema,Dermatology
+lay:Dermatology:psoriasis,lay_term,,psoriasis,Dermatology
+lay:Dermatology:acne,lay_term,,acne,Dermatology
+lay:Dermatology:vitiligo,lay_term,,vitiligo,Dermatology
+lay:Dermatology:white patches,lay_term,,white patches,Dermatology
+lay:Dermatology:fungal infection,lay_term,,fungal infection,Dermatology
+lay:Dermatology:ringworm,lay_term,,ringworm,Dermatology
+lay:Dermatology:hives,lay_term,,hives,Dermatology
+lay:Dermatology:dermatitis,lay_term,,dermatitis,Dermatology
+lay:Dermatology:pimples,lay_term,,pimples,Dermatology
+lay:Dermatology:hair loss,lay_term,,hair loss,Dermatology
+lay:Dermatology:scaly,lay_term,,scaly,Dermatology
+lay:Dermatology:blisters,lay_term,,blisters,Dermatology
+lay:Dermatology:skin infection,lay_term,,skin infection,Dermatology
+lay:Dermatology:skin allergy,lay_term,,skin allergy,Dermatology
+lay:Dermatology:skin rash,lay_term,,skin rash,Dermatology
+lay:Dermatology:dandruff,lay_term,,dandruff,Dermatology
+lay:Dermatology:dark spots,lay_term,,dark spots,Dermatology
+lay:Dermatology:nail infection,lay_term,,nail infection,Dermatology
+lay:Dermatology:warts,lay_term,,warts,Dermatology
+lay:Dermatology:boils,lay_term,,boils,Dermatology
+lay:Psychiatry:depression,lay_term,,depression,Psychiatry
+lay:Psychiatry:depressed,lay_term,,depressed,Psychiatry
+lay:Psychiatry:feeling low,lay_term,,feeling low,Psychiatry
+lay:Psychiatry:anxiety,lay_term,,anxiety,Psychiatry
+lay:Psychiatry:panic attack,lay_term,,panic attack,Psychiatry
+lay:Psychiatry:stress,lay_term,,stress,Psychiatry
+lay:Psychiatry:mental health,lay_term,,mental health,Psychiatry
+lay:Psychiatry:addiction,lay_term,,addiction,Psychiatry
+lay:Psychiatry:alcohol,lay_term,,alcohol,Psychiatry
+lay:Psychiatry:de-addiction,lay_term,,de-addiction,Psychiatry
+lay:Psychiatry:bipolar,lay_term,,bipolar,Psychiatry
+lay:Psychiatry:schizophrenia,lay_term,,schizophrenia,Psychiatry
+lay:Psychiatry:suicidal,lay_term,,suicidal,Psychiatry
+lay:Psychiatry:insomnia,lay_term,,insomnia,Psychiatry
+lay:Psychiatry:cannot sleep,lay_term,,cannot sleep,Psychiatry
+lay:Psychiatry:ocd,lay_term,,ocd,Psychiatry
+lay:Psychiatry:sleep problem,lay_term,,sleep problem,Psychiatry
+lay:Psychiatry:mood swings,lay_term,,mood swings,Psychiatry
+lay:Psychiatry:panic,lay_term,,panic,Psychiatry
+lay:Psychiatry:nervousness,lay_term,,nervousness,Psychiatry
+lay:General Medicine:fever,lay_term,,fever,General Medicine
+lay:General Medicine:body ache,lay_term,,body ache,General Medicine
+lay:General Medicine:cold,lay_term,,cold,General Medicine
+lay:General Medicine:flu,lay_term,,flu,General Medicine
+lay:General Medicine:infection,lay_term,,infection,General Medicine
+lay:General Medicine:malaria,lay_term,,malaria,General Medicine
+lay:General Medicine:dengue,lay_term,,dengue,General Medicine
+lay:General Medicine:typhoid,lay_term,,typhoid,General Medicine
+lay:General Medicine:viral,lay_term,,viral,General Medicine
+lay:General Medicine:weakness,lay_term,,weakness,General Medicine
+lay:General Medicine:tired,lay_term,,tired,General Medicine
+lay:General Medicine:fatigue,lay_term,,fatigue,General Medicine
+lay:General Medicine:health checkup,lay_term,,health checkup,General Medicine
+lay:General Medicine:general checkup,lay_term,,general checkup,General Medicine
+lay:General Medicine:check up,lay_term,,check up,General Medicine
+lay:General Medicine:not sure what is wrong,lay_term,,not sure what is wrong,General Medicine
+lay:General Medicine:feeling unwell,lay_term,,feeling unwell,General Medicine

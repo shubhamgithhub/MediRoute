@@ -1,4 +1,4 @@
-"""The lookup list searched by voters V1 and V2: ICD-10-CM diagnoses + CGHS procedures.
+"""The lookup list searched by voters V1 and V2: ICD-10-CM diagnoses + CGHS procedures + lay terms.
 
 Each entry is a description with the speciality it maps to, via doctor-reviewable tables:
 
@@ -6,6 +6,7 @@ Each entry is a description with the speciality it maps to, via doctor-reviewabl
   ``data/medical_taxonomy/icd10_block_specialty.csv`` (narrowest matching code range wins).
 * CGHS procedures (Tier I rows of the CGHS_Data sheet), mapped by
   ``cghs_label_specialty.csv`` with name overrides from ``cghs_name_overrides.csv``.
+* Lay terms: the patient-language keywords of each speciality in ``specialties.csv``.
 
 Rows mapped to ``NONE`` (lab tests, imaging, dental, symptoms of abnormal findings...) are left
 out: they are not routing evidence.
@@ -147,8 +148,26 @@ def _cghs_entries() -> list[LookupEntry]:
     return entries
 
 
+def _lay_term_entries() -> list[LookupEntry]:
+    """Patients' own wording ("eye infection", "red eyes") from specialties.csv keywords.
+
+    ICD-10-CM and CGHS use clinical language ("conjunctivitis", "gonococcal infection of eye"),
+    so keyword search missed common lay terms; these entries give V1/V2 a direct match."""
+    from mediroute.common.specialties import load_specialties
+
+    entries, seen = [], set()
+    for spec in load_specialties():
+        for keyword in spec.keywords:
+            key = (keyword.lower(), spec.name)
+            if len(keyword) < 3 or key in seen:
+                continue
+            seen.add(key)
+            entries.append(LookupEntry(f"lay:{spec.name}:{keyword}", "lay_term", "", keyword, spec.name))
+    return entries
+
+
 def build_lookup(path: Path = LOOKUP_FILE) -> list[LookupEntry]:
-    entries = _icd_entries() + _cghs_entries()
+    entries = _icd_entries() + _cghs_entries() + _lay_term_entries()
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow(["entry_id", "source", "code", "text", "specialty"])

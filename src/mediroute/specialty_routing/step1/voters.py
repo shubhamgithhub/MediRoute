@@ -50,6 +50,10 @@ def _aggregate(per_phrase: list[tuple[str, list[tuple[Any, float]]]], min_score:
                          "specialty": entry.specialty, "score": round(score, 3)})
             if score >= min_score and score > best.get(entry.specialty, 0):
                 best[entry.specialty] = score
+        # A phrase whose best match is the catch-all ("weakness") is a general symptom: its weaker
+        # partial hits ("weakness in arm" -> Neurology) must not turn it into a specialist vote.
+        if best and max(best, key=best.get) == CATCH_ALL:
+            best = {CATCH_ALL: best[CATCH_ALL]}
         for specialty, score in best.items():
             totals[specialty] = totals.get(specialty, 0) + score
     # General Medicine is the catch-all for general symptoms ("weakness", "fever"): it only wins

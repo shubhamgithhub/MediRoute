@@ -28,9 +28,10 @@ flowchart TD
     P --> S{2 Emergency rules}
     S -->|red flag| N[add emergency notice, keep going]
     S --> E
-    N --> E[3 Evidence: LLM copies conditions, procedures, body parts<br/>+ speciality keywords found in the text<br/>code keeps only phrases present in the text]
+    N --> X[3 Evidence: LLM copies conditions, procedures, body parts<br/>+ speciality keywords found in the text]
+    X --> E[3b Clean evidence - data correction:<br/>keep only phrases present in the text<br/>drop generic words: treatment, hospital, city, time]
     E -->|no evidence| C
-    E --> V1[V1 keyword search<br/>ICD-10-CM + CGHS lookup list]
+    E --> V1[V1 keyword search<br/>ICD-10-CM + CGHS + lay terms]
     E --> V2[V2 meaning search<br/>same lookup list]
     E --> V3[V3 local LLM<br/>picks from the speciality list]
     V1 --> D{5 Majority: >= 2 of 3 name the same speciality?}
@@ -47,8 +48,9 @@ flowchart TD
 |-------|---------|--------------|
 | 1 Protect | Code | Removes e-mails, 10–15-digit phone numbers and long ID numbers. Clinical numbers ("eGFR 8", "14x9 cm", dates) are kept |
 | 2 Emergency check | Code (rules) | Red flags: chest pain with breathlessness or sweating, stroke signs, unconscious, heavy bleeding, suicidal intent, a seizure that won't stop. Adds a notice; routing continues |
-| 3 Evidence | LLM + code | The LLM (`prompts/evidence_v1.txt`) copies phrases; code keeps a phrase only if ≥ 60% of its words are in the text (typos and common abbreviations allowed). Speciality keywords found word for word are always added |
-| 4 V1 keyword | Code (TF-IDF) | Searches each evidence phrase in the lookup list: 9,314 ICD-10-CM categories + 1,270 CGHS procedures, each mapped to a speciality by draft, doctor-reviewable tables |
+| 3 Evidence | LLM + code | The LLM (`prompts/evidence_v1.txt`) copies phrases. Speciality keywords found word for word are always added |
+| 3b Clean evidence (data correction) | Code | Keeps a phrase only if ≥ 60% of its words are in the text (typos and common abbreviations allowed), then drops generic phrases whose words are all care-seeking, time or place words (`GENERIC_WORDS` in `step1/evidence.py`: treatment, hospital, doctor, suggest, best, month, Mumbai…). Every dropped phrase goes to the trace with its reason |
+| 4 V1 keyword | Code (TF-IDF) | Searches each evidence phrase in the lookup list: 9,314 ICD-10-CM categories + 1,270 CGHS procedures + 473 lay terms (patients' own words from `specialties.csv`, e.g. "eye infection", "ear discharge"), each mapped to a speciality by draft, doctor-reviewable tables |
 | 4 V2 meaning | Embeddings (all-MiniLM-L6-v2) | Same lookup list, by meaning |
 | 4 V3 LLM | Local LLM (Ollama `llama3.2`) | Picks from the 26 canonical specialities (JSON-schema enum, temperature 0, `prompts/specialty_v1.txt`); code rejects any other name. Doesn't use the lookup list, so it stays independent |
 | 5 Decide | Code | At least 2 of 3 voters name the same speciality **and** there is evidence. General Medicine (the catch-all) only wins a search voter when no specialist matched, and a General Medicine majority asks one question first |

@@ -32,6 +32,35 @@ _ABBREVIATIONS = {
     "ivf": "in vitro fertilisation", "acl": "anterior cruciate ligament", "uti": "urinary infection",
 }
 
+# Evidence cleaning: words that appear in patients' messages but say nothing about which speciality
+# is needed ("treatment", "hospital", "best", a city, a duration). A phrase made only of these is
+# dropped, so the search voters don't vote on it. Found from the "eye infection ... suggest
+# treatment hospital in Mumbai" trace, where "treatment" and "hospital" pushed V1 to the wrong
+# speciality.
+GENERIC_WORDS = {
+    # care-seeking words
+    "treatment", "treatments", "treat", "treated", "hospital", "hospitals", "clinic", "clinics",
+    "doctor", "doctors", "specialist", "specialists", "surgeon", "consultation", "consult", "appointment",
+    "opinion", "second", "advice", "advised", "suggest", "suggested", "recommend", "recommended",
+    "best", "good", "top", "cheap", "affordable", "cost", "price", "package", "need", "needs", "want",
+    "looking", "find", "help", "care", "problem", "problems", "issue", "issues", "surgery", "operation",
+    "procedure", "procedures", "therapy", "medicine", "medicines", "test", "tests", "report", "reports",
+    "patient", "check", "near", "me", "india", "indian", "city", "abroad",
+    # time words
+    "since", "last", "month", "months", "week", "weeks", "year", "years", "day", "days", "ago", "now",
+    # cities patients name
+    "mumbai", "delhi", "ncr", "new", "gurugram", "gurgaon", "chandigarh", "nagpur", "pune", "chennai",
+    "kolkata", "ahmedabad", "kochi", "bengaluru", "bangalore", "hyderabad", "visakhapatnam", "vizag",
+    "navi", "mohali",
+}
+
+
+def is_generic(phrase: str) -> bool:
+    """True if every content word of the phrase is generic (or a number)."""
+    words = _tokens(phrase)
+    return bool(words) and all(w in GENERIC_WORDS or w.isdigit() for w in words)
+
+
 EVIDENCE_SCHEMA = {
     "type": "object",
     "properties": {kind: {"type": "array", "items": {"type": "string"}, "maxItems": 6} for kind in KINDS},
@@ -128,6 +157,10 @@ class EvidenceExtractor:
                     evidence.dropped.append({"kind": kind, "phrase": phrase, "matched_share": None,
                                              "why": "contains redacted identifier"})
                     continue
+                if is_generic(phrase):  # "treatment", "hospital", "Mumbai", "since last month"
+                    evidence.dropped.append({"kind": kind, "phrase": phrase, "matched_share": None,
+                                             "why": "generic word, not about a speciality"})
+                    continue
                 supported, share = verify_phrase(phrase, source)
                 if supported:
                     if phrase not in evidence.kept[kind]:
@@ -141,4 +174,5 @@ class EvidenceExtractor:
         lowered = " " + re.sub(r"[^a-z0-9']+", " ", text.lower()) + " "
         found = [kw for kw, _ in self._keywords if f" {re.sub(r'[^a-z0-9]+', ' ', kw).strip()} " in lowered]
         found = [k for k in found if not any(k != o and k in o for o in found)]  # keep the longer phrase
+        found = [k for k in found if not is_generic(k)]
         return list(dict.fromkeys(found))[:8]

@@ -68,11 +68,21 @@ patient's text that support it, and a disclaimer. API reference with examples an
 | # | Stage | What it does | Type |
 |---|-------|--------------|------|
 | 1.1 | **Protect + emergency rules** | Remove phone numbers, e-mails and ID numbers. Fixed red-flag rules (chest pain with breathlessness, stroke signs, heavy bleeding, suicidal intent…) add an emergency notice; routing continues | Code |
-| 1.2 | **Extract evidence** | The LLM copies conditions, procedures and body parts from the text; speciality keywords found in the text are added. Code keeps a phrase only if it really appears in the text (typos allowed) | LLM + code |
-| 1.3 | **Three voters** | **V1** keyword search and **V2** meaning search over a lookup list of 10,584 entries (ICD-10-CM diagnoses + CGHS procedures, each mapped to a speciality by doctor-reviewable tables). **V3** a local LLM picks from the 26-speciality list; code rejects any other name | Code / embeddings / LLM |
-| 1.4 | **Majority vote** | At least 2 of 3 voters name the same speciality **and** there is evidence in the text. General Medicine (the catch-all) asks one question before it is accepted | Code |
-| 1.5 | **Clarify, else user picks** | No majority: a short form (body area, existing diagnosis, recommended procedure), up to 2 rounds, then the user picks from the list | Code |
-| 1.6 | **Trace** | Every stage of every request is logged with a `request_id` in `logs/step1_trace.jsonl` (input, LLM calls, votes, decision) | Code |
+| 1.2 | **Extract evidence** | The LLM copies conditions, procedures and body parts from the text; speciality keywords found in the text are added | LLM + code |
+| 1.3 | **Clean evidence (data correction)** | Code corrects what the LLM returned before anyone votes: a phrase is kept only if it really appears in the text (typos allowed), and generic words (treatment, hospital, doctor, city names, "since last month") are dropped. Each dropped phrase is logged with the reason | Code |
+| 1.4 | **Three voters** | **V1** keyword search and **V2** meaning search over a lookup list of 11,057 entries (9,314 ICD-10-CM diagnoses + 1,270 CGHS procedures + 473 patient lay terms such as "eye infection", each mapped to a speciality by doctor-reviewable tables). **V3** a local LLM picks from the 26-speciality list; code rejects any other name | Code / embeddings / LLM |
+| 1.5 | **Majority vote** | At least 2 of 3 voters name the same speciality **and** there is evidence in the text. General Medicine (the catch-all) asks one question before it is accepted | Code |
+| 1.6 | **Clarify, else user picks** | No majority: a short form (body area, existing diagnosis, recommended procedure), up to 2 rounds, then the user picks from the list | Code |
+| 1.7 | **Trace** | Every stage of every request is logged with a `request_id` in `logs/step1_trace.jsonl` (input, LLM calls, votes, decision) | Code |
+
+**Why the data-correction stage matters.** For *"eye infection since last 1 month, suggest
+treatment hospital in Mumbai"* the LLM returned "treatment" and "hospital" as procedures. Both are
+in the text, so the old check kept them, and the keyword voter matched them to Obstetrics &
+Gynaecology lookup rows. ICD-10-CM and CGHS also use clinical wording ("conjunctivitis"), so "eye
+infection" itself found no strong match. Two fixes: generic words are dropped from the evidence,
+and patient lay terms from `specialties.csv` were added to the lookup list. The same query now
+votes Ophthalmology (tests: `test_eye_infection_query_drops_generic_evidence`,
+`test_generic_words_are_not_evidence`).
 
 Measured through the API on 12 scenarios (`scripts/api_smoke_step1.py`): all routed as intended,
 including report text, emergency notice, both clarification paths and the user's choice; about
@@ -124,7 +134,8 @@ They share only `common/` (the `MedicalContext` hand-off object) and `utils/`.
 | Patient input + reports | `/api/analyze`, `/api/reports/parse`, `extraction/pdf_parser.py` |
 | 1.1 Protect + emergency rules | `step1/protect.py`, `step1/safety.py` |
 | 1.2 Extract evidence | `step1/evidence.py`, `prompts/evidence_v1.txt` |
-| 1.3 Voters | `step1/voters.py`, `step1/lookup.py` (lookup list + TF-IDF and embedding search), `prompts/specialty_v1.txt` |
+| 1.3 Clean evidence | `step1/evidence.py` (`verify_phrase`, `is_generic`, `GENERIC_WORDS`) |
+| 1.4 Voters | `step1/voters.py`, `step1/lookup.py` (lookup list + TF-IDF and embedding search), `prompts/specialty_v1.txt` |
 | 1.4–1.5 Decide, clarify, user choice | `step1/pipeline.py` |
 | 1.6 Trace | `step1/trace.py` |
 | Service + baselines | `service.py` (`MEDIROUTE_ROUTING_MODE`: `vote` default; `rules`, `llm`, `hybrid` for evaluation), `routes.py` |

@@ -119,6 +119,35 @@ def test_verify_phrase_allows_typos_and_abbreviations_but_drops_invented_text():
     assert not verify_phrase("pancreatic cancer", source)[0]
 
 
+@pytest.mark.parametrize("phrase,generic", [
+    ("treatment", True), ("hospital", True), ("suggest treatment hospital in Mumbai", True),
+    ("since last 1 month", True), ("best doctor", True),
+    ("eye infection", False), ("knee replacement", False), ("bypass surgery", False), ("PSA test", False),
+])
+def test_generic_words_are_not_evidence(phrase, generic):
+    from mediroute.specialty_routing.step1.evidence import is_generic
+    assert is_generic(phrase) is generic
+
+
+def test_eye_infection_query_drops_generic_evidence():
+    """Regression for trace 3b2c6e933acb: 'treatment' and 'hospital' were kept as procedures and
+    pushed the keyword voter to Obstetrics & Gynaecology."""
+    llm_output = {"conditions": ["eye infection"], "procedures": ["treatment", "hospital"], "body_parts": ["eye"]}
+    client = FakeClient({"eye infection": llm_output}, {"eye infection": "Ophthalmology"})
+    evidence = EvidenceExtractor(client).extract(
+        "eye infection since last 1 month,suggest treatment hospital in Mumbai")
+    assert evidence.kept["procedures"] == []
+    assert {d["phrase"] for d in evidence.dropped} == {"treatment", "hospital"}
+    assert evidence.routing_phrases == ["eye infection"]
+
+
+def test_lay_terms_are_in_the_lookup_list():
+    from mediroute.specialty_routing.step1.lookup import _lay_term_entries
+    lay = {(e.text, e.specialty) for e in _lay_term_entries()}
+    assert ("eye infection", "Ophthalmology") in lay
+    assert ("ear discharge", "ENT") in lay
+
+
 def test_icd_narrowest_range_wins():
     blocks = [{"code_from": "I80", "code_to": "I89", "specialty": "Cardiothoracic Surgery"},
               {"code_from": "I85", "code_to": "I85", "specialty": "Gastroenterology"}]
@@ -163,6 +192,16 @@ def test_general_medicine_only_wins_a_search_voter_when_no_specialist_matched():
     index = LookupIndex(ENTRIES, encoder=FakeEncoder(), cache=False)
     assert KeywordVoter(index).vote(["weakness"]).top1 == "General Medicine"
     assert KeywordVoter(index).vote(["weakness", "osteoarthritis of knee"]).top1 == "Orthopaedics"
+
+
+def test_general_symptom_is_not_pulled_to_a_specialist_by_a_partial_lay_term():
+    """'weakness' must stay General Medicine even though the lay term 'weakness in arm' is Neurology."""
+    from mediroute.specialty_routing.step1.voters import KeywordVoter
+    entries = ENTRIES + [LookupEntry("lay:gm", "lay_term", "", "weakness", "General Medicine"),
+                         LookupEntry("lay:neuro", "lay_term", "", "weakness in arm", "Neurology")]
+    index = LookupIndex(entries, encoder=FakeEncoder(), cache=False)
+    assert KeywordVoter(index).vote(["weakness"]).top1 == "General Medicine"
+    assert KeywordVoter(index).vote(["weakness in arm"]).top1 == "Neurology"
 
 
 def test_user_selected_specialty_is_returned():
