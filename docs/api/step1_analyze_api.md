@@ -214,7 +214,7 @@ V1 0.1 s → V2 0.3 s → V3 LLM call 8.5 s → `decision` 16.8 s.
 |----------|---------|--------|
 | `MEDIROUTE_ROUTING_MODE` | `vote` | `vote` (this pipeline), or the baselines `rules`, `llm`, `hybrid` |
 | `MEDIROUTE_LLM_MODEL` | `llama3.2` | Ollama model for evidence and V3 |
-| `OLLAMA_API_BASE_URL` | `http://localhost:11434` | Ollama server |
+| `OLLAMA_API_BASE_URL` | `http://127.0.0.1:11434` | Ollama server |
 | `MEDIROUTE_LLM_TIMEOUT_S` | `90` | Per LLM call |
 | `MEDIROUTE_LOG_PATIENT_TEXT` | `1` | `0` logs only a hash and length of the patient text. **Set to `0` before any real patient data (DPDP)** |
 

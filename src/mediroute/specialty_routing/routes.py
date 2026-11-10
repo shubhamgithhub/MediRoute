@@ -23,7 +23,7 @@ UNCLEAR = "Unclear"
 PROMPT_DIR = Path(__file__).resolve().parent / "prompts"
 DEFAULT_PROMPT_VERSION = "specialty_v1"
 DEFAULT_MODEL = os.getenv("MEDIROUTE_LLM_MODEL", "llama3.2")
-DEFAULT_OLLAMA_URL = os.getenv("OLLAMA_API_BASE_URL", "http://localhost:11434")
+DEFAULT_OLLAMA_URL = os.getenv("OLLAMA_API_BASE_URL", "http://127.0.0.1:11434")  # see step1/ollama_client.py
 
 
 @dataclass

@@ -10,7 +10,9 @@ from dataclasses import dataclass, field
 from typing import Any
 
 DEFAULT_MODEL = os.getenv("MEDIROUTE_LLM_MODEL", "llama3.2")
-DEFAULT_OLLAMA_URL = os.getenv("OLLAMA_API_BASE_URL", "http://localhost:11434")
+# 127.0.0.1, not "localhost": on Windows "localhost" tries IPv6 (::1) first, Ollama listens on IPv4
+# only, and every call waited ~2 s for the fallback (measured 2026-11-10).
+DEFAULT_OLLAMA_URL = os.getenv("OLLAMA_API_BASE_URL", "http://127.0.0.1:11434")
 DEFAULT_TIMEOUT_S = float(os.getenv("MEDIROUTE_LLM_TIMEOUT_S", "90"))
 
 
@@ -62,6 +64,9 @@ class OllamaClient:
             "output_tokens": body.get("eval_count"),
             "ollama_total_ms": int((body.get("total_duration") or 0) / 1e6),
             "ollama_load_ms": int((body.get("load_duration") or 0) / 1e6),
+            # where Ollama's time goes: reading the prompt vs writing the answer
+            "ollama_prompt_eval_ms": int((body.get("prompt_eval_duration") or 0) / 1e6),
+            "ollama_generate_ms": int((body.get("eval_duration") or 0) / 1e6),
         })
         try:
             parsed = json.loads(raw or "{}")

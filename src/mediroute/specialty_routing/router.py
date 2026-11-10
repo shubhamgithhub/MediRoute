@@ -138,7 +138,7 @@ class SpecialtyRAGRouter:
         self.ollama_model = self._detect_ollama_model()
 
     def _detect_ollama_model(self) -> str | None:
-        base_url = os.getenv("OLLAMA_API_BASE_URL", "http://localhost:11434")
+        base_url = os.getenv("OLLAMA_API_BASE_URL", "http://127.0.0.1:11434")
         preferred_models = [
             "llama3.2",
             "llama3.1",
@@ -225,7 +225,7 @@ class SpecialtyRAGRouter:
             logger.info("LLM not available: no Ollama model detected for specialty routing.")
             return None
 
-        base_url = os.getenv("OLLAMA_API_BASE_URL", "http://localhost:11434")
+        base_url = os.getenv("OLLAMA_API_BASE_URL", "http://127.0.0.1:11434")
         prompt = self._build_ollama_prompt(query, candidates)
         logger.info("LLM call starting for specialty routing with model=%s", self.ollama_model)
         logger.info("LLM prompt: %s", prompt)

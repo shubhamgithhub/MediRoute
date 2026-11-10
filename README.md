@@ -234,7 +234,7 @@ Optional environment variables:
 | `MEDIROUTE_DATA_DIR` | `./data` | Use a data folder in another location |
 | `MEDIROUTE_LOG_DIR` | `./logs` | Where `mediroute.log` is written |
 | `MEDIROUTE_HOST` / `MEDIROUTE_PORT` | `127.0.0.1` / `8000` | Used by the `mediroute-api` command |
-| `OLLAMA_API_BASE_URL` | `http://localhost:11434` | Ollama server for Step 1 |
+| `OLLAMA_API_BASE_URL` | `http://127.0.0.1:11434` | Ollama server for Step 1 |
 | `MEDIROUTE_ROUTING_MODE` | `vote` | Step 1 mode: `vote`, or the baselines `rules`, `llm`, `hybrid` |
 | `MEDIROUTE_LLM_MODEL` | `llama3.2` | Ollama model used by Step 1 |
 | `MEDIROUTE_LOG_PATIENT_TEXT` | `1` | `0` logs only a hash of the patient text. Set to `0` before any real patient data |
