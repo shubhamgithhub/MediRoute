@@ -308,3 +308,22 @@ def test_hosted_llm_runs_v3_in_parallel_with_the_same_result():
     result = pipeline.analyze(Step1Input(text="osteoarthritis of the knee, knee replacement", debug=True))
     assert result["suggested_specialty"] == "Orthopaedics"
     assert result["debug"]["votes"]["V3"]["top3"][0][0] == "Orthopaedics"
+
+
+def test_openrouter_falls_back_to_the_next_free_model_when_one_is_busy(monkeypatch):
+    from mediroute.specialty_routing.step1.ollama_client import OpenRouterClient, _ProviderError
+    client = OpenRouterClient(api_key="sk-or-test", model="busy/model:free, good/model:free")
+    asked = []
+
+    def stream(payload):
+        asked.append(payload["model"])
+        if payload["model"] == "busy/model:free":
+            raise _ProviderError(429, "busy/model:free is temporarily rate-limited upstream")
+        return {"content": '{"specialty": "Cardiology"}', "usage": {}, "first_token_ms": 300, "model": payload["model"]}
+    monkeypatch.setattr(client, "_stream_chat", stream)
+    first = client.generate_json("x", {}, purpose="specialty_vote")
+    assert first.ok and first.details["model"] == "good/model:free"
+    assert first.details["models_tried"][0]["model"] == "busy/model:free"
+    second = client.generate_json("x", {}, purpose="specialty_vote")
+    assert second.ok and asked == ["busy/model:free", "good/model:free", "good/model:free"]  # busy one skipped
+    assert client.status()["available"] is True  # a busy model doesn't take the whole LLM down

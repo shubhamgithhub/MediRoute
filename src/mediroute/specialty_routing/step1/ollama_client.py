@@ -136,14 +136,35 @@ class OllamaClient:
 
 # ---------------------------------------------------------------------------- OpenRouter
 OPENROUTER_URL = "https://openrouter.ai/api/v1"
-# A free model that returned valid JSON-schema output for Step 1 prompts (checked 2026-11-10).
-# Pin a model for evaluation runs: "openrouter/free" picks a different model per request.
-DEFAULT_OPENROUTER_MODEL = "nvidia/nemotron-3.5-super-vl:free"
+# Free models tried in order; one that is rate-limited upstream or refuses is skipped for 60 s.
+# Compared 2026-11-10 on the real V3 prompt, reasoning off: dots-3-note 2.3 s (1.2 s to first
+# token), nemotron-3.5-super ~13-15 s (free queue); gemma-4 and xing4.0 were rate-limited upstream;
+# flint and lfm refuse to run without reasoning; inkling-2-small returned 403. dots-3-note-preview
+# expires 2026-12-31. Pin a single model for evaluation runs ("openrouter/free" changes per request).
+DEFAULT_OPENROUTER_MODEL = "dots-studio/dots-3-note-preview:free,nvidia/nemotron-3.5-super-vl:free"
 # Hidden reasoning was ~95% of the output tokens of the default model (e.g. 829 of 856) and most of
 # the wait; routing doesn't need it. Set MEDIROUTE_OPENROUTER_REASONING=on to allow it.
 REASONING_ON = os.getenv("MEDIROUTE_OPENROUTER_REASONING", "off").strip().lower() in {"on", "1", "true"}
 MAX_RETRY_WAIT_S = 20.0  # per-minute 429: wait (Retry-After) and retry once; longer limits mark it down
 CODE_FENCE = "`" * 3
+
+
+class _ProviderError(Exception):
+    """An HTTP error, or an error chunk inside the stream, with its code and message."""
+
+    def __init__(self, code: int, text: str, retry_after: float = 0.0) -> None:
+        super().__init__(f"HTTP {code}: {text}")
+        self.code, self.text, self.retry_after = code, text, retry_after
+
+    @property
+    def account_level(self) -> bool:
+        """Bad key, no credit, or the daily free limit: no other model will work either."""
+        return self.code in (401, 402) or (self.code == 429 and "per-day" in self.text.lower())
+
+    @property
+    def model_level(self) -> bool:
+        """This model is busy upstream, gone, or refuses our settings: try the next model."""
+        return self.code in (403, 404, 429, 502, 503) or "reasoning is mandatory" in self.text.lower()
 
 
 def _read_api_key(name: str) -> str:
@@ -169,7 +190,10 @@ class OpenRouterClient:
 
     def __init__(self, model: str | None = None, api_key: str | None = None, base_url: str = OPENROUTER_URL,
                  timeout_s: float = DEFAULT_TIMEOUT_S) -> None:
-        self.model = model or os.getenv("MEDIROUTE_OPENROUTER_MODEL", DEFAULT_OPENROUTER_MODEL)
+        spec = model or os.getenv("MEDIROUTE_OPENROUTER_MODEL", DEFAULT_OPENROUTER_MODEL)
+        self.models = [m.strip() for m in spec.split(",") if m.strip()]
+        self.model = self.models[0]
+        self._model_down: dict[str, tuple[float, str]] = {}  # model -> (when, why)
         self.api_key = api_key if api_key is not None else _read_api_key("OPENROUTER_API_KEY")
         self.base_url = base_url.rstrip("/")
         self.timeout_s = timeout_s
@@ -213,7 +237,10 @@ class OpenRouterClient:
                     break
                 chunk = json.loads(data)
                 if chunk.get("error"):
-                    raise RuntimeError(f"stream error: {chunk['error']}")
+                    error = chunk["error"]
+                    code = int(error.get("code") or 500) if isinstance(error, dict) else 500
+                    message = error.get("message", str(error)) if isinstance(error, dict) else str(error)
+                    raise _ProviderError(code, message[:300])
                 for key in ("id", "model", "provider"):
                     out.setdefault(key, chunk.get(key))
                 if chunk.get("usage"):
@@ -242,41 +269,65 @@ class OpenRouterClient:
             raise RuntimeError(self._down_reason) from exc
         self.key_info = {k: info.get(k) for k in ("limit", "usage", "is_free_tier", "limit_remaining")}
 
+    def _models_to_try(self) -> list[str]:
+        now = time.monotonic()
+        ready = [m for m in self.models if now - self._model_down.get(m, (-1e9, ""))[0] > RECHECK_AFTER_S]
+        return ready or self.models[:1]  # all recently failed: try the first one again
+
+    def _call_model(self, model: str, payload: dict) -> dict:
+        """One model, with one retry when a per-minute limit says to wait briefly."""
+        for attempt in range(2):
+            try:
+                return self._stream_chat({**payload, "model": model})
+            except urllib.error.HTTPError as exc:
+                text = exc.read().decode("utf-8", "replace")[:300]
+                wait = float(exc.headers.get("Retry-After") or 0) if exc.headers else 0.0
+                error = _ProviderError(exc.code, text, wait)
+            if error.code == 429 and attempt == 0 and 0 < error.retry_after <= MAX_RETRY_WAIT_S:
+                time.sleep(error.retry_after)
+                continue
+            raise error
+        raise error
+
     def generate_json(self, prompt: str, schema: dict, purpose: str) -> LLMCall:
         options = {"temperature": 0, "seed": 7}
         details: dict[str, Any] = {"purpose": purpose, "provider": self.provider, "model": self.model,
                                    "endpoint": f"{self.base_url}/chat/completions", "options": options,
-                                   "prompt_chars": len(prompt), "timeout_s": self.timeout_s}
+                                   "prompt_chars": len(prompt), "timeout_s": self.timeout_s,
+                                   "reasoning_enabled": REASONING_ON}
         state = self.status()
         if not state["available"]:
             details["skipped"] = True
             return LLMCall(False, error=f"LLM unavailable: {state['reason']}", details=details)
-        payload = {"model": self.model, "messages": [{"role": "user", "content": prompt}], **options,
+        payload = {"messages": [{"role": "user", "content": prompt}], **options,
                    "reasoning": {"enabled": REASONING_ON},
                    "response_format": {"type": "json_schema",
                                        "json_schema": {"name": purpose, "strict": False, "schema": schema}}}
-        details["reasoning_enabled"] = REASONING_ON
         start = time.perf_counter()
         body: dict = {}
-        for attempt in range(2):
+        tried: list[dict[str, str]] = []
+        for model in self._models_to_try():
             try:
-                body = self._stream_chat(payload)
+                body = self._call_model(model, payload)
+                details["model"] = model
                 break
-            except urllib.error.HTTPError as exc:
-                text = exc.read().decode("utf-8", "replace")[:300]
-                wait = float(exc.headers.get("Retry-After") or 0) if exc.headers else 0.0
-                if exc.code == 429 and attempt == 0 and 0 < wait <= MAX_RETRY_WAIT_S:
-                    time.sleep(wait)
-                    continue
-                if exc.code in (401, 402, 403):
-                    self._mark_down(f"OpenRouter HTTP {exc.code}: {text}", permanent=exc.code == 401)
-                elif exc.code == 429:  # daily free limit, or the free model is busy upstream
-                    self._mark_down(f"OpenRouter rate limit (HTTP 429): {text}")
-                return LLMCall(False, error=f"HTTP {exc.code}: {text}",
-                               duration_ms=int((time.perf_counter() - start) * 1000), details=details)
-            except Exception as exc:  # network error, timeout
-                return LLMCall(False, error=f"{type(exc).__name__}: {exc}",
-                               duration_ms=int((time.perf_counter() - start) * 1000), details=details)
+            except _ProviderError as error:
+                tried.append({"model": model, "error": str(error)[:200]})
+                if error.account_level:
+                    self._mark_down(f"OpenRouter {error}", permanent=error.code == 401)
+                    break
+                if error.model_level:
+                    self._model_down[model] = (time.monotonic(), str(error)[:200])
+                    continue  # next model
+                break
+            except Exception as exc:  # network error, timeout, bad stream
+                tried.append({"model": model, "error": f"{type(exc).__name__}: {exc}"[:200]})
+                break
+        if tried:
+            details["models_tried"] = tried  # failures before the answer (or all failures), for the trace
+        if not body:
+            return LLMCall(False, error=tried[-1]["error"] if tried else "no model answered",
+                           duration_ms=int((time.perf_counter() - start) * 1000), details=details)
         duration = int((time.perf_counter() - start) * 1000)
         usage = body.get("usage") or {}
         first = body.get("first_token_ms")

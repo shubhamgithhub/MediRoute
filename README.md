@@ -239,15 +239,17 @@ API with the OpenRouter provider:
 ```powershell
 setx OPENROUTER_API_KEY "sk-or-v1-..."      # once; reopen VS Code / the terminal afterwards
 $env:MEDIROUTE_LLM_PROVIDER = "openrouter"  # then start the API as usual
-# optional: $env:MEDIROUTE_OPENROUTER_MODEL = "<another :free model>"
+# optional: $env:MEDIROUTE_OPENROUTER_MODEL = "model-a:free,model-b:free"  (tried in order)
 ```
 
-Default model: `nvidia/nemotron-3.5-super-vl:free` (returns valid JSON for Step 1). Free tier:
+Default models, tried in order: `dots-studio/dots-3-note-preview:free` (fastest in our comparison;
+expires 31 Dec 2026), then `nvidia/nemotron-3.5-super-vl:free`. A model that is rate-limited
+upstream or refuses is skipped for 60 s and the next one answers. Free tier:
 **50 requests/day, 20/min**; each Step 1 request uses 2. Hidden "reasoning" is turned off (it was
 ~95% of the output and most of the wait; `MEDIROUTE_OPENROUTER_REASONING=on` re-enables it), and the
-two calls run in parallel: the eye-infection query went from 37.6 s to 14.8 s. What's left is the
-free endpoint's queue (~13 s before it answers, even for a 23-token reply), visible per call as
-"wait for first token" on the admin page. If the limit runs out, Step 1 falls
+two calls run in parallel. Eye-infection query: 37.6 s (nemotron, reasoning on) → 14.8 s
+(reasoning off, parallel; nemotron's free queue holds each call ~13 s) → **2.5 s with dots-3-note**.
+Per call, the admin page shows "wait for first token" and which models were tried. If the limit runs out, Step 1 falls
 back to the two search voters like the no-LLM mode. Send only synthetic test data. Never commit the
 key.
 
