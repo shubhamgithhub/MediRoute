@@ -1,3 +1,4 @@
+from mediroute.common.locations import resolve_location
 from mediroute.hospital_recommendation.retrieval.faiss_retriever import FaissHospitalRetriever
 from mediroute.hospital_recommendation.retrieval.filtered_faiss_retriever import FilteredFaissHospitalRetriever
 from mediroute.hospital_recommendation.specialty_filter import SpecialtyFilter
@@ -61,6 +62,8 @@ class HospitalRecommendationEngine:
                 "results": [],
             }
 
+        # a city or a search area ("Delhi NCR" = New Delhi + Gurugram + Noida), from data/reference/cities.csv
+        allowed_cities = resolve_location(preferred_city) if preferred_city_value else None
         location_positions = []
         specialty_position_set = set(specialty_positions)
         for hospital in self.faiss_retriever.metadata:
@@ -68,11 +71,10 @@ class HospitalRecommendationEngine:
             if position not in specialty_position_set:
                 continue
 
-            if preferred_city_value:
-                city = str(hospital.get("city") or "").strip().casefold()
-                if city != preferred_city_value:
+            if allowed_cities is not None:
+                if str(hospital.get("city") or "").strip() not in allowed_cities:
                     continue
-            if preferred_state_value:
+            elif preferred_state_value:
                 state = str(hospital.get("state") or "").strip().casefold()
                 if state != preferred_state_value:
                     continue
@@ -99,6 +101,8 @@ class HospitalRecommendationEngine:
             allowed_positions=location_positions,
             top_k=retrieval_k,
         )
+        for hospital in retrieval_results:
+            hospital["specialty_evidence"] = self.specialty_filter.specialty_evidence(hospital, primary_specialty)
         final_results = self.reranker.rerank(
             retrieval_results,
             patient_procedures=context.procedures,

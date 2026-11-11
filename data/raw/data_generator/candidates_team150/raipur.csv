@@ -1,0 +1,3 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H139,AIIMS Raipur,Raipur,Chhattisgarh,Tier 2,Tier 1,Tertiary academic,Government,AIIMS,,,https://www.aiimsraipur.edu.in/,,tiers are judgement; team 150 id H078,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H140,NH MMI Narayana Multispeciality Hospital,Raipur,Chhattisgarh,Tier 2,Tier 2,Multispeciality tertiary,Private,MMI,,,https://www.narayanahealth.org/hospitals/raipur/nh-mmi-narayana-multispeciality-hospital,,tiers are judgement; team 150 id H079,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

@@ -1,0 +1,4 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H155,AIIMS Guwahati,Guwahati,Assam,Tier 2,Tier 1,Tertiary academic,Government,AIIMS,,,https://aiimsguwahati.ac.in/,,tiers are judgement; team 150 id H094,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H156,Dr. B. Borooah Cancer Institute (BBCI),Guwahati,Assam,Tier 2,Tier 1,Cancer tertiary academic,Government (autonomous),Borooah,,,https://bbci.gov.in/,,tiers are judgement; team 150 id H095,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H157,Health City Hospital,Guwahati,Assam,Tier 2,Tier 2,Multispeciality tertiary,Private,Health,,,https://healthcityhospital.com/,,tiers are judgement; team 150 id H096,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

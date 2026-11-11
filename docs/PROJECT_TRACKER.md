@@ -13,9 +13,12 @@ Final review: **5 Dec 2026**. Owners are tentative.
   and an admin page. 59 tests pass; 12 Step 1 and 9 workflow API scenarios route as intended.
 - **Step 1 + Step 2 integrated** in the LangGraph workflow (`/api/patient-routing`).
 - **Step 2 runs** as filter → FAISS semantic search → rule-bonus rerank. AHP-TOPSIS, grounded
-  explanations and the hybrid keyword retriever are not built yet. It still uses the old 150-hospital
-  index, so 6 specialities have no hospitals.
-- **Data:** 100-hospital master verified against NABH, JCI and official websites (14 cities).
+  explanations and the hybrid keyword retriever are not built yet. It now uses the shared hospital table.
+- **Data (11 Nov):** one hospital table, `data/processed/hospitals.csv`, read by both steps: **201
+  hospitals in 60 cities**, all checked against NABH, JCI and their websites (108 Verified, 36
+  Partially, 57 Needs verification). The team 150 sheet adds procedures and facilities, marked "not
+  verified". Every Step 1 speciality now has hospitals. Old files moved to `archive/` (see
+  `archive/README.txt`).
 - **Biggest gap vs the TA feedback: evaluation.** Gold sets exist (Step 1), but no metrics have been
   run on the voting pipeline, no baselines, no hospital-relevance labels, no Step 2 metrics.
 
@@ -40,10 +43,10 @@ Final review: **5 Dec 2026**. Owners are tentative.
 | 13 | Grounded LLM explanation | Not built: results show rule-based `ranking_reasons` only. For each top hospital, generate a 2–3 line reason using only fields from the retrieved record; cite the fields used | Shubham | Not started |
 | 14 | Connect Step 1 to Step 2 end to end | Done: `/api/patient-routing` workflow passes Step 1's speciality and evidence to the Step 2 engine; results page shows ranked hospitals (see docs/design/step1_step2_integration.md) | Shubham | Done |
 | **Data** | | | | |
-| 15 | 150-hospital dataset + FAISS index | 150-hospital dataset + FAISS index in use. **Rebuild the index from the 100-hospital master** (`data/processed/master-hospital-data.csv`); add eye, ENT, skin, mental-health and O&G hospitals (0 today) | Anand, Ravi | In progress |
+| 15 | 150-hospital dataset + FAISS index | Done: Step 2 index rebuilt from `data/processed/hospitals.csv` (201 hospitals, 60 cities), the same table Step 1 reads. Every Step 1 speciality has hospitals (eye 6, ENT 8, skin 3, psychiatry 7) | Anand, Ravi | Done |
 | 16 | Specialty vocabulary + ICD-10 mapping | Done for v1. Extend with task 7 and task 9 | Anand, Ravi | Done |
-| 17 | JCI / NABH accreditation scraping | Done for 100 hospitals in 14 cities: NABH certificate, JCI listing and official website checked per hospital (`data/interim/master/`) | Anand, Ravi | Done |
-| 18 | Verified hospital-specialty data | 100 hospitals in `master-hospital-data.csv` with `source`, `verification_status` and `evidence_quality_score`. Still to do: merge into the Step 2 index (task 15) | Anand, Ravi | In progress |
+| 17 | JCI / NABH accreditation scraping | Done for 201 hospitals in 60 cities: the 100 team-city hospitals plus the 101 from the team 150 sheet that were not in the master, verified with the same NABH / JCI / website pipeline | Anand, Ravi | Done |
+| 18 | Verified hospital-specialty data | Done: one table with per-field source (`detail_source`, `record_origin`, `team150_id`); team-sheet values marked not verified and never override accreditation. Still to do: doctor review of the 270 `draft_rule` rows in `specialty_normalization.csv`; recheck the 57 'Needs verification' hospitals (19 websites failed to load) | Anand, Ravi | In progress |
 | **Evaluation (TA: critical)** | | | | |
 | 19 | Gold query set | 50 core queries in `step1_gold_core50.csv` (diagnosis, report, procedure-only, noisy, vague, CGHS gap, emergency, paediatric; with critical details) + 84 MediRoute + 212 Gretel queries. **Doctor review pending** (`step1_gold_core50_REVIEW.md`) | Anand, Ravi | In progress |
 | 20 | Hospital-relevance labels | For each gold query, grade the candidate hospitals 0–3 for relevance. This is needed for NDCG | Anand, Ravi | Not started |

@@ -23,9 +23,10 @@ hospitals** with indicative costs.
    - [6.1 Sources](#61-sources)
    - [6.2 Pipeline](#62-pipeline)
    - [6.3 Where the data is kept](#63-where-the-data-is-kept)
-   - [6.4 How to regenerate](#64-how-to-regenerate)
-   - [6.5 Adding a city or hospital](#65-adding-a-city-or-hospital)
-   - [6.6 Known limitations](#66-known-limitations)
+   - [6.4 Data shared by Step 1 and Step 2, and the archive](#64-data-shared-by-step-1-and-step-2-and-the-archive)
+   - [6.5 How to regenerate](#65-how-to-regenerate)
+   - [6.6 Adding a city or hospital](#66-adding-a-city-or-hospital)
+   - [6.7 Known limitations](#67-known-limitations)
 7. [How to test](#7-how-to-test)
 8. [Project tracker](#8-project-tracker)
 9. [Disclaimer](#9-disclaimer)
@@ -107,9 +108,13 @@ diagram are planned, not built.
 | 2.3 | **Rerank: semantic + bonus** | Final score = semantic score + a rule bonus capped at 0.20: matched procedure up to 0.08, verified 0.03, NABH 0.02, JCI 0.02, international patient services 0.02, evidence quality up to 0.03. Each bonus is shown as a ranking reason | Code |
 | 2.4 | **Result** | Top 5 hospitals with final score and reasons | Code |
 
-Known gaps: the index is the older 150-hospital dataset (no Ophthalmology, ENT, Dermatology,
-Psychiatry, General Medicine or O&G hospitals), not the verified 100-hospital master; the keyword
-retriever exists but is not used; the bonus weights are fixed, not tested. Planned: AHP-TOPSIS
+Data: the index is built from [data/processed/hospitals.csv](data/processed/hospitals.csv), the one
+hospital table Step 1 also reads (see [6.4](#64-data-shared-by-step-1-and-step-2-and-the-archive)).
+A speciality confirmed on the hospital's website earns 0.04 and ranks above one only the team sheet
+lists; procedures match by words ("CABG" finds "Robotic CABG"); a city searches its whole area
+(Delhi NCR, Mumbai + Navi Mumbai). Known gaps: no Ophthalmology, ENT, Dermatology, Psychiatry or
+General Medicine hospitals yet; the keyword retriever exists but is not used; the bonus weights are
+fixed, not tested. Planned: AHP-TOPSIS
 with tested weights (medical fit above location, per the TA), grounded LLM explanation per
 hospital, CGHS cost for display only.
 
@@ -189,9 +194,8 @@ MediRoute/
 │   │   ├── jci_scraper.py, nabh_finder_scraper.py        # Accreditation scrapers (Playwright)
 │   │   ├── build_hospital_master.py                      # Verify candidates (NABH, JCI, website) per city
 │   │   ├── merge_master.py, compare_team_sheet.py        # Build/validate master CSV; check team sheets
-│   │   ├── create_master_dataset.py, create_verification_sheet.py,
-│   │   │   merge_verified_hospitals.py, check_verification_progress.py
-│   │   ├── build_specialty_vocabulary.py, validate_specialty_normalization.py
+│   │   ├── build_hospitals_table.py                      # The one hospital table (master + team detail)
+│   │   ├── validate_specialty_normalization.py
 │   │   └── build_hospital_embedding_dataset.py, build_faiss_index.py   # Vector store
 │   └── utils/
 │       ├── paths.py               # Single source of truth for all project paths
@@ -204,9 +208,11 @@ MediRoute/
 ├── data/
 │   ├── raw/                       # Source datasets and scraper inputs
 │   ├── interim/                   # Scraper outputs (JCI, NABH, per-city masters)
-│   ├── processed/                 # master-hospital-data.csv, hospital.schema.csv, verification sheets
-│   ├── medical_taxonomy/          # specialties.csv, ICD/CGHS → speciality tables, step1_lookup.csv
+│   ├── processed/                 # hospitals.csv (shared), master-hospital-data.csv, id links, schema
+│   ├── reference/                 # cities.csv: cities, tiers, search areas (Delhi NCR...)
+│   ├── medical_taxonomy/          # specialties.csv, specialty_normalization.csv, ICD/CGHS tables, step1_lookup.csv
 │   └── vector_store/              # FAISS index and hospital metadata
+├── archive/                       # Retired data files and scripts; README.txt says why and what replaced them
 ├── scripts/                       # restart_app.ps1, smoke and verification scripts
 ├── docs/                          # Architecture diagram, project tracker, API playground, references
 ├── pyproject.toml                 # Package metadata and dependencies
@@ -390,8 +396,8 @@ python -m mediroute.data_generator.build_hospital_master --candidates (Get-Child
     --jci data/interim/jci/jci_all_cities.csv --out-dir data/interim/master
 python -m mediroute.data_generator.merge_master
 
-# Taxonomy and vector store (rebuild after the hospital dataset changes)
-python -m mediroute.data_generator.build_specialty_vocabulary
+# The one hospital table, then the Step 2 vector store (rebuild after hospital data changes)
+python -m mediroute.data_generator.build_hospitals_table
 python -m mediroute.data_generator.validate_specialty_normalization
 python -m mediroute.data_generator.build_hospital_embedding_dataset
 python -m mediroute.data_generator.build_faiss_index
@@ -480,9 +486,44 @@ flowchart LR
 | [data/interim/jci/](data/interim/jci/) | JCI scraper output, e.g. `jci_all_cities.csv` |
 | [data/interim/master/](data/interim/master/) | Per-city verified masters (`<city>_master.csv/.xlsx`), run logs, `<person>_comparison.csv` |
 | [data/processed/hospital.schema.csv](data/processed/hospital.schema.csv) | **Final schema**: every column's type, allowed values and how it is populated |
-| [data/processed/master-hospital-data.csv](data/processed/master-hospital-data.csv) | **Final master hospital data**, all cities (written by `merge_master.py`) |
+| [data/processed/master-hospital-data.csv](data/processed/master-hospital-data.csv) | **Verified master**: every hospital checked against NABH, JCI and its website (written by `merge_master.py`) |
+| [data/raw/data_generator/candidates_team150/](data/raw/data_generator/candidates_team150/) | Candidate files for the team 150-sheet hospitals that were not in the master |
+| [data/interim/master_team150/](data/interim/master_team150/) | Their verified per-city outputs (same pipeline) |
+| [data/processed/hospital_id_links.csv](data/processed/hospital_id_links.csv) | Master id ↔ team 150-sheet id, with match score and method (reviewed) |
+| [data/processed/hospitals.csv](data/processed/hospitals.csv) | **The one hospital table** both steps read: the verified master plus the team sheet's procedures, facilities and sub-specialities, marked "not verified" |
+| [data/reference/cities.csv](data/reference/cities.csv) | Cities, state, tier and search area (Delhi NCR = New Delhi + Gurugram + Noida) |
 
-### 6.4 How to regenerate
+### 6.4 Data shared by Step 1 and Step 2, and the archive
+
+Step 1 and Step 2 used to read different hospital and speciality files, so they disagreed:
+Step 2 searched a 150-hospital sheet that marked every hospital "Verified", its speciality table
+had no row for 13 of Step 1's 26 specialities ("Neurosciences" never reached Neurology, which
+found 2 hospitals), and "Delhi NCR" on the patient page silently searched all of India. Now there
+is **one file per kind of data**, and tests (`tests/hospital_recommendation/test_shared_data.py`)
+fail if the steps drift apart again.
+
+| Data | The one file | Read by |
+|------|--------------|---------|
+| Specialities | [specialties.csv](data/medical_taxonomy/specialties.csv) (26 names) | Step 1 output, Step 2 filter, patient page list |
+| Hospital labels → specialities | [specialty_normalization.csv](data/medical_taxonomy/specialty_normalization.csv) (every label, incl. sub-specialities; `NONE` = not a routing speciality; `draft_rule` rows await doctor review) | Website checks, hospital table, Step 2 filter |
+| Hospitals | [hospitals.csv](data/processed/hospitals.csv) | Step 2 index and ranking, `/api/hospitals`, `/api/cities`, Step 1's "hospitals available" flag (`in_hospital_data` is computed from it, no longer typed by hand) |
+| Cities and search areas | [cities.csv](data/reference/cities.csv) | Hospital checks (allowed cities), Step 2 location filter, patient page location list (`/api/cities`) |
+
+What each hospital field means and where it came from:
+- **Identity, NABH, JCI, verification level, `verified_specialties`**: from the master's own checks.
+- **`team_claimed_specialties`, `subspecialties`, `procedures`, `facilities`, `languages`, cost
+  band**: from the team 150 sheet, `detail_source` = "team 150 sheet (not verified)". Step 2 may
+  use them, but says so: a hospital whose speciality is only team-listed is ranked below one whose
+  website confirms it, and its reason reads "not yet confirmed on the website".
+- The team sheet's own "Verified" / accreditation values are **not used**: for the 49 hospitals in
+  both lists they disagreed with the master for 10–14 hospitals each, and the sheet marked all 150
+  as verified.
+
+**Archived files.** Old prototype lists and the scripts that only read them were moved to
+[archive/](archive/). [archive/README.txt](archive/README.txt) lists each archived file, why it was
+moved and which file replaces it.
+
+### 6.5 How to regenerate
 
 Run from the repo root after the [Setup](#4-setup) steps (`pip install -e ".[dev,scraping]"` and
 `playwright install chromium`). If the package isn't installed, run `$env:PYTHONPATH="src"` first.
@@ -508,12 +549,23 @@ python -m mediroute.data_generator.merge_master
 
 # 4. (optional) Compare a team member's sheet with the verified values
 python -m mediroute.data_generator.compare_team_sheet --sheet RaviTeja
+
+# 5. Hospitals from the team 150 sheet that aren't in the master: same checks, own folder
+python -m mediroute.data_generator.build_hospital_master `
+    --candidates (Get-ChildItem data/raw/data_generator/candidates_team150/*.csv) `
+    --jci data/interim/jci/jci_india_all.csv --out-dir data/interim/master_team150
+python -m mediroute.data_generator.merge_master        # reads both folders
+
+# 6. The one hospital table, then Step 2's search index
+python -m mediroute.data_generator.build_hospitals_table
+python -m mediroute.data_generator.build_hospital_embedding_dataset
+python -m mediroute.data_generator.build_faiss_index
 ```
 
 To rebuild just one city, pass its candidate file with `--force`, e.g.
 `--candidates data/raw/data_generator/candidates/chennai.csv --force`. Then re-run `merge_master`.
 
-### 6.5 Adding a city or hospital
+### 6.6 Adding a city or hospital
 
 1. Add a row to the city's candidate CSV, or create `<city>.csv` with the same header, using the
    next free `H###` ID.
@@ -532,7 +584,7 @@ To rebuild just one city, pass its candidate file with `--force`, e.g.
    `nabh_finder_scraper.py`.
 4. Re-run that city with `--force`, check the `notes` column, then run `merge_master`.
 
-### 6.6 Known limitations
+### 6.7 Known limitations
 
 - `City_Tier`, `Hospital_Tier`, `hospital_type` and `ownership_type` are manual judgements from
   the candidate list. Each row's `notes` column says so.

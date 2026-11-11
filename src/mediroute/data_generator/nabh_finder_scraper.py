@@ -344,7 +344,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--from-master", action="store_true",
                     help="search each hospital in --master by name instead of browsing by city")
-    ap.add_argument("--master", default=str(PROCESSED_DATA_DIR / "hospitals_master.csv"))
+    # old 25-hospital prototype list, now archived; pass --master to search another file
+    ap.add_argument("--master", default=str(PROCESSED_DATA_DIR.parents[1] / "archive" / "data" / "processed" / "hospitals_master.csv"))
     ap.add_argument("--max-pages", type=int, default=4, help="result pages to read per name search")
     ap.add_argument("--cities", nargs="+", default=list(CITY_STATE))
     ap.add_argument("--state", help="state name for cities not in CITY_STATE")

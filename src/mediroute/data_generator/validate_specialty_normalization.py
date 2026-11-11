@@ -57,9 +57,11 @@ def validate_normalization():
     )
 
     # 3. Check statuses
+    # draft_rule = keyword-rule mapping waiting for doctor review
     allowed_statuses = {
         "reviewed",
-        "review_needed"
+        "review_needed",
+        "draft_rule",
     }
 
     invalid_status = df[
@@ -73,18 +75,26 @@ def validate_normalization():
         f"{len(invalid_status)}"
     )
 
-    # 4. Check duplicate raw specialties
+    # 4. A label may map to several specialities (one row each), but never twice to the same one
     duplicates = df[
         df.duplicated(
-            subset=["raw_specialty"],
+            subset=["raw_specialty", "canonical_specialty"],
             keep=False
         )
     ]
 
     print(
-        f"Duplicate raw specialties: "
+        f"Duplicate label -> speciality rows: "
         f"{len(duplicates)}"
     )
+
+    # 4b. Every target is one of Step 1's specialities (specialties.csv) or NONE
+    from mediroute.common.specialties import specialty_names
+
+    unknown = sorted(set(df["canonical_specialty"].astype(str)) - set(specialty_names()) - {"NONE"})
+    print(f"Targets not in specialties.csv: {unknown or 'none'}")
+    if len(invalid_status) or len(duplicates) or unknown:
+        raise SystemExit("specialty_normalization.csv has problems (see above)")
 
     # 5. Show review-needed rows
     review_needed = df[

@@ -1,7 +1,7 @@
 column_order,column_name,group,data_type,required,allowed_values,description,how_populated,example
 1,hospital_id,core,string,yes,pattern H### (unique),Stable hospital identifier,Assigned in the city candidate list,H001
 2,hospital_name,core,string,yes,,"Hospital name with branch locality, e.g. 'Name, Locality'",Candidate list,"Manipal Hospital, Old Airport Road"
-3,city,core,string,yes,New Delhi|Gurugram|Chandigarh|Mumbai|Navi Mumbai|Nagpur|Pune|Chennai|Kolkata|Ahmedabad|Kochi|Bengaluru|Hyderabad|Visakhapatnam,Team city the hospital is listed under (metro-area hospitals use the main city),Candidate list,Bengaluru
+3,city,core,string,yes,a city in data/reference/cities.csv,City the hospital is in; its search area (e.g. Delhi NCR) comes from data/reference/cities.csv,Candidate list,Bengaluru
 4,state,core,string,yes,,State or union territory where the hospital is physically located,Candidate list,Karnataka
 5,City_Tier,core,category,yes,Tier 1|Tier 2|Tier 3,City classification used by the team,Candidate list (manual judgement),Tier 1
 6,Hospital_Tier,core,category,yes,Tier 1|Tier 2,Tier 1 = quaternary/flagship centre; Tier 2 = tertiary,Candidate list (manual judgement),Tier 1
@@ -15,7 +15,7 @@ column_order,column_name,group,data_type,required,allowed_values,description,how
 14,url_Internantional_patients,core,url,yes,URL or NA,Official international-patients page (column name kept from team template),Found on the official website or supplied and verified to load,https://mgmhealthcare.in/international-patients/
 15,verification_status,core,category,yes,Verified|Partially verified|Needs verification,Verified = NABH hospital certificate confirmed and website loads; Partially verified = NABH or JCI confirmed but not both conditions; Needs verification = neither,Computed by build_hospital_master,Verified
 16,evidence_quality_score,core,category,yes,High|Medium|Low,"Count of: accreditation confirmed (NABH or JCI), website loads, specialties found. 3 = High, 2 = Medium, 0-1 = Low",Computed by build_hospital_master,High
-17,cost_band_inr,core,string,yes,NA (pending definition),Reference cost band in INR. Not yet defined; CGHS_Data sheet is the intended source,Not populated yet,NA
+17,cost_band_inr,core,string,yes,NA (pending definition),"Indicative cost band from the team 150 sheet (display / filter only, never ranking); NA when unknown",Not populated yet,NA
 18,nabh_certificate_no,evidence,string,no,,NABH certificate number of the matched record,NABH directory,H-2019-0625
 19,nabh_listed_name,evidence,string,no,,Name as listed by NABH (often the legal entity),NABH directory,Kauvery Hospital (A Unit of Sri Kauvery Medical Care India Limited)
 20,nabh_certificate_url,evidence,url,no,,Link to the certificate and scope PDF,NABH directory,
@@ -27,3 +27,11 @@ column_order,column_name,group,data_type,required,allowed_values,description,how
 26,data_collected_on,evidence,date (YYYY-MM-DD),yes,,Date the checks were run,build_hospital_master,2026-11-05
 27,source,evidence,string,yes,,Where the hospital row came from (team sheet row or drafted candidate list),Candidate list,RaviTeja sheet (H001)
 28,notes,evidence,string,no,,"Caveats: branch ambiguities, unreachable websites, manual-judgement fields",build_hospital_master,
+29,team150_id,hospitals.csv only,string,no,,"Id of the same hospital in the team 150 sheet (data/processed/hospital_id_links.csv), or blank",Link table,H138
+30,record_origin,hospitals.csv only,category,no,team city lists|team 150 sheet,Which list the hospital came from: team city lists | team 150 sheet,build_hospitals_table,team 150 sheet
+31,team_claimed_specialties,hospitals.csv only,string (semicolon list),no,,"Specialities the team 150 sheet lists (incl. sub-specialities), normalised to Step 1 names. NOT verified on the website; Step 2 uses them for eligibility with an 'unverified' reason",Team 150 sheet + specialty_normalization.csv,Neurology;Neurosurgery
+32,subspecialties,hospitals.csv only,string (semicolon list),no,,Sub-specialities as written in the team 150 sheet (not verified),Team 150 sheet,Interventional Cardiology
+33,procedures,hospitals.csv only,string (semicolon list),no,,Procedures as written in the team 150 sheet (not verified),Team 150 sheet,CABG; TAVR
+34,facilities,hospitals.csv only,string (semicolon list),no,,Facilities as written in the team 150 sheet (not verified),Team 150 sheet,Cath Lab; Cardiac ICU
+35,languages,hospitals.csv only,string,no,,Languages or interpreter support from the team 150 sheet (not verified),Team 150 sheet,"English, Hindi, Arabic"
+36,detail_source,hospitals.csv only,string,no,,Where subspecialties / procedures / facilities / languages / cost band came from,build_hospitals_table,team 150 sheet (not verified)

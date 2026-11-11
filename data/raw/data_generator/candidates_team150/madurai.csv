@@ -1,0 +1,2 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H134,Meenakshi Mission Hospital and Research Centre,Madurai,Tamil Nadu,Tier 2,Tier 2,Multispeciality tertiary,Private (trust),Meenakshi,,,https://www.meenakshimission.org/,,tiers are judgement; team 150 id H073,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

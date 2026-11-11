@@ -512,14 +512,27 @@ const emergencyBanner = document.querySelector("#emergency-banner");
 // rounds of one search share the first Step 1 request id (parent_request_id in the logs)
 let search = { parentRequestId: null, round: 0 };
 
-// Delhi NCR, Other and unrecognised text are not sent as invented city/state values.
-const LOCATION_MAP = {
-  "Mumbai": { city: "Mumbai", state: "Maharashtra" },
-  "Bengaluru": { city: "Bengaluru", state: "Karnataka" },
-  "Hyderabad": { city: "Hyderabad", state: "Telangana" },
-  "Chennai": { city: "Chennai", state: "Tamil Nadu" },
-  "Pune": { city: "Pune", state: "Maharashtra" }
+// The location list comes from GET /api/cities (data/reference/cities.csv: only search areas that
+// have hospitals). The chosen value is sent as preferred_city; the API expands a search area
+// such as "Delhi NCR" into its cities. "Other" sends the typed city as it is.
+const loadLocationOptions = async () => {
+  const select = document.querySelector("#location");
+  if (!select) return;
+  try {
+    const response = await fetch(`${MEDIROUTE_API_BASE_URL}/api/cities`);
+    if (!response.ok) return;  // keep the built-in list
+    const { areas } = await response.json();
+    if (!Array.isArray(areas) || !areas.length) return;
+    const chosen = select.value;
+    [...select.options].filter((o) => o.value !== "No preference" && o.value !== "Other").forEach((o) => o.remove());
+    const other = [...select.options].find((o) => o.value === "Other");
+    areas.forEach((area) => select.insertBefore(new Option(area.label, area.value), other || null));
+    if ([...select.options].some((o) => o.value === chosen)) select.value = chosen;
+  } catch (error) {
+    console.warn("Location list not loaded; using the built-in list", error);
+  }
 };
+loadLocationOptions();
 
 const showStep1Panel = (panel) => {
   [form, loadingState, successState, clarifyState, choiceState].forEach((el) => { if (el) el.hidden = el !== panel; });
@@ -555,11 +568,8 @@ const buildRoutingForm = (extra) => {
   formData.append("requirement", requirementInput.value.trim());
   formData.append("top_k", "5");
   formData.append("language", languageSelect.value || "English");
-  const location = locationSelect.value === "Other" ? "" : locationSelect.value;
-  if (LOCATION_MAP[location]) {
-    formData.append("preferred_city", LOCATION_MAP[location].city);
-    formData.append("preferred_state", LOCATION_MAP[location].state);
-  }
+  const location = locationSelect.value === "Other" ? otherLocationInput.value.trim() : locationSelect.value;
+  if (location && location !== "No preference") formData.append("preferred_city", location);
   formData.append("clarification_round", String(search.round));
   if (search.parentRequestId) formData.append("parent_request_id", search.parentRequestId);
   Object.entries(extra).forEach(([key, value]) => {
@@ -617,7 +627,11 @@ const toRoutingView = (result) => {
             city: hospital.city,
             state: hospital.state,
             verified_specialties: hospital.verified_specialties,
-            verified_procedures: hospital.verified_procedures,
+            team_claimed_specialties: hospital.team_claimed_specialties,
+            specialty_evidence: hospital.specialty_evidence,
+            procedures: hospital.procedures,
+            facilities: hospital.facilities,
+            detail_source: hospital.detail_source,
             international_patient_service: hospital.international_patient_service,
             cost_band_inr: hospital.cost_band_inr,
             nabh_status: hospital.nabh_status,

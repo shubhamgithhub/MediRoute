@@ -1,0 +1,3 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H111,SGPGI Lucknow,Lucknow,Uttar Pradesh,Tier 2,Tier 1,Tertiary academic,Government,SGPGI,,,https://sgpgims.org.in/,,tiers are judgement; team 150 id H048,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H112,Medanta Lucknow,Lucknow,Uttar Pradesh,Tier 2,Tier 2,Multispeciality tertiary,Private,Medanta,,,https://www.medanta.org/lucknow-hospital,,tiers are judgement; team 150 id H049,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

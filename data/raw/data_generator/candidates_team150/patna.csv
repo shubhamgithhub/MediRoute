@@ -1,0 +1,5 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H122,AIIMS Patna,Patna,Bihar,Tier 2,Tier 1,Tertiary academic,Government,AIIMS,,,https://aiimspatna.edu.in/,,tiers are judgement; team 150 id H059,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H123,Paras HMRI Hospital,Patna,Bihar,Tier 2,Tier 2,Multispeciality tertiary,Private,Paras,,,https://www.parashospitals.com/patna/,,tiers are judgement; team 150 id H060,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H124,Ruban Memorial Hospital,Patna,Bihar,Tier 2,Tier 2,Multispeciality tertiary,Private,Ruban,,,https://rubanpatna.com/,,tiers are judgement; team 150 id H061,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H125,Mahavir Cancer Sansthan,Patna,Bihar,Tier 2,Tier 2,Cancer tertiary,Private (trust),Mahavir,,,https://mahavircancersansthan.com/,,tiers are judgement; team 150 id H062,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

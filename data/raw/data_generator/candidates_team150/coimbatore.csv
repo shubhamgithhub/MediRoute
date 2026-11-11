@@ -1,0 +1,4 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H131,G. Kuppuswamy Naidu Memorial Hospital (GKNM),Coimbatore,Tamil Nadu,Tier 2,Tier 2,Multispeciality tertiary,Private (trust),Kuppuswamy,,,https://www.gknmhospital.org/,,tiers are judgement; team 150 id H070,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H132,Kovai Medical Center and Hospital (KMCH),Coimbatore,Tamil Nadu,Tier 2,Tier 2,Multispeciality tertiary,Private,Kovai,,,https://www.kmchhospitals.com/,,tiers are judgement; team 150 id H071,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H133,PSG Hospitals,Coimbatore,Tamil Nadu,Tier 2,Tier 1,Tertiary academic,Private (trust),PSG,,,https://psghospitals.com/,,tiers are judgement; team 150 id H072,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

@@ -1,7 +1,7 @@
 raw_specialty,canonical_specialty,normalization_status,notes
 Adult Interventional Cardiology,Cardiology,reviewed,Interventional cardiology grouped under Cardiology
 Assisted Reproduction (IVF),Reproductive Medicine,reviewed,IVF and assisted reproduction grouped under Reproductive Medicine
-Ayurveda & Modern Medicine,,review_needed,Mixed service category; not suitable as a canonical specialty without manual review
+Ayurveda & Modern Medicine,NONE,review_needed,Mixed service category; not suitable as a canonical specialty without manual review
 Bariatric & Minimal Access Surgery,Bariatric Surgery,reviewed,Bariatric surgical service
 BMT,Hematology & Bone Marrow Transplant,reviewed,BMT interpreted as Bone Marrow Transplant
 Bone & Joint,Orthopaedics,reviewed,Bone and joint care grouped under Orthopaedics
@@ -30,3 +30,295 @@ Emergency & Trauma,Emergency Medicine,reviewed,Emergency and trauma service
 Emergency Care,Emergency Medicine,reviewed,Emergency clinical service
 Endocrinology,Endocrinology,reviewed,Already canonical
 Gastro Sciences,Gastroenterology,reviewed,Broad gastroenterology service
+Bariatric Surgery,Bariatric Surgery,reviewed,Step 1 canonical name
+Dermatology,Dermatology,reviewed,Step 1 canonical name
+ENT,ENT,reviewed,Step 1 canonical name
+Emergency Medicine,Emergency Medicine,reviewed,Step 1 canonical name
+Gastroenterology,Gastroenterology,reviewed,Step 1 canonical name
+General Medicine,General Medicine,reviewed,Step 1 canonical name
+Hematology & Bone Marrow Transplant,Hematology & Bone Marrow Transplant,reviewed,Step 1 canonical name
+Nephrology,Nephrology,reviewed,Step 1 canonical name
+Neurology,Neurology,reviewed,Step 1 canonical name
+Neurosurgery,Neurosurgery,reviewed,Step 1 canonical name
+Obstetrics & Gynaecology,Obstetrics & Gynaecology,reviewed,Step 1 canonical name
+Oncology,Oncology,reviewed,Step 1 canonical name
+Ophthalmology,Ophthalmology,reviewed,Step 1 canonical name
+Organ Transplant,Organ Transplant,reviewed,Step 1 canonical name
+Orthopaedics,Orthopaedics,reviewed,Step 1 canonical name
+Paediatrics,Paediatrics,reviewed,Step 1 canonical name
+Pediatric Cardiology,Pediatric Cardiology,reviewed,Step 1 canonical name
+Plastic & Reconstructive Surgery,Plastic & Reconstructive Surgery,reviewed,Step 1 canonical name
+Psychiatry,Psychiatry,reviewed,Step 1 canonical name
+Pulmonology,Pulmonology,reviewed,Step 1 canonical name
+Reproductive Medicine,Reproductive Medicine,reviewed,Step 1 canonical name
+Urology,Urology,reviewed,Step 1 canonical name
+Neurosciences,Neurology,draft_rule,keyword rule: neurosciences = neurology + neurosurgery
+Neurosciences,Neurosurgery,draft_rule,keyword rule: neurosciences = neurology + neurosurgery
+Interventional Cardiology,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Organ Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+Joint Replacement,Orthopaedics,draft_rule,keyword rule: bones and joints
+Radiation Oncology,Oncology,draft_rule,keyword rule: cancer care
+Joint Arthroplasty,Orthopaedics,draft_rule,keyword rule: bones and joints
+Renal Care,Nephrology,draft_rule,keyword rule: kidney care
+Surgical Oncology,Oncology,draft_rule,keyword rule: cancer care
+Renal Transplantation,Organ Transplant,draft_rule,keyword rule: transplant; kidney care
+Renal Transplantation,Nephrology,draft_rule,keyword rule: transplant; kidney care
+Medical Oncology,Oncology,draft_rule,keyword rule: cancer care
+Spine Surgery,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+General Surgery,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Trauma Care,Emergency Medicine,draft_rule,keyword rule: trauma / emergency
+Robotic Surgery,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Minimally Invasive Spine Surgery,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Minimally Invasive Cardiac Surgery,Cardiothoracic Surgery,draft_rule,keyword rule: heart / chest surgery
+Trauma Management,Emergency Medicine,draft_rule,keyword rule: trauma / emergency
+Pediatric Cardiac Surgery,Pediatric Cardiology,draft_rule,keyword rule: children's heart care
+Minimal Access Surgery,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Orthopaedics & Trauma,Orthopaedics,draft_rule,keyword rule: bones and joints
+Interventional Radiology,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Robotic Joint Replacement,Orthopaedics,draft_rule,keyword rule: bones and joints
+Kidney Transplantation,Organ Transplant,draft_rule,keyword rule: transplant; kidney care
+Kidney Transplantation,Nephrology,draft_rule,keyword rule: transplant; kidney care
+Interventional Oncology,Oncology,draft_rule,keyword rule: cancer care
+Robotic Cancer Surgery,Oncology,draft_rule,keyword rule: cancer care
+Renal Sciences,Nephrology,draft_rule,keyword rule: kidney care
+Pediatric Oncology,Oncology,draft_rule,keyword rule: cancer care; children
+Pediatric Oncology,Paediatrics,draft_rule,keyword rule: cancer care; children
+Nephrology & Urology,Nephrology,draft_rule,keyword rule: kidney care; urology
+Nephrology & Urology,Urology,draft_rule,keyword rule: kidney care; urology
+Head & Neck Oncology,Oncology,draft_rule,keyword rule: cancer care
+Pulmonary Medicine,Pulmonology,draft_rule,keyword rule: lungs
+Renal Transplant,Organ Transplant,draft_rule,keyword rule: transplant; kidney care
+Renal Transplant,Nephrology,draft_rule,keyword rule: transplant; kidney care
+Vascular Surgery,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Interventional Pulmonology,Pulmonology,draft_rule,keyword rule: lungs
+Epilepsy Surgery,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Hemato-Oncology,Hematology & Bone Marrow Transplant,draft_rule,keyword rule: blood cancers / BMT
+Liver and Kidney Transplantation,Organ Transplant,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Liver and Kidney Transplantation,Nephrology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Liver and Kidney Transplantation,Gastroenterology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Multi-organ Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+Radiation Therapy,Oncology,draft_rule,keyword rule: cancer care
+Arthroscopy,Orthopaedics,draft_rule,keyword rule: bones and joints
+Liver and Kidney Transplants,Organ Transplant,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Liver and Kidney Transplants,Nephrology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Liver and Kidney Transplants,Gastroenterology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Renal Dialysis,Nephrology,draft_rule,keyword rule: kidney care
+Neurosurgical Trauma,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Linear Accelerator Radiation,Oncology,draft_rule,keyword rule: cancer care
+Robotic Joint Surgery,Orthopaedics,draft_rule,keyword rule: bones and joints
+Liver Transplantation,Organ Transplant,draft_rule,keyword rule: transplant; digestive / liver care
+Liver Transplantation,Gastroenterology,draft_rule,keyword rule: transplant; digestive / liver care
+Hepatology,Gastroenterology,draft_rule,keyword rule: digestive / liver care
+General & Laparoscopic Surgery,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Hepato-Pancreato-Biliary,Gastroenterology,draft_rule,keyword rule: digestive / liver care
+Pediatrics,Paediatrics,draft_rule,keyword rule: children
+Liver Care,Gastroenterology,draft_rule,keyword rule: digestive / liver care
+Palliative Care,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Orthopaedics & Joint Replacement,Orthopaedics,draft_rule,keyword rule: bones and joints
+Trauma & Orthopaedics,Orthopaedics,draft_rule,keyword rule: bones and joints
+Pediatric Surgery,Paediatrics,draft_rule,keyword rule: children
+Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+Trauma,Emergency Medicine,draft_rule,keyword rule: trauma / emergency
+Neuro-Rehabilitation,Neurology,draft_rule,keyword rule: neurology
+Neuro-Oncology,Oncology,draft_rule,keyword rule: cancer care; brain tumours
+Neuro-Oncology,Neurosurgery,draft_rule,keyword rule: cancer care; brain tumours
+Joint Reconstruction,Orthopaedics,draft_rule,keyword rule: bones and joints
+Living Donor Liver Transplant,Organ Transplant,draft_rule,keyword rule: transplant; digestive / liver care
+Living Donor Liver Transplant,Gastroenterology,draft_rule,keyword rule: transplant; digestive / liver care
+Nuclear Medicine,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Radiosurgery,Oncology,draft_rule,keyword rule: cancer care
+Stereotactic Radiosurgery,Oncology,draft_rule,keyword rule: cancer care
+Spinal Arthroscopy,Neurosurgery,draft_rule,keyword rule: brain / spine surgery; bones and joints
+Spinal Arthroscopy,Orthopaedics,draft_rule,keyword rule: brain / spine surgery; bones and joints
+Neurovascular Interventions,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Mechanical Circulatory Support,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Robotic Urological Surgery,Urology,draft_rule,keyword rule: urology
+Comprehensive Cancer Care,Oncology,draft_rule,keyword rule: cancer care
+Pediatric Heart Transplants,Pediatric Cardiology,draft_rule,keyword rule: children's heart care
+Robotic Heart Surgery,Cardiothoracic Surgery,draft_rule,keyword rule: heart / chest surgery
+Heart & Lung Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+Emergency Percutaneous Intervention,Cardiology,draft_rule,keyword rule: heart procedures without open surgery; trauma / emergency
+Emergency Percutaneous Intervention,Emergency Medicine,draft_rule,keyword rule: heart procedures without open surgery; trauma / emergency
+Stroke Intervention,Neurology,draft_rule,keyword rule: neurology
+Complex Joint Surgery,Orthopaedics,draft_rule,keyword rule: bones and joints
+Trauma Resuscitation,Emergency Medicine,draft_rule,keyword rule: trauma / emergency
+Deep Brain Stimulation,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Linear Accelerator Radiotherapy,Oncology,draft_rule,keyword rule: cancer care
+TAVR,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Internal Medicine,General Medicine,draft_rule,keyword rule: general medicine
+Respiratory Medicine,Pulmonology,draft_rule,keyword rule: lungs
+Heart & Lung Transplantation,Organ Transplant,draft_rule,keyword rule: transplant
+Liver Transplantation & HPB,Organ Transplant,draft_rule,keyword rule: transplant; digestive / liver care
+Liver Transplantation & HPB,Gastroenterology,draft_rule,keyword rule: transplant; digestive / liver care
+Rehabilitation,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Solid Organ Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+Urology & Nephrology,Nephrology,draft_rule,keyword rule: kidney care; urology
+Urology & Nephrology,Urology,draft_rule,keyword rule: kidney care; urology
+Medical & Surgical Oncology,Oncology,draft_rule,keyword rule: cancer care
+Gynecology,Obstetrics & Gynaecology,draft_rule,keyword rule: women's health
+Pediatric Hemato-Oncology,Hematology & Bone Marrow Transplant,draft_rule,keyword rule: blood cancers / BMT
+Pediatric Care,Paediatrics,draft_rule,keyword rule: children
+Palliative Medicine,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Hepatology & HPB,Gastroenterology,draft_rule,keyword rule: digestive / liver care
+Neuro-Radiology,Neurology,draft_rule,keyword rule: neurology
+Liver Transplant,Organ Transplant,draft_rule,keyword rule: transplant; digestive / liver care
+Liver Transplant,Gastroenterology,draft_rule,keyword rule: transplant; digestive / liver care
+Thoracic Surgery,Cardiothoracic Surgery,draft_rule,keyword rule: heart / chest surgery
+Neurovascular Intervention,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Orthopaedic Oncology,Oncology,draft_rule,keyword rule: cancer care; bones and joints
+Orthopaedic Oncology,Orthopaedics,draft_rule,keyword rule: cancer care; bones and joints
+Paediatric Hemato-Oncology,Hematology & Bone Marrow Transplant,draft_rule,keyword rule: blood cancers / BMT
+Adult BMT,Hematology & Bone Marrow Transplant,draft_rule,keyword rule: blood cancers / BMT
+Hepato-Pancreato-Biliary Surgery,Gastroenterology,draft_rule,keyword rule: digestive / liver care
+Robotic Cardiothoracic Surgery,Cardiothoracic Surgery,draft_rule,keyword rule: heart / chest surgery
+Brain Tumor & Spine Radiosurgery,Oncology,draft_rule,keyword rule: cancer care; brain / spine surgery
+Brain Tumor & Spine Radiosurgery,Neurosurgery,draft_rule,keyword rule: cancer care; brain / spine surgery
+Paediatric Cardiology & Cardiac Surgery,Pediatric Cardiology,draft_rule,keyword rule: children's heart care
+Neuro-Intervention,Neurology,draft_rule,keyword rule: neurology
+Robotic Oncology,Oncology,draft_rule,keyword rule: cancer care
+Orthopaedic Trauma,Orthopaedics,draft_rule,keyword rule: bones and joints
+Critical Care Medicine,Critical Care,draft_rule,keyword rule: intensive care
+Full-time Specialist System,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Breast Cancer Surgery,Oncology,draft_rule,keyword rule: cancer care
+Musculoskeletal Oncology,Oncology,draft_rule,keyword rule: cancer care
+Pulmonary Critical Care,Pulmonology,draft_rule,keyword rule: lungs; intensive care
+Pulmonary Critical Care,Critical Care,draft_rule,keyword rule: lungs; intensive care
+Epilepsy Monitoring,Neurology,draft_rule,keyword rule: neurology
+Pediatric Cardiac Care,Pediatric Cardiology,draft_rule,keyword rule: children's heart care
+Functional Neurosurgery,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+IVF Treatments,Reproductive Medicine,draft_rule,keyword rule: fertility
+Trauma & Joint Replacement,Orthopaedics,draft_rule,keyword rule: bones and joints
+Living-Donor Liver Transplant,Organ Transplant,draft_rule,keyword rule: transplant; digestive / liver care
+Living-Donor Liver Transplant,Gastroenterology,draft_rule,keyword rule: transplant; digestive / liver care
+Heart Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+Proton Beam Therapy (Network),Oncology,draft_rule,keyword rule: cancer care
+Joint Replacement & Revision,Orthopaedics,draft_rule,keyword rule: bones and joints
+Keyhole Spine Surgery,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Haploidentical BMT,Hematology & Bone Marrow Transplant,draft_rule,keyword rule: blood cancers / BMT
+Pin-hole Interventional Radiology,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+VAD Implantation,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Neuro-endoscopy,Neurosurgery,draft_rule,keyword rule: brain / spine surgery; digestive / liver care
+Neuro-endoscopy,Gastroenterology,draft_rule,keyword rule: brain / spine surgery; digestive / liver care
+Pediatric Liver Transplant,Organ Transplant,draft_rule,keyword rule: transplant; digestive / liver care; children
+Pediatric Liver Transplant,Gastroenterology,draft_rule,keyword rule: transplant; digestive / liver care; children
+Pediatric Liver Transplant,Paediatrics,draft_rule,keyword rule: transplant; digestive / liver care; children
+Critical Care Hepatology,Gastroenterology,draft_rule,keyword rule: digestive / liver care; intensive care
+Critical Care Hepatology,Critical Care,draft_rule,keyword rule: digestive / liver care; intensive care
+Neonatal Critical Care,Critical Care,draft_rule,keyword rule: intensive care; children
+Neonatal Critical Care,Paediatrics,draft_rule,keyword rule: intensive care; children
+Hematology & BMT,Hematology & Bone Marrow Transplant,draft_rule,keyword rule: blood cancers / BMT
+Living-donor Liver Transplantation,Organ Transplant,draft_rule,keyword rule: transplant; digestive / liver care
+Living-donor Liver Transplantation,Gastroenterology,draft_rule,keyword rule: transplant; digestive / liver care
+HIFU Prostate Therapy,Urology,draft_rule,keyword rule: prostate therapy
+HIFU Prostate Therapy,Oncology,draft_rule,keyword rule: prostate therapy
+Computer Navigated Joint Surgery,Orthopaedics,draft_rule,keyword rule: bones and joints
+Japanese Healthcare Protocol,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Pet-CT guided Biopsy,Oncology,draft_rule,keyword rule: cancer care
+Transcatheter Valve Therapies,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Complex Epilepsy Surgery,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+RapidArc Radiation Therapy,Oncology,draft_rule,keyword rule: cancer care
+Robotic Thoracic Surgery,Cardiothoracic Surgery,draft_rule,keyword rule: heart / chest surgery
+Endoscopic Ultrasound,Gastroenterology,draft_rule,keyword rule: digestive / liver care
+Comprehensive Trauma,Emergency Medicine,draft_rule,keyword rule: trauma / emergency
+Living-donor Liver and Kidney Transplants,Organ Transplant,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Living-donor Liver and Kidney Transplants,Nephrology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Living-donor Liver and Kidney Transplants,Gastroenterology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Pediatric Heart Surgery,Pediatric Cardiology,draft_rule,keyword rule: children's heart care
+Minimally Invasive Heart Surgery,Cardiothoracic Surgery,draft_rule,keyword rule: heart / chest surgery
+ECMO Therapy,Critical Care,draft_rule,keyword rule: intensive care
+Interventional Nephrology,Nephrology,draft_rule,keyword rule: kidney care
+Endoscopy,Gastroenterology,draft_rule,keyword rule: digestive / liver care
+Intensity-Modulated Radiation,Oncology,draft_rule,keyword rule: cancer care
+Neurovascular Coiling,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Zero Technique Knee Replacement,Orthopaedics,draft_rule,keyword rule: bones and joints
+Revision Arthroplasty,Orthopaedics,draft_rule,keyword rule: bones and joints
+Heart Transplantation,Organ Transplant,draft_rule,keyword rule: transplant
+Bilateral Hand Transplants,Plastic & Reconstructive Surgery,draft_rule,keyword rule: hand transplant
+Bilateral Hand Transplants,Organ Transplant,draft_rule,keyword rule: hand transplant
+Cranioplasty,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Robotic Surgeries,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Interventional Gastroenterology,Gastroenterology,draft_rule,keyword rule: digestive / liver care
+Living-Donor Kidney Transplantation,Organ Transplant,draft_rule,keyword rule: transplant; kidney care
+Living-Donor Kidney Transplantation,Nephrology,draft_rule,keyword rule: transplant; kidney care
+Endocrine Surgery,Endocrinology,draft_rule,keyword rule: hormones / diabetes
+Critical Care Pulmonology,Pulmonology,draft_rule,keyword rule: lungs; intensive care
+Critical Care Pulmonology,Critical Care,draft_rule,keyword rule: lungs; intensive care
+Transcatheter Interventions,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Complex Joint Replacement,Orthopaedics,draft_rule,keyword rule: bones and joints
+Minimally Invasive Surgery,NONE,draft_rule,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)"
+Gynecological Oncology,Oncology,draft_rule,keyword rule: cancer care; women's health
+Gynecological Oncology,Obstetrics & Gynaecology,draft_rule,keyword rule: cancer care; women's health
+Spinal Reconstructions,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Arthroplasty,Orthopaedics,draft_rule,keyword rule: bones and joints
+Liver and Heart Transplants,Organ Transplant,draft_rule,keyword rule: transplant; digestive / liver care
+Liver and Heart Transplants,Gastroenterology,draft_rule,keyword rule: transplant; digestive / liver care
+Interventional Neuro-Radiology,Neurology,draft_rule,keyword rule: neurology
+Complex Trauma Arthroplasty,Orthopaedics,draft_rule,keyword rule: bones and joints
+Liver & Kidney Transplantation,Organ Transplant,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Liver & Kidney Transplantation,Nephrology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Liver & Kidney Transplantation,Gastroenterology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Emergency Trauma Care,Emergency Medicine,draft_rule,keyword rule: trauma / emergency
+Primary PCI,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Endovascular Interventions,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Joint Surgery,Orthopaedics,draft_rule,keyword rule: bones and joints
+Comprehensive Cancer Surgery,Oncology,draft_rule,keyword rule: cancer care
+Advanced Linear Accelerator Radiotherapy,Oncology,draft_rule,keyword rule: cancer care
+Cadaveric and Living Donor Organ Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+Transcatheter Aortic Valve Replacement (TAVR),Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Complex Joint Reconstruction,Orthopaedics,draft_rule,keyword rule: bones and joints
+Complex Trauma Surgery,Emergency Medicine,draft_rule,keyword rule: trauma / emergency
+Complex Spine Surgery,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Hyperbaric Medicine,Critical Care,draft_rule,keyword rule: intensive care
+Radical Cancer Surgeries,Oncology,draft_rule,keyword rule: cancer care
+Chemotherapy,Oncology,draft_rule,keyword rule: cancer care
+Dialysis,Nephrology,draft_rule,keyword rule: kidney care
+Cancer Chemotherapy,Oncology,draft_rule,keyword rule: cancer care
+Living-donor Liver & Kidney Transplants,Organ Transplant,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Living-donor Liver & Kidney Transplants,Nephrology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Living-donor Liver & Kidney Transplants,Gastroenterology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Heart & Liver Transplants,Organ Transplant,draft_rule,keyword rule: transplant; digestive / liver care
+Heart & Liver Transplants,Gastroenterology,draft_rule,keyword rule: transplant; digestive / liver care
+Complex Joint Arthroplasty,Orthopaedics,draft_rule,keyword rule: bones and joints
+Intensity-Modulated Radiotherapy,Oncology,draft_rule,keyword rule: cancer care
+Radical Resections,Oncology,draft_rule,keyword rule: cancer care
+Advanced Structural Heart Disease,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Aneurysm Coiling,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Heart & Kidney Transplants,Organ Transplant,draft_rule,keyword rule: transplant; kidney care
+Heart & Kidney Transplants,Nephrology,draft_rule,keyword rule: transplant; kidney care
+Kidney and Liver Transplants,Organ Transplant,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Kidney and Liver Transplants,Nephrology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Kidney and Liver Transplants,Gastroenterology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Stem Cell Transplants,Hematology & Bone Marrow Transplant,draft_rule,keyword rule: blood cancers / BMT
+Primary Angioplasty,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+MitraClip,Cardiology,draft_rule,keyword rule: heart procedures without open surgery
+Robotic Cardiac Surgery,Cardiothoracic Surgery,draft_rule,keyword rule: heart / chest surgery
+Pediatric Cardiac Interventions,Pediatric Cardiology,draft_rule,keyword rule: children's heart care
+Living-Donor Liver & Kidney Transplantation,Organ Transplant,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Living-Donor Liver & Kidney Transplantation,Nephrology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Living-Donor Liver & Kidney Transplantation,Gastroenterology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Living and Deceased Donor Liver & Kidney Transplants,Organ Transplant,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Living and Deceased Donor Liver & Kidney Transplants,Nephrology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Living and Deceased Donor Liver & Kidney Transplants,Gastroenterology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Heart Transplant,Organ Transplant,draft_rule,keyword rule: transplant
+Diabetic Foot Salvage,Endocrinology,draft_rule,keyword rule: hormones / diabetes
+Robotic Bariatric Surgery,Bariatric Surgery,draft_rule,keyword rule: weight-loss surgery
+Renal Transplants,Organ Transplant,draft_rule,keyword rule: transplant; kidney care
+Renal Transplants,Nephrology,draft_rule,keyword rule: transplant; kidney care
+"Multi-organ Transplants (Liver, Kidney, Heart, Lung)",Organ Transplant,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+"Multi-organ Transplants (Liver, Kidney, Heart, Lung)",Nephrology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+"Multi-organ Transplants (Liver, Kidney, Heart, Lung)",Gastroenterology,draft_rule,keyword rule: transplant; kidney care; digestive / liver care
+Robotic Surgical Oncology,Oncology,draft_rule,keyword rule: cancer care
+RapidArc Radiotherapy,Oncology,draft_rule,keyword rule: cancer care
+Robotic Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+CyberKnife Radiosurgery,Oncology,draft_rule,keyword rule: cancer care
+Combined Heart-Lung Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+Multi-visceral Transplants,Organ Transplant,draft_rule,keyword rule: transplant
+Complex BMT,Hematology & Bone Marrow Transplant,draft_rule,keyword rule: blood cancers / BMT
+Interventional Endoscopy,Gastroenterology,draft_rule,keyword rule: digestive / liver care
+Microvascular Neurosurgery,Neurosurgery,draft_rule,keyword rule: brain / spine surgery
+Stroke Interventions,Neurology,draft_rule,keyword rule: neurology
+Complex Spine Surgery,Orthopaedics,draft_rule,keyword rule: spine surgery is done by orthopaedic and neuro surgeons
+Keyhole Spine Surgery,Orthopaedics,draft_rule,keyword rule: spine surgery is done by orthopaedic and neuro surgeons
+Minimally Invasive Spine Surgery,Orthopaedics,draft_rule,keyword rule: spine surgery is done by orthopaedic and neuro surgeons
+Spinal Reconstructions,Orthopaedics,draft_rule,keyword rule: spine surgery is done by orthopaedic and neuro surgeons
+Spine Surgery,Orthopaedics,draft_rule,keyword rule: spine surgery is done by orthopaedic and neuro surgeons

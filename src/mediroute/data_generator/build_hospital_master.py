@@ -53,34 +53,34 @@ MAX_SPECIALTIES = 6
 
 # ---------------------------------------------------------------- specialties
 def load_specialty_patterns():
-    """raw website wording -> canonical specialty. Canonical names also match themselves."""
-    pairs = {}
+    """raw website wording -> canonical specialities (a label can map to several, e.g.
+    Neurosciences -> Neurology + Neurosurgery). Canonical names also match themselves; rows mapped
+    to NONE (general surgery, marketing terms) are not specialities."""
+    pairs: dict[str, set[str]] = {}
     with open(TAXONOMY, newline="", encoding="utf-8-sig") as f:
         for r in csv.DictReader(f):
             canon = (r.get("canonical_specialty") or "").strip()
-            if canon:
-                pairs[r["raw_specialty"].strip()] = canon
-                pairs[canon] = canon
+            if canon and canon != "NONE":
+                pairs.setdefault(r["raw_specialty"].strip(), set()).add(canon)
+                pairs.setdefault(canon, set()).add(canon)
     # Common spellings the taxonomy does not list.
-    extra = {"Orthopedics": "Orthopaedics", "Orthopaedic": "Orthopaedics", "Neurosurgery": "Neurosurgery",
-             "Neurosciences": "Neurology", "Urology": "Urology", "Nephrology": "Nephrology",
-             "Pulmonology": "Pulmonology", "Paediatrics": "Paediatrics", "Pediatrics": "Paediatrics",
-             "Oncology": "Oncology", "Cardiology": "Cardiology", "Gastroenterology": "Gastroenterology",
+    extra = {"Orthopedics": "Orthopaedics", "Orthopaedic": "Orthopaedics", "Pediatrics": "Paediatrics",
              "Obstetrics": "Obstetrics & Gynaecology", "Gynaecology": "Obstetrics & Gynaecology",
-             "Transplant": "Organ Transplant", "Critical Care": "Critical Care"}
+             "Transplant": "Organ Transplant"}
     for raw, canon in extra.items():
-        pairs.setdefault(raw, canon)
+        pairs.setdefault(raw, {canon})
     # Longest phrases first so "Cardiac Surgery" wins over "Cardiac".
-    return sorted(((re.compile(r"\b" + re.escape(raw).replace(r"\ ", r"\s+") + r"\b", re.I), canon)
-                   for raw, canon in pairs.items()), key=lambda x: -len(x[0].pattern))
+    return sorted(((re.compile(r"\b" + re.escape(raw).replace(r"\ ", r"\s+") + r"\b", re.I), tuple(sorted(canons)))
+                   for raw, canons in pairs.items()), key=lambda x: -len(x[0].pattern))
 
 
 def find_specialties(text, patterns):
     counts = Counter()
-    for rx, canon in patterns:
+    for rx, canons in patterns:
         n = len(rx.findall(text))
         if n:
-            counts[canon] += n
+            for canon in canons:
+                counts[canon] += n
             text = rx.sub(" ", text)  # don't double count the words of a longer phrase
     # Emergency/critical care appear in every site's menu; list them after the real specialties.
     generic = {"Emergency Medicine", "Critical Care"}

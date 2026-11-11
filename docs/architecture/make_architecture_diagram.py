@@ -13,6 +13,17 @@ from html import escape
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+DATA = HERE.parents[1] / "data"
+
+
+def count_rows(path: Path) -> str:
+    """Data rows in a CSV, so the diagram's numbers follow the data."""
+    with path.open(encoding="utf-8-sig") as handle:
+        return f"{sum(1 for _ in handle) - 1:,}"
+
+
+N_LOOKUP = count_rows(DATA / "medical_taxonomy" / "step1_lookup.csv")
+N_HOSPITALS = count_rows(DATA / "processed" / "hospitals.csv")
 U = 80  # pixels per layout unit
 W, H = 12.0, 21.8
 
@@ -81,7 +92,7 @@ container(0.3, 2.35, 11.7, 14.05, "Step 1: patient input to suggested speciality
 box(6.0, 3.35, 6.6, 0.95, "Protect + emergency rules", "remove phone / e-mail / IDs · red flags add a notice", "code")
 arrow((6.0, 2.0), (6.0, 2.875))
 box(7.9, 4.95, 6.6, 1.05, "Extract evidence", "LLM copies conditions, procedures, body parts + keywords", "llm")
-box(2.45, 4.95, 3.3, 1.05, "Lookup list (11,057)", "ICD-10-CM + CGHS + lay terms", "data")
+box(2.45, 4.95, 3.3, 1.05, f"Lookup list ({N_LOOKUP})", "ICD-10-CM + CGHS + lay terms", "data")
 arrow((6.0, 3.825), (6.0, 4.2), (7.9, 4.2), (7.9, 4.425))
 
 # data correction: clean the evidence before anyone votes on it
@@ -130,12 +141,12 @@ container(0.3, 14.45, 11.7, 20.75, "Step 2: speciality to ranked hospitals (Hosp
 arrow((9.0, 12.175), (9.0, 15.075))
 
 # R1: hard filters, with the two no-match exits
-box(9.0, 15.55, 4.6, 0.95, "Hard filters", "speciality (normalised) · then city / state", "code")
+box(9.0, 15.55, 4.6, 0.95, "Hard filters", "speciality (website or team list) · search area", "code")
 box(3.0, 15.55, 4.6, 0.95, "No match", "no speciality: say so · no city: ask to widen", "code")
 arrow((6.7, 15.55), (5.3, 15.55), label="none left", label_at=(5.45, 15.42))
 
 # R2: semantic search over the filtered hospitals only
-box(3.0, 17.0, 4.6, 0.95, "Hospital index (150)", "FAISS + metadata · to rebuild from master", "data")
+box(3.0, 17.0, 4.6, 0.95, f"Hospital table ({N_HOSPITALS})", "hospitals.csv, shared with Step 1 · FAISS", "data")
 box(9.0, 17.0, 4.6, 1.2, "Semantic search", "query: speciality + diagnoses + procedures", "llm")
 text(9.0, 17.48, "multi-qa-MiniLM cosine · top 3×K candidates", size=12, anchor="middle", colour="#5B4DB0")
 arrow((9.0, 16.025), (9.0, 16.4))
@@ -143,7 +154,7 @@ arrow((5.3, 17.0), (6.7, 17.0))
 
 # R3: transparent rule bonus
 box(9.0, 18.5, 4.6, 1.2, "Rerank: semantic + bonus", "bonus ≤ 0.20, each one listed as a reason", "code")
-text(9.0, 18.98, "procedure ≤.08 · verified .03 · NABH .02 · JCI .02 · intl .02", size=11.5, anchor="middle",
+text(9.0, 18.98, "website .04 · procedure ≤.08 · verified .03 · NABH · JCI · intl .02", size=11.5, anchor="middle",
      colour="#1F7A58")
 arrow((9.0, 17.6), (9.0, 17.9))
 

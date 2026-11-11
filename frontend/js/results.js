@@ -119,8 +119,11 @@ document.addEventListener("DOMContentLoaded", () => {
         name: hospital.hospital_name || "Hospital name unavailable",
         city: hospital.city || "City unavailable",
         state: hospital.state || "",
-        specialties: splitValues(hospital.verified_specialties),
-        procedures: splitValues(hospital.verified_procedures),
+        // verified on the hospital's website first, then specialities only the team sheet lists
+        specialties: [...new Set([...splitValues(hospital.verified_specialties).filter((s) => s !== "NA"),
+                                  ...splitValues(hospital.team_claimed_specialties)])],
+        procedures: splitValues(hospital.procedures || hospital.verified_procedures),
+        detailSource: hospital.detail_source || "",
         internationalPatientService: hospital.international_patient_service || "",
         costBand: hospital.cost_band_inr || "",
         nabhStatus: hospital.nabh_status || "",
@@ -179,7 +182,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (accreditation.length) main.append(createElement("p", "accreditation-badge", accreditation.join(" • ")));
 
     const extra = createElement("div", "hospital-extra");
-    if (hospital.procedures.length) extra.append(createInfoRow("Relevant procedures", hospital.procedures.join(", ")));
+    if (hospital.procedures.length) {
+      const label = hospital.detailSource ? "Procedures (team list, not verified)" : "Relevant procedures";
+      extra.append(createInfoRow(label, hospital.procedures.join(", ")));
+    }
     extra.append(createInfoRow("International patient service", hospital.internationalPatientService));
     extra.append(createInfoRow("Cost band", hospital.costBand));
     extra.append(createInfoRow("NABH status", hospital.nabhStatus));

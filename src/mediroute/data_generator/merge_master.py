@@ -3,9 +3,14 @@
 Combine per-city outputs of build_hospital_master into the master hospital CSV and
 validate every row against data/processed/hospital.schema.csv.
 
+Inputs: data/interim/master (team city lists) and data/interim/master_team150 (hospitals from the
+team 150 sheet, verified the same way). A team-150 row is kept only if its id is in
+data/processed/hospital_id_links.csv, so candidates found to duplicate a master hospital are skipped.
+Cities must be listed in data/reference/cities.csv.
+
 Usage:
   python -m mediroute.data_generator.merge_master
-  python -m mediroute.data_generator.merge_master --in-dir data/interim/master --out data/processed/master-hospital-data.csv
+  python -m mediroute.data_generator.merge_master --in-dir data/interim/master data/interim/master_team150
 """
 import argparse
 import csv
@@ -13,7 +18,8 @@ import re
 import sys
 from pathlib import Path
 
-from mediroute.utils.paths import INTERIM_DATA_DIR, PROCESSED_DATA_DIR
+from mediroute.common.locations import city_names
+from mediroute.utils.paths import HOSPITAL_LINKS_FILE, INTERIM_DATA_DIR, PROCESSED_DATA_DIR
 
 SCHEMA_FILE = PROCESSED_DATA_DIR / "hospital.schema.csv"
 DEFAULT_OUT = PROCESSED_DATA_DIR / "master-hospital-data.csv"
@@ -28,7 +34,9 @@ def load_schema(path=SCHEMA_FILE):
 def allowed_set(spec):
     """'Tier 1|Tier 2' -> {'Tier 1','Tier 2'}; free-text specs (URLs, patterns) -> None."""
     v = spec["allowed_values"].strip()
-    if spec["data_type"] != "category" and spec["column_name"] not in ("city", "nabh_match"):
+    if spec["column_name"] == "city":
+        return set(city_names())  # data/reference/cities.csv
+    if spec["data_type"] != "category" and spec["column_name"] != "nabh_match":
         return None
     return {x.strip() for x in v.split("|")} if v else None
 
@@ -55,19 +63,30 @@ def validate(rows, schema):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--in-dir", default=str(INTERIM_DATA_DIR / "master"))
+    ap.add_argument("--in-dir", nargs="+", default=[str(INTERIM_DATA_DIR / "master"),
+                                                    str(INTERIM_DATA_DIR / "master_team150")])
     ap.add_argument("--out", default=str(DEFAULT_OUT))
     args = ap.parse_args()
 
-    schema = load_schema()
+    # columns marked "hospitals.csv only" are added later by build_hospitals_table
+    schema = [s for s in load_schema() if s["group"] != "hospitals.csv only"]
     cols = [s["column_name"] for s in schema]
-    files = sorted(Path(args.in_dir).glob("*_master.csv"))
+    files = [p for d in args.in_dir for p in sorted(Path(d).glob("*_master.csv"))]
     if not files:
         sys.exit(f"no *_master.csv files in {args.in_dir}")
+    linked = set()
+    if HOSPITAL_LINKS_FILE.exists():
+        with open(HOSPITAL_LINKS_FILE, newline="", encoding="utf-8-sig") as f:
+            linked = {r["hospital_id"] for r in csv.DictReader(f)}
     rows = []
     for p in files:
         with open(p, newline="", encoding="utf-8-sig") as f:
             part = list(csv.DictReader(f))
+        if p.parent.name == "master_team150":
+            skipped = [r["hospital_id"] for r in part if r["hospital_id"] not in linked]
+            part = [r for r in part if r["hospital_id"] in linked]
+            if skipped:
+                print(f"{p.name}: skipped {skipped} (duplicate of a master hospital, see hospital_id_links.csv)")
         missing = [c for c in cols if part and c not in part[0]]
         if missing:
             sys.exit(f"{p.name} lacks schema columns {missing}; rebuild it with build_hospital_master --force")

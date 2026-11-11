@@ -27,6 +27,16 @@ faiss_retriever = FaissHospitalRetriever()
 recommendation_engine = HospitalRecommendationEngine(faiss_retriever=faiss_retriever)
 
 
+@router.get("/api/cities")
+def get_cities():
+    """Search areas that have hospitals (data/reference/cities.csv + data/processed/hospitals.csv),
+    for the patient page's location list. A search area such as "Delhi NCR" covers several cities."""
+    from mediroute.common.locations import search_area_options
+
+    cities = {str(h.get("city")) for h in load_hospitals()}
+    return {"status": "success", "areas": search_area_options(cities)}
+
+
 @router.get("/api/hospitals")
 def get_hospitals():
     hospitals = load_hospitals()

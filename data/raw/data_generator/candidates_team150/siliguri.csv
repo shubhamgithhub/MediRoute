@@ -1,0 +1,3 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H189,Medica North Bengal Clinic,Siliguri,West Bengal,Tier 2,Tier 2,Multispeciality tertiary,Private,Medica,,,https://www.medicahospitals.in/siliguri/,,tiers are judgement; team 150 id H128,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H190,"Desun Hospital, Siliguri",Siliguri,West Bengal,Tier 2,Tier 2,Multispeciality tertiary,Private,Desun,Siliguri,,https://www.desunhospital.com/siliguri/,,tiers are judgement; team 150 id H129,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

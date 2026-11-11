@@ -1,0 +1,3 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H135,"Apollo Hospitals, Ramnagar",Visakhapatnam,Andhra Pradesh,Tier 2,Tier 2,Multispeciality tertiary,Private,Apollo,Ramnagar,,https://visakhapatnam.apollohospitals.com/,,tiers are judgement; team 150 id H074,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H136,"Care Hospitals, Ramnagar",Visakhapatnam,Andhra Pradesh,Tier 2,Tier 2,Multispeciality tertiary,Private,,Ramnagar,,https://www.carehospitals.com/hospital/visakhapatnam-ramnagar,,tiers are judgement; team 150 id H075,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

@@ -35,21 +35,18 @@ class HospitalSearchTextBuilder:
         )
 
         subspecialties = self.clean_value(
-            hospital.get(
-                "verified_subspecialties"
-            )
+            hospital.get("subspecialties")
+            or hospital.get("verified_subspecialties")
         )
 
         procedures = self.clean_value(
-            hospital.get(
-                "verified_procedures"
-            )
+            hospital.get("procedures")
+            or hospital.get("verified_procedures")
         )
 
         facilities = self.clean_value(
-            hospital.get(
-                "verified_facilities"
-            )
+            hospital.get("facilities")
+            or hospital.get("verified_facilities")
         )
 
         international_service = self.clean_value(
@@ -85,10 +82,13 @@ class HospitalSearchTextBuilder:
                 + "."
             )
 
-        if specialties:
+        claimed = self.clean_value(hospital.get("team_claimed_specialties"))
+        if specialties and specialties != "NA":
             parts.append(
                 f"Specialties: {specialties}."
             )
+        if claimed:
+            parts.append(f"Also listed: {claimed.replace(';', '; ')}.")
 
         if subspecialties:
             parts.append(

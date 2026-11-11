@@ -1,0 +1,4 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H166,KIMSHEALTH,Thiruvananthapuram,Kerala,Tier 2,Tier 2,Multispeciality tertiary,Private,KIMSHEALTH,,,https://kimshealth.org/trivandrum/,,tiers are judgement; team 150 id H105,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H167,Regional Cancer Centre (RCC),Thiruvananthapuram,Kerala,Tier 2,Tier 1,Cancer tertiary academic,Government (autonomous),Regional,,,https://www.rcctvm.gov.in/,,tiers are judgement; team 150 id H106,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H168,Sree Chitra Tirunal Institute for Medical Sciences and Technology (SCTIMST),Thiruvananthapuram,Kerala,Tier 2,Tier 1,Tertiary academic,Government,Sree,,,https://www.sctimst.ac.in/,,tiers are judgement; team 150 id H107,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

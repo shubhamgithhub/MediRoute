@@ -68,8 +68,11 @@ def main() -> None:
                    clarification_existing_diagnosis="slipped disc L4-L5")
     show("6b answers -> hospitals", second)
 
-    show("7 speciality with no hospital (cataract)", route(base, "Cataract surgery for both eyes."))
-    show("8 city with no match (CABG, Kochi)", route(base, "CABG surgery", city="Kochi", state="Kerala"))
+    # since the shared hospital table (201 hospitals) every speciality has hospitals; the
+    # "no hospital for this speciality" path is covered by tests/workflow with a fake engine
+    show("7 eye hospital found (cataract)", route(base, "Cataract surgery for both eyes."))
+    show("8 city with no match (cataract, Kochi)", route(base, "Cataract surgery for both eyes.", city="Kochi"))
+    show("10 search area (Delhi NCR)", route(base, "brain tumour surgery for my father", city="Delhi NCR"))
     show("9 blank PDF, no text", route(base, pdfs=("MediRoute_Blank_Test.pdf",)))
 
 

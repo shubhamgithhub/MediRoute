@@ -1,0 +1,2 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H151,AIIMS Rishikesh,Rishikesh,Uttarakhand,Tier 3,Tier 1,Tertiary academic,Government,AIIMS,,,https://aiimsrishikesh.edu.in/,,tiers are judgement; team 150 id H090,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
