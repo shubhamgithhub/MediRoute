@@ -499,161 +499,292 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-// FORM SUBMISSION
-form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+// =====================================================================
+// STEP 1 + STEP 2 FLOW
+// One POST /api/patient-routing per round (Shubham's workflow endpoint with the Step 1 voting
+// pipeline inside). Step 1's clarification form and speciality list are answered on this
+// page; everything else (hospitals, location question, "no hospital yet", unreadable reports)
+// is stored as mediroute_routing_result and shown on results.html.
+// =====================================================================
+const clarifyState = document.querySelector("#clarify-state");
+const choiceState = document.querySelector("#choice-state");
+const emergencyBanner = document.querySelector("#emergency-banner");
+// rounds of one search share the first Step 1 request id (parent_request_id in the logs)
+let search = { parentRequestId: null, round: 0 };
 
-    if (isSubmitting) {
-      return;
+// Delhi NCR, Other and unrecognised text are not sent as invented city/state values.
+const LOCATION_MAP = {
+  "Mumbai": { city: "Mumbai", state: "Maharashtra" },
+  "Bengaluru": { city: "Bengaluru", state: "Karnataka" },
+  "Hyderabad": { city: "Hyderabad", state: "Telangana" },
+  "Chennai": { city: "Chennai", state: "Tamil Nadu" },
+  "Pune": { city: "Pune", state: "Maharashtra" }
+};
+
+const showStep1Panel = (panel) => {
+  [form, loadingState, successState, clarifyState, choiceState].forEach((el) => { if (el) el.hidden = el !== panel; });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+const showEmergency = (step1) => {
+  if (!emergencyBanner) return;
+  emergencyBanner.hidden = !(step1 && step1.emergency);
+  document.querySelector("#emergency-message").textContent = (step1 && step1.emergency_message) || "";
+  const llmNotice = document.querySelector("#llm-notice");
+  if (llmNotice) {
+    llmNotice.hidden = !(step1 && step1.notice);
+    document.querySelector("#llm-notice-message").textContent = (step1 && step1.notice) || "";
+  }
+  if (window.lucide) window.lucide.createIcons();
+};
+
+const setProgress = (step) => {
+  progressLabel.textContent = `Step ${step} of 3`;
+  progressSteps.forEach((el, index) => {
+    el.classList.toggle("is-complete", index < step - 1);
+    el.classList.toggle("is-active", index === step - 1);
+    if (index === step - 1) el.setAttribute("aria-current", "step"); else el.removeAttribute("aria-current");
+  });
+  progressConnectors.forEach((el, index) => el.classList.toggle("is-complete", index < step - 1));
+};
+
+const buildRoutingForm = (extra) => {
+  const formData = new FormData();
+  // Reports are re-sent each round so Step 1 always reads the report text with the new answers.
+  selectedReports.forEach((report) => formData.append("files", report.file));
+  formData.append("requirement", requirementInput.value.trim());
+  formData.append("top_k", "5");
+  formData.append("language", languageSelect.value || "English");
+  const location = locationSelect.value === "Other" ? "" : locationSelect.value;
+  if (LOCATION_MAP[location]) {
+    formData.append("preferred_city", LOCATION_MAP[location].city);
+    formData.append("preferred_state", LOCATION_MAP[location].state);
+  }
+  formData.append("clarification_round", String(search.round));
+  if (search.parentRequestId) formData.append("parent_request_id", search.parentRequestId);
+  Object.entries(extra).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value).trim() !== "") formData.append(key, String(value));
+  });
+  return formData;
+};
+
+const callRouting = async (extra) => {
+  let response;
+  try {
+    response = await fetch(PATIENT_ROUTING_URL, { method: "POST", body: buildRoutingForm(extra) });
+  } catch (error) {
+    throw new Error("The MediRoute server could not be reached. Check that FastAPI is running at http://127.0.0.1:8000, then try again.");
+  }
+  let result = null;
+  try {
+    result = await response.json();
+  } catch (error) {
+    throw new Error("The backend returned an unreadable response. Please try again.");
+  }
+  if (!response.ok) {
+    const detail = typeof result?.detail === "string" ? result.detail : (result?.message || null);
+    throw new Error(detail || `The backend request failed (HTTP ${response.status}). Please check your files and try again.`);
+  }
+  if (!result || typeof result !== "object" || !result.workflow_status) {
+    throw new Error("The backend response was incomplete or malformed. No routing result was available.");
+  }
+  return result;
+};
+
+// Keep only what results.html needs; never store raw report data.
+const toRoutingView = (result) => {
+  const recommendation = result.recommendation_result || {};
+  const completed = result.workflow_status === "completed" && recommendation.status === "success"
+    && Array.isArray(recommendation.results);
+  const noHospital = result.workflow_status === "no_hospital_for_specialty";
+  return {
+    workflow_id: result.workflow_id,
+    workflow_status: result.workflow_status,
+    routing_ready: result.routing_ready === true,
+    step1: result.step1 || null,
+    clarification_required: !completed,
+    clarification_type: noHospital ? "no_hospital" : (result.clarification_type || null),
+    clarification_reason: completed ? null
+      : (result.clarification_reason || "More information is needed before MediRoute can recommend hospitals."),
+    parse_summary: result.parse_summary || null,
+    recommendation_result: completed
+      ? {
+          status: recommendation.status,
+          count: recommendation.count,
+          results: recommendation.results.map((hospital) => ({
+            hospital_id: hospital.hospital_id,
+            hospital_name: hospital.hospital_name,
+            city: hospital.city,
+            state: hospital.state,
+            verified_specialties: hospital.verified_specialties,
+            verified_procedures: hospital.verified_procedures,
+            international_patient_service: hospital.international_patient_service,
+            cost_band_inr: hospital.cost_band_inr,
+            nabh_status: hospital.nabh_status,
+            jci_status: hospital.jci_status,
+            official_source_url: hospital.official_source_url,
+            semantic_score: hospital.semantic_score,
+            final_score: hospital.final_score,
+            final_rank: hospital.final_rank,
+            ranking_reasons: hospital.ranking_reasons
+          }))
+        }
+      : { status: recommendation.status || "clarification_required", results: [] }
+  };
+};
+
+const handleRoutingResult = (result) => {
+  const step1 = result.step1 || null;
+  console.log("MediRoute routing response:", result);
+  if (step1 && !search.parentRequestId) search.parentRequestId = step1.request_id;
+  showEmergency(step1);
+  if (step1 && step1.decision === "clarification_required") {
+    renderClarification(step1);
+    return;
+  }
+  if (step1 && step1.decision === "needs_user_choice") {
+    renderChoice(step1);
+    return;
+  }
+  window.sessionStorage.setItem("mediroute_routing_result", JSON.stringify(toRoutingView(result)));
+  showSuccessState(step1 || {});
+};
+
+const runRouting = async (extra = {}) => {
+  isSubmitting = true;
+  analyzeButton.disabled = true;
+  setProgress(2);
+  showStep1Panel(loadingState);
+  try {
+    handleRoutingResult(await callRouting(extra));
+  } catch (error) {
+    showStep1Panel(form);
+    setProgress(1);
+    if (errorSummary) {
+      errorSummary.hidden = false;
+      errorSummary.textContent = error instanceof Error ? error.message : "The routing request could not be completed.";
     }
+    setError(fileInput, "", "report-error");
+  } finally {
+    isSubmitting = false;
+    analyzeButton.disabled = false;
+  }
+};
 
-    if (!validateForm()) {
-        return;
-    }
-
-    if (!storeRequest()) {
-        return;
-    }
-
-    isSubmitting = true;
-    analyzeButton.disabled = true;
-    window.sessionStorage.removeItem("mediroute_routing_result");
-    window.sessionStorage.removeItem("mediroute_report_parse_result");
-
-    form.hidden = true;
-    loadingState.hidden = false;
-    progressLabel.textContent = "Step 2 of 3";
-    progressSteps[0]?.classList.add("is-complete");
-    progressSteps[0]?.removeAttribute("aria-current");
-    progressSteps[1]?.classList.add("is-active");
-    progressSteps[1]?.setAttribute("aria-current", "step");
-    progressConnectors[0]?.classList.add("is-complete");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-
-    try {
-      const formData = new FormData();
-      selectedReports.forEach((report) => formData.append("files", report.file));
-      formData.append("requirement", requirementInput.value.trim());
-      formData.append("top_k", "5");
-
-      const location = locationSelect.value === "Other"
-        ? ""
-        : locationSelect.value;
-      const locationMap = {
-        "Mumbai": { city: "Mumbai", state: "Maharashtra" },
-        "Bengaluru": { city: "Bengaluru", state: "Karnataka" },
-        "Hyderabad": { city: "Hyderabad", state: "Telangana" },
-        "Chennai": { city: "Chennai", state: "Tamil Nadu" },
-        "Pune": { city: "Pune", state: "Maharashtra" }
-      };
-      if (locationMap[location]) {
-        formData.append("preferred_city", locationMap[location].city);
-        formData.append("preferred_state", locationMap[location].state);
-      }
-      // Delhi NCR, Other and unrecognized text are not sent as invented city/state values.
-
-      let response;
-      try {
-        response = await fetch(PATIENT_ROUTING_URL, { method: "POST", body: formData });
-      } catch (error) {
-        throw new Error("The MediRoute server could not be reached. Check that FastAPI is running at http://127.0.0.1:8000, then try again.");
-      }
-
-      let result = null;
-      try {
-        result = await response.json();
-      } catch (error) {
-        throw new Error("The backend returned an unreadable response. Please try again.");
-      }
-
-      if (!response.ok) {
-        const detail = typeof result?.detail === "string" ? result.detail : null;
-        throw new Error(detail || `The backend request failed (HTTP ${response.status}). Please check your files and try again.`);
-      }
-
-      if (!result || typeof result !== "object" || !result.workflow_status) {
-        throw new Error("The backend response was incomplete or malformed. No routing result was available.");
-      }
-
-      const completedWithRecommendations =
-        result.workflow_status === "completed" &&
-        result.recommendation_result?.status === "success" &&
-        Array.isArray(result.recommendation_result.results);
-      const isClarification =
-        result.workflow_status === "waiting_for_clarification" ||
-        result.clarification_required === true;
-
-      if (!completedWithRecommendations && !isClarification) {
-        throw new Error("The backend could not produce recommendations or a clarification request. Please review your information and try again.");
-      }
-
-      const routingView = completedWithRecommendations
-        ? {
-            workflow_status: result.workflow_status,
-            routing_ready: result.routing_ready === true,
-            clarification_required: false,
-            recommendation_result: {
-              status: result.recommendation_result.status,
-              count: result.recommendation_result.count,
-              results: result.recommendation_result.results.map((hospital) => ({
-                hospital_id: hospital.hospital_id,
-                hospital_name: hospital.hospital_name,
-                city: hospital.city,
-                state: hospital.state,
-                verified_specialties: hospital.verified_specialties,
-                verified_procedures: hospital.verified_procedures,
-                international_patient_service: hospital.international_patient_service,
-                cost_band_inr: hospital.cost_band_inr,
-                nabh_status: hospital.nabh_status,
-                jci_status: hospital.jci_status,
-                official_source_url: hospital.official_source_url,
-                semantic_score: hospital.semantic_score,
-                final_score: hospital.final_score,
-                final_rank: hospital.final_rank,
-                ranking_reasons: hospital.ranking_reasons
-              }))
-            }
-          }
-        : {
-            workflow_status: result.workflow_status,
-            routing_ready: false,
-            clarification_required: true,
-            clarification_type: result.clarification_type || null,
-            clarification_reason: result.clarification_reason || "More information is needed before MediRoute can recommend hospitals.",
-            parse_summary: result.parse_summary || null,
-            recommendation_result: { status: "clarification_required", results: [] }
-          };
-
-      window.sessionStorage.setItem("mediroute_routing_result", JSON.stringify(routingView));
-      if (submissionTimer !== null) window.clearTimeout(submissionTimer);
-      submissionTimer = window.setTimeout(showSuccessState, 900);
-    } catch (error) {
-      loadingState.hidden = true;
-      form.hidden = false;
-      progressLabel.textContent = "Step 1 of 3";
-      progressSteps.forEach((step, index) => {
-        step.classList.toggle("is-active", index === 0);
-        step.classList.remove("is-complete");
-        if (index === 0) step.setAttribute("aria-current", "step");
-        else step.removeAttribute("aria-current");
+const renderClarification = (step1) => {
+  const info = step1.clarification || {};
+  document.querySelector("#clarify-round").textContent = `A little more detail · question ${info.round || 1} of ${info.max_rounds || 2}`;
+  document.querySelector("#clarify-reason").textContent = `${step1.reason || ""} ${info.message || ""}`.trim();
+  const holder = document.querySelector("#clarify-fields");
+  holder.innerHTML = "";
+  (info.fields || []).forEach((field) => {
+    const wrap = document.createElement("div");
+    wrap.className = "clarify-field";
+    const label = document.createElement("label");
+    label.htmlFor = `clarify-${field.name}`;
+    label.textContent = field.label;
+    let input;
+    if (field.type === "select") {
+      input = document.createElement("select");
+      const blank = document.createElement("option");
+      blank.value = "";
+      blank.textContent = "Select…";
+      input.appendChild(blank);
+      (field.options || []).forEach((option) => {
+        const el = document.createElement("option");
+        el.value = option;
+        el.textContent = option;
+        input.appendChild(el);
       });
-      progressConnectors.forEach((connector) => connector.classList.remove("is-complete"));
-      analyzeButton.disabled = false;
-      isSubmitting = false;
-      if (errorSummary) {
-        errorSummary.hidden = false;
-        errorSummary.textContent = error instanceof Error ? error.message : "The routing request could not be completed.";
-      }
-      setError(fileInput, "", "report-error");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
+    } else {
+      input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = field.placeholder || "";
+      input.maxLength = 200;
     }
+    input.id = `clarify-${field.name}`;
+    input.name = field.name;
+    wrap.append(label, input);
+    holder.appendChild(wrap);
+  });
+  showStep1Panel(clarifyState);
+  if (window.lucide) window.lucide.createIcons();
+};
+
+const renderChoice = (step1) => {
+  const info = step1.user_choice || {};
+  document.querySelector("#choice-message").textContent = info.message || "";
+  const select = document.querySelector("#choice-select");
+  select.innerHTML = "";
+  (info.options || []).forEach((name, index) => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = index < (info.suggested_first || []).length ? `${name} (suggested)` : name;
+    select.appendChild(option);
+  });
+  showStep1Panel(choiceState);
+  if (window.lucide) window.lucide.createIcons();
+};
+
+document.querySelector("#clarify-form")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (isSubmitting) return;
+  const answers = {};
+  new FormData(event.target).forEach((value, key) => { answers[`clarification_${key}`] = String(value).trim(); });
+  search.round += 1;
+  await runRouting(answers);
 });
 
-  // LOADING STATE
-  function showSuccessState() {
-    loadingState.hidden = true;
-    successState.hidden = false;
+document.querySelector("#choice-form")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (isSubmitting) return;
+  await runRouting({ selected_specialty: document.querySelector("#choice-select").value });
+});
+
+const backToForm = () => {
+  if (emergencyBanner) emergencyBanner.hidden = true;
+  showStep1Panel(form);
+  setProgress(1);
+};
+document.querySelector("#clarify-edit")?.addEventListener("click", backToForm);
+document.querySelector("#choice-edit")?.addEventListener("click", backToForm);
+
+// FORM SUBMISSION
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (isSubmitting) {
+    return;
+  }
+  if (!validateForm()) {
+    return;
+  }
+  if (!storeRequest()) {
+    return;
+  }
+  if (errorSummary) errorSummary.hidden = true;
+  window.sessionStorage.removeItem("mediroute_routing_result");
+  window.sessionStorage.removeItem("mediroute_report_parse_result");
+  search = { parentRequestId: null, round: 0 };
+  await runRouting();
+});
+
+  // RESULT STATE
+  function showSuccessState(context = {}) {
+    showStep1Panel(successState);
+    setProgress(3);
+    const card = document.querySelector("#suggestion-card");
+    if (card && context.suggested_specialty) {
+        card.hidden = false;
+        document.querySelector("#suggestion-label").textContent = context.suggested_specialty_label;
+        document.querySelector("#suggestion-evidence").textContent = context.evidence && context.evidence.length
+            ? `Based on: ${context.evidence.map((e) => `“${e}”`).join(", ")}`
+            : (context.reason || "");
+        document.querySelector("#suggestion-disclaimer").textContent = context.disclaimer || "";
+        document.querySelector("#suggestion-meta").textContent =
+            `Reference ID ${context.request_id} · ${context.decision === "user_selected" ? "chosen by you" : context.reason || ""}`;
+    } else if (card) {
+        card.hidden = true;
+    }
     progressLabel.textContent = "Step 3 of 3";
     progressSteps[1]?.classList.remove("is-active");
     progressSteps[1]?.classList.add("is-complete");
@@ -683,6 +814,7 @@ form.addEventListener("submit", async (event) => {
     }
     successState.hidden = true;
     loadingState.hidden = true;
+    if (emergencyBanner) emergencyBanner.hidden = true;
     form.hidden = false;
     progressLabel.textContent = "Step 1 of 3";
     progressSteps.forEach((step, index) => {

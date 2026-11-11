@@ -1,0 +1,29 @@
+column_order,column_name,group,data_type,required,allowed_values,description,how_populated,example
+1,hospital_id,core,string,yes,pattern H### (unique),Stable hospital identifier,Assigned in the city candidate list,H001
+2,hospital_name,core,string,yes,,"Hospital name with branch locality, e.g. 'Name, Locality'",Candidate list,"Manipal Hospital, Old Airport Road"
+3,city,core,string,yes,New Delhi|Gurugram|Chandigarh|Mumbai|Navi Mumbai|Nagpur|Pune|Chennai|Kolkata|Ahmedabad|Kochi|Bengaluru|Hyderabad|Visakhapatnam,Team city the hospital is listed under (metro-area hospitals use the main city),Candidate list,Bengaluru
+4,state,core,string,yes,,State or union territory where the hospital is physically located,Candidate list,Karnataka
+5,City_Tier,core,category,yes,Tier 1|Tier 2|Tier 3,City classification used by the team,Candidate list (manual judgement),Tier 1
+6,Hospital_Tier,core,category,yes,Tier 1|Tier 2,Tier 1 = quaternary/flagship centre; Tier 2 = tertiary,Candidate list (manual judgement),Tier 1
+7,hospital_type,core,string,yes,,"Care level and scope, e.g. Multispeciality quaternary, Tertiary academic, Single-speciality oncology",Candidate list (manual judgement),Multispeciality quaternary
+8,ownership_type,core,category,yes,Private|Private (trust)|Private (deemed university)|Government|Government (autonomous),Ownership of the hospital,Candidate list (manual judgement),Private
+9,nabh_status,core,category,yes,Accredited|Certified|Empaneled|Needs verification|Not found in NABH directory,"NABH status of this hospital branch. Only a hospital-programme certificate (H-xxxx) for the right city and branch counts; blood bank, lab or ethics-committee certificates do not",NABH 'Find a Healthcare Organisation' name search (nabh_finder_scraper),Accredited
+10,jci_status,core,category,yes,Accredited|Not listed,Whether JCI lists this hospital (this branch) as accredited,JCI accredited-organisations list for India (jci_scraper) matched via jci_name in the candidate list,Accredited
+11,verified_specialties,core,string (semicolon list),yes,canonical names from data/medical_taxonomy/specialty_normalization.csv or NA,"Up to 6 specialties found on the hospital's official website, ranked by how often they appear; emergency/critical care listed last",Website text + menu links matched against the specialty taxonomy,Oncology; Cardiology; Orthopaedics
+12,international_patient_service,core,category,yes,Available|Not found on website,Whether the official site has an international-patients page,Link search on the official website (or url_international given in candidate list and checked to load),Available
+13,official_source_url,core,url,yes,URL or blank,"Official hospital website, as it resolved when checked (after redirects)",Candidate list URL; else the website on the JCI or NABH record; must load,https://www.kauveryhospital.com/
+14,url_Internantional_patients,core,url,yes,URL or NA,Official international-patients page (column name kept from team template),Found on the official website or supplied and verified to load,https://mgmhealthcare.in/international-patients/
+15,verification_status,core,category,yes,Verified|Partially verified|Needs verification,Verified = NABH hospital certificate confirmed and website loads; Partially verified = NABH or JCI confirmed but not both conditions; Needs verification = neither,Computed by build_hospital_master,Verified
+16,evidence_quality_score,core,category,yes,High|Medium|Low,"Count of: accreditation confirmed (NABH or JCI), website loads, specialties found. 3 = High, 2 = Medium, 0-1 = Low",Computed by build_hospital_master,High
+17,cost_band_inr,core,string,yes,NA (pending definition),Reference cost band in INR. Not yet defined; CGHS_Data sheet is the intended source,Not populated yet,NA
+18,nabh_certificate_no,evidence,string,no,,NABH certificate number of the matched record,NABH directory,H-2019-0625
+19,nabh_listed_name,evidence,string,no,,Name as listed by NABH (often the legal entity),NABH directory,Kauvery Hospital (A Unit of Sri Kauvery Medical Care India Limited)
+20,nabh_certificate_url,evidence,url,no,,Link to the certificate and scope PDF,NABH directory,
+21,nabh_match,evidence,category,yes,confident|review|not_found,How the NABH record was matched; 'review' means only a related record (other branch or non-hospital certificate) was found,build_hospital_master,confident
+22,jci_ihco_id,evidence,string,no,,JCI IHCO identifier,JCI list,60011073
+23,jci_listed_name,evidence,string,no,,Name as listed by JCI,JCI list,Kauvery Hospital Alwarpet
+24,website_status,evidence,string,yes,OK|HTTP <code>|error: <type>|no URL,Result of loading the official website,build_hospital_master,OK
+25,specialties_all_found,evidence,string (semicolon list),no,,Every taxonomy specialty found on the website (verified_specialties is the top 6),build_hospital_master,
+26,data_collected_on,evidence,date (YYYY-MM-DD),yes,,Date the checks were run,build_hospital_master,2026-11-05
+27,source,evidence,string,yes,,Where the hospital row came from (team sheet row or drafted candidate list),Candidate list,RaviTeja sheet (H001)
+28,notes,evidence,string,no,,"Caveats: branch ambiguities, unreachable websites, manual-judgement fields",build_hospital_master,

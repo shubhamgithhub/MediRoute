@@ -1,0 +1,6 @@
+name_contains,specialty,review_status,notes
+bone marrow transplant,Hematology & Bone Marrow Transplant,draft,checked before the generic transplant rule
+stem cell transplant,Hematology & Bone Marrow Transplant,draft,
+transplant,Organ Transplant,draft,"kidney, liver, heart transplants"
+dialysis,Nephrology,draft,
+in vitro fertili,Reproductive Medicine,draft,

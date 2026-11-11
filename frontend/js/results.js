@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelector(".demo-results-badge")?.remove();
   document.querySelector(".demo-disclaimer")?.remove();
-  document.querySelector(".medical-context-card")?.remove();
+  // the medical-context card now shows the real Step 1 result (renderMedicalContext below)
   document.querySelector(".ranking-explanation")?.remove();
   document.querySelector(".important-notice")?.remove();
 
@@ -70,6 +70,48 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = typeof value === "string" ? value.toLowerCase() : "";
     return text.includes("accredited") || text.includes("certified") || text.includes("yes") || text.includes("verified");
   };
+
+  // STEP 1 RESULT: suggested speciality from the routing result (step1 block)
+  const renderMedicalContext = () => {
+    const createIconSafe = (name) => {
+      const icon = document.createElement("i");
+      icon.setAttribute("data-lucide", name);
+      icon.setAttribute("aria-hidden", "true");
+      return icon;
+    };
+    const step1 = routingResult.step1 || {};
+    const specialty = typeof step1.suggested_specialty === "string" && step1.suggested_specialty.trim()
+      ? step1.suggested_specialty.trim()
+      : "Not determined";
+    const careCategory = typeof step1.care_category === "string" && step1.care_category.trim()
+      ? step1.care_category.trim()
+      : "—";
+    setText("#context-specialty", "");
+    setText("#context-care-category", "");
+    const specialtyElement = document.querySelector("#context-specialty");
+    if (specialtyElement) {
+      specialtyElement.append(createIconSafe("heart-pulse"), ` ${specialty}`);
+    }
+    const careCategoryElement = document.querySelector("#context-care-category");
+    if (careCategoryElement) {
+      careCategoryElement.append(createIconSafe("stethoscope"), ` ${careCategory}`);
+    }
+    if (step1.notice && !document.querySelector("#llm-notice")) {
+      const notice = document.createElement("p");
+      notice.id = "llm-notice";
+      notice.className = "llm-notice";
+      notice.append(createIconSafe("info"), ` ${step1.notice}`);
+      document.querySelector(".context-values")?.after(notice);
+    }
+    const location = typeof patientData.location === "string" && patientData.location.trim()
+      ? patientData.location.trim()
+      : "No preference";
+    setText("#context-location", location);
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  };
+  renderMedicalContext();
 
   const hospitals = routingResult.recommendation_result?.status === "success"
     ? (routingResult.recommendation_result.results || []).map((hospital, index) => ({
@@ -198,12 +240,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const parseStatus = String(routingResult.parse_summary?.overall_status || "").toLowerCase();
     const card = createElement("section", "clarification-card");
     card.setAttribute("role", "alert");
-    card.append(createElement("span", "section-kicker", "Additional information needed"));
-    card.append(createElement("h2", "", "MediRoute needs your help"));
+    const noHospital = type === "no_hospital";
+    card.append(createElement("span", "section-kicker", noHospital ? "No verified hospital yet" : "Additional information needed"));
+    card.append(createElement("h2", "", noHospital ? "We could not list hospitals for this speciality" : "MediRoute needs your help"));
 
     let friendlyReason = reason;
     let actionText = "";
-    if (parseStatus === "needs_ocr") {
+    if (noHospital) {
+      // Step 1 found the speciality, but Step 2 has no verified hospital for it in our data yet
+      friendlyReason = reason;
+      actionText = "You can search for this speciality directly, or change your request or preferred city.";
+    } else if (parseStatus === "needs_ocr") {
       friendlyReason = "The uploaded PDF was blank, unreadable, or did not contain readable report text. Upload a clearer PDF with readable text and try again.";
       actionText = "Upload a different or clearer PDF.";
     } else if (/missing|no valid medical pdf|no pdf|no report/i.test(reason) || type === "report" && /no valid/i.test(reason)) {

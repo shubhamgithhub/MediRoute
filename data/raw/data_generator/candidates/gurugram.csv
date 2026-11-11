@@ -1,0 +1,6 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H040,Medanta - The Medicity,Gurugram,Haryana,Tier 1,Tier 1,Multispeciality quaternary,Private,Medanta,,Medanta - The Medicity,,,,Drafted candidate list (Anand's city)
+H041,"Artemis Hospital, Sector 51",Gurugram,Haryana,Tier 1,Tier 1,Multispeciality quaternary,Private,Artemis,,Artemis Hospital (A Unit of Artemis Medicare Services Ltd.),,,,Drafted candidate list (Anand's city)
+H042,Fortis Memorial Research Institute,Gurugram,Haryana,Tier 1,Tier 1,Multispeciality quaternary,Private,Fortis Memorial,,Fortis Memorial Research Institute (A unit of Fortis Hospitals Ltd.),https://www.fortishealthcare.com/location/fortis-memorial-research-institute-gurgaon,,,Drafted candidate list (Anand's city)
+H043,"Narayana Superspeciality Hospital, Gurugram",Gurugram,Haryana,Tier 1,Tier 2,Multispeciality tertiary,Private,Narayana,,"Narayana Superspeciality Hospital (A Unit of Narayana Hrudayalaya Ltd), Gurugram",,,,Drafted candidate list (Anand's city)
+H044,"Paras Health, Sushant Lok",Gurugram,Haryana,Tier 1,Tier 2,Multispeciality tertiary,Private,Paras,,NONE,,,,Drafted candidate list (Anand's city)

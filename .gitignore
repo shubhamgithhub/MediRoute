@@ -1,8 +1,37 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Environments and secrets
 .venv/
+venv/
 .env
 .env.*
 !.env.example
+
+# Runtime output
+logs/
+
+# Patient uploads and private reports (never commit; DPDP)
+data/patient_uploads/
+data/private_reports/
 Data/patient_uploads/
 Data/private_reports/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Personal-use course material (watermarked; do not commit)
+docs/base/capstone_guidelines.pdf
+
+# Step 1: regenerable inputs/caches (see README §4)
+data/raw/icd10cm_2026/
+data/vector_store/step1_lookup_embeddings_*.npy

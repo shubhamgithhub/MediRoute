@@ -1,0 +1,8 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H069,Ruby Hall Clinic,Pune,Maharashtra,Tier 1,Tier 1,Multispeciality quaternary,Private (trust),Ruby Hall,,NONE,https://www.rubyhall.com/,,,Drafted candidate list (Aniket's city)
+H070,Jehangir Hospital,Pune,Maharashtra,Tier 1,Tier 2,Multispeciality tertiary,Private (trust),Jehangir,,NONE,https://www.jehangirhospital.com/,,,Drafted candidate list (Aniket's city)
+H071,Deenanath Mangeshkar Hospital and Research Center,Pune,Maharashtra,Tier 1,Tier 1,Multispeciality quaternary,Private (trust),Deenanath,,NONE,https://www.dmhospital.org/,,,Drafted candidate list (Aniket's city)
+H072,"Sahyadri Super Speciality Hospital, Deccan Gymkhana",Pune,Maharashtra,Tier 1,Tier 2,Multispeciality tertiary,Private,Sahyadri,Karve,NONE,https://www.sahyadrihospital.com/,,NABH lists the Deccan Gymkhana hospital at its Karve Road (Erandwane) address,Drafted candidate list (Aniket's city)
+H073,"Aditya Birla Memorial Hospital, Chinchwad",Pune,Maharashtra,Tier 1,Tier 2,Multispeciality tertiary,Private,Aditya Birla,,NONE,,,,Drafted candidate list (Aniket's city)
+H074,"Noble Hospitals and Research Centre, Hadapsar",Pune,Maharashtra,Tier 1,Tier 2,Multispeciality tertiary,Private,Noble,,Noble Hospitals and Research Centre,,,,Drafted candidate list (Aniket's city)
+H075,"Manipal Hospital, Baner",Pune,Maharashtra,Tier 1,Tier 2,Multispeciality tertiary,Private,Manipal,Baner,NONE,,,,Drafted candidate list (Aniket's city)

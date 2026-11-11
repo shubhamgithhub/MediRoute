@@ -1,0 +1,9 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H093,"Aster Medcity, Cheranalloor",Kochi,Kerala,Tier 2,Tier 1,Multispeciality quaternary,Private,Aster Medcity,,Aster Medcity,,,,Drafted candidate list (Pravin's city)
+H094,"Rajagiri Hospital, Aluva",Kochi,Kerala,Tier 2,Tier 2,Multispeciality tertiary,Private (trust),Rajagiri,,Rajagiri Hospital,,,,Drafted candidate list (Pravin's city)
+H095,"Amrita Institute of Medical Sciences, Edappally",Kochi,Kerala,Tier 2,Tier 1,Tertiary academic,Private (trust),Amrita,,NONE,https://www.amritahospitals.org/kochi,,,Drafted candidate list (Pravin's city)
+H096,VPS Lakeshore Hospital,Kochi,Kerala,Tier 2,Tier 2,Multispeciality tertiary,Private,Lakeshore,,NONE,https://www.vpslakeshorehospital.com/,,,Drafted candidate list (Pravin's city)
+H097,Lisie Hospital,Kochi,Kerala,Tier 2,Tier 2,Multispeciality tertiary,Private (trust),Lisie,,NONE,,,,Drafted candidate list (Pravin's city)
+H098,Medical Trust Hospital,Kochi,Kerala,Tier 2,Tier 2,Multispeciality tertiary,Private,Medical Trust,,NONE,,,,Drafted candidate list (Pravin's city)
+H099,Renai Medicity,Kochi,Kerala,Tier 2,Tier 2,Multispeciality tertiary,Private,Renai,,NONE,,,,Drafted candidate list (Pravin's city)
+H100,"Government Medical College, Ernakulam",Kochi,Kerala,Tier 2,Tier 2,Tertiary academic,Government,Government Medical College,Kalamassery,NONE,,,,Drafted candidate list (Pravin's city)
