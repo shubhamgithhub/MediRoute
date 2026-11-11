@@ -288,8 +288,50 @@ Optional environment variables:
 | `MEDIROUTE_HOST` / `MEDIROUTE_PORT` | `127.0.0.1` / `8000` | Used by the `mediroute-api` command |
 | `OLLAMA_API_BASE_URL` | `http://127.0.0.1:11434` | Ollama server for Step 1 |
 | `MEDIROUTE_ROUTING_MODE` | `vote` | Step 1 mode: `vote`, or the baselines `rules`, `llm`, `hybrid` |
+| `MEDIROUTE_LLM_PROVIDER` | `ollama` | Step 1 LLM: `ollama`, `openrouter` (needs `OPENROUTER_API_KEY`) or `none` |
 | `MEDIROUTE_LLM_MODEL` | `llama3.2` | Ollama model used by Step 1 |
+| `MEDIROUTE_OPENROUTER_MODEL` | dots-3-note, then nemotron (free) | OpenRouter models, tried in order |
 | `MEDIROUTE_LOG_PATIENT_TEXT` | `1` | `0` logs only a hash of the patient text. Set to `0` before any real patient data |
+
+### Start the app (every time)
+
+Open **two terminals** in the repo folder (VS Code: *Terminal → New Terminal*, twice).
+
+**Terminal 1: backend API** (port 8000)
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+$env:PYTHONPATH = "src"
+
+# pick ONE LLM option (skip this line for the default, local Ollama):
+# $env:MEDIROUTE_LLM_PROVIDER = "openrouter"   # no Ollama: free hosted models, needs OPENROUTER_API_KEY
+# $env:MEDIROUTE_LLM_PROVIDER = "none"         # no LLM at all: two search voters only
+
+python -m uvicorn mediroute.backend.main:app --host 127.0.0.1 --port 8000
+```
+
+Wait until the log shows `Step 1 LLM warm-up done` (about 30 s; about 2 minutes on the very first
+start while the embedding cache is built). With no LLM you see a `WITHOUT an LLM` banner instead,
+and the app still works.
+
+**Terminal 2: frontend** (port 5500)
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python -m http.server 5500 --bind 127.0.0.1 --directory frontend
+```
+
+**Open in the browser**
+
+| Page | URL |
+|------|-----|
+| Patient app | http://127.0.0.1:5500/index.html |
+| Admin page (request history) | http://127.0.0.1:5500/admin.html |
+| API docs | http://127.0.0.1:8000/docs |
+| Health check | http://127.0.0.1:8000/api/health |
+
+Stop either server with **Ctrl + C** in its terminal. Quick API check without the browser:
+`python scripts/api_smoke_step1.py` (Step 1) and `python scripts/api_smoke_workflow.py` (Step 1 + 2).
 
 ## 5. How to run
 
