@@ -55,6 +55,15 @@ GENERIC_WORDS = {
 }
 
 
+def search_text(phrase: str) -> str:
+    """The words of a phrase worth searching: generic words and small words removed, so
+    "problem in my stomach" is searched as "stomach", not matched to "heart problem" by "problem".
+    Returns the phrase unchanged if nothing would be left."""
+    words = [w for w in re.findall(r"[a-z0-9']+", (phrase or "").lower())
+             if w not in GENERIC_WORDS and w not in _STOP and not w.isdigit()]
+    return " ".join(words) if words else phrase
+
+
 def is_generic(phrase: str) -> bool:
     """True if every content word of the phrase is generic (or a number)."""
     words = _tokens(phrase)

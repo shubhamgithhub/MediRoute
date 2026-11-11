@@ -107,3 +107,9 @@ def test_combine_falls_back_to_rules_when_llm_fails():
     hybrid, confidence = combine(_result(UNCLEAR, ok=False), _result("Urology"))
     assert hybrid.primary == "Urology" and confidence == "low"
     assert hybrid.route == "hybrid:rules_fallback"
+
+
+def test_llm_prompt_includes_speciality_boundaries():
+    prompt = LLMRouter().build_prompt("planned CABG")
+    assert "Route here when:" in prompt and "Not here:" in prompt
+    assert "Route here when:" not in LLMRouter(prompt_version="specialty_v1").build_prompt("planned CABG")

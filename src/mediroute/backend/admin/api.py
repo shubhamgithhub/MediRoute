@@ -17,7 +17,7 @@ router = APIRouter(tags=["Admin (no auth yet, local only)"])
 def list_requests(
     limit: int = Query(100, ge=1, le=1000),
     q: str = Query("", description="Text to search in the patient message, speciality or request id"),
-    decision: str = Query("", description="majority | clarification_required | needs_user_choice | user_selected"),
+    decision: str = Query("", description="agreement | judge | lookup_only | clarification_required | needs_user_choice | user_selected"),
     source: str = Query("", description="workflow (/api/patient-routing) | analyze (/api/analyze)"),
 ):
     histories = load_histories()

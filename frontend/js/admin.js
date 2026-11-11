@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return isNaN(d) ? ts : d.toLocaleString(undefined, { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" });
   };
   const decisionLabel = {
-    majority: "Majority", clarification_required: "Asked a question", needs_user_choice: "List offered",
+    majority: "Majority (old)", agreement: "Voters agree", judge: "AI judge decided", lookup_only: "Lookup only", clarification_required: "Asked a question", needs_user_choice: "List offered",
     user_selected: "User selected", none: "No Step 1"
   };
   const kv = (pairs) => {
@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       box.append(el("div", "muted", "dropped (not found in the text, or an identifier)"),
         chips((ev.dropped || []).map((d) => `${d.phrase}${d.matched_share !== null && d.matched_share !== undefined ? ` (${Math.round(d.matched_share * 100)}%)` : ""}`), "chip dropped"));
-      box.append(el("div", "muted", "phrases searched by V1 and V2"), chips(ev.routing_phrases));
+      box.append(el("div", "muted", "phrases searched by the lookup voter"), chips(ev.routing_phrases));
       detail.append(section(`Evidence · ${ev.method}`, "highlighter", box));
     }
 
@@ -224,7 +224,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const grid = el("div", "votes-grid");
       votes.forEach((v) => {
         const top1 = v.top3 && v.top3.length ? v.top3[0][0] : null;
-        const card = el("div", `vote-card${top1 && top1 === summary.best_match ? " agrees" : ""}`);
+        const chosen = summary.best_match || (one("decision") || {}).selected_specialty;
+        const card = el("div", `vote-card${top1 && top1 === chosen ? " agrees" : ""}`);
         card.append(el("h4", "", v.voter), el("div", "method", `${v.method} · ${ms(v.ms)}`));
         card.append(el("div", "vote-top1", top1 || "abstained"));
         const ol = el("ol");
@@ -252,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const tally = Object.entries(summary.tally || {}).map(([k, n]) => `${k}: ${n}`).join(" · ");
       detail.append(section("Votes", "vote", grid,
-        el("p", "muted", `Tally: ${tally || "—"} · best match: ${summary.best_match || "—"} (${summary.best_match_votes || 0} of 3, needs ${summary.majority_needed || 2})`)));
+        el("p", "muted", (summary.agree !== undefined ? `Voters ${summary.agree ? "agree" : "disagree"}${one("judge").status ? ` · AI judge: ${one("judge").status}${one("judge").final ? " → " + one("judge").final : ""}` : ""}` : `Tally: ${tally || "—"} · best match: ${summary.best_match || "—"} (${summary.best_match_votes || 0} of 3)`))));
     }
 
     // LLM calls

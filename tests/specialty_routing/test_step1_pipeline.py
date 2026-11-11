@@ -80,10 +80,29 @@ SPECIALTY = {"osteoarthritis": "Orthopaedics", "cabg": "Cardiothoracic Surgery",
              "cataract": "Ophthalmology"}
 
 
-def make_pipeline(down: bool = False) -> Step1Pipeline:
-    client = FakeClient(EVIDENCE, SPECIALTY, down=down)
+class FakeJudgeClient:
+    """Answers the judge prompt with a fixed reply (or fails). Never calls a network."""
+
+    model = "fake-judge"
+
+    def __init__(self, reply: dict | None = None, ok: bool = True) -> None:
+        self.reply, self.ok, self.prompts = reply or {}, ok, []
+
+    def generate_json(self, prompt: str, schema: dict, purpose: str) -> LLMCall:
+        self.prompts.append(prompt)
+        if not self.ok:
+            return LLMCall(False, error="HTTP 429: rate limited", details={"purpose": purpose})
+        return LLMCall(True, parsed=dict(self.reply), raw_response=str(self.reply), details={"purpose": purpose})
+
+
+def make_pipeline(down: bool = False, specialty: dict | None = None, judge_client=None) -> Step1Pipeline:
+    from mediroute.specialty_routing.step1.judge import LLMJudge
+    from mediroute.specialty_routing.step1.ollama_client import DisabledLLMClient
+    client = FakeClient(EVIDENCE, specialty or SPECIALTY, down=down)
     index = LookupIndex(ENTRIES, encoder=FakeEncoder(), cache=False)
-    return Step1Pipeline(index=index, client=client, extractor=EvidenceExtractor(client), llm_voter=LLMVoter(client))
+    judge = LLMJudge(client=judge_client or DisabledLLMClient(), index=index)
+    return Step1Pipeline(index=index, client=client, extractor=EvidenceExtractor(client), llm_voter=LLMVoter(client),
+                         judge=judge)
 
 
 # ---------------------------------------------------------------- protect and safety
@@ -187,14 +206,14 @@ def test_weak_evidence_counts_half():
 
 
 # ---------------------------------------------------------------- decisions
-def test_majority_with_evidence_selects_specialty():
+def test_agreeing_voters_select_the_specialty():
     result = make_pipeline().analyze(Step1Input(
         text="My mother has severe osteoarthritis of both knees, surgeon recommended knee replacement", debug=True))
-    assert result["decision"] == "majority"
+    assert result["decision"] == "agreement"
     assert result["suggested_specialty"] == "Orthopaedics"
     assert "knee replacement" in result["evidence"]
     assert result["suggested_specialty_label"] == "Suggested speciality to search: Orthopaedics"
-    assert len(result["debug"]["agreeing_voters"]) >= 2
+    assert result["debug"]["agreeing_voters"] == ["V1", "V2"]
 
 
 def test_invented_evidence_is_dropped_and_leads_to_clarification():
@@ -210,12 +229,12 @@ def test_after_two_rounds_the_user_picks_from_the_list():
     assert "Orthopaedics" in result["user_choice"]["options"]
 
 
-def test_general_medicine_majority_asks_once_then_accepts():
+def test_general_medicine_answer_asks_once_then_accepts():
     first = make_pipeline().analyze(Step1Input(text="weakness"))
     assert first["decision"] == "clarification_required"
     second = make_pipeline().analyze(Step1Input(text="weakness", clarification_round=1,
                                                  clarification={"body_area": "Other / not sure"}))
-    assert second["decision"] == "majority" and second["suggested_specialty"] == "General Medicine"
+    assert second["decision"] == "agreement" and second["suggested_specialty"] == "General Medicine"
 
 
 def test_general_medicine_only_wins_a_search_voter_when_no_specialist_matched():
@@ -242,8 +261,8 @@ def test_user_selected_specialty_is_returned():
 
 def test_llm_down_falls_back_to_rule_evidence_and_search_voters():
     result = make_pipeline(down=True).analyze(Step1Input(text="need cabg bypass surgery for my father", debug=True))
-    assert result["debug"]["votes"]["V3"]["ok"] is False
-    assert result["suggested_specialty"] == "Cardiothoracic Surgery"  # V1 + V2 still agree
+    assert result["debug"]["votes"]["V2"]["ok"] is False
+    assert result["decision"] == "lookup_only" and result["suggested_specialty"] == "Cardiothoracic Surgery"
 
 
 def test_every_stage_is_traced_with_one_request_id():
@@ -263,9 +282,9 @@ def test_llm_turned_off_still_routes_with_search_voters_and_shows_a_notice():
                              llm_voter=LLMVoter(client))
     pipeline.warm_up(__import__("logging").getLogger("test"))  # must not raise
     result = pipeline.analyze(Step1Input(text="need cabg bypass surgery for my father", debug=True))
-    assert result["suggested_specialty"] == "Cardiothoracic Surgery"  # V1 + V2 agree
+    assert result["suggested_specialty"] == "Cardiothoracic Surgery"  # the lookup voter answers alone
     assert result["llm_available"] is False and "not available" in result["notice"]
-    assert result["debug"]["votes"]["V3"]["ok"] is False
+    assert result["debug"]["votes"]["V2"]["ok"] is False
 
 
 def test_unreachable_ollama_is_detected_once_and_later_calls_are_skipped_instantly():
@@ -338,7 +357,7 @@ def test_hosted_llm_runs_v3_in_parallel_with_the_same_result():
     pipeline = Step1Pipeline(index=index, client=client, extractor=EvidenceExtractor(client), llm_voter=LLMVoter(client))
     result = pipeline.analyze(Step1Input(text="osteoarthritis of the knee, knee replacement", debug=True))
     assert result["suggested_specialty"] == "Orthopaedics"
-    assert result["debug"]["votes"]["V3"]["top3"][0][0] == "Orthopaedics"
+    assert result["debug"]["votes"]["V2"]["top3"][0][0] == "Orthopaedics"
 
 
 def test_openrouter_falls_back_to_the_next_free_model_when_one_is_busy(monkeypatch):
@@ -358,3 +377,68 @@ def test_openrouter_falls_back_to_the_next_free_model_when_one_is_busy(monkeypat
     second = client.generate_json("x", {}, purpose="specialty_vote")
     assert second.ok and asked == ["busy/model:free", "good/model:free", "good/model:free"]  # busy one skipped
     assert client.status()["available"] is True  # a busy model doesn't take the whole LLM down
+
+
+# ---------------------------------------------------------------- the LLM judge
+DISAGREE = {**SPECIALTY, "cabg": "Cardiology"}  # the LLM voter says Cardiology, the lookup Cardiothoracic Surgery
+
+
+def test_disagreement_is_settled_by_the_judge_when_its_answer_passes_the_checks():
+    reply = {"choice": "Cardiothoracic Surgery", "evidence": ["E1"], "patient_quote": "cabg",
+             "reason": "A planned bypass operation is cardiothoracic surgery."}
+    judge = FakeJudgeClient(reply)
+    result = make_pipeline(specialty=DISAGREE, judge_client=judge).analyze(
+        Step1Input(text="need cabg bypass surgery for my father", debug=True))
+    assert result["decision"] == "judge" and result["suggested_specialty"] == "Cardiothoracic Surgery"
+    assert len(judge.prompts) == 2  # asked twice, candidates in both orders
+    assert "judge" in result["debug"]["trace_events"]
+
+
+@pytest.mark.parametrize("reply, ok", [
+    ({"choice": "Cardiology", "evidence": ["E9"], "patient_quote": "cabg", "reason": ""}, True),  # invented evidence
+    ({"choice": "Cardiothoracic Surgery", "evidence": ["E1"], "patient_quote": "chest pain", "reason": ""}, True),  # quote not in text
+    ({"choice": "unclear", "evidence": [], "patient_quote": "", "reason": ""}, True),
+    ({}, False),  # rate limited / error
+])
+def test_a_judge_answer_that_fails_a_check_leads_to_a_question(reply, ok):
+    result = make_pipeline(specialty=DISAGREE, judge_client=FakeJudgeClient(reply, ok=ok)).analyze(
+        Step1Input(text="need cabg bypass surgery for my father"))
+    assert result["decision"] == "clarification_required" and result["suggested_specialty"] is None
+
+
+def test_without_a_judge_a_disagreement_asks_the_patient():
+    result = make_pipeline(specialty=DISAGREE).analyze(Step1Input(text="need cabg bypass surgery for my father"))
+    assert result["decision"] == "clarification_required"
+    assert "Cardiothoracic Surgery" in result["reason"] and "Cardiology" in result["reason"]
+
+
+def test_llm_answering_unclear_asks_instead_of_letting_the_lookup_guess():
+    """The LLM read the message and said "Unclear": ask. Only an unavailable LLM lets the lookup answer alone."""
+    vague = {**SPECIALTY}
+    vague.pop("osteoarthritis")  # the fake LLM answers Unclear for this message
+    result = make_pipeline(specialty=vague).analyze(Step1Input(text="osteoarthritis of the knee, knee replacement"))
+    assert result["decision"] == "clarification_required" and result["suggested_specialty"] is None
+    assert "too general" in result["reason"]
+    down = make_pipeline(down=True).analyze(Step1Input(text="osteoarthritis of the knee, knee replacement"))
+    assert down["decision"] == "lookup_only" and down["suggested_specialty"] == "Orthopaedics"
+
+
+@pytest.mark.parametrize("phrase, searched", [
+    ("Problem in my stomach", "stomach"),
+    ("severe pain on one side of back", "severe pain one side back"),
+    ("treatment", "treatment"),  # nothing left: searched unchanged (and dropped earlier as generic)
+])
+def test_generic_words_are_not_searched(phrase, searched):
+    from mediroute.specialty_routing.step1.evidence import search_text
+    assert search_text(phrase) == searched
+
+
+def test_weak_hits_on_several_phrases_do_not_outweigh_one_clear_match():
+    """C044: "problem in my stomach" + "problem in my head" both weakly matched "heart problem" (Cardiology)."""
+    from mediroute.specialty_routing.step1.voters import _aggregate
+    stomach = LookupEntry("a", "lay_term", "", "stomach pain", "Gastroenterology", "strong")
+    heart = LookupEntry("b", "lay_term", "", "heart problem", "Cardiology", "strong")
+    per_phrase = [("problem in my stomach", [(stomach, 0.032), (heart, 0.016)]),
+                  ("problem in my head", [(heart, 0.017)])]
+    assert _aggregate(per_phrase, 0.0)[0][0][0] == "Cardiology"                  # summing: weak hits win
+    assert _aggregate(per_phrase, 0.0, best_only=True)[0][0][0] == "Gastroenterology"  # best match per phrase

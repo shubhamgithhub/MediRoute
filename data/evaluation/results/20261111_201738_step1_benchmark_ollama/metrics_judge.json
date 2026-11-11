@@ -1,0 +1,71 @@
+{
+  "model": "openai/gpt-6-luna",
+  "prompt_version": "judge_v1",
+  "cost_usd": 0.0025157,
+  "variants": {
+    "M4": {
+      "core50": {
+        "n": 50,
+        "disagreements": 13,
+        "status": {
+          "accepted": 12,
+          "unclear": 1
+        },
+        "failures": {
+          "judge said unclear": 1
+        },
+        "judge_answered": 12,
+        "judge_right": 11,
+        "rules": {
+          "T1 ask|acc": 32,
+          "T1 ask|wrong": 0,
+          "T1 ask|ask": 18,
+          "T2 LLM wins|acc": 40,
+          "T2 LLM wins|wrong": 5,
+          "T2 LLM wins|ask": 5,
+          "T3 lookup wins|acc": 40,
+          "T3 lookup wins|wrong": 5,
+          "T3 lookup wins|ask": 5,
+          "T5 judge|acc": 43,
+          "T5 judge|wrong": 1,
+          "T5 judge|ask": 6,
+          "ceiling|acc": 44,
+          "ceiling|wrong": 0,
+          "ceiling|ask": 6
+        }
+      }
+    },
+    "C3": {
+      "core50": {
+        "n": 50,
+        "disagreements": 12,
+        "status": {
+          "accepted": 11,
+          "unclear": 1
+        },
+        "failures": {
+          "judge said unclear": 1
+        },
+        "judge_answered": 11,
+        "judge_right": 11,
+        "rules": {
+          "T1 ask|acc": 33,
+          "T1 ask|wrong": 1,
+          "T1 ask|ask": 16,
+          "T2 LLM wins|acc": 41,
+          "T2 LLM wins|wrong": 5,
+          "T2 LLM wins|ask": 4,
+          "T3 lookup wins|acc": 44,
+          "T3 lookup wins|wrong": 2,
+          "T3 lookup wins|ask": 4,
+          "T5 judge|acc": 44,
+          "T5 judge|wrong": 1,
+          "T5 judge|ask": 5,
+          "ceiling|acc": 45,
+          "ceiling|wrong": 1,
+          "ceiling|ask": 4
+        }
+      }
+    }
+  }
+}

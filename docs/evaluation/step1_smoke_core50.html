@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 1 Smoke Benchmark</title>
+<style>
+:root { --bg:#f7f8f6; --card:#fff; --fg:#1b2321; --muted:#5d6b68; --line:#d8e0de; --head:#e6f0ee; --accent:#0d7c74; --good:#1d7a3a; --good-bg:#e3f3e8; --bad:#b3261e; --bad-bg:#fbe6e4; --mid:#8a6100; --mid-bg:#fbf1db; }
+@media (prefers-color-scheme: dark) { :root { --bg:#121716; --card:#1b2321; --fg:#e4ebe9; --muted:#9aaba7; --line:#2f3b39; --head:#1f3330; --accent:#4fc2b6; --good:#6fd08c; --good-bg:#17331f; --bad:#f0857b; --bad-bg:#3d1d1a; --mid:#e2b04f; --mid-bg:#3a2e14; color-scheme:dark; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 "Segoe UI",system-ui,Arial,sans-serif; padding:28px max(16px,3vw) 56px; }
+main { max-width:1080px; margin:0 auto; display:flex; flex-direction:column; gap:22px; }
+h1 { margin:0; font-size:1.7rem; } h2 { margin:0 0 4px; font-size:1.15rem; }
+p { margin:0 0 10px; } .muted { color:var(--muted); font-size:.9rem; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+.scroll { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:.92rem; font-variant-numeric:tabular-nums; }
+th, td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:center; vertical-align:top; }
+th.l, td.l { text-align:left; }
+th { background:var(--head); font-size:.85rem; }
+td.num { white-space:nowrap; }
+tr.win td { background:var(--good-bg); }
+.tag { display:inline-block; padding:1px 8px; border-radius:999px; font-size:.78rem; font-weight:600; white-space:nowrap; }
+.yes { background:var(--good-bg); color:var(--good); } .no { background:var(--bad-bg); color:var(--bad); } .part { background:var(--mid-bg); color:var(--mid); }
+.small { font-size:.84rem; color:var(--muted); }
+ul { margin:0; padding-left:20px; } li { margin-bottom:6px; }
+code { font-family:Consolas,monospace; font-size:.85em; }
+</style></head><body><main>
+
+<header>
+  <h1>Step 1 smoke benchmark: 50 requests</h1>
+  <p class="muted">11 Nov 2026 · 50 team-written test cases (<code>step1_gold_core50.csv</code>, not yet doctor-reviewed).
+  <b>Correct</b> = the expected speciality or an accepted alternative (a clarification question counts as not correct).
+  <b>NDCG@3</b> = quality of the top-3 specialities offered, 0–1, rewarding the right one ranked first.
+  <b>Confidently wrong</b> = answered with a wrong speciality, the unsafe outcome.</p>
+</header>
+
+<section class="card">
+  <h2>1. How we got here: each design, in order</h2>
+  <p class="muted">Rows 1–3 are single-method baselines. From row 4 each row adds one change to the row before. Rows 1–5 on the old data, rows 6–8 on the clean data. Same 50 cases throughout.</p>
+  <div class="scroll"><table>
+    <tr><th>#</th><th class="l">Design</th><th class="l">Problem it addressed</th><th>Correct</th><th>NDCG@3</th><th>Confidently wrong</th><th>Asks</th><th class="l">Change vs previous row</th><th class="l">Verdict</th></tr>
+    <tr><td>1</td><td class="l">Keyword search only (no AI)</td><td class="l small">Baseline the TA asked for</td>
+      <td class="num">86%</td><td class="num">0.78</td><td class="num">14%</td><td class="num">0%</td><td class="l small">baseline</td><td class="l"><span class="tag part">baseline</span></td></tr>
+    <tr><td>2</td><td class="l">Meaning (semantic) search only</td><td class="l small">Baseline: understands wording</td>
+      <td class="num">92%</td><td class="num">0.84</td><td class="num">8%</td><td class="num">0%</td><td class="l small">baseline</td><td class="l"><span class="tag part">baseline</span> <span class="small">only 73% on lay language (full run)</span></td></tr>
+    <tr><td>3</td><td class="l">LLM only (no medical data)</td><td class="l small">Baseline: AI alone</td>
+      <td class="num">76%</td><td class="num">0.77</td><td class="num">16%</td><td class="num">8%</td><td class="l small">baseline</td><td class="l"><span class="tag part">baseline</span></td></tr>
+    <tr><td>4</td><td class="l">3 voters, 2-of-3 majority <span class='small'>(app today)</span></td><td class="l small">One method alone is unsafe</td>
+      <td class="num">80%</td><td class="num">0.80</td><td class="num">2%</td><td class="num">18%</td><td class="l small">vs LLM only: +4 correct, −14 wrong</td><td class="l"><span class="tag yes">safety</span></td></tr>
+    <tr><td>5</td><td class="l">Merge voters 1+2 into one hybrid lookup; LLM is the 2nd voter; ask on disagreement</td><td class="l small">Voters 1 and 2 share one dataset and outvote a right LLM</td>
+      <td class="num">68%</td><td class="num">0.82</td><td class="num">2%</td><td class="num">30%</td><td class="l small">−12 correct, +12 asks</td><td class="l"><span class="tag no">not on its own</span> <span class="small">base for the judge</span></td></tr>
+    <tr><td>6</td><td class="l">+ clean data: AHRQ CCSR mapping, strong / weak lay terms</td><td class="l small">Unreviewed ICD ranges (throat pain → Cardiology); "baby", "eye" as strong evidence</td>
+      <td class="num">66%</td><td class="num">0.81</td><td class="num">0%</td><td class="num">34%</td><td class="l small">−2 correct, −2 wrong, +4 asks</td><td class="l"><span class="tag part">no accuracy gain</span> <span class="small">fixes known mapping errors; data now reviewable</span></td></tr>
+    <tr><td>7</td><td class="l">+ guarded LLM judge (GPT-6 Luna) on disagreements</td><td class="l small">Too many questions; neither voter can simply win ties</td>
+      <td class="num">82%</td><td class="num">0.80</td><td class="num">2%</td><td class="num">16%</td><td class="l small"><b>+16 correct, −18 asks</b></td><td class="l"><span class="tag yes">biggest gain</span></td></tr>
+    <tr class="win"><td>8</td><td class="l"><b>Lookup voter + LLM voter (better prompt: speciality boundaries) + LLM judge</b> <span class='small'>(adopted)</span></td><td class="l small">The LLM mixed up neighbouring specialities</td>
+      <td class="num"><b>86%</b></td><td class="num"><b>0.81</b></td><td class="num"><b>2%</b></td><td class="num"><b>12%</b></td><td class="l small"><b>+4 correct, −4 asks</b></td><td class="l"><span class="tag yes">helped</span> <span class="small">slower on CPU (p95 67 s)</span></td></tr>
+  </table></div>
+  <p class="muted" style="margin-top:8px"><b>Net, app today (row 4) → adopted (row 8):</b> 80% → 86% correct, 18% → 12% asks, confidently wrong unchanged at 2%. NDCG@3 for rows 7–8: the judge's choice first, then the other candidates it had.</p>
+</section>
+
+<section class="card">
+  <h2>2. Where each design stands now (latest code)</h2>
+  <div class="scroll"><table>
+    <tr><th class="l">Design</th><th>Correct</th><th>NDCG@3</th><th>Confidently wrong</th><th>Asks</th></tr>
+    <tr class="win"><td class="l"><b>Adopted: hybrid lookup + LLM + LLM judge</b></td><td>86%</td><td>0.81</td><td>2%</td><td>12%</td></tr>
+    <tr><td class="l">App today: 3 voters, 2-of-3 majority</td><td>80%</td><td>0.80</td><td>4%</td><td>16%</td></tr>
+    <tr><td class="l">LLM only</td><td>82%</td><td>0.77</td><td>10%</td><td>8%</td></tr>
+    <tr><td class="l">Meaning search only</td><td>82%</td><td>0.81</td><td>18%</td><td>0%</td></tr>
+    <tr><td class="l">Keyword search only</td><td>82%</td><td>0.77</td><td>18%</td><td>0%</td></tr>
+  </table></div>
+</section>
+
+<section class="card">
+  <h2>3. Safety and other checks (latest code, app today)</h2>
+  <div class="scroll"><table>
+    <tr><th class="l">Check</th><th class="l">Result</th></tr>
+    <tr><td class="l">Emergencies caught</td><td class="l">3 of 3, no false alarms</td></tr>
+    <tr><td class="l">Vague messages that should ask a question</td><td class="l">4 of 5 asked</td></tr>
+    <tr><td class="l">Right speciality among the top 3 offered</td><td class="l">90%</td></tr>
+    <tr><td class="l">Key details (condition, procedure, body part) found by the LLM</td><td class="l">71%</td></tr>
+    <tr><td class="l">Time per request (typical / slowest 1 in 20)</td><td class="l">16 s / 67 s on a laptop CPU</td></tr>
+    <tr><td class="l">LLM judge cost for all 50 requests</td><td class="l">about $0.0025</td></tr>
+  </table></div>
+</section>
+
+<section class="card">
+  <h2>Models used</h2>
+  <div class="scroll"><table>
+    <tr><th class="l">Part</th><th class="l">Model</th></tr>
+    <tr><td class="l">Reads the message, finds evidence, votes</td><td class="l">llama3.2 3B, local (Ollama)</td></tr>
+    <tr><td class="l">Meaning search</td><td class="l">all-MiniLM-L6-v2 embeddings, local</td></tr>
+    <tr><td class="l">Keyword search</td><td class="l">TF-IDF, local</td></tr>
+    <tr><td class="l">LLM judge (only when the two voters disagree)</td><td class="l">GPT-6 Luna via OpenRouter</td></tr>
+  </table></div>
+</section>
+
+<section class="card">
+  <h2>Lessons</h2>
+  <ul>
+    <li><b>What helped most:</b> the guarded LLM judge (+16 points, 18 points fewer questions, no extra wrong answers), then the speciality boundaries (+4). Clean data fixed known mapping errors but showed no accuracy gain on these 50 cases.</li>
+    <li><b>What did not help:</b> asking whenever the voters disagree (row 5): safe, but it asks too often unless something settles the disagreement.</li>
+    <li><b>Trade-offs found:</b> the new data made plain search worse, and the longer prompt is slower on a CPU. Both are acceptable in the adopted design, because the LLM evidence step and the judge carry the accuracy.</li>
+    <li><b>Small sample:</b> 50 cases give about ±12 points; the full 346-case run is in <code>step1_benchmark_report.html</code>.</li>
+  </ul>
+</section>
+<p class="muted">Runs in <code>data/evaluation/results/</code>: 20261111_144211 (rows 1–5), 20261111_195850 (rows 6–7), 20261111_201738 (row 8 and section 2). Scripts: <code>scripts/benchmark_step1*.py</code>.</p>
+</main></body></html>

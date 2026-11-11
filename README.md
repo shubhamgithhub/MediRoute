@@ -69,11 +69,11 @@ patient's text that support it, and a disclaimer. API reference with examples an
 | # | Stage | What it does | Type |
 |---|-------|--------------|------|
 | 1.1 | **Protect + emergency rules** | Remove phone numbers, e-mails and ID numbers. Fixed red-flag rules (chest pain with breathlessness, stroke signs, heavy bleeding, suicidal intent…) add an emergency notice; routing continues | Code |
-| 1.2 | **Extract evidence** | The LLM copies conditions, procedures and body parts from the text; speciality keywords found in the text are added | LLM + code |
+| 1.2 | **Extract evidence** | The LLM copies conditions, procedures and body parts from the text; patient words from `specialty_mapping.csv` found in the text are added (weak words such as "baby" or "eye" only when no strong one is found) | LLM + code |
 | 1.3 | **Clean evidence (data correction)** | Code corrects what the LLM returned before anyone votes: a phrase is kept only if it really appears in the text (typos allowed), and generic words (treatment, hospital, doctor, city names, "since last month") are dropped. Each dropped phrase is logged with the reason | Code |
-| 1.4 | **Three voters** | **V1** keyword search and **V2** meaning search over a lookup list of 11,057 entries (9,314 ICD-10-CM diagnoses + 1,270 CGHS procedures + 473 patient lay terms such as "eye infection", each mapped to a speciality by doctor-reviewable tables). **V3** a local LLM picks from the 26-speciality list; code rejects any other name | Code / embeddings / LLM |
-| 1.5 | **Majority vote** | At least 2 of 3 voters name the same speciality **and** there is evidence in the text. General Medicine (the catch-all) asks one question before it is accepted | Code |
-| 1.6 | **Clarify, else user picks** | No majority: a short form (body area, existing diagnosis, recommended procedure), up to 2 rounds, then the user picks from the list | Code |
+| 1.4 | **Two voters** | **V1 lookup voter**: each evidence phrase is searched by keyword (TF-IDF) and by meaning (embeddings) in a lookup list of 10,884 terms (ICD-10-CM diagnoses grouped by AHRQ **CCSR**, CGHS procedures, patient lay terms, mapped by `specialty_mapping.csv`); the two result lists are fused by rank. Symptom and weak matches count half. **V2 LLM voter**: picks from the 26 specialities, reading each one's description and routing boundaries; code rejects any other name | Code / embeddings / LLM |
+| 1.5 | **Agree, or the LLM judge decides** | Both voters agree → answer. They disagree → a **guarded LLM judge** (GPT-6 Luna) picks one of the two: closed choice, evidence and quote checked by code, asked twice with the order swapped; any failure → ask. No LLM → the lookup voter answers alone. General Medicine asks one question before it is accepted | Code + LLM |
+| 1.6 | **Clarify, else user picks** | No answer: a short form (body area, existing diagnosis, recommended procedure), up to 2 rounds, then the user picks from the list | Code |
 | 1.7 | **Trace** | Every stage of every request is logged with a `request_id` in `logs/step1_trace.jsonl` (input, LLM calls, votes, decision) | Code |
 
 **Why the data-correction stage matters.** For *"eye infection since last 1 month, suggest
@@ -88,6 +88,31 @@ votes Ophthalmology (tests: `test_eye_infection_query_drops_generic_evidence`,
 Measured through the API on 12 scenarios (`scripts/api_smoke_step1.py`): all routed as intended,
 including report text, emergency notice, both clarification paths and the user's choice; about
 11–20 s per request on a CPU laptop.
+
+#### Evaluation and the adopted design
+
+![Step 1 today and the adopted design](docs/architecture/step1_design.png)
+
+We benchmarked Step 1 on 346 gold messages (`scripts/benchmark_step1*.py`; LLM llama3.2 3B on
+Ollama, judge GPT-6 Luna via OpenRouter). Accuracy counts a clarification question as not correct.
+
+![Step 1 benchmark](docs/evaluation/step1_benchmark_chart.png)
+
+| Design | core50 acc / wrong | mediroute acc / wrong | gretel (lay language) acc / wrong |
+|---|---|---|---|
+| Keyword search only (baseline) | 86% / 14% | 88% / 12% | 68% / 32% |
+| LLM only (baseline) | 76% / 16% | 81% / 18% | 73% / 26% |
+| **Before:** 3 voters, 2-of-3 majority | 80% / 2% | 89% / 2% | 54% / 34% |
+| Hybrid lookup + LLM, ask on disagreement | 68% / 2% | 67% / 1% | 34% / 7% |
+| **Now:** lookup voter + LLM voter + guarded LLM judge | **82% / 2%** | **86% / 4%** | **77% / 15%** |
+
+**Why we adopt it.** V1 and V2 search the same list, so their mistakes agree and can outvote a
+correct LLM. Merging them and letting a stronger, guarded LLM judge settle disagreements keeps the
+safety of asking (judge failures fall back to a question) and recovers most of the accuracy,
+above all on lay language: 54% → 77% correct, 34% → 15% confidently wrong. The judge costs about
+$0.0001 per disagreement. **Status:** in the app since 11 Nov 2026 (lookup voter + LLM voter +
+LLM judge). Without an OpenRouter key the judge is skipped and disagreements ask a question.
+Full report: [docs/evaluation/step1_benchmark_report.html](docs/evaluation/step1_benchmark_report.html).
 
 **Step 1 → Step 2 in one call.** The frontend calls `POST /api/patient-routing`, a LangGraph
 workflow (built by Shubham, integrated with Step 1): optional reports are parsed, Step 1 suggests the
@@ -149,8 +174,9 @@ They share only `common/` (the `MedicalContext` hand-off object) and `utils/`.
 | 1.1 Protect + emergency rules | `step1/protect.py`, `step1/safety.py` |
 | 1.2 Extract evidence | `step1/evidence.py`, `prompts/evidence_v1.txt` |
 | 1.3 Clean evidence | `step1/evidence.py` (`verify_phrase`, `is_generic`, `GENERIC_WORDS`) |
-| 1.4 Voters | `step1/voters.py`, `step1/lookup.py` (lookup list + TF-IDF and embedding search), `prompts/specialty_v1.txt` |
-| 1.4–1.5 Decide, clarify, user choice | `step1/pipeline.py` |
+| 1.4 Voters | `step1/voters.py` (lookup voter, LLM voter), `step1/lookup.py` (lookup list + TF-IDF and embedding search), `prompts/specialty_v2.txt` |
+| 1.5 LLM judge | `step1/judge.py` (`MEDIROUTE_JUDGE_PROVIDER` = openrouter / ollama / none, `MEDIROUTE_JUDGE_MODEL`) |
+| 1.5–1.6 Decide, clarify, user choice | `step1/pipeline.py` |
 | 1.6 Trace | `step1/trace.py` |
 | Service + baselines | `service.py` (`MEDIROUTE_ROUTING_MODE`: `vote` default; `rules`, `llm`, `hybrid` for evaluation), `routes.py` |
 | **Hand-off** | **`common/medical_context.py`** (`MedicalContext`) |

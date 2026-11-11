@@ -45,8 +45,8 @@ def analyze_patient(request: PatientRequest):
             "reportName": request.reportName,
         },
         "medicalContext": medical_context,
-        "note": ("Step 1 suggests a speciality to search using three independent methods (keyword search, "
-                 "meaning search, local LLM) and a majority vote. Discovery support only, not a diagnosis."),
+        "note": ("Step 1 suggests a speciality to search with two independent methods (a medical lookup and an "
+                 "AI model); if they disagree, a guarded AI judge picks one or a question is asked. Not a diagnosis."),
     }
 
 

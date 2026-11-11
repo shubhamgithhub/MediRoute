@@ -12,8 +12,7 @@ Systems (every one gets the same patient text = query + report):
                          + lay terms), specialities scored by summed top-8 hits; no AI
     B3_lookup_semantic   the same with MiniLM embeddings (ML, no LLM)
     B4_llm_only          the LLM picks from the 26 specialities (= voter V3, no grounding)
-    A1_v1_llm_evidence   V1 keyword voter on the LLM-extracted evidence phrases
-    A2_v2_llm_evidence   V2 embedding voter on the LLM-extracted evidence phrases
+    A1_v1_llm_evidence   the lookup voter (keyword + meaning, fused) on the LLM-extracted evidence
     A3_pipeline_no_llm   the full pipeline with the LLM switched off (keyword evidence, V1 + V2)
     OURS                 the full pipeline (evidence -> V1, V2, V3 -> 2-of-3 majority, else ask)
 
@@ -56,18 +55,17 @@ GOLD_SETS = {
     "gretel": "step1_gold_gretel.csv",
 }
 SYSTEMS = ["B0_majority", "B1_keyword_rules", "B2_lookup_keyword", "B3_lookup_semantic", "B4_llm_only",
-           "A1_v1_llm_evidence", "A2_v2_llm_evidence", "A3_pipeline_no_llm", "OURS"]
-LLM_SYSTEMS = {"B4_llm_only", "A1_v1_llm_evidence", "A2_v2_llm_evidence", "OURS"}
+           "A1_v1_llm_evidence", "A3_pipeline_no_llm", "OURS"]
+LLM_SYSTEMS = {"B4_llm_only", "A1_v1_llm_evidence", "OURS"}
 SYSTEM_LABELS = {
     "B0_majority": "B0 most common speciality (floor)",
     "B1_keyword_rules": "B1 keyword rules (specialties.csv)",
     "B2_lookup_keyword": "1 Keyword search (TF-IDF)",
     "B3_lookup_semantic": "2 Semantic search (embeddings)",
     "B4_llm_only": "3 LLM only",
-    "A1_v1_llm_evidence": "A1 keyword search on LLM evidence",
-    "A2_v2_llm_evidence": "A2 semantic search on LLM evidence",
-    "A3_pipeline_no_llm": "A3 3-voter pipeline without LLM",
-    "OURS": "Before: current pipeline (3 voters)",
+    "A1_v1_llm_evidence": "A1 lookup voter alone, on LLM evidence",
+    "A3_pipeline_no_llm": "A3 pipeline without LLM (lookup only)",
+    "OURS": "MediRoute Step 1 (lookup + LLM voter + LLM judge)",
 }
 TOP_K = 8
 MAIN_SYSTEMS = ["B2_lookup_keyword", "B3_lookup_semantic", "B4_llm_only", "OURS"]  # headline table
@@ -161,7 +159,7 @@ class Runner:
             ours = self._pipeline_result(self.full, inp)
             out["OURS"] = ours
             votes = ours.pop("_votes")
-            for key, voter in (("B4_llm_only", "V3"), ("A1_v1_llm_evidence", "V1"), ("A2_v2_llm_evidence", "V2")):
+            for key, voter in (("B4_llm_only", "V2"), ("A1_v1_llm_evidence", "V1")):
                 names = vote_names(votes.get(voter))
                 out[key] = {"pred": names[0] if names else None, "ranked": names, "ms": None,
                             "note": (votes.get(voter) or {}).get("note", "")}

@@ -57,7 +57,7 @@ def load_trace(run_dir: Path) -> dict[str, dict]:
             rec = by_request.setdefault(event["request_id"], {})
             if event["stage"] == "evidence":
                 rec["phrases"] = event.get("routing_phrases") or []
-            elif event["stage"] == "vote" and event.get("voter") == "V3_llm":
+            elif event["stage"] == "vote" and event.get("voter") in ("V3_llm", "V2_llm"):  # old / new name
                 rec["llm"] = [name for name, _ in event.get("top3") or []]
     return by_request
 

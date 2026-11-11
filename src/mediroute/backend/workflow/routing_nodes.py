@@ -22,6 +22,7 @@ from typing import Any
 from mediroute.backend.workflow.routing_state import PatientRoutingState
 from mediroute.common.medical_context import MedicalContext
 from mediroute.specialty_routing.extraction.pdf_parser import PDFParser
+from mediroute.specialty_routing.step1.pipeline import ROUTED_DECISIONS
 from mediroute.specialty_routing.step1.trace import _trace_logger
 from mediroute.utils.logging_config import get_logger
 
@@ -110,7 +111,7 @@ class RoutingNodes:
             logger.exception("Step 1 failed inside the workflow")
             return {"error_message": f"Step 1 failed: {type(exc).__name__}", "current_step": "step1_route"}
 
-        routed = result["decision"] in {"majority", "user_selected"} and bool(result["suggested_specialty"])
+        routed = result["decision"] in ROUTED_DECISIONS and bool(result["suggested_specialty"])
         detail = result.get("evidence_detail") or {}
         context = MedicalContext(
             diagnoses=detail.get("conditions", []),

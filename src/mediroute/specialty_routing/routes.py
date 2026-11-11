@@ -157,8 +157,15 @@ class LLMRouter:
         }
 
     def build_prompt(self, text: str) -> str:
-        catalogue = "\n".join(f"- {s.name}: {s.description}" for s in self.specialties)
-        return self.template.format(specialties=catalogue, query=text.strip())
+        lines = []
+        for s in self.specialties:
+            lines.append(f"- {s.name}: {s.description}")
+            if self.prompt_version != "specialty_v1":  # v2+: add the routing boundaries
+                if s.route_here_when:
+                    lines.append(f"    Route here when: {s.route_here_when}")
+                if s.not_here:
+                    lines.append(f"    Not here: {s.not_here}")
+        return self.template.format(specialties="\n".join(lines), query=text.strip())
 
     def _post(self, payload: dict) -> dict:
         request = urllib.request.Request(
