@@ -1,0 +1,2 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H153,SKIMS (Sher-i-Kashmir Institute of Medical Sciences),Srinagar,Jammu and Kashmir,Tier 2,Tier 1,Tertiary academic,Government,SKIMS,,,https://skims.ac.in/,,tiers are judgement; team 150 id H092,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

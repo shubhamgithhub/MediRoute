@@ -1,0 +1,198 @@
+{
+  "model": "openai/gpt-6-luna",
+  "prompt_version": "judge_v1",
+  "cost_usd": 0.0409842,
+  "variants": {
+    "M4": {
+      "core50": {
+        "n": 50,
+        "disagreements": 10,
+        "status": {
+          "accepted": 7,
+          "unclear": 3
+        },
+        "failures": {
+          "judge said unclear": 3
+        },
+        "judge_answered": 7,
+        "judge_right": 7,
+        "rules": {
+          "T1 ask|acc": 34,
+          "T1 ask|wrong": 1,
+          "T1 ask|ask": 15,
+          "T2 LLM wins|acc": 37,
+          "T2 LLM wins|wrong": 8,
+          "T2 LLM wins|ask": 5,
+          "T3 lookup wins|acc": 41,
+          "T3 lookup wins|wrong": 4,
+          "T3 lookup wins|ask": 5,
+          "T5 judge|acc": 41,
+          "T5 judge|wrong": 1,
+          "T5 judge|ask": 8,
+          "ceiling|acc": 42,
+          "ceiling|wrong": 1,
+          "ceiling|ask": 7
+        }
+      },
+      "mediroute": {
+        "n": 84,
+        "disagreements": 23,
+        "status": {
+          "accepted": 18,
+          "order-swap flip": 3,
+          "unclear": 2
+        },
+        "failures": {
+          "judge said unclear": 4
+        },
+        "judge_answered": 18,
+        "judge_right": 16,
+        "rules": {
+          "T1 ask|acc": 56,
+          "T1 ask|wrong": 1,
+          "T1 ask|ask": 27,
+          "T2 LLM wins|acc": 65,
+          "T2 LLM wins|wrong": 15,
+          "T2 LLM wins|ask": 4,
+          "T3 lookup wins|acc": 73,
+          "T3 lookup wins|wrong": 7,
+          "T3 lookup wins|ask": 4,
+          "T5 judge|acc": 72,
+          "T5 judge|wrong": 3,
+          "T5 judge|ask": 9,
+          "ceiling|acc": 75,
+          "ceiling|wrong": 1,
+          "ceiling|ask": 8
+        }
+      },
+      "gretel": {
+        "n": 212,
+        "disagreements": 122,
+        "status": {
+          "accepted": 108,
+          "order-swap flip": 8,
+          "unclear": 6
+        },
+        "failures": {
+          "cited evidence does not support the choice": 1,
+          "judge said unclear": 12
+        },
+        "judge_answered": 108,
+        "judge_right": 91,
+        "rules": {
+          "T1 ask|acc": 73,
+          "T1 ask|wrong": 15,
+          "T1 ask|ask": 124,
+          "T2 LLM wins|acc": 154,
+          "T2 LLM wins|wrong": 56,
+          "T2 LLM wins|ask": 2,
+          "T3 lookup wins|acc": 119,
+          "T3 lookup wins|wrong": 91,
+          "T3 lookup wins|ask": 2,
+          "T5 judge|acc": 164,
+          "T5 judge|wrong": 32,
+          "T5 judge|ask": 16,
+          "ceiling|acc": 179,
+          "ceiling|wrong": 15,
+          "ceiling|ask": 18
+        }
+      }
+    },
+    "C3": {
+      "core50": {
+        "n": 50,
+        "disagreements": 10,
+        "status": {
+          "accepted": 8,
+          "order-swap flip": 1,
+          "unclear": 1
+        },
+        "failures": {
+          "judge said unclear": 2
+        },
+        "judge_answered": 8,
+        "judge_right": 8,
+        "rules": {
+          "T1 ask|acc": 34,
+          "T1 ask|wrong": 1,
+          "T1 ask|ask": 15,
+          "T2 LLM wins|acc": 37,
+          "T2 LLM wins|wrong": 8,
+          "T2 LLM wins|ask": 5,
+          "T3 lookup wins|acc": 42,
+          "T3 lookup wins|wrong": 3,
+          "T3 lookup wins|ask": 5,
+          "T5 judge|acc": 42,
+          "T5 judge|wrong": 1,
+          "T5 judge|ask": 7,
+          "ceiling|acc": 43,
+          "ceiling|wrong": 1,
+          "ceiling|ask": 6
+        }
+      },
+      "mediroute": {
+        "n": 84,
+        "disagreements": 20,
+        "status": {
+          "accepted": 16,
+          "order-swap flip": 4
+        },
+        "failures": {
+          "judge said unclear": 2
+        },
+        "judge_answered": 16,
+        "judge_right": 15,
+        "rules": {
+          "T1 ask|acc": 59,
+          "T1 ask|wrong": 1,
+          "T1 ask|ask": 24,
+          "T2 LLM wins|acc": 65,
+          "T2 LLM wins|wrong": 15,
+          "T2 LLM wins|ask": 4,
+          "T3 lookup wins|acc": 77,
+          "T3 lookup wins|wrong": 3,
+          "T3 lookup wins|ask": 4,
+          "T5 judge|acc": 74,
+          "T5 judge|wrong": 2,
+          "T5 judge|ask": 8,
+          "ceiling|acc": 77,
+          "ceiling|wrong": 1,
+          "ceiling|ask": 6
+        }
+      },
+      "gretel": {
+        "n": 212,
+        "disagreements": 108,
+        "status": {
+          "order-swap flip": 9,
+          "accepted": 92,
+          "unclear": 6,
+          "check failed": 1
+        },
+        "failures": {
+          "cited evidence does not support the choice": 2,
+          "judge said unclear": 11
+        },
+        "judge_answered": 92,
+        "judge_right": 77,
+        "rules": {
+          "T1 ask|acc": 78,
+          "T1 ask|wrong": 24,
+          "T1 ask|ask": 110,
+          "T2 LLM wins|acc": 154,
+          "T2 LLM wins|wrong": 56,
+          "T2 LLM wins|ask": 2,
+          "T3 lookup wins|acc": 121,
+          "T3 lookup wins|wrong": 89,
+          "T3 lookup wins|ask": 2,
+          "T5 judge|acc": 155,
+          "T5 judge|wrong": 39,
+          "T5 judge|ask": 18,
+          "ceiling|acc": 173,
+          "ceiling|wrong": 24,
+          "ceiling|ask": 15
+        }
+      }
+    }
+  }
+}

@@ -1,9 +1,10 @@
-"""Step 1: patient query and reports -> condition, ICD-10 code and medical specialty.
+"""Step 1: patient query and reports -> suggested speciality to search.
 
 Layout:
-    api.py          FastAPI routes (/api/analyze, /api/medical-context, /api/reports/parse, /api/icd10/*)
-    router.py       SpecialtyRAGRouter: rules -> embedding candidates -> Ollama LLM -> zero-shot
-    icd10_mapper.py ICD-10 <-> condition <-> specialty lookup
+    api.py          FastAPI routes (/api/analyze, /api/reports/parse)
+    service.py      Entry point used by the API and the workflow (runs step1/pipeline.py)
+    step1/          The vote pipeline: protect, emergency rules, evidence, V1/V2/V3 votes, decision
+    routes.py       LLM route (V3) and a keyword-rules baseline
     schemas.py      Request models (PatientRequest)
-    extraction/     PDF parsing and medical-context extraction, aggregation and validation
+    extraction/     PDF report parsing
 """

@@ -1,7 +1,7 @@
 """Step 1 service used by the API: one instance per process, chosen by MEDIROUTE_ROUTING_MODE.
 
 Modes:
-    vote    three voters + majority + clarification form (default; step1/pipeline.py)
+    vote    lookup voter + LLM voter, LLM judge on disagreement, clarification form (default; step1/pipeline.py)
     rules   deterministic keyword route only        (baseline, kept for scripts/eval_step1.py)
     llm     local LLM only                          (baseline)
     hybrid  LLM decides, rules give a second opinion (earlier design, kept for comparison)

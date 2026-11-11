@@ -1,0 +1,548 @@
+ccsr_category,description,body_system,specialty,evidence_type,basis,review_status
+BLD001,Nutritional anemia,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+BLD002,Hemolytic anemia,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+BLD003,Aplastic anemia,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+BLD004,Acute posthemorrhagic anemia,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+BLD005,Sickle cell trait/anemia,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+BLD006,Coagulation and hemorrhagic disorders,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+BLD007,Diseases of white blood cells,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+BLD008,Immunity disorders,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+BLD009,Postprocedural or postoperative complications of the spleen,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+BLD010,Other specified and unspecified hematologic conditions,BLD,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+CIR001,Chronic rheumatic heart disease,CIR,Cardiology,diagnosis,body-system default,draft
+CIR002,Acute rheumatic heart disease,CIR,Cardiology,diagnosis,body-system default,draft
+CIR003,Nonrheumatic and unspecified valve disorders,CIR,Cardiology,diagnosis,body-system default,draft
+CIR004,Endocarditis and endocardial disease,CIR,Cardiology,diagnosis,body-system default,draft
+CIR005,Myocarditis and cardiomyopathy,CIR,Cardiology,diagnosis,body-system default,draft
+CIR006,Pericarditis and pericardial disease,CIR,Cardiology,diagnosis,body-system default,draft
+CIR007,Essential hypertension,CIR,Cardiology,diagnosis,body-system default,draft
+CIR008,Hypertension with complications and secondary hypertension,CIR,Cardiology,diagnosis,body-system default,draft
+CIR009,Acute myocardial infarction,CIR,Cardiology,diagnosis,body-system default,draft
+CIR010,Complications of acute myocardial infarction,CIR,Cardiology,diagnosis,body-system default,draft
+CIR011,Coronary atherosclerosis and other heart disease,CIR,Cardiology,diagnosis,body-system default,draft
+CIR012,Nonspecific chest pain,CIR,Cardiology,symptom,category rule: nonspecific chest pain: symptom,draft
+CIR013,Acute pulmonary embolism,CIR,Pulmonology;Cardiology,diagnosis,category rule: pulmonary embolism,draft
+CIR014,Pulmonary heart disease,CIR,Pulmonology;Cardiology,diagnosis,category rule: pulmonary heart disease,draft
+CIR015,Other and ill-defined heart disease,CIR,Cardiology,diagnosis,body-system default,draft
+CIR016,Conduction disorders,CIR,Cardiology,diagnosis,body-system default,draft
+CIR017,Cardiac dysrhythmias,CIR,Cardiology,diagnosis,body-system default,draft
+CIR018,Cardiac arrest and ventricular fibrillation,CIR,Cardiology,diagnosis,body-system default,draft
+CIR019,Heart failure,CIR,Cardiology,diagnosis,body-system default,draft
+CIR020,Cerebral infarction,CIR,Neurology,diagnosis,category rule: cerebral infarction (stroke),draft
+CIR021,Acute hemorrhagic cerebrovascular disease,CIR,Neurosurgery;Neurology,diagnosis,category rule: haemorrhagic stroke,draft
+CIR022,Sequela of hemorrhagic cerebrovascular disease,CIR,Neurology,diagnosis,category rule: sequela of haemorrhagic stroke,draft
+CIR023,Occlusion or stenosis of precerebral or cerebral arteries without infarction,CIR,Neurology,diagnosis,category rule: cerebral artery stenosis,draft
+CIR024,Other and ill-defined cerebrovascular disease,CIR,Neurology,diagnosis,category rule: other cerebrovascular disease,draft
+CIR025,Sequela of cerebral infarction and other cerebrovascular disease,CIR,Neurology,diagnosis,category rule: sequela of stroke,draft
+CIR026,Peripheral and visceral vascular disease,CIR,Cardiology,diagnosis,body-system default,draft
+CIR027,Arterial dissections,CIR,Cardiology,diagnosis,body-system default,draft
+CIR028,Gangrene,CIR,Cardiology,diagnosis,body-system default,draft
+CIR029,Aortic; peripheral; and visceral artery aneurysms,CIR,Cardiothoracic Surgery;Cardiology,diagnosis,category rule: aortic aneurysm: usually surgical,draft
+CIR030,Aortic and peripheral arterial embolism or thrombosis,CIR,Cardiology,diagnosis,body-system default,draft
+CIR031,Hypotension,CIR,General Medicine,symptom,category rule: hypotension: nonspecific,draft
+CIR032,Other specified and unspecified circulatory disease,CIR,Cardiology,diagnosis,body-system default,draft
+CIR033,Acute phlebitis; thrombophlebitis and thromboembolism,CIR,Cardiology,diagnosis,body-system default,draft
+CIR034,Chronic phlebitis; thrombophlebitis and thromboembolism,CIR,Cardiology,diagnosis,body-system default,draft
+CIR035,Varicose veins of lower extremity,CIR,Cardiology,diagnosis,body-system default,draft
+CIR036,Postthrombotic syndrome and venous insufficiency/hypertension,CIR,Cardiology,diagnosis,body-system default,draft
+CIR037,Vasculitis,CIR,General Medicine,diagnosis,category rule: vasculitis: no rheumatology speciality in our list,draft
+CIR038,Postprocedural or postoperative circulatory system complication,CIR,Cardiology,diagnosis,body-system default,draft
+CIR039,Other specified diseases of veins and lymphatics,CIR,Cardiology,diagnosis,body-system default,draft
+DEN001,Any dental condition including traumatic injury,DEN,NONE,diagnosis,body-system default,draft
+DEN002,Nontraumatic dental conditions,DEN,NONE,diagnosis,body-system default,draft
+DEN003,"Caries, periodontitis, and other preventable dental conditions",DEN,NONE,diagnosis,body-system default,draft
+DIG001,Intestinal infection,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG002,Disorders of teeth and gingiva,DIG,NONE,diagnosis,"category rule: teeth and gingiva: dental, not routed",draft
+DIG003,Diseases of mouth; excluding dental,DIG,ENT,diagnosis,category rule: diseases of mouth,draft
+DIG004,Esophageal disorders,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG005,Gastroduodenal ulcer,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG006,Gastrointestinal and biliary perforation,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG007,Gastritis and duodenitis,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG008,Other specified and unspecified disorders of stomach and duodenum,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG009,Appendicitis and other appendiceal conditions,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG010,Abdominal hernia,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG011,Regional enteritis and ulcerative colitis,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG012,Intestinal obstruction and ileus,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG013,Diverticulosis and diverticulitis,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG014,Hemorrhoids,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG015,Anal and rectal conditions,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG016,Peritonitis and intra-abdominal abscess,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG017,Biliary tract disease,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG018,Hepatic failure,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG019,Other specified and unspecified liver disease,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG020,Pancreatic disorders (excluding diabetes),DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG021,Gastrointestinal hemorrhage,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG022,Noninfectious gastroenteritis,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG023,Noninfectious hepatitis,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG024,Postprocedural or postoperative digestive system complication,DIG,Gastroenterology,diagnosis,body-system default,draft
+DIG025,Other specified and unspecified gastrointestinal disorders,DIG,Gastroenterology,diagnosis,body-system default,draft
+EAR001,Otitis media,EAR,ENT,diagnosis,body-system default,draft
+EAR002,Diseases of middle ear and mastoid (except otitis media),EAR,ENT,diagnosis,body-system default,draft
+EAR003,Diseases of inner ear and related conditions,EAR,ENT,diagnosis,body-system default,draft
+EAR004,Hearing loss,EAR,ENT,diagnosis,body-system default,draft
+EAR005,Postprocedural or postoperative ear and/or mastoid process complication,EAR,ENT,diagnosis,body-system default,draft
+EAR006,Other specified and unspecified disorders of the ear,EAR,ENT,diagnosis,body-system default,draft
+END001,Thyroid disorders,END,Endocrinology,diagnosis,body-system default,draft
+END002,Diabetes mellitus without complication,END,Endocrinology,diagnosis,body-system default,draft
+END003,Diabetes mellitus with complication,END,Endocrinology,diagnosis,body-system default,draft
+END004,"Diabetes mellitus, Type 1",END,Endocrinology,diagnosis,body-system default,draft
+END005,"Diabetes mellitus, Type 2",END,Endocrinology,diagnosis,body-system default,draft
+END006,"Diabetes mellitus, due to underlying condition, drug or chemical induced, or other specified type",END,Endocrinology,diagnosis,body-system default,draft
+END007,Nutritional deficiencies,END,General Medicine,diagnosis,category rule: nutritional deficiency,draft
+END008,Malnutrition,END,General Medicine,diagnosis,category rule: malnutrition,draft
+END009,Obesity,END,Bariatric Surgery;Endocrinology,diagnosis,category rule: obesity,draft
+END010,Disorders of lipid metabolism,END,Endocrinology,diagnosis,body-system default,draft
+END011,Fluid and electrolyte disorders,END,General Medicine,diagnosis,category rule: fluid and electrolyte disorders,draft
+END012,Cystic fibrosis,END,Pulmonology,diagnosis,category rule: cystic fibrosis: mainly lung care,draft
+END013,Pituitary disorders,END,Endocrinology,diagnosis,body-system default,draft
+END014,Postprocedural or postoperative endocrine or metabolic complication,END,Endocrinology,diagnosis,body-system default,draft
+END015,Other specified and unspecified endocrine disorders,END,Endocrinology,diagnosis,body-system default,draft
+END016,Other specified and unspecified nutritional and metabolic disorders,END,General Medicine,diagnosis,category rule: other nutritional and metabolic disorders,draft
+END017,Sequela of malnutrition and other nutritional deficiencies,END,General Medicine,diagnosis,category rule: sequela of malnutrition,draft
+EXT001,External cause codes: cut/pierce; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT002,External cause codes: drowning/submersion; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT003,External cause codes: fall; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT004,External cause codes: fire/burn; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT005,External cause codes: firearm; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT006,External cause codes: machinery; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT007,External cause codes: motor vehicle traffic (MVT); initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT008,External cause codes: pedal cyclist; not MVT; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT009,External cause codes: pedestrian; not MVT; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT010,External cause codes: transport; not MVT; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT011,External cause codes: natural/environment; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT012,External cause codes: bites; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT013,External cause codes: overexertion; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT014,External cause codes: poisoning by drug,EXT,NONE,diagnosis,body-system default,draft
+EXT015,External cause codes: poisoning by non-drug,EXT,NONE,diagnosis,body-system default,draft
+EXT016,External cause codes: struck by; against; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT017,External cause codes: suffocation/inhalation; initial encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT018,"External cause codes: other specified, classifiable and NEC; initial encounter",EXT,NONE,diagnosis,body-system default,draft
+EXT019,External cause codes: unspecified mechanism,EXT,NONE,diagnosis,body-system default,draft
+EXT020,"External cause codes: intent of injury, accidental/unintentional",EXT,NONE,diagnosis,body-system default,draft
+EXT021,"External cause codes: intent of injury, self-harm",EXT,NONE,diagnosis,body-system default,draft
+EXT022,"External cause codes: intent of injury, assault",EXT,NONE,diagnosis,body-system default,draft
+EXT023,"External cause codes: intent of injury, undetermined",EXT,NONE,diagnosis,body-system default,draft
+EXT024,"External cause codes: intent of injury, legal intervention/war",EXT,NONE,diagnosis,body-system default,draft
+EXT025,"External cause codes: complications of medical and surgical care, initial encounter",EXT,NONE,diagnosis,body-system default,draft
+EXT026,External cause codes: activity codes,EXT,NONE,diagnosis,body-system default,draft
+EXT027,External cause codes: place of occurrence of the external cause,EXT,NONE,diagnosis,body-system default,draft
+EXT028,External cause codes: evidence of alcohol involvement,EXT,NONE,diagnosis,body-system default,draft
+EXT029,External cause codes: subsequent encounter,EXT,NONE,diagnosis,body-system default,draft
+EXT030,External cause codes: sequela,EXT,NONE,diagnosis,body-system default,draft
+EYE001,Cornea and external disease,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE002,Cataract and other lens disorders,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE003,Glaucoma,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE004,Uveitis and ocular inflammation,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE005,Retinal and vitreous conditions,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE006,Neuro-ophthalmology,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE007,Strabismus,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE008,Oculofacial plastics and orbital conditions,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE009,Refractive error,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE010,Blindness and vision defects,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE011,Postprocedural or postoperative eye complication,EYE,Ophthalmology,diagnosis,body-system default,draft
+EYE012,Other specified eye disorders,EYE,Ophthalmology,diagnosis,body-system default,draft
+FAC001,Encounter for administrative purposes,FAC,NONE,status,body-system default,draft
+FAC002,Encounter for mental health services related to abuse,FAC,Psychiatry,status,category rule: mental health services,draft
+FAC003,"Encounter for observation and examination for conditions ruled out (excludes infectious disease, neoplasm, mental disorders)",FAC,NONE,status,body-system default,draft
+FAC004,Encounter for prophylactic or other procedures,FAC,NONE,status,body-system default,draft
+FAC005,Encounter for prophylactic measures (excludes immunization),FAC,NONE,status,body-system default,draft
+FAC006,Encounter for antineoplastic therapies,FAC,Oncology,status,category rule: encounter for antineoplastic therapy,draft
+FAC007,Encounter for mental health conditions,FAC,Psychiatry,status,category rule: mental health conditions,draft
+FAC008,Neoplasm-related encounters,FAC,Oncology,status,category rule: neoplasm-related encounter,draft
+FAC009,"Implant, device or graft related encounter",FAC,NONE,status,body-system default,draft
+FAC010,Other aftercare encounter,FAC,NONE,status,body-system default,draft
+FAC011,Counseling related to sexual behavior or orientation,FAC,NONE,status,body-system default,draft
+FAC012,Other specified encounters and counseling,FAC,NONE,status,body-system default,draft
+FAC013,Contraceptive and procreative management,FAC,Reproductive Medicine,status,category rule: procreative management,draft
+FAC014,Medical examination/evaluation,FAC,NONE,status,body-system default,draft
+FAC015,Resistance to antimicrobial drugs,FAC,NONE,status,body-system default,draft
+FAC016,"Exposure, encounters, screening or contact with infectious disease",FAC,NONE,status,body-system default,draft
+FAC017,No immunization or underimmunization,FAC,NONE,status,body-system default,draft
+FAC018,Screening for neurocognitive or neurodevelopmental condition,FAC,NONE,status,body-system default,draft
+FAC019,Socioeconomic/psychosocial factors,FAC,NONE,status,body-system default,draft
+FAC020,Lifestyle/life management factors,FAC,NONE,status,body-system default,draft
+FAC021,Personal/family history of disease,FAC,NONE,status,body-system default,draft
+FAC022,Acquired absence of limb or organ,FAC,NONE,status,body-system default,draft
+FAC023,Organ transplant status,FAC,Organ Transplant,status,category rule: organ transplant status,draft
+FAC024,Carrier status,FAC,NONE,status,body-system default,draft
+FAC025,Other specified status,FAC,NONE,status,body-system default,draft
+GEN001,Nephritis; nephrosis; renal sclerosis,GEN,Nephrology,diagnosis,category rule: nephritis / nephrosis,draft
+GEN002,Acute and unspecified renal failure,GEN,Nephrology,diagnosis,category rule: acute renal failure,draft
+GEN003,Chronic kidney disease,GEN,Nephrology,diagnosis,category rule: chronic kidney disease,draft
+GEN004,Urinary tract infections,GEN,Urology;General Medicine,diagnosis,category rule: urinary tract infection,draft
+GEN005,Calculus of urinary tract,GEN,Urology,diagnosis,category rule: urinary tract stones,draft
+GEN006,Other specified and unspecified diseases of kidney and ureters,GEN,Nephrology;Urology,diagnosis,category rule: other kidney and ureter disease,draft
+GEN007,Other specified and unspecified diseases of bladder and urethra,GEN,Urology,diagnosis,body-system default,draft
+GEN008,Urinary incontinence,GEN,Urology,diagnosis,body-system default,draft
+GEN009,Hematuria,GEN,Urology,symptom,category rule: haematuria: symptom,draft
+GEN010,Proteinuria,GEN,Nephrology,symptom,category rule: proteinuria: finding,draft
+GEN011,Vesicoureteral reflux,GEN,Urology,diagnosis,body-system default,draft
+GEN012,Hyperplasia of prostate,GEN,Urology,diagnosis,body-system default,draft
+GEN013,Inflammatory conditions of male genital organs,GEN,Urology,diagnosis,body-system default,draft
+GEN014,Erectile dysfunction,GEN,Urology,diagnosis,body-system default,draft
+GEN015,Male infertility,GEN,Reproductive Medicine;Urology,diagnosis,category rule: male infertility,draft
+GEN016,Other specified male genital disorders,GEN,Urology,diagnosis,body-system default,draft
+GEN017,Nonmalignant breast conditions,GEN,Obstetrics & Gynaecology,diagnosis,category rule: nonmalignant breast conditions,draft
+GEN018,Inflammatory diseases of female pelvic organs,GEN,Obstetrics & Gynaecology,diagnosis,category rule: female pelvic inflammatory disease,draft
+GEN019,Endometriosis,GEN,Obstetrics & Gynaecology,diagnosis,category rule: endometriosis,draft
+GEN020,Prolapse of female genital organs,GEN,Obstetrics & Gynaecology,diagnosis,category rule: genital prolapse,draft
+GEN021,Menstrual disorders,GEN,Obstetrics & Gynaecology,diagnosis,category rule: menstrual disorders,draft
+GEN022,Benign ovarian cyst,GEN,Obstetrics & Gynaecology,diagnosis,category rule: ovarian cyst,draft
+GEN023,Menopausal disorders,GEN,Obstetrics & Gynaecology,diagnosis,category rule: menopausal disorders,draft
+GEN024,Female infertility,GEN,Reproductive Medicine,diagnosis,category rule: female infertility,draft
+GEN025,Other specified female genital disorders,GEN,Obstetrics & Gynaecology,diagnosis,category rule: other female genital disorders,draft
+GEN026,Postprocedural or postoperative genitourinary system complication,GEN,Urology,diagnosis,body-system default,draft
+INF001,Tuberculosis,INF,Pulmonology,diagnosis,category rule: tuberculosis: mostly pulmonary,draft
+INF002,Septicemia,INF,Critical Care;General Medicine,diagnosis,category rule: septicaemia,draft
+INF003,Bacterial infections,INF,General Medicine,diagnosis,body-system default,draft
+INF004,Fungal infections,INF,General Medicine,diagnosis,body-system default,draft
+INF005,Foodborne intoxications,INF,General Medicine,diagnosis,body-system default,draft
+INF006,HIV infection,INF,General Medicine,diagnosis,body-system default,draft
+INF007,Hepatitis,INF,Gastroenterology,diagnosis,category rule: viral hepatitis,draft
+INF008,Viral infection,INF,General Medicine,diagnosis,body-system default,draft
+INF009,"Parasitic, other specified and unspecified infections",INF,General Medicine,diagnosis,body-system default,draft
+INF010,Sexually transmitted infections (excluding HIV and hepatitis),INF,General Medicine,diagnosis,body-system default,draft
+INF011,Sequela of specified infectious disease conditions,INF,General Medicine,diagnosis,body-system default,draft
+INF012,Coronavirus disease – 2019 (COVID-19),INF,Pulmonology;General Medicine,diagnosis,category rule: COVID-19,draft
+INJ001,"Fracture of head and neck, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ002,"Fracture of the spine and back, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ003,"Fracture of torso, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ004,"Fracture of the upper limb, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ005,"Fracture of the lower limb (except hip), initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ006,"Fracture of the neck of the femur (hip), initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ007,"Dislocations, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ008,"Traumatic brain injury (TBI); concussion, initial encounter",INJ,Neurosurgery,diagnosis,category rule: traumatic brain injury,draft
+INJ009,"Spinal cord injury (SCI), initial encounter",INJ,Neurosurgery,diagnosis,category rule: spinal cord injury,draft
+INJ010,"Internal organ injury, initial encounter",INJ,Emergency Medicine;Critical Care,diagnosis,category rule: internal organ injury,draft
+INJ011,"Open wounds of head and neck, initial encounter",INJ,Plastic & Reconstructive Surgery;Emergency Medicine,diagnosis,category rule: open wound head/neck,draft
+INJ012,"Open wounds to limbs, initial encounter",INJ,Emergency Medicine,diagnosis,category rule: open wound limbs,draft
+INJ013,"Open wounds of trunk, initial encounter",INJ,Emergency Medicine,diagnosis,category rule: open wound trunk,draft
+INJ014,"Amputation of a limb, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ015,"Amputation of other body parts, initial encounter",INJ,Plastic & Reconstructive Surgery,diagnosis,category rule: amputation of other body parts,draft
+INJ016,"Injury to blood vessels, initial encounter",INJ,Emergency Medicine,diagnosis,category rule: blood vessel injury,draft
+INJ017,"Superficial injury; contusion, initial encounter",INJ,Emergency Medicine,symptom,category rule: superficial injury: weak,draft
+INJ018,"Crushing injury, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ019,"Burn and corrosion, initial encounter",INJ,Plastic & Reconstructive Surgery;Emergency Medicine,diagnosis,category rule: burns,draft
+INJ020,"Effect of foreign body entering opening, initial encounter",INJ,Emergency Medicine;ENT,diagnosis,category rule: foreign body in an opening,draft
+INJ021,"Effect of other external causes, initial encounter",INJ,Emergency Medicine,diagnosis,category rule: other external causes,draft
+INJ022,"Poisoning by drugs, initial encounter",INJ,Emergency Medicine;Critical Care,diagnosis,category rule: drug poisoning,draft
+INJ023,"Toxic effects, initial encounter",INJ,Emergency Medicine;Critical Care,diagnosis,category rule: toxic effects,draft
+INJ024,"Sprains and strains, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ025,"Injury to nerves, muscles and tendons, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ026,Other specified injury,INJ,Emergency Medicine,diagnosis,category rule: other specified injury,draft
+INJ027,Other unspecified injury,INJ,Emergency Medicine,diagnosis,category rule: unspecified injury,draft
+INJ028,"Adverse effects of drugs and medicaments, initial encounter",INJ,General Medicine,diagnosis,category rule: adverse drug effect,draft
+INJ029,"Underdosing of drugs and medicaments, initial encounter",INJ,General Medicine,diagnosis,category rule: underdosing,draft
+INJ030,Drug induced or toxic related condition,INJ,General Medicine,diagnosis,category rule: drug induced condition,draft
+INJ031,Allergic reactions,INJ,Emergency Medicine,diagnosis,category rule: allergic reaction,draft
+INJ032,Maltreatment/abuse,INJ,Emergency Medicine,diagnosis,category rule: maltreatment,draft
+INJ033,"Complication of cardiovascular device, implant or graft, initial encounter",INJ,Cardiology,diagnosis,category rule: cardiovascular device complication,draft
+INJ034,"Complication of genitourinary device, implant or graft, initial encounter",INJ,Urology,diagnosis,category rule: genitourinary device complication,draft
+INJ035,"Complication of internal orthopedic device or implant, initial encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ036,"Complication of transplanted organs or tissue, initial encounter",INJ,Organ Transplant,diagnosis,category rule: transplanted organ complication,draft
+INJ037,"Complication of other surgical or medical care, injury, initial encounter",INJ,General Medicine,diagnosis,category rule: other care complication,draft
+INJ038,"Fracture of head and neck, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ039,"Fracture of the spine and back, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ040,"Fracture of torso, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ041,"Fracture of the upper limb, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ042,"Fracture of lower limb (except hip), subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ043,"Fracture of the neck of the femur (hip), subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ044,"Dislocations, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ045,"Traumatic brain injury (TBI); concussion, subsequent encounter",INJ,Neurosurgery,diagnosis,category rule: traumatic brain injury,draft
+INJ046,"Spinal cord injury (SCI), subsequent encounter",INJ,Neurosurgery,diagnosis,category rule: spinal cord injury,draft
+INJ047,"Internal organ injury, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: internal organ injury,draft
+INJ048,"Open wounds of head and neck, subsequent encounter",INJ,Plastic & Reconstructive Surgery,diagnosis,category rule: open wound head/neck,draft
+INJ049,"Open wounds to limbs, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: open wound limbs,draft
+INJ050,"Open wounds of trunk, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: open wound trunk,draft
+INJ051,"Amputation of a limb, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ052,"Amputation of other body parts, subsequent encounter",INJ,Plastic & Reconstructive Surgery,diagnosis,category rule: amputation of other body parts,draft
+INJ053,"Injury to blood vessels, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: blood vessel injury,draft
+INJ054,"Superficial injury; contusion, subsequent encounter",INJ,Emergency Medicine,symptom,category rule: superficial injury,draft
+INJ055,"Crushing injury, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ056,"Burns and corrosion, subsequent encounter",INJ,Plastic & Reconstructive Surgery,diagnosis,category rule: burns,draft
+INJ057,"Effect of foreign body entering opening, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: foreign body,draft
+INJ058,"Effect of other external causes, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: other external causes,draft
+INJ059,"Poisoning by drugs, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: drug poisoning,draft
+INJ060,"Toxic effects, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: toxic effects,draft
+INJ061,"Sprains and strains, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ062,"Injury to nerves, muscles and tendons, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ063,"Other specified injury, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: other injury,draft
+INJ064,"Other unspecified injuries, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: unspecified injury,draft
+INJ065,"Adverse effects of drugs and medicaments, subsequent encounter",INJ,General Medicine,diagnosis,category rule: adverse drug effect,draft
+INJ066,"Underdosing of drugs and medicaments, subsequent encounter",INJ,General Medicine,diagnosis,category rule: underdosing,draft
+INJ067,"Allergic reactions, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: allergic reaction,draft
+INJ068,"Maltreatment/abuse, subsequent encounter",INJ,Emergency Medicine,diagnosis,category rule: maltreatment,draft
+INJ069,"Complication of cardiovascular device, implant or graft, subsequent encounter",INJ,Cardiology,diagnosis,category rule: cardiovascular device,draft
+INJ070,"Complication of genitourinary device, implant or graft, subsequent encounter",INJ,Urology,diagnosis,category rule: genitourinary device,draft
+INJ071,"Complication of internal orthopedic device or implant, subsequent encounter",INJ,Orthopaedics,diagnosis,body-system default,draft
+INJ072,"Complication of other surgical or medical care, injury, subsequent encounter",INJ,General Medicine,diagnosis,category rule: other care complication,draft
+INJ073,"Injury, sequela",INJ,Emergency Medicine,diagnosis,category rule: injury sequela,draft
+INJ074,"Effect of other external causes, sequela",INJ,Emergency Medicine,diagnosis,category rule: external cause sequela,draft
+INJ075,"Poisoning/toxic effect/adverse effects/underdosing, sequela",INJ,General Medicine,diagnosis,category rule: poisoning sequela,draft
+INJ076,"Complication, sequela",INJ,General Medicine,diagnosis,category rule: complication sequela,draft
+MAL001,Cardiac and circulatory congenital anomalies,MAL,Pediatric Cardiology,diagnosis,category rule: congenital heart disease,draft
+MAL002,Digestive congenital anomalies,MAL,Paediatrics,diagnosis,body-system default,draft
+MAL003,Genitourinary congenital anomalies,MAL,Paediatrics,diagnosis,body-system default,draft
+MAL004,Nervous system congenital anomalies,MAL,Neurosurgery;Paediatrics,diagnosis,category rule: nervous system congenital anomalies,draft
+MAL005,"Congenital malformations of eye, ear, face, neck",MAL,Plastic & Reconstructive Surgery;ENT,diagnosis,category rule: eye/ear/face/neck malformation,draft
+MAL006,Cleft lip or palate,MAL,Plastic & Reconstructive Surgery,diagnosis,category rule: cleft lip or palate,draft
+MAL007,Respiratory congenital malformations,MAL,Paediatrics,diagnosis,body-system default,draft
+MAL008,Musculoskeletal congenital conditions,MAL,Orthopaedics;Paediatrics,diagnosis,category rule: musculoskeletal congenital,draft
+MAL009,Chromosomal abnormalities,MAL,Paediatrics,diagnosis,body-system default,draft
+MAL010,Other specified and unspecified congenital anomalies,MAL,Paediatrics,diagnosis,body-system default,draft
+MBD001,Schizophrenia spectrum and other psychotic disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD002,Depressive disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD003,Bipolar and related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD004,Other specified and unspecified mood disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD005,Anxiety and fear-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD006,Obsessive-compulsive and related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD007,Trauma- and stressor-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD008,"Disruptive, impulse-control and conduct disorders",MBD,Psychiatry,diagnosis,body-system default,draft
+MBD009,Personality disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD010,Feeding and eating disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD011,Somatic disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD012,Suicidal ideation/attempt/intentional self-harm,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD013,Miscellaneous mental and behavioral disorders/conditions,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD014,Neurodevelopmental disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD017,Alcohol-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD018,Opioid-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD019,Cannabis-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD020,Sedative-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD021,Stimulant-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD022,Hallucinogen-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD023,Inhalant-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD024,Tobacco-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD025,Other specified substance-related disorders,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD026,Mental and substance use disorders in remission,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD027,Suicide attempt/intentional self-harm; subsequent encounter,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD028,Opioid-related disorders; subsequent encounter,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD029,Stimulant-related disorders; subsequent encounter,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD030,Cannabis-related disorders; subsequent encounter,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD031,Hallucinogen-related disorders; subsequent encounter,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD032,Sedative-related disorders; subsequent encounter,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD033,Inhalant-related disorders; subsequent encounter,MBD,Psychiatry,diagnosis,body-system default,draft
+MBD034,Mental and substance use disorders; sequela,MBD,Psychiatry,diagnosis,body-system default,draft
+MUS001,Infective arthritis,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS002,Osteomyelitis,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS003,Rheumatoid arthritis and related disease,MUS,General Medicine;Orthopaedics,diagnosis,category rule: rheumatoid arthritis,draft
+MUS004,Juvenile arthritis,MUS,Paediatrics;Orthopaedics,diagnosis,category rule: juvenile arthritis,draft
+MUS005,Other specified chronic arthropathy,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS006,Osteoarthritis,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS007,Other specified joint disorders,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS008,Immune-mediated/reactive arthropathies,MUS,General Medicine;Orthopaedics,diagnosis,category rule: immune-mediated arthropathy,draft
+MUS009,Tendon and synovial disorders,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS010,"Musculoskeletal pain, not low back pain",MUS,Orthopaedics,symptom,category rule: musculoskeletal pain: symptom,draft
+MUS011,Spondylopathies/spondyloarthropathy (including infective),MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS012,Biomechanical lesions,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS013,Osteoporosis,MUS,Endocrinology;Orthopaedics,diagnosis,category rule: osteoporosis,draft
+MUS014,"Pathological fracture, initial encounter",MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS015,"Pathological fracture, subsequent encounter",MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS016,"Stress fracture, initial encounter",MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS017,"Stress fracture, subsequent encounter",MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS018,"Atypical fracture, initial encounter",MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS019,"Atypical fracture, subsequent encounter",MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS020,"Pathological, stress and atypical fractures, sequela",MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS021,Acquired foot deformities,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS022,Scoliosis and other postural dorsopathic deformities,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS023,Acquired deformities (excluding foot),MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS024,Systemic lupus erythematosus and connective tissue disorders,MUS,General Medicine,diagnosis,category rule: lupus and connective tissue disorders,draft
+MUS025,Other specified connective tissue disease,MUS,General Medicine,diagnosis,category rule: other connective tissue disease,draft
+MUS026,Muscle disorders,MUS,Neurology,diagnosis,category rule: muscle disorders,draft
+MUS027,Musculoskeletal abscess,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS028,Other specified bone disease and musculoskeletal deformities,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS029,Disorders of jaw,MUS,Plastic & Reconstructive Surgery,diagnosis,category rule: disorders of jaw,draft
+MUS030,Aseptic necrosis and osteonecrosis,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS031,Traumatic arthropathy,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS032,Neurogenic/neuropathic arthropathy,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS033,Gout,MUS,General Medicine;Orthopaedics,diagnosis,category rule: gout,draft
+MUS034,Crystal arthropathies (excluding gout),MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS035,Osteomalacia,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS036,Autoinflammatory syndromes,MUS,General Medicine,diagnosis,category rule: autoinflammatory syndromes,draft
+MUS037,Postprocedural or postoperative musculoskeletal system complication,MUS,Orthopaedics,diagnosis,body-system default,draft
+MUS038,Low back pain,MUS,Orthopaedics,symptom,category rule: low back pain: symptom,draft
+NEO001,Head and neck cancers - eye,NEO,Oncology,diagnosis,body-system default,draft
+NEO002,Head and neck cancers - lip and oral cavity,NEO,Oncology,diagnosis,body-system default,draft
+NEO003,Head and neck cancers - throat,NEO,Oncology,diagnosis,body-system default,draft
+NEO004,Head and neck cancers - salivary gland,NEO,Oncology,diagnosis,body-system default,draft
+NEO005,Head and neck cancers - nasopharyngeal,NEO,Oncology,diagnosis,body-system default,draft
+NEO006,Head and neck cancers - hypopharyngeal,NEO,Oncology,diagnosis,body-system default,draft
+NEO007,Head and neck cancers - pharyngeal,NEO,Oncology,diagnosis,body-system default,draft
+NEO008,Head and neck cancers - laryngeal,NEO,Oncology,diagnosis,body-system default,draft
+NEO009,Head and neck cancers - tonsils,NEO,Oncology,diagnosis,body-system default,draft
+NEO010,Head and neck cancers - all other types,NEO,Oncology,diagnosis,body-system default,draft
+NEO011,Cardiac cancers,NEO,Oncology,diagnosis,body-system default,draft
+NEO012,Gastrointestinal cancers - esophagus,NEO,Oncology,diagnosis,body-system default,draft
+NEO013,Gastrointestinal cancers - stomach,NEO,Oncology,diagnosis,body-system default,draft
+NEO014,Gastrointestinal cancers - small intestine,NEO,Oncology,diagnosis,body-system default,draft
+NEO015,Gastrointestinal cancers - colorectal,NEO,Oncology,diagnosis,body-system default,draft
+NEO016,Gastrointestinal cancers - anus,NEO,Oncology,diagnosis,body-system default,draft
+NEO017,Gastrointestinal cancers - liver,NEO,Oncology,diagnosis,body-system default,draft
+NEO018,Gastrointestinal cancers - bile duct,NEO,Oncology,diagnosis,body-system default,draft
+NEO019,Gastrointestinal cancers - gallbladder,NEO,Oncology,diagnosis,body-system default,draft
+NEO020,Gastrointestinal cancers - peritoneum,NEO,Oncology,diagnosis,body-system default,draft
+NEO021,Gastrointestinal cancers - all other types,NEO,Oncology,diagnosis,body-system default,draft
+NEO022,Respiratory cancers,NEO,Oncology,diagnosis,body-system default,draft
+NEO023,Bone cancer,NEO,Oncology,diagnosis,body-system default,draft
+NEO024,Sarcoma,NEO,Oncology,diagnosis,body-system default,draft
+NEO025,Skin cancers - melanoma,NEO,Oncology,diagnosis,body-system default,draft
+NEO026,Skin cancers - basal cell carcinoma,NEO,Oncology,diagnosis,body-system default,draft
+NEO027,Skin cancers - squamous cell carcinoma,NEO,Oncology,diagnosis,body-system default,draft
+NEO028,Skin cancers - all other types,NEO,Oncology,diagnosis,body-system default,draft
+NEO029,Breast cancer - ductal carcinoma in situ (DCIS),NEO,Oncology,diagnosis,body-system default,draft
+NEO030,Breast cancer - all other types,NEO,Oncology,diagnosis,body-system default,draft
+NEO031,Female reproductive system cancers - uterus,NEO,Oncology,diagnosis,body-system default,draft
+NEO032,Female reproductive system cancers - cervix,NEO,Oncology,diagnosis,body-system default,draft
+NEO033,Female reproductive system cancers - ovary,NEO,Oncology,diagnosis,body-system default,draft
+NEO034,Female reproductive system cancers - fallopian tube,NEO,Oncology,diagnosis,body-system default,draft
+NEO035,Female reproductive system cancers - endometrium,NEO,Oncology,diagnosis,body-system default,draft
+NEO036,Female reproductive system cancers - vulva,NEO,Oncology,diagnosis,body-system default,draft
+NEO037,Female reproductive system cancers - vagina,NEO,Oncology,diagnosis,body-system default,draft
+NEO038,Female reproductive system cancers - all other types,NEO,Oncology,diagnosis,body-system default,draft
+NEO039,Male reproductive system cancers - prostate,NEO,Oncology,diagnosis,body-system default,draft
+NEO040,Male reproductive system cancers - testis,NEO,Oncology,diagnosis,body-system default,draft
+NEO041,Male reproductive system cancers - penis,NEO,Oncology,diagnosis,body-system default,draft
+NEO042,Male reproductive system cancers - all other types,NEO,Oncology,diagnosis,body-system default,draft
+NEO043,Urinary system cancers - bladder,NEO,Oncology,diagnosis,body-system default,draft
+NEO044,Urinary system cancers - ureter and renal pelvis,NEO,Oncology,diagnosis,body-system default,draft
+NEO045,Urinary system cancers - kidney,NEO,Oncology,diagnosis,body-system default,draft
+NEO046,Urinary system cancers - urethra,NEO,Oncology,diagnosis,body-system default,draft
+NEO047,Urinary system cancers - all other types,NEO,Oncology,diagnosis,body-system default,draft
+NEO048,Nervous system cancers - brain,NEO,Oncology;Neurosurgery,diagnosis,category rule: brain cancer,draft
+NEO049,Nervous system cancers - all other types,NEO,Oncology;Neurosurgery,diagnosis,category rule: other nervous system cancers,draft
+NEO050,Endocrine system cancers - thyroid,NEO,Oncology,diagnosis,body-system default,draft
+NEO051,Endocrine system cancers - pancreas,NEO,Oncology,diagnosis,body-system default,draft
+NEO052,Endocrine system cancers - thymus,NEO,Oncology,diagnosis,body-system default,draft
+NEO053,Endocrine system cancers - adrenocortical,NEO,Oncology,diagnosis,body-system default,draft
+NEO054,Endocrine system cancers - parathyroid,NEO,Oncology,diagnosis,body-system default,draft
+NEO055,Endocrine system cancers - pituitary gland,NEO,Oncology,diagnosis,body-system default,draft
+NEO056,Endocrine system cancers - all other types,NEO,Oncology,diagnosis,body-system default,draft
+NEO057,Hodgkin lymphoma,NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO058,Non-Hodgkin lymphoma,NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO059,Leukemia - acute lymphoblastic leukemia (ALL),NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO060,Leukemia - acute myeloid leukemia (AML),NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO061,Leukemia - chronic lymphocytic leukemia (CLL),NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO062,Leukemia - chronic myeloid leukemia (CML),NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO063,Leukemia - hairy cell,NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO064,Leukemia - all other types,NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO065,Multiple myeloma,NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO066,Malignant neuroendocrine tumors,NEO,Oncology,diagnosis,body-system default,draft
+NEO067,Mesothelioma,NEO,Oncology,diagnosis,body-system default,draft
+NEO068,Myelodysplastic syndrome (MDS),NEO,Hematology & Bone Marrow Transplant;Oncology,diagnosis,category rule: blood cancer,draft
+NEO069,Cancer of other sites,NEO,Oncology,diagnosis,body-system default,draft
+NEO070,Secondary malignancies,NEO,Oncology,diagnosis,body-system default,draft
+NEO071,"Malignant neoplasm, unspecified",NEO,Oncology,diagnosis,body-system default,draft
+NEO072,Neoplasms of unspecified nature or uncertain behavior,NEO,Oncology,diagnosis,body-system default,draft
+NEO073,Benign neoplasms,NEO,Oncology,diagnosis,body-system default,draft
+NEO074,Conditions due to neoplasm or the treatment of neoplasm,NEO,Oncology,diagnosis,body-system default,draft
+NVS001,Meningitis,NVS,Neurology,diagnosis,body-system default,draft
+NVS002,Encephalitis,NVS,Neurology,diagnosis,body-system default,draft
+NVS003,Other specified CNS infection and poliomyelitis,NVS,Neurology,diagnosis,body-system default,draft
+NVS004,Parkinson`s disease,NVS,Neurology,diagnosis,body-system default,draft
+NVS005,Multiple sclerosis,NVS,Neurology,diagnosis,body-system default,draft
+NVS006,Other nervous system disorders (often hereditary or degenerative),NVS,Neurology,diagnosis,body-system default,draft
+NVS007,Cerebral palsy,NVS,Neurology,diagnosis,body-system default,draft
+NVS008,Paralysis (other than cerebral palsy),NVS,Neurology,diagnosis,body-system default,draft
+NVS009,Epilepsy; convulsions,NVS,Neurology,diagnosis,body-system default,draft
+NVS010,Headache; including migraine,NVS,Neurology,diagnosis,body-system default,draft
+NVS011,Neurocognitive disorders,NVS,Neurology,diagnosis,body-system default,draft
+NVS012,Transient cerebral ischemia,NVS,Neurology,diagnosis,body-system default,draft
+NVS013,Coma; stupor; and brain damage,NVS,Neurology,diagnosis,body-system default,draft
+NVS014,CNS abscess,NVS,Neurosurgery;Neurology,diagnosis,category rule: CNS abscess,draft
+NVS015,Polyneuropathies,NVS,Neurology,diagnosis,body-system default,draft
+NVS016,Sleep wake disorders,NVS,Neurology,diagnosis,body-system default,draft
+NVS017,Nerve and nerve root disorders,NVS,Neurology,diagnosis,body-system default,draft
+NVS018,Myopathies,NVS,Neurology,diagnosis,body-system default,draft
+NVS019,Nervous system pain and pain syndromes,NVS,Neurology,symptom,category rule: nervous system pain: symptom,draft
+NVS020,Other nervous system disorders (neither hereditary nor degenerative),NVS,Neurology,diagnosis,body-system default,draft
+NVS021,Postprocedural or postoperative nervous system complication,NVS,Neurosurgery;Neurology,diagnosis,category rule: postoperative nervous system complication,draft
+NVS022,Sequela of specified nervous system conditions,NVS,Neurology,diagnosis,body-system default,draft
+PNL001,Liveborn,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL002,Short gestation; low birth weight; and fetal growth retardation,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL003,Neonatal acidemia and hypoxia,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL004,Neonatal cerebral disorders,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL005,Respiratory distress syndrome,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL006,Respiratory perinatal condition,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL007,Hemolytic jaundice and perinatal jaundice,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL008,Birth trauma,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL009,Perinatal infections,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL010,Newborn affected by maternal conditions or complications of labor/delivery,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL011,Hemorrhagic and hematologic disorders of newborn,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL012,Neonatal digestive and feeding disorders,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL013,Other specified and unspecified perinatal conditions,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL014,Neonatal abstinence syndrome,PNL,Paediatrics,diagnosis,body-system default,draft
+PNL015,Fetal alcohol syndrome,PNL,Paediatrics,diagnosis,body-system default,draft
+PRG001,Antenatal screening,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG002,Gestational weeks,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG003,Spontaneous abortion and complications of spontaneous abortion,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG004,Induced abortion and complications of termination of pregnancy,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG005,Ectopic pregnancy and complications of ectopic pregnancy,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG006,Molar pregnancy and other abnormal products of conception,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG007,Complications following ectopic and/or molar pregnancy,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG008,Supervision of high-risk pregnancy,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG009,"Early, first or unspecified trimester hemorrhage",PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG010,Hemorrhage after first trimester,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG011,Early or threatened labor,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG012,Multiple gestation,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG013,Maternal care related to fetal conditions,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG014,Polyhydramnios and other problems of amniotic cavity,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG015,Obstetric history affecting care in pregnancy,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG016,Previous C-section,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG017,Maternal care for abnormality of pelvic organs,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG018,Maternal care related to disorders of the placenta and placental implantation,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG019,Diabetes or abnormal glucose tolerance complicating pregnancy; childbirth; or the puerperium,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG020,Hypertension and hypertensive-related conditions complicating pregnancy; childbirth; and the puerperium,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG021,Maternal intrauterine infection,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG022,Prolonged pregnancy,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG023,Complications specified during childbirth,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG024,"Malposition, disproportion or other labor complications",PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG025,Anesthesia complications during pregnancy,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG026,OB-related trauma to perineum and vulva,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG027,Complications specified during the puerperium,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG028,Other specified complications in pregnancy,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG029,"Uncomplicated pregnancy, delivery or puerperium",PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+PRG030,Maternal outcome of delivery,PRG,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+RSP001,Sinusitis,RSP,ENT,diagnosis,category rule: sinusitis,draft
+RSP002,Pneumonia (except that caused by tuberculosis),RSP,Pulmonology,diagnosis,body-system default,draft
+RSP003,Influenza,RSP,General Medicine,diagnosis,category rule: influenza,draft
+RSP004,Acute and chronic tonsillitis,RSP,ENT,diagnosis,category rule: tonsillitis,draft
+RSP005,Acute bronchitis,RSP,Pulmonology,diagnosis,body-system default,draft
+RSP006,Other specified upper respiratory infections,RSP,ENT,diagnosis,category rule: upper respiratory infection,draft
+RSP007,Other specified and unspecified upper respiratory disease,RSP,ENT,diagnosis,category rule: other upper respiratory disease,draft
+RSP008,Chronic obstructive pulmonary disease and bronchiectasis,RSP,Pulmonology,diagnosis,body-system default,draft
+RSP009,Asthma,RSP,Pulmonology,diagnosis,body-system default,draft
+RSP010,Aspiration pneumonitis,RSP,Pulmonology,diagnosis,body-system default,draft
+RSP011,"Pleurisy, pleural effusion and pulmonary collapse",RSP,Pulmonology,diagnosis,body-system default,draft
+RSP012,Respiratory failure; insufficiency; arrest,RSP,Critical Care;Pulmonology,diagnosis,category rule: respiratory failure,draft
+RSP013,Lung disease due to external agents,RSP,Pulmonology,diagnosis,body-system default,draft
+RSP014,Pneumothorax,RSP,Pulmonology,diagnosis,body-system default,draft
+RSP015,Mediastinal disorders,RSP,Pulmonology,diagnosis,body-system default,draft
+RSP016,Other specified and unspecified lower respiratory disease,RSP,Pulmonology,diagnosis,body-system default,draft
+RSP017,Postprocedural or postoperative respiratory system complication,RSP,Pulmonology,diagnosis,body-system default,draft
+SKN001,Skin and subcutaneous tissue infections,SKN,Dermatology,diagnosis,body-system default,draft
+SKN002,Other specified inflammatory condition of skin,SKN,Dermatology,diagnosis,body-system default,draft
+SKN003,Pressure ulcer of skin,SKN,Plastic & Reconstructive Surgery;Dermatology,diagnosis,category rule: pressure ulcer,draft
+SKN004,Non-pressure ulcer of skin,SKN,Dermatology,diagnosis,body-system default,draft
+SKN005,Contact dermatitis,SKN,Dermatology,diagnosis,body-system default,draft
+SKN006,Postprocedural or postoperative skin complication,SKN,Dermatology,diagnosis,body-system default,draft
+SKN007,Other specified and unspecified skin disorders,SKN,Dermatology,diagnosis,body-system default,draft
+SYM001,Syncope,SYM,Cardiology;Neurology,symptom,category rule: syncope,draft
+SYM002,Fever,SYM,General Medicine,symptom,category rule: fever,draft
+SYM003,Shock,SYM,Emergency Medicine;Critical Care,symptom,category rule: shock,draft
+SYM004,Nausea and vomiting,SYM,Gastroenterology,symptom,category rule: nausea and vomiting,draft
+SYM005,Dysphagia,SYM,Gastroenterology;ENT,symptom,category rule: dysphagia,draft
+SYM006,Abdominal pain and other digestive/abdomen signs and symptoms,SYM,Gastroenterology,symptom,category rule: abdominal symptoms,draft
+SYM007,Malaise and fatigue,SYM,General Medicine,symptom,category rule: malaise and fatigue,draft
+SYM008,Symptoms of mental and substance use conditions,SYM,Psychiatry,symptom,category rule: mental symptoms,draft
+SYM009,Abnormal findings related to substance use,SYM,Psychiatry,symptom,category rule: substance-use findings,draft
+SYM010,Nervous system signs and symptoms,SYM,Neurology,symptom,category rule: nervous system symptoms,draft
+SYM011,Genitourinary signs and symptoms,SYM,Urology,symptom,category rule: genitourinary symptoms,draft
+SYM012,Circulatory signs and symptoms,SYM,Cardiology,symptom,category rule: circulatory symptoms,draft
+SYM013,Respiratory signs and symptoms,SYM,Pulmonology;ENT,symptom,"category rule: respiratory symptoms (cough, breathlessness, throat pain)",draft
+SYM014,Skin/Subcutaneous signs and symptoms,SYM,Dermatology,symptom,category rule: skin symptoms,draft
+SYM015,General sensation/perception signs and symptoms,SYM,Neurology,symptom,category rule: sensation/perception symptoms,draft
+SYM016,Other general signs and symptoms,SYM,General Medicine,symptom,category rule: other general symptoms,draft
+SYM017,Abnormal findings without diagnosis,SYM,NONE,symptom,category rule: abnormal findings without diagnosis,draft
+XXX000,Code is unacceptable as a principal diagnosis PDX (only used for the inpatient default CCSR),XXX,NONE,diagnosis,not a clinical category,draft
+XXX111,Code is unacceptable as a first-listed diagnosis DX1 (only used for the outpatient default CCSR),XXX,NONE,diagnosis,not a clinical category,draft
+NoDX1,Only used for the default CCSR when the principal or first-listed diagnosis is missing,NoD,NONE,diagnosis,not a clinical category,draft
+InvlDX,Used to indicate the diagnosis was invalid and could not be assigned a CCSR category,Inv,NONE,diagnosis,not a clinical category,draft

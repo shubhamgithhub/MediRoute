@@ -1,0 +1,1087 @@
+{
+  "meta": {
+    "run_id": "20261111_144211_step1_benchmark_ollama",
+    "sets": [
+      "core50",
+      "mediroute",
+      "gretel"
+    ],
+    "limit": 0,
+    "no_llm": false,
+    "started": "2026-11-11T14:42:11",
+    "llm": "ollama:llama3.2",
+    "queries": 346
+  },
+  "by_set": {
+    "core50": {
+      "n": 50,
+      "systems": {
+        "C0_lookup": {
+          "n": 50,
+          "acceptable": 0.84,
+          "acceptable_ci95": [
+            0.715,
+            0.917
+          ],
+          "exact": 0.8,
+          "top3": 0.88,
+          "ndcg3": 0.791,
+          "mrr3": 0.86,
+          "macro_precision": 0.837,
+          "macro_recall": 0.827,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.913,
+          "confidently_wrong": 0.08,
+          "macro_f1": 0.806,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C0_llm": {
+          "n": 50,
+          "acceptable": 0.68,
+          "acceptable_ci95": [
+            0.542,
+            0.792
+          ],
+          "exact": 0.68,
+          "top3": 0.9,
+          "ndcg3": 0.817,
+          "mrr3": 0.863,
+          "macro_precision": 0.83,
+          "macro_recall": 0.743,
+          "asked": 0.3,
+          "answered": 0.7,
+          "precision_when_answered": 0.971,
+          "confidently_wrong": 0.02,
+          "macro_f1": 0.768,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C1_lookup": {
+          "n": 50,
+          "acceptable": 0.84,
+          "acceptable_ci95": [
+            0.715,
+            0.917
+          ],
+          "exact": 0.8,
+          "top3": 0.9,
+          "ndcg3": 0.813,
+          "mrr3": 0.863,
+          "macro_precision": 0.799,
+          "macro_recall": 0.802,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.913,
+          "confidently_wrong": 0.08,
+          "macro_f1": 0.775,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C1_llm": {
+          "n": 50,
+          "acceptable": 0.66,
+          "acceptable_ci95": [
+            0.522,
+            0.776
+          ],
+          "exact": 0.66,
+          "top3": 0.92,
+          "ndcg3": 0.827,
+          "mrr3": 0.873,
+          "macro_precision": 0.79,
+          "macro_recall": 0.709,
+          "asked": 0.32,
+          "answered": 0.68,
+          "precision_when_answered": 0.971,
+          "confidently_wrong": 0.02,
+          "macro_f1": 0.731,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C2_lookup": {
+          "n": 50,
+          "acceptable": 0.84,
+          "acceptable_ci95": [
+            0.715,
+            0.917
+          ],
+          "exact": 0.8,
+          "top3": 0.9,
+          "ndcg3": 0.814,
+          "mrr3": 0.867,
+          "macro_precision": 0.799,
+          "macro_recall": 0.802,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.913,
+          "confidently_wrong": 0.08,
+          "macro_f1": 0.775,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C2_llm": {
+          "n": 50,
+          "acceptable": 0.66,
+          "acceptable_ci95": [
+            0.522,
+            0.776
+          ],
+          "exact": 0.66,
+          "top3": 0.92,
+          "ndcg3": 0.835,
+          "mrr3": 0.873,
+          "macro_precision": 0.79,
+          "macro_recall": 0.709,
+          "asked": 0.32,
+          "answered": 0.68,
+          "precision_when_answered": 0.971,
+          "confidently_wrong": 0.02,
+          "macro_f1": 0.731,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C3_lookup": {
+          "n": 50,
+          "acceptable": 0.86,
+          "acceptable_ci95": [
+            0.738,
+            0.93
+          ],
+          "exact": 0.8,
+          "top3": 0.9,
+          "ndcg3": 0.817,
+          "mrr3": 0.877,
+          "macro_precision": 0.813,
+          "macro_recall": 0.802,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.935,
+          "confidently_wrong": 0.06,
+          "macro_f1": 0.784,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C3_llm": {
+          "n": 50,
+          "acceptable": 0.68,
+          "acceptable_ci95": [
+            0.542,
+            0.792
+          ],
+          "exact": 0.66,
+          "top3": 0.92,
+          "ndcg3": 0.838,
+          "mrr3": 0.883,
+          "macro_precision": 0.784,
+          "macro_recall": 0.709,
+          "asked": 0.3,
+          "answered": 0.7,
+          "precision_when_answered": 0.971,
+          "confidently_wrong": 0.02,
+          "macro_f1": 0.727,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        }
+      },
+      "reference": "C3_llm",
+      "paired": {
+        "C0_lookup": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 9,
+          "p_value": 0.0215
+        },
+        "C0_llm": {
+          "n": 50,
+          "only_ours_right": 2,
+          "only_baseline_right": 2,
+          "p_value": 1.0
+        },
+        "C1_lookup": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 9,
+          "p_value": 0.0215
+        },
+        "C1_llm": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 0,
+          "p_value": 1.0
+        },
+        "C2_lookup": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 9,
+          "p_value": 0.0215
+        },
+        "C2_llm": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 0,
+          "p_value": 1.0
+        },
+        "C3_lookup": {
+          "n": 50,
+          "only_ours_right": 0,
+          "only_baseline_right": 9,
+          "p_value": 0.0039
+        }
+      },
+      "pipeline": {
+        "C0_llm": {
+          "decisions": {
+            "majority": 35,
+            "clarification_required": 15
+          },
+          "clarification_rate": 0.3,
+          "asked_and_right_in_candidates": 0.6,
+          "vague_cases_asked": "5/5",
+          "clear_cases_answered_correctly": "34/45"
+        },
+        "C1_llm": {
+          "decisions": {
+            "majority": 34,
+            "clarification_required": 16
+          },
+          "clarification_rate": 0.32,
+          "asked_and_right_in_candidates": 0.688,
+          "vague_cases_asked": "4/5",
+          "clear_cases_answered_correctly": "32/45"
+        },
+        "C2_llm": {
+          "decisions": {
+            "majority": 34,
+            "clarification_required": 16
+          },
+          "clarification_rate": 0.32,
+          "asked_and_right_in_candidates": 0.75,
+          "vague_cases_asked": "4/5",
+          "clear_cases_answered_correctly": "32/45"
+        },
+        "C3_llm": {
+          "decisions": {
+            "majority": 35,
+            "clarification_required": 15
+          },
+          "clarification_rate": 0.3,
+          "asked_and_right_in_candidates": 0.733,
+          "vague_cases_asked": "4/5",
+          "clear_cases_answered_correctly": "33/45"
+        }
+      },
+      "extraction": {
+        "C0_llm": {
+          "recall": 0.71,
+          "omission_rate": 0.29,
+          "by_kind": {
+            "body_part": "28/45 (62%)",
+            "condition": "32/47 (68%)",
+            "procedure": "28/32 (88%)"
+          },
+          "missed": [
+            "C001 body_part=heart",
+            "C002 body_part=heart",
+            "C004 procedure=surgery",
+            "C005 procedure=tumour removal",
+            "C008 body_part=skin",
+            "C009 body_part=pancreas",
+            "C009 condition=type 1 diabetes",
+            "C010 body_part=blood",
+            "C012 condition=kidney stone",
+            "C013 body_part=heart",
+            "C014 body_part=heart",
+            "C018 body_part=uterus",
+            "C019 body_part=stomach",
+            "C019 condition=obesity",
+            "C020 body_part=lumbar spine",
+            "C021 body_part=heart",
+            "C026 body_part=heart",
+            "C026 condition=ventricular septal defect",
+            "C027 condition=cirrhosis",
+            "C029 body_part=fallopian tubes",
+            "C032 condition=dilated cardiomyopathy",
+            "C034 body_part=oesophagus",
+            "C034 condition=portal hypertension",
+            "C034 procedure=variceal band ligation",
+            "C035 condition=uterine fibroids",
+            "C037 condition=infertility",
+            "C038 body_part=ears",
+            "C038 condition=deafness",
+            "C045 condition=breathlessness",
+            "C046 body_part=speech",
+            "C046 condition=suspected stroke",
+            "C047 condition=suicidal thoughts",
+            "C048 condition=poor weight gain",
+            "C049 body_part=brain",
+            "C050 condition=premature birth (29 weeks)",
+            "C050 procedure=NICU care"
+          ]
+        },
+        "C1_llm": {
+          "recall": 0.71,
+          "omission_rate": 0.29,
+          "by_kind": {
+            "body_part": "28/45 (62%)",
+            "condition": "32/47 (68%)",
+            "procedure": "28/32 (88%)"
+          },
+          "missed": [
+            "C001 body_part=heart",
+            "C002 body_part=heart",
+            "C004 procedure=surgery",
+            "C005 procedure=tumour removal",
+            "C008 body_part=skin",
+            "C009 body_part=pancreas",
+            "C009 condition=type 1 diabetes",
+            "C010 body_part=blood",
+            "C012 condition=kidney stone",
+            "C013 body_part=heart",
+            "C014 body_part=heart",
+            "C018 body_part=uterus",
+            "C019 body_part=stomach",
+            "C019 condition=obesity",
+            "C020 body_part=lumbar spine",
+            "C021 body_part=heart",
+            "C026 body_part=heart",
+            "C026 condition=ventricular septal defect",
+            "C027 condition=cirrhosis",
+            "C029 body_part=fallopian tubes",
+            "C032 condition=dilated cardiomyopathy",
+            "C034 body_part=oesophagus",
+            "C034 condition=portal hypertension",
+            "C034 procedure=variceal band ligation",
+            "C035 condition=uterine fibroids",
+            "C037 condition=infertility",
+            "C038 body_part=ears",
+            "C038 condition=deafness",
+            "C045 condition=breathlessness",
+            "C046 body_part=speech",
+            "C046 condition=suspected stroke",
+            "C047 condition=suicidal thoughts",
+            "C048 condition=poor weight gain",
+            "C049 body_part=brain",
+            "C050 condition=premature birth (29 weeks)",
+            "C050 procedure=NICU care"
+          ]
+        },
+        "C2_llm": {
+          "recall": 0.71,
+          "omission_rate": 0.29,
+          "by_kind": {
+            "body_part": "28/45 (62%)",
+            "condition": "32/47 (68%)",
+            "procedure": "28/32 (88%)"
+          },
+          "missed": [
+            "C001 body_part=heart",
+            "C002 body_part=heart",
+            "C004 procedure=surgery",
+            "C005 procedure=tumour removal",
+            "C008 body_part=skin",
+            "C009 body_part=pancreas",
+            "C009 condition=type 1 diabetes",
+            "C010 body_part=blood",
+            "C012 condition=kidney stone",
+            "C013 body_part=heart",
+            "C014 body_part=heart",
+            "C018 body_part=uterus",
+            "C019 body_part=stomach",
+            "C019 condition=obesity",
+            "C020 body_part=lumbar spine",
+            "C021 body_part=heart",
+            "C026 body_part=heart",
+            "C026 condition=ventricular septal defect",
+            "C027 condition=cirrhosis",
+            "C029 body_part=fallopian tubes",
+            "C032 condition=dilated cardiomyopathy",
+            "C034 body_part=oesophagus",
+            "C034 condition=portal hypertension",
+            "C034 procedure=variceal band ligation",
+            "C035 condition=uterine fibroids",
+            "C037 condition=infertility",
+            "C038 body_part=ears",
+            "C038 condition=deafness",
+            "C045 condition=breathlessness",
+            "C046 body_part=speech",
+            "C046 condition=suspected stroke",
+            "C047 condition=suicidal thoughts",
+            "C048 condition=poor weight gain",
+            "C049 body_part=brain",
+            "C050 condition=premature birth (29 weeks)",
+            "C050 procedure=NICU care"
+          ]
+        },
+        "C3_llm": {
+          "recall": 0.71,
+          "omission_rate": 0.29,
+          "by_kind": {
+            "body_part": "28/45 (62%)",
+            "condition": "32/47 (68%)",
+            "procedure": "28/32 (88%)"
+          },
+          "missed": [
+            "C001 body_part=heart",
+            "C002 body_part=heart",
+            "C004 procedure=surgery",
+            "C005 procedure=tumour removal",
+            "C008 body_part=skin",
+            "C009 body_part=pancreas",
+            "C009 condition=type 1 diabetes",
+            "C010 body_part=blood",
+            "C012 condition=kidney stone",
+            "C013 body_part=heart",
+            "C014 body_part=heart",
+            "C018 body_part=uterus",
+            "C019 body_part=stomach",
+            "C019 condition=obesity",
+            "C020 body_part=lumbar spine",
+            "C021 body_part=heart",
+            "C026 body_part=heart",
+            "C026 condition=ventricular septal defect",
+            "C027 condition=cirrhosis",
+            "C029 body_part=fallopian tubes",
+            "C032 condition=dilated cardiomyopathy",
+            "C034 body_part=oesophagus",
+            "C034 condition=portal hypertension",
+            "C034 procedure=variceal band ligation",
+            "C035 condition=uterine fibroids",
+            "C037 condition=infertility",
+            "C038 body_part=ears",
+            "C038 condition=deafness",
+            "C045 condition=breathlessness",
+            "C046 body_part=speech",
+            "C046 condition=suspected stroke",
+            "C047 condition=suicidal thoughts",
+            "C048 condition=poor weight gain",
+            "C049 body_part=brain",
+            "C050 condition=premature birth (29 weeks)",
+            "C050 procedure=NICU care"
+          ]
+        }
+      },
+      "emergency": {
+        "C0_llm": {
+          "emergencies": 3,
+          "caught": 3,
+          "recall": 1.0,
+          "non_emergencies": 47,
+          "false_alarms": 0,
+          "missed": []
+        },
+        "C1_llm": {
+          "emergencies": 3,
+          "caught": 3,
+          "recall": 1.0,
+          "non_emergencies": 47,
+          "false_alarms": 0,
+          "missed": []
+        },
+        "C2_llm": {
+          "emergencies": 3,
+          "caught": 3,
+          "recall": 1.0,
+          "non_emergencies": 47,
+          "false_alarms": 0,
+          "missed": []
+        },
+        "C3_llm": {
+          "emergencies": 3,
+          "caught": 3,
+          "recall": 1.0,
+          "non_emergencies": 47,
+          "false_alarms": 0,
+          "missed": []
+        }
+      }
+    },
+    "mediroute": {
+      "n": 84,
+      "systems": {
+        "C0_lookup": {
+          "n": 84,
+          "acceptable": 0.905,
+          "acceptable_ci95": [
+            0.823,
+            0.951
+          ],
+          "exact": 0.786,
+          "top3": 0.988,
+          "ndcg3": 0.838,
+          "mrr3": 0.942,
+          "macro_precision": 0.806,
+          "macro_recall": 0.779,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.905,
+          "confidently_wrong": 0.095,
+          "macro_f1": 0.774,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C0_llm": {
+          "n": 84,
+          "acceptable": 0.667,
+          "acceptable_ci95": [
+            0.561,
+            0.758
+          ],
+          "exact": 0.643,
+          "top3": 0.988,
+          "ndcg3": 0.861,
+          "mrr3": 0.937,
+          "macro_precision": 0.814,
+          "macro_recall": 0.628,
+          "asked": 0.321,
+          "answered": 0.679,
+          "precision_when_answered": 0.982,
+          "confidently_wrong": 0.012,
+          "macro_f1": 0.695,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C1_lookup": {
+          "n": 84,
+          "acceptable": 0.905,
+          "acceptable_ci95": [
+            0.823,
+            0.951
+          ],
+          "exact": 0.774,
+          "top3": 0.988,
+          "ndcg3": 0.853,
+          "mrr3": 0.94,
+          "macro_precision": 0.777,
+          "macro_recall": 0.772,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.905,
+          "confidently_wrong": 0.095,
+          "macro_f1": 0.764,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C1_llm": {
+          "n": 84,
+          "acceptable": 0.655,
+          "acceptable_ci95": [
+            0.548,
+            0.748
+          ],
+          "exact": 0.631,
+          "top3": 0.976,
+          "ndcg3": 0.855,
+          "mrr3": 0.933,
+          "macro_precision": 0.811,
+          "macro_recall": 0.622,
+          "asked": 0.333,
+          "answered": 0.667,
+          "precision_when_answered": 0.982,
+          "confidently_wrong": 0.012,
+          "macro_f1": 0.691,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C2_lookup": {
+          "n": 84,
+          "acceptable": 0.905,
+          "acceptable_ci95": [
+            0.823,
+            0.951
+          ],
+          "exact": 0.798,
+          "top3": 0.988,
+          "ndcg3": 0.854,
+          "mrr3": 0.94,
+          "macro_precision": 0.793,
+          "macro_recall": 0.795,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.905,
+          "confidently_wrong": 0.095,
+          "macro_f1": 0.784,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C2_llm": {
+          "n": 84,
+          "acceptable": 0.679,
+          "acceptable_ci95": [
+            0.573,
+            0.769
+          ],
+          "exact": 0.655,
+          "top3": 0.976,
+          "ndcg3": 0.858,
+          "mrr3": 0.933,
+          "macro_precision": 0.811,
+          "macro_recall": 0.644,
+          "asked": 0.31,
+          "answered": 0.69,
+          "precision_when_answered": 0.983,
+          "confidently_wrong": 0.012,
+          "macro_f1": 0.704,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C3_lookup": {
+          "n": 84,
+          "acceptable": 0.952,
+          "acceptable_ci95": [
+            0.884,
+            0.981
+          ],
+          "exact": 0.845,
+          "top3": 0.988,
+          "ndcg3": 0.872,
+          "mrr3": 0.97,
+          "macro_precision": 0.849,
+          "macro_recall": 0.84,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.952,
+          "confidently_wrong": 0.048,
+          "macro_f1": 0.835,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C3_llm": {
+          "n": 84,
+          "acceptable": 0.702,
+          "acceptable_ci95": [
+            0.598,
+            0.79
+          ],
+          "exact": 0.679,
+          "top3": 1.0,
+          "ndcg3": 0.886,
+          "mrr3": 0.97,
+          "macro_precision": 0.853,
+          "macro_recall": 0.667,
+          "asked": 0.286,
+          "answered": 0.714,
+          "precision_when_answered": 0.983,
+          "confidently_wrong": 0.012,
+          "macro_f1": 0.73,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        }
+      },
+      "reference": "C3_llm",
+      "paired": {
+        "C0_lookup": {
+          "n": 84,
+          "only_ours_right": 2,
+          "only_baseline_right": 19,
+          "p_value": 0.0002
+        },
+        "C0_llm": {
+          "n": 84,
+          "only_ours_right": 3,
+          "only_baseline_right": 0,
+          "p_value": 0.25
+        },
+        "C1_lookup": {
+          "n": 84,
+          "only_ours_right": 2,
+          "only_baseline_right": 19,
+          "p_value": 0.0002
+        },
+        "C1_llm": {
+          "n": 84,
+          "only_ours_right": 4,
+          "only_baseline_right": 0,
+          "p_value": 0.125
+        },
+        "C2_lookup": {
+          "n": 84,
+          "only_ours_right": 2,
+          "only_baseline_right": 19,
+          "p_value": 0.0002
+        },
+        "C2_llm": {
+          "n": 84,
+          "only_ours_right": 2,
+          "only_baseline_right": 0,
+          "p_value": 0.5
+        },
+        "C3_lookup": {
+          "n": 84,
+          "only_ours_right": 0,
+          "only_baseline_right": 21,
+          "p_value": 0.0
+        }
+      },
+      "pipeline": {
+        "C0_llm": {
+          "decisions": {
+            "majority": 57,
+            "clarification_required": 27
+          },
+          "clarification_rate": 0.321,
+          "asked_and_right_in_candidates": 0.963
+        },
+        "C1_llm": {
+          "decisions": {
+            "majority": 56,
+            "clarification_required": 28
+          },
+          "clarification_rate": 0.333,
+          "asked_and_right_in_candidates": 0.929
+        },
+        "C2_llm": {
+          "decisions": {
+            "majority": 58,
+            "clarification_required": 26
+          },
+          "clarification_rate": 0.31,
+          "asked_and_right_in_candidates": 0.923
+        },
+        "C3_llm": {
+          "decisions": {
+            "majority": 60,
+            "clarification_required": 24
+          },
+          "clarification_rate": 0.286,
+          "asked_and_right_in_candidates": 1.0
+        }
+      },
+      "extraction": {
+        "C0_llm": {},
+        "C1_llm": {},
+        "C2_llm": {},
+        "C3_llm": {}
+      },
+      "emergency": {
+        "C0_llm": {},
+        "C1_llm": {},
+        "C2_llm": {},
+        "C3_llm": {}
+      }
+    },
+    "gretel": {
+      "n": 212,
+      "systems": {
+        "C0_lookup": {
+          "n": 212,
+          "acceptable": 0.561,
+          "acceptable_ci95": [
+            0.494,
+            0.626
+          ],
+          "exact": 0.453,
+          "top3": 0.708,
+          "ndcg3": 0.475,
+          "mrr3": 0.628,
+          "macro_precision": 0.586,
+          "macro_recall": 0.487,
+          "asked": null,
+          "answered": 0.991,
+          "precision_when_answered": 0.567,
+          "confidently_wrong": 0.429,
+          "macro_f1": 0.468,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C0_llm": {
+          "n": 212,
+          "acceptable": 0.344,
+          "acceptable_ci95": [
+            0.284,
+            0.411
+          ],
+          "exact": 0.288,
+          "top3": 0.92,
+          "ndcg3": 0.655,
+          "mrr3": 0.73,
+          "macro_precision": 0.51,
+          "macro_recall": 0.28,
+          "asked": 0.585,
+          "answered": 0.415,
+          "precision_when_answered": 0.83,
+          "confidently_wrong": 0.071,
+          "macro_f1": 0.318,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C1_lookup": {
+          "n": 212,
+          "acceptable": 0.575,
+          "acceptable_ci95": [
+            0.508,
+            0.64
+          ],
+          "exact": 0.439,
+          "top3": 0.736,
+          "ndcg3": 0.481,
+          "mrr3": 0.645,
+          "macro_precision": 0.626,
+          "macro_recall": 0.482,
+          "asked": null,
+          "answered": 0.991,
+          "precision_when_answered": 0.581,
+          "confidently_wrong": 0.415,
+          "macro_f1": 0.47,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C1_llm": {
+          "n": 212,
+          "acceptable": 0.363,
+          "acceptable_ci95": [
+            0.301,
+            0.43
+          ],
+          "exact": 0.302,
+          "top3": 0.91,
+          "ndcg3": 0.65,
+          "mrr3": 0.731,
+          "macro_precision": 0.516,
+          "macro_recall": 0.309,
+          "asked": 0.552,
+          "answered": 0.448,
+          "precision_when_answered": 0.811,
+          "confidently_wrong": 0.085,
+          "macro_f1": 0.343,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C2_lookup": {
+          "n": 212,
+          "acceptable": 0.575,
+          "acceptable_ci95": [
+            0.508,
+            0.64
+          ],
+          "exact": 0.443,
+          "top3": 0.745,
+          "ndcg3": 0.49,
+          "mrr3": 0.653,
+          "macro_precision": 0.618,
+          "macro_recall": 0.487,
+          "asked": null,
+          "answered": 0.991,
+          "precision_when_answered": 0.581,
+          "confidently_wrong": 0.415,
+          "macro_f1": 0.471,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C2_llm": {
+          "n": 212,
+          "acceptable": 0.373,
+          "acceptable_ci95": [
+            0.31,
+            0.439
+          ],
+          "exact": 0.307,
+          "top3": 0.915,
+          "ndcg3": 0.66,
+          "mrr3": 0.733,
+          "macro_precision": 0.502,
+          "macro_recall": 0.314,
+          "asked": 0.538,
+          "answered": 0.462,
+          "precision_when_answered": 0.806,
+          "confidently_wrong": 0.09,
+          "macro_f1": 0.342,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C3_lookup": {
+          "n": 212,
+          "acceptable": 0.571,
+          "acceptable_ci95": [
+            0.503,
+            0.636
+          ],
+          "exact": 0.434,
+          "top3": 0.75,
+          "ndcg3": 0.491,
+          "mrr3": 0.653,
+          "macro_precision": 0.595,
+          "macro_recall": 0.483,
+          "asked": null,
+          "answered": 0.991,
+          "precision_when_answered": 0.576,
+          "confidently_wrong": 0.42,
+          "macro_f1": 0.465,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "C3_llm": {
+          "n": 212,
+          "acceptable": 0.368,
+          "acceptable_ci95": [
+            0.306,
+            0.435
+          ],
+          "exact": 0.292,
+          "top3": 0.92,
+          "ndcg3": 0.659,
+          "mrr3": 0.733,
+          "macro_precision": 0.425,
+          "macro_recall": 0.298,
+          "asked": 0.519,
+          "answered": 0.481,
+          "precision_when_answered": 0.765,
+          "confidently_wrong": 0.113,
+          "macro_f1": 0.323,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        }
+      },
+      "reference": "C3_llm",
+      "paired": {
+        "C0_lookup": {
+          "n": 212,
+          "only_ours_right": 8,
+          "only_baseline_right": 49,
+          "p_value": 0.0
+        },
+        "C0_llm": {
+          "n": 212,
+          "only_ours_right": 8,
+          "only_baseline_right": 3,
+          "p_value": 0.2266
+        },
+        "C1_lookup": {
+          "n": 212,
+          "only_ours_right": 6,
+          "only_baseline_right": 50,
+          "p_value": 0.0
+        },
+        "C1_llm": {
+          "n": 212,
+          "only_ours_right": 6,
+          "only_baseline_right": 5,
+          "p_value": 1.0
+        },
+        "C2_lookup": {
+          "n": 212,
+          "only_ours_right": 3,
+          "only_baseline_right": 47,
+          "p_value": 0.0
+        },
+        "C2_llm": {
+          "n": 212,
+          "only_ours_right": 3,
+          "only_baseline_right": 4,
+          "p_value": 1.0
+        },
+        "C3_lookup": {
+          "n": 212,
+          "only_ours_right": 0,
+          "only_baseline_right": 43,
+          "p_value": 0.0
+        }
+      },
+      "pipeline": {
+        "C0_llm": {
+          "decisions": {
+            "majority": 88,
+            "clarification_required": 124
+          },
+          "clarification_rate": 0.585,
+          "asked_and_right_in_candidates": 0.758
+        },
+        "C1_llm": {
+          "decisions": {
+            "majority": 95,
+            "clarification_required": 117
+          },
+          "clarification_rate": 0.552,
+          "asked_and_right_in_candidates": 0.752
+        },
+        "C2_llm": {
+          "decisions": {
+            "majority": 98,
+            "clarification_required": 114
+          },
+          "clarification_rate": 0.538,
+          "asked_and_right_in_candidates": 0.781
+        },
+        "C3_llm": {
+          "decisions": {
+            "majority": 102,
+            "clarification_required": 110
+          },
+          "clarification_rate": 0.519,
+          "asked_and_right_in_candidates": 0.791
+        }
+      },
+      "extraction": {
+        "C0_llm": {},
+        "C1_llm": {},
+        "C2_llm": {},
+        "C3_llm": {}
+      },
+      "emergency": {
+        "C0_llm": {},
+        "C1_llm": {},
+        "C2_llm": {},
+        "C3_llm": {}
+      }
+    }
+  },
+  "ceiling": {
+    "C0": {
+      "core50|n": 50,
+      "core50|acc": 42,
+      "core50|wrong": 1,
+      "core50|both wrong": 2,
+      "mediroute|n": 84,
+      "mediroute|acc": 75,
+      "mediroute|wrong": 1,
+      "mediroute|both wrong": 4,
+      "gretel|n": 212,
+      "gretel|acc": 179,
+      "gretel|wrong": 15,
+      "gretel|both wrong": 16
+    },
+    "C1": {
+      "core50|n": 50,
+      "core50|acc": 43,
+      "core50|wrong": 1,
+      "core50|both wrong": 1,
+      "mediroute|n": 84,
+      "mediroute|acc": 75,
+      "mediroute|wrong": 1,
+      "mediroute|both wrong": 4,
+      "gretel|n": 212,
+      "gretel|acc": 175,
+      "gretel|wrong": 18,
+      "gretel|both wrong": 17
+    },
+    "C2": {
+      "core50|n": 50,
+      "core50|acc": 43,
+      "core50|wrong": 1,
+      "core50|both wrong": 1,
+      "mediroute|n": 84,
+      "mediroute|acc": 75,
+      "mediroute|wrong": 1,
+      "mediroute|both wrong": 4,
+      "gretel|n": 212,
+      "gretel|acc": 174,
+      "gretel|wrong": 19,
+      "gretel|both wrong": 17
+    },
+    "C3": {
+      "core50|n": 50,
+      "core50|acc": 43,
+      "core50|wrong": 1,
+      "core50|both wrong": 1,
+      "mediroute|n": 84,
+      "mediroute|acc": 77,
+      "mediroute|wrong": 1,
+      "mediroute|both wrong": 2,
+      "gretel|n": 212,
+      "gretel|acc": 173,
+      "gretel|wrong": 24,
+      "gretel|both wrong": 13
+    }
+  }
+}

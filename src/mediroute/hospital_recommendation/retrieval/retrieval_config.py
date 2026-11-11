@@ -1,13 +1,7 @@
 from pathlib import Path
 
 
-from mediroute.utils.paths import PROJECT_ROOT  # noqa: E402
-
-VECTOR_STORE_DIR = (
-    PROJECT_ROOT
-    / "data"
-    / "vector_store"
-)
+from mediroute.utils.paths import VECTOR_STORE_DIR  # noqa: E402  (data/processed/vector_store)
 
 EMBEDDING_DATASET_FILE = (
     VECTOR_STORE_DIR

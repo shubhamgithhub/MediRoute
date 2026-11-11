@@ -1,0 +1,8 @@
+{
+  "started": "2026-11-11T22:21:31",
+  "n": 100,
+  "spacing": 15.0,
+  "llm": "openai/gpt-6-luna (OpenRouter), pinned",
+  "judge": "openai/gpt-6-luna (OpenRouter)",
+  "base": "http://127.0.0.1:8000"
+}

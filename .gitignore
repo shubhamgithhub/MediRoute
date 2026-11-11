@@ -34,4 +34,4 @@ docs/base/capstone_guidelines.pdf
 
 # Step 1: regenerable inputs/caches (see README §4)
 data/raw/icd10cm_2026/
-data/vector_store/step1_lookup_embeddings_*.npy
+data/processed/vector_store/step1_lookup_embeddings_*.npy

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 2 Design v2</title>
+<style>
+/* Tabbed design note; AI steps purple, code steps green, data grey (same legend as the Step 1 figure) */
+:root { --bg:#f7f8f6; --card:#fff; --fg:#1b2321; --muted:#5d6b68; --line:#d8e0de; --head:#e6f0ee;
+  --ai:#7a5af5; --ai-bg:#eee8fb; --code:#3a9a5b; --code-bg:#e7f5ec; --data:#8a8f8e; --data-bg:#eef0f1;
+  --accent:#0d7c74; --good:#1d7a3a; --good-bg:#e3f3e8; --bad:#b3261e; --bad-bg:#fbe6e4; --warn:#8a6100; --warn-bg:#fbf1db; }
+@media (prefers-color-scheme: dark) { :root { --bg:#121716; --card:#1b2321; --fg:#e4ebe9; --muted:#9aaba7; --line:#2f3b39; --head:#1f3330;
+  --ai:#a690ff; --ai-bg:#2a2447; --code:#6fd08c; --code-bg:#17331f; --data:#9aa09f; --data-bg:#262c2b; --accent:#4fc2b6;
+  --good:#6fd08c; --good-bg:#17331f; --bad:#f0857b; --bad-bg:#3d1d1a; --warn:#e2b04f; --warn-bg:#3a2e14; color-scheme:dark; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 "Segoe UI",system-ui,Arial,sans-serif; padding:28px max(16px,3vw) 60px; }
+main { max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:18px; }
+h1 { margin:0; font-size:1.8rem; } h2 { margin:0 0 8px; font-size:1.2rem; } h3 { margin:16px 0 6px; font-size:1rem; }
+p { margin:0 0 10px; max-width:82ch; } .muted { color:var(--muted); font-size:.9rem; }
+code { font-family:Consolas,monospace; font-size:.85em; background:var(--data-bg); padding:1px 5px; border-radius:4px; }
+.legend { display:flex; gap:14px; flex-wrap:wrap; font-size:.85rem; margin-top:8px; }
+.legend span { display:inline-flex; align-items:center; gap:6px; } .legend i { width:12px; height:12px; border-radius:3px; display:inline-block; }
+/* tabs */
+.tabs { display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:8px; position:sticky; top:0; background:var(--bg); z-index:2; padding-top:6px; }
+.tabs button { font:inherit; font-size:.9rem; padding:7px 14px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--fg); cursor:pointer; }
+.tabs button[aria-selected="true"] { background:var(--accent); border-color:var(--accent); color:var(--card); }
+.tabs button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; }
+/* flow */
+.lane-title { font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:6px 0; }
+.flow { display:flex; flex-direction:column; gap:6px; }
+.step { display:grid; grid-template-columns:44px 1fr; gap:12px; align-items:start; border-radius:10px; padding:10px 12px; border:1.5px solid; }
+.step.ai { background:var(--ai-bg); border-color:var(--ai); } .step.code { background:var(--code-bg); border-color:var(--code); } .step.data { background:var(--data-bg); border-color:var(--data); }
+.badge { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--card); }
+.ai .badge { background:var(--ai); } .code .badge { background:var(--code); } .data .badge { background:var(--data); }
+.step b { display:block; } .step small { color:var(--muted); }
+.arrow { text-align:center; color:var(--muted); line-height:1; }
+.two { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
+/* tables */
+.scroll { overflow-x:auto; } table { width:100%; border-collapse:collapse; font-size:.9rem; font-variant-numeric:tabular-nums; }
+th, td { padding:7px 9px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:var(--head); font-size:.82rem; } tr.win td { background:var(--good-bg); font-weight:600; }
+td.n { text-align:right; white-space:nowrap; }
+pre { background:var(--data-bg); border-radius:8px; padding:10px 12px; overflow-x:auto; font-size:.82rem; margin:6px 0; }
+.ex { border-left:4px solid var(--accent); padding:8px 12px; background:var(--bg); border-radius:0 8px 8px 0; margin:8px 0; }
+.tag { display:inline-block; font-size:.72rem; font-weight:600; padding:1px 8px; border-radius:999px; white-space:nowrap; }
+.t-ai { background:var(--ai-bg); color:var(--ai); } .t-code { background:var(--code-bg); color:var(--code); }
+.t-bad { background:var(--bad-bg); color:var(--bad); } .t-good { background:var(--good-bg); color:var(--good); } .t-warn { background:var(--warn-bg); color:var(--warn); }
+ol, ul { margin:0; padding-left:20px; } li { margin-bottom:5px; }
+</style></head><body><main>
+
+<header>
+  <h1>Step 2 design v2: from speciality to the right hospitals</h1>
+  <p class="muted">Draft for discussion · 11 Nov 2026 · goals: <b>accurate results</b>, <b>visible use of AI</b> where it beats rules, <b>less maintenance</b>.</p>
+  <div class="legend"><span><i style="background:var(--ai)"></i>AI (LLM) step</span><span><i style="background:var(--code)"></i>code step (exact, auditable)</span><span><i style="background:var(--data)"></i>data</span></div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Design sections">
+  <button role="tab" id="t-current" aria-selected="true" data-tab="current">1 · Today</button>
+  <button role="tab" id="t-gaps" aria-selected="false" data-tab="gaps">2 · What it lacks</button>
+  <button role="tab" id="t-design" aria-selected="false" data-tab="design">3 · New design</button>
+  <button role="tab" id="t-example" aria-selected="false" data-tab="example">4 · Example</button>
+  <button role="tab" id="t-better" aria-selected="false" data-tab="better">5 · Why better</button>
+  <button role="tab" id="t-weights" aria-selected="false" data-tab="weights">6 · Weights</button>
+  <button role="tab" id="t-plan" aria-selected="false" data-tab="plan">7 · Proof &amp; decisions</button>
+</nav>
+
+<!-- 1 TODAY -->
+<section class="panel" data-panel="current">
+  <h2>What Step 2 does today</h2>
+  <p>Built by Shubham; data unified on 11 Nov (one hospital table, one speciality list, search areas). Code: <code>hospital_recommendation/engine.py</code>, <code>ranking/hospital_reranker.py</code>.</p>
+  <div class="flow">
+    <div class="step data"><div class="badge">⌂</div><div><b>From Step 1</b><small>speciality, procedures, location</small></div></div>
+    <div class="arrow">↓</div>
+    <div class="step code"><div class="badge">1</div><div><b>Speciality filter</b><small>hospital lists the speciality: website-verified or team-listed (labels mapped by <code>specialty_mapping.csv</code>)</small></div></div>
+    <div class="arrow">↓</div>
+    <div class="step code"><div class="badge">2</div><div><b>Location filter (hard)</b><small>city / search area (Delhi NCR) / state; nothing found → "no location match" and ask</small></div></div>
+    <div class="arrow">↓</div>
+    <div class="step ai"><div class="badge">3</div><div><b>Semantic search (FAISS, MiniLM)</b><small>the patient's need vs one generic text profile per hospital; keeps 3 × top-K</small></div></div>
+    <div class="arrow">↓</div>
+    <div class="step code"><div class="badge">4</div><div><b>Fixed bonuses, capped at +0.20</b><small>speciality on website +0.04 · procedure word match +0.04 each (max 0.08) · verified +0.03 · NABH +0.02 · JCI +0.02 · international desk +0.02 · evidence quality ≤ +0.03</small></div></div>
+    <div class="arrow">↓</div>
+    <div class="step data"><div class="badge">⌂</div><div><b>Top 5 hospitals</b><small>with the bonus labels as reasons</small></div></div>
+  </div>
+  <p class="muted" style="margin-top:10px">It works end to end (11 workflow scenarios pass), but the ranking is mostly text similarity plus constants nobody has tested.</p>
+</section>
+
+<!-- 2 GAPS -->
+<section class="panel" data-panel="gaps" hidden>
+  <h2>What it lacks</h2>
+  <div class="scroll"><table>
+    <tr><th>Gap</th><th>Why it matters</th><th>Evidence</th></tr>
+    <tr><td><b>Ranking is text similarity</b> to a generic hospital profile</td><td>Similar wording ≠ able to treat; a long, glossy profile wins</td><td>Semantic score is the main term; bonuses ≤ 0.20</td></tr>
+    <tr><td><b>No capability judgement</b> for the patient's procedure</td><td>"Valve replacement" vs "TAVR" needs a synonym someone wrote by hand</td><td>Hand-coded synonym list in the reranker</td></tr>
+    <tr><td><b>Location is a hard filter</b></td><td>A far hospital that does the procedure is never shown; small cities return nothing</td><td>89% of speciality × area pairs leave ≤ 5 hospitals; Mumbai has 2 for cardiac surgery</td></tr>
+    <tr><td><b>Bonus values are untested constants</b></td><td>We cannot defend +0.04 vs +0.03</td><td>No weight source, no sensitivity test</td></tr>
+    <tr><td><b>Procedures are unverified</b> team-sheet data</td><td>Every procedure claim is a guess; 51 hospitals have none</td><td>150 of 201 hospitals have team-sheet procedures only</td></tr>
+    <tr><td><b>Department-name rules maintained by hand</b></td><td>Every new hospital label needs a new row</td><td>267 rules in <code>specialty_mapping.csv</code></td></tr>
+    <tr><td><b>Reasons are bonus labels</b></td><td>No real "why this hospital for you"</td><td>"NABH accredited", "International patient services"</td></tr>
+    <tr><td><b>Not evaluated</b></td><td>No numbers to show it works</td><td>Gold set and grading being prepared (step2_evaluation_design.md)</td></tr>
+  </table></div>
+</section>
+
+<!-- 3 NEW DESIGN -->
+<section class="panel" data-panel="design" hidden>
+  <h2>The new design</h2>
+  <p><b>AI reads and judges messy text; code decides and checks.</b> Same pattern as Step 1 (portal benchmark: 85% correct, 4% confidently wrong, ~3 s).</p>
+  <div class="two">
+    <div>
+      <div class="lane-title">Offline · when hospital data is refreshed</div>
+      <div class="flow">
+        <div class="step data"><div class="badge">⌂</div><div><b>Hospital websites + NABH / JCI directories</b><small>201 verified hospitals</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step ai"><div class="badge">1</div><div><b>AI extracts facts from each website</b><small>specialities, procedures, international desk, languages, beds — each with the exact quote and URL</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step code"><div class="badge">2</div><div><b>Code verifies every quote is on the page</b><small>unverifiable facts are dropped or marked "team list, not verified"</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step ai"><div class="badge">3</div><div><b>AI maps department names → 26 specialities</b><small>with confidence; low confidence → short review queue</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step data"><div class="badge">⌂</div><div><b>hospitals.csv</b><small>every field with source and "as of" date</small></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="lane-title">Runtime · every patient request</div>
+      <div class="flow">
+        <div class="step data"><div class="badge">⌂</div><div><b>From Step 1</b><small>speciality + procedure · location · optional priority</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step code"><div class="badge">A</div><div><b>Eligibility</b><small>lists the speciality</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step code"><div class="badge">B</div><div><b>Location tiers</b><small>area → state → anywhere; widen if too few, and say so</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step ai"><div class="badge">C</div><div><b>AI capability judge</b><small>exact / related / speciality only; cites the field; code checks</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step code"><div class="badge">D</div><div><b>Criteria 0–1</b><small>capability · quality · evidence · international care · location (· cost)</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step code"><div class="badge">E</div><div><b>TOPSIS + AHP weights</b><small>expert weights; priority presets</small></div></div>
+        <div class="arrow">↓</div>
+        <div class="step ai"><div class="badge">F</div><div><b>AI explanation</b><small>verified facts only; template fallback</small></div></div>
+      </div>
+    </div>
+  </div>
+  <h3 style="margin-top:20px">No treatment advice: rules for every step</h3>
+  <p>MediRoute uses only what the patient or their doctor already said, to find hospitals that can provide it. It never decides what treatment the patient needs.</p>
+  <div class="scroll"><table>
+    <tr><th>Rule</th><th>Where it is enforced</th></tr>
+    <tr><td>Procedures come only from the patient's text or report, never inferred ("aortic stenosis" alone gives no procedure)</td><td>Step 1 evidence check (<code>verify_phrase</code>): a phrase not in the text is dropped</td></tr>
+    <tr><td>No procedure mentioned → rank by speciality, quality and location only</td><td>Capability = "speciality only" for every hospital</td></tr>
+    <tr><td>The capability judge only says whether a hospital's list covers what the patient asked for; it never prefers one treatment over another</td><td>Judge prompt + closed output (exact / related / speciality only)</td></tr>
+    <tr><td>A "related" match is shown as "related procedure listed, confirm with the hospital", never as the same thing</td><td>Explanation templates</td></tr>
+    <tr><td>Fixed wording: "the procedure you mentioned"; never "you need", "best for you", "recommended for you"</td><td>Explanation check (code) + template fallback</td></tr>
+    <tr><td>Disclaimer on every result: not a diagnosis or medical advice; a doctor at the hospital confirms any treatment plan</td><td>Response (as Step 1)</td></tr>
+  </table></div>
+</section>
+
+<!-- 4 EXAMPLE -->
+<section class="panel" data-panel="example" hidden>
+  <h2>Worked example (real hospitals from hospitals.csv)</h2>
+  <div class="ex"><b>Patient:</b> "My father, 67, has severe aortic stenosis. His cardiologist recommends valve replacement (TAVR). We prefer Mumbai."<br>
+  <b>Step 1:</b> Cardiothoracic Surgery · procedure: valve replacement (TAVR) · location: Mumbai · no budget</div>
+
+  <h3>A + B · Eligibility and location tiers <span class="tag t-code">code</span></h3>
+  <p>Only <b>2</b> of 17 Mumbai-area hospitals list cardiothoracic surgery, so the search widens to Maharashtra and says so. Today's engine stops at the 2.</p>
+  <div class="scroll"><table>
+    <tr><th>Hospital</th><th>City</th><th>Speciality listed</th><th>Procedures (source)</th><th>NABH / JCI</th><th>Intl. desk</th></tr>
+    <tr><td>H053 Sir H. N. Reliance Foundation</td><td>Mumbai</td><td>team list</td><td>TAVR, Robotic CABG … (team)</td><td>✓ / ✓</td><td>Available</td></tr>
+    <tr><td>H054 Nanavati Max</td><td>Mumbai</td><td>team list</td><td>TAVR, Robotic Knee Replacement … (team)</td><td>✓ / –</td><td>Not found</td></tr>
+    <tr><td>H063 Max Super Speciality</td><td>Nagpur</td><td>website ✓</td><td>Coronary Angioplasty … (team)</td><td>✓ / ✓</td><td>Available</td></tr>
+    <tr><td>H072 Sahyadri Super Speciality</td><td>Pune</td><td>website ✓</td><td>none listed</td><td>✓ / –</td><td>Available</td></tr>
+  </table></div>
+
+  <h3>C · AI capability judge <span class="tag t-ai">AI</span> <span class="tag t-code">code checks</span></h3>
+<pre>H053  {"level": "exact", "field": "procedures", "quote": "TAVR",
+       "reason": "TAVR is transcatheter aortic valve replacement"}        check: "TAVR" in procedures ✓ → exact
+H063  {"level": "speciality_only", "field": "verified_specialties",
+       "quote": "Cardiothoracic Surgery", "reason": "angioplasty is not valve replacement"}   ✓ → speciality only</pre>
+
+  <h3>D · Criteria 0–1 <span class="tag t-code">code</span></h3>
+  <div class="scroll"><table>
+    <tr><th>Hospital</th><th>Capability</th><th>Quality</th><th>Evidence</th><th>Intl. care</th><th>Location</th></tr>
+    <tr><td>H053 Reliance, Mumbai</td><td class="n">1.0</td><td class="n">1.0</td><td class="n">0.5</td><td class="n">1.0</td><td class="n">1.0</td></tr>
+    <tr><td>H054 Nanavati Max, Mumbai</td><td class="n">1.0</td><td class="n">0.7</td><td class="n">0.5</td><td class="n">0.3</td><td class="n">1.0</td></tr>
+    <tr><td>H063 Max, Nagpur</td><td class="n">0.3</td><td class="n">1.0</td><td class="n">1.0</td><td class="n">1.0</td><td class="n">0.6</td></tr>
+    <tr><td>H072 Sahyadri, Pune</td><td class="n">0.3</td><td class="n">0.7</td><td class="n">1.0</td><td class="n">1.0</td><td class="n">0.6</td></tr>
+  </table></div>
+  <p class="muted">Scales: capability exact 1 · related 0.6 · speciality only 0.3 — quality NABH+JCI 1 · NABH 0.7 — evidence website 1 · team list 0.5 — intl. available 1 · not found 0.3 — location area 1 · state 0.6.</p>
+
+  <h3>E · TOPSIS ranking <span class="tag t-code">code</span></h3>
+  <div class="scroll"><table>
+    <tr><th>Rank</th><th>Hospital</th><th>Closeness</th><th>Why</th></tr>
+    <tr class="win"><td>1</td><td>H053 Sir H. N. Reliance Foundation, Mumbai</td><td class="n">0.84</td><td>does TAVR · NABH + JCI · international desk · in Mumbai</td></tr>
+    <tr><td>2</td><td>H054 Nanavati Max, Mumbai</td><td class="n">0.68</td><td>does TAVR · in Mumbai; no JCI, no international desk found</td></tr>
+    <tr><td>3</td><td>H063 Max Super Speciality, Nagpur</td><td class="n">0.32</td><td>strong quality, but no valve procedure listed</td></tr>
+    <tr><td>4</td><td>H072 Sahyadri, Pune</td><td class="n">0.22</td><td>no procedure data</td></tr>
+  </table></div>
+
+  <h3>F · AI explanation <span class="tag t-ai">AI</span> <span class="tag t-code">code checks</span></h3>
+  <div class="ex"><b>Sir H. N. Reliance Foundation Hospital, Mumbai</b><br>
+  Lists TAVR, the procedure you mentioned <span class="muted">(team list, not yet confirmed on the hospital's website)</span> ·
+  NABH and JCI accredited <span class="muted">(NABH and JCI directories, Nov 2026)</span> · international patient desk <span class="muted">(hospital website)</span> · in Mumbai.</div>
+  <p class="muted">After offline extraction, "TAVR" would read "confirmed on the hospital's website" with the link.</p>
+</section>
+
+<!-- 5 WHY BETTER -->
+<section class="panel" data-panel="better" hidden>
+  <h2>How the new design is better</h2>
+  <div class="scroll"><table>
+    <tr><th>Today</th><th>New design</th><th>Gain</th></tr>
+    <tr><td>Rank by text similarity + fixed bonuses</td><td>Rank by explicit criteria with expert weights (TOPSIS)</td><td><span class="tag t-good">accuracy</span> <span class="tag t-good">defensible</span></td></tr>
+    <tr><td>Procedure match by words + hand synonyms</td><td>AI capability judge, checked by code</td><td><span class="tag t-good">accuracy</span> <span class="tag t-good">less upkeep</span></td></tr>
+    <tr><td>Hard location filter</td><td>Location tiers with a notice</td><td><span class="tag t-good">no empty results</span></td></tr>
+    <tr><td>Unverified team-sheet procedures</td><td>AI-extracted from websites, quote verified by code</td><td><span class="tag t-good">verified data</span> <span class="tag t-good">less upkeep</span></td></tr>
+    <tr><td>267 hand-written label rules</td><td>AI mapping + review of low-confidence labels only</td><td><span class="tag t-good">less upkeep</span></td></tr>
+    <tr><td>Bonus labels as reasons</td><td>Plain explanation with the source of every fact</td><td><span class="tag t-good">trust</span></td></tr>
+    <tr><td>Not evaluated</td><td>Baselines + ablations with P@5, NDCG@5</td><td><span class="tag t-good">proof</span></td></tr>
+  </table></div>
+
+  <h3>Alignment with the TA feedback</h3>
+  <div class="scroll"><table>
+    <tr><th>TA feedback</th><th>How the design answers it</th></tr>
+    <tr><td>Verified hospital–specialisation dataset <span class="tag t-bad">critical</span></td><td>Offline AI extraction with code-verified quotes; every field shows its source and date</td></tr>
+    <tr><td>Medical suitability over location</td><td>Capability carries the largest weight (0.38); location is a criterion and a fallback tier, not a wall (0.04)</td></tr>
+    <tr><td>Test the weights</td><td>AHP weights from published experts, refined by team and doctor, with a sensitivity analysis</td></tr>
+    <tr><td>Compare with keyword, rule-based and specialty-filter baselines</td><td>Filter-only, today's engine, and each new component as separate systems</td></tr>
+    <tr><td>Precision@K, Recall@K, NDCG@K with graded relevance</td><td>Graded hospital relevance (0–3), see step2_evaluation_design.md</td></tr>
+    <tr><td>Measured incremental value of each component</td><td>One row per component in the evaluation table</td></tr>
+  </table></div>
+
+  <h3>Alignment with the AI / ML scope</h3>
+  <div class="scroll"><table>
+    <tr><th>AI technique</th><th>Where</th><th>Why AI, not rules</th></tr>
+    <tr><td>LLM information extraction (grounded)</td><td>Offline 1: hospital websites → structured facts</td><td>Websites are free text in many layouts</td></tr>
+    <tr><td>LLM classification with confidence</td><td>Offline 3: department names → specialities</td><td>Endless naming variants; confidence routes only doubtful ones to a person</td></tr>
+    <tr><td>LLM-as-judge with guards (DrRank-style)</td><td>Runtime C: capability for the patient's procedure</td><td>Medical synonyms and procedure families</td></tr>
+    <tr><td>Embeddings / semantic search</td><td>Candidate matching when lists are long</td><td>Meaning, not exact words</td></tr>
+    <tr><td>Multi-criteria decision making (AHP-TOPSIS)</td><td>Runtime E: ranking</td><td>Transparent, expert-weighted, testable (deliberately not AI)</td></tr>
+    <tr><td>Grounded generation</td><td>Runtime F: explanation</td><td>Readable reasons, limited to verified facts</td></tr>
+  </table></div>
+</section>
+
+<!-- 6 WEIGHTS -->
+<section class="panel" data-panel="weights" hidden>
+  <h2>Criteria and weights (AHP)</h2>
+  <p>Starting weights from Şahin &amp; Cezlan (2022): seven experts, Saaty 1–9 pairwise comparisons, consistency checked. Mapped to the data we have; then refined by team and doctor judgements.</p>
+  <div class="scroll"><table>
+    <tr><th>Our criterion</th><th>Paper criteria (weight)</th><th>Our data</th><th>Start weight</th></tr>
+    <tr><td><b>Capability</b></td><td>qualified personnel (0.20) + modern equipment (0.12)</td><td>AI capability judge</td><td class="n">0.38</td></tr>
+    <tr><td><b>Quality</b></td><td>quality of care (0.17) + accreditation (0.06) + image (0.09)</td><td>NABH, JCI, verification</td><td class="n">0.37</td></tr>
+    <tr><td><b>Evidence</b></td><td>recommendability (0.10)</td><td>website-verified vs team-listed</td><td class="n">0.11</td></tr>
+    <tr><td><b>International care</b></td><td>language (0.06) + touristic features (0.03)</td><td>international desk, languages</td><td class="n">0.10</td></tr>
+    <tr><td><b>Location fit</b></td><td>regional / cultural proximity (0.03)</td><td>area / state / anywhere</td><td class="n">0.04</td></tr>
+    <tr><td><b>Affordability</b></td><td>affordable treatment (0.09)</td><td>cost band (mostly missing)</td><td class="n">only if budget set</td></tr>
+  </table></div>
+  <p class="muted">Not used: promotion (0.05). Not available: doctor qualifications and outcomes — stated as a limit. Presets: "best quality", "nearest" (location ×3), "lowest cost".</p>
+  <h3>Where AI removes maintenance</h3>
+  <div class="scroll"><table>
+    <tr><th>Task</th><th>Today</th><th>With AI</th></tr>
+    <tr><td>Hospital facts</td><td>team spreadsheet, unverified, refreshed by hand</td><td>AI extraction + code-verified quotes; rerun one script</td></tr>
+    <tr><td>Department names</td><td>267 hand rules</td><td>AI mapping; review only doubtful ones</td></tr>
+    <tr><td>Procedure matching</td><td>hand synonym list</td><td>AI capability judge</td></tr>
+    <tr><td>Explanations</td><td>fixed labels</td><td>AI sentence from verified facts</td></tr>
+  </table></div>
+  <p class="muted">Cost on GPT-6 Luna: offline extraction ≈ $0.50–1 per refresh of 201 hospitals; capability judge ≈ $0.001 per request.</p>
+</section>
+
+<!-- 7 PLAN -->
+<section class="panel" data-panel="plan" hidden>
+  <h2>How we prove it</h2>
+  <div class="scroll"><table>
+    <tr><th>System</th><th>Shows</th></tr>
+    <tr><td>Filter only, alphabetical (no AI)</td><td>the baseline</td></tr>
+    <tr><td>Today: filter + semantic search + bonuses</td><td>the current state</td></tr>
+    <tr><td>+ location tiers + criteria + TOPSIS</td><td>what explicit, expert-weighted ranking adds</td></tr>
+    <tr><td>+ AI capability judge</td><td>what AI adds in accuracy (P@5, NDCG@5)</td></tr>
+    <tr><td>+ AI-extracted, website-verified data</td><td>what AI adds in data quality (share of verified fields)</td></tr>
+  </table></div>
+  <p class="muted">Plus a weight sensitivity check and the count of rules to maintain before vs after.</p>
+  <h3>Decisions needed</h3>
+  <ol>
+    <li><b>Offline website extraction</b> for all 201 hospitals?</li>
+    <li><b>Department-name mapping by AI:</b> replace the 267 rules, or keep them as a reviewed cache the AI extends?</li>
+    <li><b>Capability judge</b> on GPT-6 Luna with the Step 1 judge's guards?</li>
+    <li><b>Weights:</b> start from the paper's expert weights, then team + doctor AHP?</li>
+    <li><b>Order:</b> (a) Step 2 baseline evaluation → (b) website extraction → (c) capability judge + TOPSIS → (d) re-evaluate.</li>
+  </ol>
+  <p class="muted" style="margin-top:12px">Sources: Şahin &amp; Cezlan (2022), OPUS Journal of Society Research 19(46), <code>docs/reference_paper_opusjsr_2326653.pdf</code> ·
+  Zeng et al. (2025), explainable doctor ranking with LLMs (arXiv 2503.02298) · medigence.com · MediPulse, MediScore (GitHub) · TA feedback (docs/base).</p>
+</section>
+
+</main>
+<script>
+const tabs = document.querySelectorAll(".tabs button");
+const panels = document.querySelectorAll("[data-panel]");
+function show(name) {
+  tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+  panels.forEach(p => { p.hidden = p.dataset.panel !== name; });
+  try { localStorage.setItem("step2-design-tab", name); } catch (e) {}
+}
+tabs.forEach(t => t.addEventListener("click", () => { show(t.dataset.tab); history.replaceState(null, "", "#" + t.dataset.tab); }));
+let start = location.hash.slice(1);
+if (![...tabs].some(t => t.dataset.tab === start)) { try { start = localStorage.getItem("step2-design-tab") || "current"; } catch (e) { start = "current"; } }
+show(start);
+</script>
+</body></html>

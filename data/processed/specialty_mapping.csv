@@ -1,0 +1,1364 @@
+source,value,description,specialty,evidence_type,reason,review_status
+ccsr,BLD001,Nutritional anemia,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,BLD002,Hemolytic anemia,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,BLD003,Aplastic anemia,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,BLD004,Acute posthemorrhagic anemia,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,BLD005,Sickle cell trait/anemia,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,BLD006,Coagulation and hemorrhagic disorders,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,BLD007,Diseases of white blood cells,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,BLD008,Immunity disorders,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,BLD009,Postprocedural or postoperative complications of the spleen,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,BLD010,Other specified and unspecified hematologic conditions,Hematology & Bone Marrow Transplant,diagnosis,body-system default,draft
+ccsr,CIR001,Chronic rheumatic heart disease,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR002,Acute rheumatic heart disease,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR003,Nonrheumatic and unspecified valve disorders,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR004,Endocarditis and endocardial disease,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR005,Myocarditis and cardiomyopathy,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR006,Pericarditis and pericardial disease,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR007,Essential hypertension,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR008,Hypertension with complications and secondary hypertension,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR009,Acute myocardial infarction,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR010,Complications of acute myocardial infarction,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR011,Coronary atherosclerosis and other heart disease,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR012,Nonspecific chest pain,Cardiology,symptom,nonspecific chest pain: symptom,draft
+ccsr,CIR013,Acute pulmonary embolism,Pulmonology;Cardiology,diagnosis,pulmonary embolism,draft
+ccsr,CIR014,Pulmonary heart disease,Pulmonology;Cardiology,diagnosis,pulmonary heart disease,draft
+ccsr,CIR015,Other and ill-defined heart disease,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR016,Conduction disorders,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR017,Cardiac dysrhythmias,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR018,Cardiac arrest and ventricular fibrillation,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR019,Heart failure,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR020,Cerebral infarction,Neurology,diagnosis,cerebral infarction (stroke),draft
+ccsr,CIR021,Acute hemorrhagic cerebrovascular disease,Neurosurgery;Neurology,diagnosis,haemorrhagic stroke,draft
+ccsr,CIR022,Sequela of hemorrhagic cerebrovascular disease,Neurology,diagnosis,sequela of haemorrhagic stroke,draft
+ccsr,CIR023,Occlusion or stenosis of precerebral or cerebral arteries without infarction,Neurology,diagnosis,cerebral artery stenosis,draft
+ccsr,CIR024,Other and ill-defined cerebrovascular disease,Neurology,diagnosis,other cerebrovascular disease,draft
+ccsr,CIR025,Sequela of cerebral infarction and other cerebrovascular disease,Neurology,diagnosis,sequela of stroke,draft
+ccsr,CIR026,Peripheral and visceral vascular disease,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR027,Arterial dissections,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR028,Gangrene,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR029,Aortic; peripheral; and visceral artery aneurysms,Cardiothoracic Surgery;Cardiology,diagnosis,aortic aneurysm: usually surgical,draft
+ccsr,CIR030,Aortic and peripheral arterial embolism or thrombosis,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR031,Hypotension,General Medicine,symptom,hypotension: nonspecific,draft
+ccsr,CIR032,Other specified and unspecified circulatory disease,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR033,Acute phlebitis; thrombophlebitis and thromboembolism,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR034,Chronic phlebitis; thrombophlebitis and thromboembolism,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR035,Varicose veins of lower extremity,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR036,Postthrombotic syndrome and venous insufficiency/hypertension,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR037,Vasculitis,General Medicine,diagnosis,vasculitis: no rheumatology speciality in our list,draft
+ccsr,CIR038,Postprocedural or postoperative circulatory system complication,Cardiology,diagnosis,body-system default,draft
+ccsr,CIR039,Other specified diseases of veins and lymphatics,Cardiology,diagnosis,body-system default,draft
+ccsr,DEN001,Any dental condition including traumatic injury,NONE,,body-system default,draft
+ccsr,DEN002,Nontraumatic dental conditions,NONE,,body-system default,draft
+ccsr,DEN003,"Caries, periodontitis, and other preventable dental conditions",NONE,,body-system default,draft
+ccsr,DIG001,Intestinal infection,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG002,Disorders of teeth and gingiva,NONE,,"teeth and gingiva: dental, not routed",draft
+ccsr,DIG003,Diseases of mouth; excluding dental,ENT,diagnosis,diseases of mouth,draft
+ccsr,DIG004,Esophageal disorders,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG005,Gastroduodenal ulcer,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG006,Gastrointestinal and biliary perforation,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG007,Gastritis and duodenitis,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG008,Other specified and unspecified disorders of stomach and duodenum,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG009,Appendicitis and other appendiceal conditions,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG010,Abdominal hernia,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG011,Regional enteritis and ulcerative colitis,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG012,Intestinal obstruction and ileus,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG013,Diverticulosis and diverticulitis,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG014,Hemorrhoids,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG015,Anal and rectal conditions,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG016,Peritonitis and intra-abdominal abscess,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG017,Biliary tract disease,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG018,Hepatic failure,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG019,Other specified and unspecified liver disease,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG020,Pancreatic disorders (excluding diabetes),Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG021,Gastrointestinal hemorrhage,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG022,Noninfectious gastroenteritis,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG023,Noninfectious hepatitis,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG024,Postprocedural or postoperative digestive system complication,Gastroenterology,diagnosis,body-system default,draft
+ccsr,DIG025,Other specified and unspecified gastrointestinal disorders,Gastroenterology,diagnosis,body-system default,draft
+ccsr,EAR001,Otitis media,ENT,diagnosis,body-system default,draft
+ccsr,EAR002,Diseases of middle ear and mastoid (except otitis media),ENT,diagnosis,body-system default,draft
+ccsr,EAR003,Diseases of inner ear and related conditions,ENT,diagnosis,body-system default,draft
+ccsr,EAR004,Hearing loss,ENT,diagnosis,body-system default,draft
+ccsr,EAR005,Postprocedural or postoperative ear and/or mastoid process complication,ENT,diagnosis,body-system default,draft
+ccsr,EAR006,Other specified and unspecified disorders of the ear,ENT,diagnosis,body-system default,draft
+ccsr,END001,Thyroid disorders,Endocrinology,diagnosis,body-system default,draft
+ccsr,END002,Diabetes mellitus without complication,Endocrinology,diagnosis,body-system default,draft
+ccsr,END003,Diabetes mellitus with complication,Endocrinology,diagnosis,body-system default,draft
+ccsr,END004,"Diabetes mellitus, Type 1",Endocrinology,diagnosis,body-system default,draft
+ccsr,END005,"Diabetes mellitus, Type 2",Endocrinology,diagnosis,body-system default,draft
+ccsr,END006,"Diabetes mellitus, due to underlying condition, drug or chemical induced, or other specified type",Endocrinology,diagnosis,body-system default,draft
+ccsr,END007,Nutritional deficiencies,General Medicine,diagnosis,nutritional deficiency,draft
+ccsr,END008,Malnutrition,General Medicine,diagnosis,malnutrition,draft
+ccsr,END009,Obesity,Bariatric Surgery;Endocrinology,diagnosis,obesity,draft
+ccsr,END010,Disorders of lipid metabolism,Endocrinology,diagnosis,body-system default,draft
+ccsr,END011,Fluid and electrolyte disorders,General Medicine,diagnosis,fluid and electrolyte disorders,draft
+ccsr,END012,Cystic fibrosis,Pulmonology,diagnosis,cystic fibrosis: mainly lung care,draft
+ccsr,END013,Pituitary disorders,Endocrinology,diagnosis,body-system default,draft
+ccsr,END014,Postprocedural or postoperative endocrine or metabolic complication,Endocrinology,diagnosis,body-system default,draft
+ccsr,END015,Other specified and unspecified endocrine disorders,Endocrinology,diagnosis,body-system default,draft
+ccsr,END016,Other specified and unspecified nutritional and metabolic disorders,General Medicine,diagnosis,other nutritional and metabolic disorders,draft
+ccsr,END017,Sequela of malnutrition and other nutritional deficiencies,General Medicine,diagnosis,sequela of malnutrition,draft
+ccsr,EXT001,External cause codes: cut/pierce; initial encounter,NONE,,body-system default,draft
+ccsr,EXT002,External cause codes: drowning/submersion; initial encounter,NONE,,body-system default,draft
+ccsr,EXT003,External cause codes: fall; initial encounter,NONE,,body-system default,draft
+ccsr,EXT004,External cause codes: fire/burn; initial encounter,NONE,,body-system default,draft
+ccsr,EXT005,External cause codes: firearm; initial encounter,NONE,,body-system default,draft
+ccsr,EXT006,External cause codes: machinery; initial encounter,NONE,,body-system default,draft
+ccsr,EXT007,External cause codes: motor vehicle traffic (MVT); initial encounter,NONE,,body-system default,draft
+ccsr,EXT008,External cause codes: pedal cyclist; not MVT; initial encounter,NONE,,body-system default,draft
+ccsr,EXT009,External cause codes: pedestrian; not MVT; initial encounter,NONE,,body-system default,draft
+ccsr,EXT010,External cause codes: transport; not MVT; initial encounter,NONE,,body-system default,draft
+ccsr,EXT011,External cause codes: natural/environment; initial encounter,NONE,,body-system default,draft
+ccsr,EXT012,External cause codes: bites; initial encounter,NONE,,body-system default,draft
+ccsr,EXT013,External cause codes: overexertion; initial encounter,NONE,,body-system default,draft
+ccsr,EXT014,External cause codes: poisoning by drug,NONE,,body-system default,draft
+ccsr,EXT015,External cause codes: poisoning by non-drug,NONE,,body-system default,draft
+ccsr,EXT016,External cause codes: struck by; against; initial encounter,NONE,,body-system default,draft
+ccsr,EXT017,External cause codes: suffocation/inhalation; initial encounter,NONE,,body-system default,draft
+ccsr,EXT018,"External cause codes: other specified, classifiable and NEC; initial encounter",NONE,,body-system default,draft
+ccsr,EXT019,External cause codes: unspecified mechanism,NONE,,body-system default,draft
+ccsr,EXT020,"External cause codes: intent of injury, accidental/unintentional",NONE,,body-system default,draft
+ccsr,EXT021,"External cause codes: intent of injury, self-harm",NONE,,body-system default,draft
+ccsr,EXT022,"External cause codes: intent of injury, assault",NONE,,body-system default,draft
+ccsr,EXT023,"External cause codes: intent of injury, undetermined",NONE,,body-system default,draft
+ccsr,EXT024,"External cause codes: intent of injury, legal intervention/war",NONE,,body-system default,draft
+ccsr,EXT025,"External cause codes: complications of medical and surgical care, initial encounter",NONE,,body-system default,draft
+ccsr,EXT026,External cause codes: activity codes,NONE,,body-system default,draft
+ccsr,EXT027,External cause codes: place of occurrence of the external cause,NONE,,body-system default,draft
+ccsr,EXT028,External cause codes: evidence of alcohol involvement,NONE,,body-system default,draft
+ccsr,EXT029,External cause codes: subsequent encounter,NONE,,body-system default,draft
+ccsr,EXT030,External cause codes: sequela,NONE,,body-system default,draft
+ccsr,EYE001,Cornea and external disease,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE002,Cataract and other lens disorders,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE003,Glaucoma,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE004,Uveitis and ocular inflammation,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE005,Retinal and vitreous conditions,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE006,Neuro-ophthalmology,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE007,Strabismus,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE008,Oculofacial plastics and orbital conditions,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE009,Refractive error,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE010,Blindness and vision defects,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE011,Postprocedural or postoperative eye complication,Ophthalmology,diagnosis,body-system default,draft
+ccsr,EYE012,Other specified eye disorders,Ophthalmology,diagnosis,body-system default,draft
+ccsr,FAC001,Encounter for administrative purposes,NONE,,body-system default,draft
+ccsr,FAC002,Encounter for mental health services related to abuse,Psychiatry,status,mental health services,draft
+ccsr,FAC003,"Encounter for observation and examination for conditions ruled out (excludes infectious disease, neoplasm, mental disorders)",NONE,,body-system default,draft
+ccsr,FAC004,Encounter for prophylactic or other procedures,NONE,,body-system default,draft
+ccsr,FAC005,Encounter for prophylactic measures (excludes immunization),NONE,,body-system default,draft
+ccsr,FAC006,Encounter for antineoplastic therapies,Oncology,status,encounter for antineoplastic therapy,draft
+ccsr,FAC007,Encounter for mental health conditions,Psychiatry,status,mental health conditions,draft
+ccsr,FAC008,Neoplasm-related encounters,Oncology,status,neoplasm-related encounter,draft
+ccsr,FAC009,"Implant, device or graft related encounter",NONE,,body-system default,draft
+ccsr,FAC010,Other aftercare encounter,NONE,,body-system default,draft
+ccsr,FAC011,Counseling related to sexual behavior or orientation,NONE,,body-system default,draft
+ccsr,FAC012,Other specified encounters and counseling,NONE,,body-system default,draft
+ccsr,FAC013,Contraceptive and procreative management,Reproductive Medicine,status,procreative management,draft
+ccsr,FAC014,Medical examination/evaluation,NONE,,body-system default,draft
+ccsr,FAC015,Resistance to antimicrobial drugs,NONE,,body-system default,draft
+ccsr,FAC016,"Exposure, encounters, screening or contact with infectious disease",NONE,,body-system default,draft
+ccsr,FAC017,No immunization or underimmunization,NONE,,body-system default,draft
+ccsr,FAC018,Screening for neurocognitive or neurodevelopmental condition,NONE,,body-system default,draft
+ccsr,FAC019,Socioeconomic/psychosocial factors,NONE,,body-system default,draft
+ccsr,FAC020,Lifestyle/life management factors,NONE,,body-system default,draft
+ccsr,FAC021,Personal/family history of disease,NONE,,body-system default,draft
+ccsr,FAC022,Acquired absence of limb or organ,NONE,,body-system default,draft
+ccsr,FAC023,Organ transplant status,Organ Transplant,status,organ transplant status,draft
+ccsr,FAC024,Carrier status,NONE,,body-system default,draft
+ccsr,FAC025,Other specified status,NONE,,body-system default,draft
+ccsr,GEN001,Nephritis; nephrosis; renal sclerosis,Nephrology,diagnosis,nephritis / nephrosis,draft
+ccsr,GEN002,Acute and unspecified renal failure,Nephrology,diagnosis,acute renal failure,draft
+ccsr,GEN003,Chronic kidney disease,Nephrology,diagnosis,chronic kidney disease,draft
+ccsr,GEN004,Urinary tract infections,Urology;General Medicine,diagnosis,urinary tract infection,draft
+ccsr,GEN005,Calculus of urinary tract,Urology,diagnosis,urinary tract stones,draft
+ccsr,GEN006,Other specified and unspecified diseases of kidney and ureters,Nephrology;Urology,diagnosis,other kidney and ureter disease,draft
+ccsr,GEN007,Other specified and unspecified diseases of bladder and urethra,Urology,diagnosis,body-system default,draft
+ccsr,GEN008,Urinary incontinence,Urology,diagnosis,body-system default,draft
+ccsr,GEN009,Hematuria,Urology,symptom,haematuria: symptom,draft
+ccsr,GEN010,Proteinuria,Nephrology,symptom,proteinuria: finding,draft
+ccsr,GEN011,Vesicoureteral reflux,Urology,diagnosis,body-system default,draft
+ccsr,GEN012,Hyperplasia of prostate,Urology,diagnosis,body-system default,draft
+ccsr,GEN013,Inflammatory conditions of male genital organs,Urology,diagnosis,body-system default,draft
+ccsr,GEN014,Erectile dysfunction,Urology,diagnosis,body-system default,draft
+ccsr,GEN015,Male infertility,Reproductive Medicine;Urology,diagnosis,male infertility,draft
+ccsr,GEN016,Other specified male genital disorders,Urology,diagnosis,body-system default,draft
+ccsr,GEN017,Nonmalignant breast conditions,Obstetrics & Gynaecology,diagnosis,nonmalignant breast conditions,draft
+ccsr,GEN018,Inflammatory diseases of female pelvic organs,Obstetrics & Gynaecology,diagnosis,female pelvic inflammatory disease,draft
+ccsr,GEN019,Endometriosis,Obstetrics & Gynaecology,diagnosis,endometriosis,draft
+ccsr,GEN020,Prolapse of female genital organs,Obstetrics & Gynaecology,diagnosis,genital prolapse,draft
+ccsr,GEN021,Menstrual disorders,Obstetrics & Gynaecology,diagnosis,menstrual disorders,draft
+ccsr,GEN022,Benign ovarian cyst,Obstetrics & Gynaecology,diagnosis,ovarian cyst,draft
+ccsr,GEN023,Menopausal disorders,Obstetrics & Gynaecology,diagnosis,menopausal disorders,draft
+ccsr,GEN024,Female infertility,Reproductive Medicine,diagnosis,female infertility,draft
+ccsr,GEN025,Other specified female genital disorders,Obstetrics & Gynaecology,diagnosis,other female genital disorders,draft
+ccsr,GEN026,Postprocedural or postoperative genitourinary system complication,Urology,diagnosis,body-system default,draft
+ccsr,INF001,Tuberculosis,Pulmonology,diagnosis,tuberculosis: mostly pulmonary,draft
+ccsr,INF002,Septicemia,Critical Care;General Medicine,diagnosis,septicaemia,draft
+ccsr,INF003,Bacterial infections,General Medicine,diagnosis,body-system default,draft
+ccsr,INF004,Fungal infections,General Medicine,diagnosis,body-system default,draft
+ccsr,INF005,Foodborne intoxications,General Medicine,diagnosis,body-system default,draft
+ccsr,INF006,HIV infection,General Medicine,diagnosis,body-system default,draft
+ccsr,INF007,Hepatitis,Gastroenterology,diagnosis,viral hepatitis,draft
+ccsr,INF008,Viral infection,General Medicine,diagnosis,body-system default,draft
+ccsr,INF009,"Parasitic, other specified and unspecified infections",General Medicine,diagnosis,body-system default,draft
+ccsr,INF010,Sexually transmitted infections (excluding HIV and hepatitis),General Medicine,diagnosis,body-system default,draft
+ccsr,INF011,Sequela of specified infectious disease conditions,General Medicine,diagnosis,body-system default,draft
+ccsr,INF012,Coronavirus disease – 2019 (COVID-19),Pulmonology;General Medicine,diagnosis,COVID-19,draft
+ccsr,INJ001,"Fracture of head and neck, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ002,"Fracture of the spine and back, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ003,"Fracture of torso, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ004,"Fracture of the upper limb, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ005,"Fracture of the lower limb (except hip), initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ006,"Fracture of the neck of the femur (hip), initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ007,"Dislocations, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ008,"Traumatic brain injury (TBI); concussion, initial encounter",Neurosurgery,diagnosis,traumatic brain injury,draft
+ccsr,INJ009,"Spinal cord injury (SCI), initial encounter",Neurosurgery,diagnosis,spinal cord injury,draft
+ccsr,INJ010,"Internal organ injury, initial encounter",Emergency Medicine;Critical Care,diagnosis,internal organ injury,draft
+ccsr,INJ011,"Open wounds of head and neck, initial encounter",Plastic & Reconstructive Surgery;Emergency Medicine,diagnosis,open wound head/neck,draft
+ccsr,INJ012,"Open wounds to limbs, initial encounter",Emergency Medicine,diagnosis,open wound limbs,draft
+ccsr,INJ013,"Open wounds of trunk, initial encounter",Emergency Medicine,diagnosis,open wound trunk,draft
+ccsr,INJ014,"Amputation of a limb, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ015,"Amputation of other body parts, initial encounter",Plastic & Reconstructive Surgery,diagnosis,amputation of other body parts,draft
+ccsr,INJ016,"Injury to blood vessels, initial encounter",Emergency Medicine,diagnosis,blood vessel injury,draft
+ccsr,INJ017,"Superficial injury; contusion, initial encounter",Emergency Medicine,symptom,superficial injury: weak,draft
+ccsr,INJ018,"Crushing injury, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ019,"Burn and corrosion, initial encounter",Plastic & Reconstructive Surgery;Emergency Medicine,diagnosis,burns,draft
+ccsr,INJ020,"Effect of foreign body entering opening, initial encounter",Emergency Medicine;ENT,diagnosis,foreign body in an opening,draft
+ccsr,INJ021,"Effect of other external causes, initial encounter",Emergency Medicine,diagnosis,other external causes,draft
+ccsr,INJ022,"Poisoning by drugs, initial encounter",Emergency Medicine;Critical Care,diagnosis,drug poisoning,draft
+ccsr,INJ023,"Toxic effects, initial encounter",Emergency Medicine;Critical Care,diagnosis,toxic effects,draft
+ccsr,INJ024,"Sprains and strains, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ025,"Injury to nerves, muscles and tendons, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ026,Other specified injury,Emergency Medicine,diagnosis,other specified injury,draft
+ccsr,INJ027,Other unspecified injury,Emergency Medicine,diagnosis,unspecified injury,draft
+ccsr,INJ028,"Adverse effects of drugs and medicaments, initial encounter",General Medicine,diagnosis,adverse drug effect,draft
+ccsr,INJ029,"Underdosing of drugs and medicaments, initial encounter",General Medicine,diagnosis,underdosing,draft
+ccsr,INJ030,Drug induced or toxic related condition,General Medicine,diagnosis,drug induced condition,draft
+ccsr,INJ031,Allergic reactions,Emergency Medicine,diagnosis,allergic reaction,draft
+ccsr,INJ032,Maltreatment/abuse,Emergency Medicine,diagnosis,maltreatment,draft
+ccsr,INJ033,"Complication of cardiovascular device, implant or graft, initial encounter",Cardiology,diagnosis,cardiovascular device complication,draft
+ccsr,INJ034,"Complication of genitourinary device, implant or graft, initial encounter",Urology,diagnosis,genitourinary device complication,draft
+ccsr,INJ035,"Complication of internal orthopedic device or implant, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ036,"Complication of transplanted organs or tissue, initial encounter",Organ Transplant,diagnosis,transplanted organ complication,draft
+ccsr,INJ037,"Complication of other surgical or medical care, injury, initial encounter",General Medicine,diagnosis,other care complication,draft
+ccsr,INJ038,"Fracture of head and neck, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ039,"Fracture of the spine and back, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ040,"Fracture of torso, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ041,"Fracture of the upper limb, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ042,"Fracture of lower limb (except hip), subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ043,"Fracture of the neck of the femur (hip), subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ044,"Dislocations, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ045,"Traumatic brain injury (TBI); concussion, subsequent encounter",Neurosurgery,diagnosis,traumatic brain injury,draft
+ccsr,INJ046,"Spinal cord injury (SCI), subsequent encounter",Neurosurgery,diagnosis,spinal cord injury,draft
+ccsr,INJ047,"Internal organ injury, subsequent encounter",Emergency Medicine,diagnosis,internal organ injury,draft
+ccsr,INJ048,"Open wounds of head and neck, subsequent encounter",Plastic & Reconstructive Surgery,diagnosis,open wound head/neck,draft
+ccsr,INJ049,"Open wounds to limbs, subsequent encounter",Emergency Medicine,diagnosis,open wound limbs,draft
+ccsr,INJ050,"Open wounds of trunk, subsequent encounter",Emergency Medicine,diagnosis,open wound trunk,draft
+ccsr,INJ051,"Amputation of a limb, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ052,"Amputation of other body parts, subsequent encounter",Plastic & Reconstructive Surgery,diagnosis,amputation of other body parts,draft
+ccsr,INJ053,"Injury to blood vessels, subsequent encounter",Emergency Medicine,diagnosis,blood vessel injury,draft
+ccsr,INJ054,"Superficial injury; contusion, subsequent encounter",Emergency Medicine,symptom,superficial injury,draft
+ccsr,INJ055,"Crushing injury, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ056,"Burns and corrosion, subsequent encounter",Plastic & Reconstructive Surgery,diagnosis,burns,draft
+ccsr,INJ057,"Effect of foreign body entering opening, subsequent encounter",Emergency Medicine,diagnosis,foreign body,draft
+ccsr,INJ058,"Effect of other external causes, subsequent encounter",Emergency Medicine,diagnosis,other external causes,draft
+ccsr,INJ059,"Poisoning by drugs, subsequent encounter",Emergency Medicine,diagnosis,drug poisoning,draft
+ccsr,INJ060,"Toxic effects, subsequent encounter",Emergency Medicine,diagnosis,toxic effects,draft
+ccsr,INJ061,"Sprains and strains, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ062,"Injury to nerves, muscles and tendons, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ063,"Other specified injury, subsequent encounter",Emergency Medicine,diagnosis,other injury,draft
+ccsr,INJ064,"Other unspecified injuries, subsequent encounter",Emergency Medicine,diagnosis,unspecified injury,draft
+ccsr,INJ065,"Adverse effects of drugs and medicaments, subsequent encounter",General Medicine,diagnosis,adverse drug effect,draft
+ccsr,INJ066,"Underdosing of drugs and medicaments, subsequent encounter",General Medicine,diagnosis,underdosing,draft
+ccsr,INJ067,"Allergic reactions, subsequent encounter",Emergency Medicine,diagnosis,allergic reaction,draft
+ccsr,INJ068,"Maltreatment/abuse, subsequent encounter",Emergency Medicine,diagnosis,maltreatment,draft
+ccsr,INJ069,"Complication of cardiovascular device, implant or graft, subsequent encounter",Cardiology,diagnosis,cardiovascular device,draft
+ccsr,INJ070,"Complication of genitourinary device, implant or graft, subsequent encounter",Urology,diagnosis,genitourinary device,draft
+ccsr,INJ071,"Complication of internal orthopedic device or implant, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,INJ072,"Complication of other surgical or medical care, injury, subsequent encounter",General Medicine,diagnosis,other care complication,draft
+ccsr,INJ073,"Injury, sequela",Emergency Medicine,diagnosis,injury sequela,draft
+ccsr,INJ074,"Effect of other external causes, sequela",Emergency Medicine,diagnosis,external cause sequela,draft
+ccsr,INJ075,"Poisoning/toxic effect/adverse effects/underdosing, sequela",General Medicine,diagnosis,poisoning sequela,draft
+ccsr,INJ076,"Complication, sequela",General Medicine,diagnosis,complication sequela,draft
+ccsr,MAL001,Cardiac and circulatory congenital anomalies,Pediatric Cardiology,diagnosis,congenital heart disease,draft
+ccsr,MAL002,Digestive congenital anomalies,Paediatrics,diagnosis,body-system default,draft
+ccsr,MAL003,Genitourinary congenital anomalies,Paediatrics,diagnosis,body-system default,draft
+ccsr,MAL004,Nervous system congenital anomalies,Neurosurgery;Paediatrics,diagnosis,nervous system congenital anomalies,draft
+ccsr,MAL005,"Congenital malformations of eye, ear, face, neck",Plastic & Reconstructive Surgery;ENT,diagnosis,eye/ear/face/neck malformation,draft
+ccsr,MAL006,Cleft lip or palate,Plastic & Reconstructive Surgery,diagnosis,cleft lip or palate,draft
+ccsr,MAL007,Respiratory congenital malformations,Paediatrics,diagnosis,body-system default,draft
+ccsr,MAL008,Musculoskeletal congenital conditions,Orthopaedics;Paediatrics,diagnosis,musculoskeletal congenital,draft
+ccsr,MAL009,Chromosomal abnormalities,Paediatrics,diagnosis,body-system default,draft
+ccsr,MAL010,Other specified and unspecified congenital anomalies,Paediatrics,diagnosis,body-system default,draft
+ccsr,MBD001,Schizophrenia spectrum and other psychotic disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD002,Depressive disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD003,Bipolar and related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD004,Other specified and unspecified mood disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD005,Anxiety and fear-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD006,Obsessive-compulsive and related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD007,Trauma- and stressor-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD008,"Disruptive, impulse-control and conduct disorders",Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD009,Personality disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD010,Feeding and eating disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD011,Somatic disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD012,Suicidal ideation/attempt/intentional self-harm,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD013,Miscellaneous mental and behavioral disorders/conditions,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD014,Neurodevelopmental disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD017,Alcohol-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD018,Opioid-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD019,Cannabis-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD020,Sedative-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD021,Stimulant-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD022,Hallucinogen-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD023,Inhalant-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD024,Tobacco-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD025,Other specified substance-related disorders,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD026,Mental and substance use disorders in remission,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD027,Suicide attempt/intentional self-harm; subsequent encounter,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD028,Opioid-related disorders; subsequent encounter,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD029,Stimulant-related disorders; subsequent encounter,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD030,Cannabis-related disorders; subsequent encounter,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD031,Hallucinogen-related disorders; subsequent encounter,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD032,Sedative-related disorders; subsequent encounter,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD033,Inhalant-related disorders; subsequent encounter,Psychiatry,diagnosis,body-system default,draft
+ccsr,MBD034,Mental and substance use disorders; sequela,Psychiatry,diagnosis,body-system default,draft
+ccsr,MUS001,Infective arthritis,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS002,Osteomyelitis,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS003,Rheumatoid arthritis and related disease,General Medicine;Orthopaedics,diagnosis,rheumatoid arthritis,draft
+ccsr,MUS004,Juvenile arthritis,Paediatrics;Orthopaedics,diagnosis,juvenile arthritis,draft
+ccsr,MUS005,Other specified chronic arthropathy,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS006,Osteoarthritis,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS007,Other specified joint disorders,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS008,Immune-mediated/reactive arthropathies,General Medicine;Orthopaedics,diagnosis,immune-mediated arthropathy,draft
+ccsr,MUS009,Tendon and synovial disorders,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS010,"Musculoskeletal pain, not low back pain",Orthopaedics,symptom,musculoskeletal pain: symptom,draft
+ccsr,MUS011,Spondylopathies/spondyloarthropathy (including infective),Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS012,Biomechanical lesions,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS013,Osteoporosis,Endocrinology;Orthopaedics,diagnosis,osteoporosis,draft
+ccsr,MUS014,"Pathological fracture, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS015,"Pathological fracture, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS016,"Stress fracture, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS017,"Stress fracture, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS018,"Atypical fracture, initial encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS019,"Atypical fracture, subsequent encounter",Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS020,"Pathological, stress and atypical fractures, sequela",Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS021,Acquired foot deformities,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS022,Scoliosis and other postural dorsopathic deformities,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS023,Acquired deformities (excluding foot),Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS024,Systemic lupus erythematosus and connective tissue disorders,General Medicine,diagnosis,lupus and connective tissue disorders,draft
+ccsr,MUS025,Other specified connective tissue disease,General Medicine,diagnosis,other connective tissue disease,draft
+ccsr,MUS026,Muscle disorders,Neurology,diagnosis,muscle disorders,draft
+ccsr,MUS027,Musculoskeletal abscess,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS028,Other specified bone disease and musculoskeletal deformities,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS029,Disorders of jaw,Plastic & Reconstructive Surgery,diagnosis,disorders of jaw,draft
+ccsr,MUS030,Aseptic necrosis and osteonecrosis,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS031,Traumatic arthropathy,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS032,Neurogenic/neuropathic arthropathy,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS033,Gout,General Medicine;Orthopaedics,diagnosis,gout,draft
+ccsr,MUS034,Crystal arthropathies (excluding gout),Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS035,Osteomalacia,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS036,Autoinflammatory syndromes,General Medicine,diagnosis,autoinflammatory syndromes,draft
+ccsr,MUS037,Postprocedural or postoperative musculoskeletal system complication,Orthopaedics,diagnosis,body-system default,draft
+ccsr,MUS038,Low back pain,Orthopaedics,symptom,low back pain: symptom,draft
+ccsr,NEO001,Head and neck cancers - eye,Oncology,diagnosis,body-system default,draft
+ccsr,NEO002,Head and neck cancers - lip and oral cavity,Oncology,diagnosis,body-system default,draft
+ccsr,NEO003,Head and neck cancers - throat,Oncology,diagnosis,body-system default,draft
+ccsr,NEO004,Head and neck cancers - salivary gland,Oncology,diagnosis,body-system default,draft
+ccsr,NEO005,Head and neck cancers - nasopharyngeal,Oncology,diagnosis,body-system default,draft
+ccsr,NEO006,Head and neck cancers - hypopharyngeal,Oncology,diagnosis,body-system default,draft
+ccsr,NEO007,Head and neck cancers - pharyngeal,Oncology,diagnosis,body-system default,draft
+ccsr,NEO008,Head and neck cancers - laryngeal,Oncology,diagnosis,body-system default,draft
+ccsr,NEO009,Head and neck cancers - tonsils,Oncology,diagnosis,body-system default,draft
+ccsr,NEO010,Head and neck cancers - all other types,Oncology,diagnosis,body-system default,draft
+ccsr,NEO011,Cardiac cancers,Oncology,diagnosis,body-system default,draft
+ccsr,NEO012,Gastrointestinal cancers - esophagus,Oncology,diagnosis,body-system default,draft
+ccsr,NEO013,Gastrointestinal cancers - stomach,Oncology,diagnosis,body-system default,draft
+ccsr,NEO014,Gastrointestinal cancers - small intestine,Oncology,diagnosis,body-system default,draft
+ccsr,NEO015,Gastrointestinal cancers - colorectal,Oncology,diagnosis,body-system default,draft
+ccsr,NEO016,Gastrointestinal cancers - anus,Oncology,diagnosis,body-system default,draft
+ccsr,NEO017,Gastrointestinal cancers - liver,Oncology,diagnosis,body-system default,draft
+ccsr,NEO018,Gastrointestinal cancers - bile duct,Oncology,diagnosis,body-system default,draft
+ccsr,NEO019,Gastrointestinal cancers - gallbladder,Oncology,diagnosis,body-system default,draft
+ccsr,NEO020,Gastrointestinal cancers - peritoneum,Oncology,diagnosis,body-system default,draft
+ccsr,NEO021,Gastrointestinal cancers - all other types,Oncology,diagnosis,body-system default,draft
+ccsr,NEO022,Respiratory cancers,Oncology,diagnosis,body-system default,draft
+ccsr,NEO023,Bone cancer,Oncology,diagnosis,body-system default,draft
+ccsr,NEO024,Sarcoma,Oncology,diagnosis,body-system default,draft
+ccsr,NEO025,Skin cancers - melanoma,Oncology,diagnosis,body-system default,draft
+ccsr,NEO026,Skin cancers - basal cell carcinoma,Oncology,diagnosis,body-system default,draft
+ccsr,NEO027,Skin cancers - squamous cell carcinoma,Oncology,diagnosis,body-system default,draft
+ccsr,NEO028,Skin cancers - all other types,Oncology,diagnosis,body-system default,draft
+ccsr,NEO029,Breast cancer - ductal carcinoma in situ (DCIS),Oncology,diagnosis,body-system default,draft
+ccsr,NEO030,Breast cancer - all other types,Oncology,diagnosis,body-system default,draft
+ccsr,NEO031,Female reproductive system cancers - uterus,Oncology,diagnosis,body-system default,draft
+ccsr,NEO032,Female reproductive system cancers - cervix,Oncology,diagnosis,body-system default,draft
+ccsr,NEO033,Female reproductive system cancers - ovary,Oncology,diagnosis,body-system default,draft
+ccsr,NEO034,Female reproductive system cancers - fallopian tube,Oncology,diagnosis,body-system default,draft
+ccsr,NEO035,Female reproductive system cancers - endometrium,Oncology,diagnosis,body-system default,draft
+ccsr,NEO036,Female reproductive system cancers - vulva,Oncology,diagnosis,body-system default,draft
+ccsr,NEO037,Female reproductive system cancers - vagina,Oncology,diagnosis,body-system default,draft
+ccsr,NEO038,Female reproductive system cancers - all other types,Oncology,diagnosis,body-system default,draft
+ccsr,NEO039,Male reproductive system cancers - prostate,Oncology,diagnosis,body-system default,draft
+ccsr,NEO040,Male reproductive system cancers - testis,Oncology,diagnosis,body-system default,draft
+ccsr,NEO041,Male reproductive system cancers - penis,Oncology,diagnosis,body-system default,draft
+ccsr,NEO042,Male reproductive system cancers - all other types,Oncology,diagnosis,body-system default,draft
+ccsr,NEO043,Urinary system cancers - bladder,Oncology,diagnosis,body-system default,draft
+ccsr,NEO044,Urinary system cancers - ureter and renal pelvis,Oncology,diagnosis,body-system default,draft
+ccsr,NEO045,Urinary system cancers - kidney,Oncology,diagnosis,body-system default,draft
+ccsr,NEO046,Urinary system cancers - urethra,Oncology,diagnosis,body-system default,draft
+ccsr,NEO047,Urinary system cancers - all other types,Oncology,diagnosis,body-system default,draft
+ccsr,NEO048,Nervous system cancers - brain,Oncology;Neurosurgery,diagnosis,brain cancer,draft
+ccsr,NEO049,Nervous system cancers - all other types,Oncology;Neurosurgery,diagnosis,other nervous system cancers,draft
+ccsr,NEO050,Endocrine system cancers - thyroid,Oncology,diagnosis,body-system default,draft
+ccsr,NEO051,Endocrine system cancers - pancreas,Oncology,diagnosis,body-system default,draft
+ccsr,NEO052,Endocrine system cancers - thymus,Oncology,diagnosis,body-system default,draft
+ccsr,NEO053,Endocrine system cancers - adrenocortical,Oncology,diagnosis,body-system default,draft
+ccsr,NEO054,Endocrine system cancers - parathyroid,Oncology,diagnosis,body-system default,draft
+ccsr,NEO055,Endocrine system cancers - pituitary gland,Oncology,diagnosis,body-system default,draft
+ccsr,NEO056,Endocrine system cancers - all other types,Oncology,diagnosis,body-system default,draft
+ccsr,NEO057,Hodgkin lymphoma,Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO058,Non-Hodgkin lymphoma,Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO059,Leukemia - acute lymphoblastic leukemia (ALL),Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO060,Leukemia - acute myeloid leukemia (AML),Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO061,Leukemia - chronic lymphocytic leukemia (CLL),Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO062,Leukemia - chronic myeloid leukemia (CML),Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO063,Leukemia - hairy cell,Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO064,Leukemia - all other types,Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO065,Multiple myeloma,Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO066,Malignant neuroendocrine tumors,Oncology,diagnosis,body-system default,draft
+ccsr,NEO067,Mesothelioma,Oncology,diagnosis,body-system default,draft
+ccsr,NEO068,Myelodysplastic syndrome (MDS),Hematology & Bone Marrow Transplant;Oncology,diagnosis,blood cancer,draft
+ccsr,NEO069,Cancer of other sites,Oncology,diagnosis,body-system default,draft
+ccsr,NEO070,Secondary malignancies,Oncology,diagnosis,body-system default,draft
+ccsr,NEO071,"Malignant neoplasm, unspecified",Oncology,diagnosis,body-system default,draft
+ccsr,NEO072,Neoplasms of unspecified nature or uncertain behavior,Oncology,diagnosis,body-system default,draft
+ccsr,NEO073,Benign neoplasms,Oncology,diagnosis,body-system default,draft
+ccsr,NEO074,Conditions due to neoplasm or the treatment of neoplasm,Oncology,diagnosis,body-system default,draft
+ccsr,NVS001,Meningitis,Neurology,diagnosis,body-system default,draft
+ccsr,NVS002,Encephalitis,Neurology,diagnosis,body-system default,draft
+ccsr,NVS003,Other specified CNS infection and poliomyelitis,Neurology,diagnosis,body-system default,draft
+ccsr,NVS004,Parkinson`s disease,Neurology,diagnosis,body-system default,draft
+ccsr,NVS005,Multiple sclerosis,Neurology,diagnosis,body-system default,draft
+ccsr,NVS006,Other nervous system disorders (often hereditary or degenerative),Neurology,diagnosis,body-system default,draft
+ccsr,NVS007,Cerebral palsy,Neurology,diagnosis,body-system default,draft
+ccsr,NVS008,Paralysis (other than cerebral palsy),Neurology,diagnosis,body-system default,draft
+ccsr,NVS009,Epilepsy; convulsions,Neurology,diagnosis,body-system default,draft
+ccsr,NVS010,Headache; including migraine,Neurology,diagnosis,body-system default,draft
+ccsr,NVS011,Neurocognitive disorders,Neurology,diagnosis,body-system default,draft
+ccsr,NVS012,Transient cerebral ischemia,Neurology,diagnosis,body-system default,draft
+ccsr,NVS013,Coma; stupor; and brain damage,Neurology,diagnosis,body-system default,draft
+ccsr,NVS014,CNS abscess,Neurosurgery;Neurology,diagnosis,CNS abscess,draft
+ccsr,NVS015,Polyneuropathies,Neurology,diagnosis,body-system default,draft
+ccsr,NVS016,Sleep wake disorders,Neurology,diagnosis,body-system default,draft
+ccsr,NVS017,Nerve and nerve root disorders,Neurology,diagnosis,body-system default,draft
+ccsr,NVS018,Myopathies,Neurology,diagnosis,body-system default,draft
+ccsr,NVS019,Nervous system pain and pain syndromes,Neurology,symptom,nervous system pain: symptom,draft
+ccsr,NVS020,Other nervous system disorders (neither hereditary nor degenerative),Neurology,diagnosis,body-system default,draft
+ccsr,NVS021,Postprocedural or postoperative nervous system complication,Neurosurgery;Neurology,diagnosis,postoperative nervous system complication,draft
+ccsr,NVS022,Sequela of specified nervous system conditions,Neurology,diagnosis,body-system default,draft
+ccsr,PNL001,Liveborn,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL002,Short gestation; low birth weight; and fetal growth retardation,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL003,Neonatal acidemia and hypoxia,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL004,Neonatal cerebral disorders,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL005,Respiratory distress syndrome,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL006,Respiratory perinatal condition,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL007,Hemolytic jaundice and perinatal jaundice,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL008,Birth trauma,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL009,Perinatal infections,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL010,Newborn affected by maternal conditions or complications of labor/delivery,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL011,Hemorrhagic and hematologic disorders of newborn,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL012,Neonatal digestive and feeding disorders,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL013,Other specified and unspecified perinatal conditions,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL014,Neonatal abstinence syndrome,Paediatrics,diagnosis,body-system default,draft
+ccsr,PNL015,Fetal alcohol syndrome,Paediatrics,diagnosis,body-system default,draft
+ccsr,PRG001,Antenatal screening,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG002,Gestational weeks,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG003,Spontaneous abortion and complications of spontaneous abortion,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG004,Induced abortion and complications of termination of pregnancy,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG005,Ectopic pregnancy and complications of ectopic pregnancy,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG006,Molar pregnancy and other abnormal products of conception,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG007,Complications following ectopic and/or molar pregnancy,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG008,Supervision of high-risk pregnancy,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG009,"Early, first or unspecified trimester hemorrhage",Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG010,Hemorrhage after first trimester,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG011,Early or threatened labor,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG012,Multiple gestation,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG013,Maternal care related to fetal conditions,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG014,Polyhydramnios and other problems of amniotic cavity,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG015,Obstetric history affecting care in pregnancy,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG016,Previous C-section,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG017,Maternal care for abnormality of pelvic organs,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG018,Maternal care related to disorders of the placenta and placental implantation,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG019,Diabetes or abnormal glucose tolerance complicating pregnancy; childbirth; or the puerperium,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG020,Hypertension and hypertensive-related conditions complicating pregnancy; childbirth; and the puerperium,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG021,Maternal intrauterine infection,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG022,Prolonged pregnancy,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG023,Complications specified during childbirth,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG024,"Malposition, disproportion or other labor complications",Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG025,Anesthesia complications during pregnancy,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG026,OB-related trauma to perineum and vulva,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG027,Complications specified during the puerperium,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG028,Other specified complications in pregnancy,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG029,"Uncomplicated pregnancy, delivery or puerperium",Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,PRG030,Maternal outcome of delivery,Obstetrics & Gynaecology,diagnosis,body-system default,draft
+ccsr,RSP001,Sinusitis,ENT,diagnosis,sinusitis,draft
+ccsr,RSP002,Pneumonia (except that caused by tuberculosis),Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP003,Influenza,General Medicine,diagnosis,influenza,draft
+ccsr,RSP004,Acute and chronic tonsillitis,ENT,diagnosis,tonsillitis,draft
+ccsr,RSP005,Acute bronchitis,Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP006,Other specified upper respiratory infections,ENT,diagnosis,upper respiratory infection,draft
+ccsr,RSP007,Other specified and unspecified upper respiratory disease,ENT,diagnosis,other upper respiratory disease,draft
+ccsr,RSP008,Chronic obstructive pulmonary disease and bronchiectasis,Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP009,Asthma,Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP010,Aspiration pneumonitis,Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP011,"Pleurisy, pleural effusion and pulmonary collapse",Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP012,Respiratory failure; insufficiency; arrest,Critical Care;Pulmonology,diagnosis,respiratory failure,draft
+ccsr,RSP013,Lung disease due to external agents,Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP014,Pneumothorax,Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP015,Mediastinal disorders,Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP016,Other specified and unspecified lower respiratory disease,Pulmonology,diagnosis,body-system default,draft
+ccsr,RSP017,Postprocedural or postoperative respiratory system complication,Pulmonology,diagnosis,body-system default,draft
+ccsr,SKN001,Skin and subcutaneous tissue infections,Dermatology,diagnosis,body-system default,draft
+ccsr,SKN002,Other specified inflammatory condition of skin,Dermatology,diagnosis,body-system default,draft
+ccsr,SKN003,Pressure ulcer of skin,Plastic & Reconstructive Surgery;Dermatology,diagnosis,pressure ulcer,draft
+ccsr,SKN004,Non-pressure ulcer of skin,Dermatology,diagnosis,body-system default,draft
+ccsr,SKN005,Contact dermatitis,Dermatology,diagnosis,body-system default,draft
+ccsr,SKN006,Postprocedural or postoperative skin complication,Dermatology,diagnosis,body-system default,draft
+ccsr,SKN007,Other specified and unspecified skin disorders,Dermatology,diagnosis,body-system default,draft
+ccsr,SYM001,Syncope,Cardiology;Neurology,symptom,syncope,draft
+ccsr,SYM002,Fever,General Medicine,symptom,fever,draft
+ccsr,SYM003,Shock,Emergency Medicine;Critical Care,symptom,shock,draft
+ccsr,SYM004,Nausea and vomiting,Gastroenterology,symptom,nausea and vomiting,draft
+ccsr,SYM005,Dysphagia,Gastroenterology;ENT,symptom,dysphagia,draft
+ccsr,SYM006,Abdominal pain and other digestive/abdomen signs and symptoms,Gastroenterology,symptom,abdominal symptoms,draft
+ccsr,SYM007,Malaise and fatigue,General Medicine,symptom,malaise and fatigue,draft
+ccsr,SYM008,Symptoms of mental and substance use conditions,Psychiatry,symptom,mental symptoms,draft
+ccsr,SYM009,Abnormal findings related to substance use,Psychiatry,symptom,substance-use findings,draft
+ccsr,SYM010,Nervous system signs and symptoms,Neurology,symptom,nervous system symptoms,draft
+ccsr,SYM011,Genitourinary signs and symptoms,Urology,symptom,genitourinary symptoms,draft
+ccsr,SYM012,Circulatory signs and symptoms,Cardiology,symptom,circulatory symptoms,draft
+ccsr,SYM013,Respiratory signs and symptoms,Pulmonology;ENT,symptom,"respiratory symptoms (cough, breathlessness, throat pain)",draft
+ccsr,SYM014,Skin/Subcutaneous signs and symptoms,Dermatology,symptom,skin symptoms,draft
+ccsr,SYM015,General sensation/perception signs and symptoms,Neurology,symptom,sensation/perception symptoms,draft
+ccsr,SYM016,Other general signs and symptoms,General Medicine,symptom,other general symptoms,draft
+ccsr,SYM017,Abnormal findings without diagnosis,NONE,,abnormal findings without diagnosis,draft
+ccsr,XXX000,Code is unacceptable as a principal diagnosis PDX (only used for the inpatient default CCSR),NONE,,not a clinical category,draft
+ccsr,XXX111,Code is unacceptable as a first-listed diagnosis DX1 (only used for the outpatient default CCSR),NONE,,not a clinical category,draft
+ccsr,NoDX1,Only used for the default CCSR when the principal or first-listed diagnosis is missing,NONE,,not a clinical category,draft
+ccsr,InvlDX,Used to indicate the diagnosis was invalid and could not be assigned a CCSR category,NONE,,not a clinical category,draft
+cghs_name,bone marrow transplant,,Hematology & Bone Marrow Transplant,procedure,checked before the generic transplant rule,draft
+cghs_name,stem cell transplant,,Hematology & Bone Marrow Transplant,procedure,procedure name rule,draft
+cghs_name,transplant,,Organ Transplant,procedure,"kidney, liver, heart transplants",draft
+cghs_name,dialysis,,Nephrology,procedure,procedure name rule,draft
+cghs_name,in vitro fertili,,Reproductive Medicine,procedure,procedure name rule,draft
+cghs_label,Laboratory Investigation,,NONE,,lab tests are not routing evidence,draft
+cghs_label,Oncology Investigations,,Oncology,procedure,CGHS section label,draft
+cghs_label,Procedure Nephrology And Urology,,Urology,procedure,dialysis and transplant rows are overridden in cghs_name_overrides.csv,draft
+cghs_label,Procedure Nephrology And Urology -,,Urology,procedure,CGHS section label,draft
+cghs_label,Radiological Investigation,,NONE,,imaging is not routing evidence,draft
+cghs_label,Ophthalmology Procedure,,Ophthalmology,procedure,CGHS section label,draft
+cghs_label,Orthopaedics Procedure,,Orthopaedics,procedure,CGHS section label,draft
+cghs_label,Dental Procedure,,NONE,,dental not in our speciality list,draft
+cghs_label,ENT Procedure,,ENT,procedure,CGHS section label,draft
+cghs_label,Procedure Abdomen/GI Surgery,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Procedures Abdomen/GI Surgery,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Neuro-Surgery Procedure,,Neurosurgery,procedure,CGHS section label,draft
+cghs_label,Procedure Obstetrics And Gynaecology,,Obstetrics & Gynaecology,procedure,CGHS section label,draft
+cghs_label,Surgery Procedure Cardiovascular And Cardiac,,Cardiothoracic Surgery,procedure,CGHS section label,draft
+cghs_label,Procedures Gastroenterology / Endoscopic,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Paediatric Surgery Procedure,,Paediatrics,procedure,CGHS section label,draft
+cghs_label,Procedure Burns And Plastic Surgery,,Plastic & Reconstructive Surgery,procedure,CGHS section label,draft
+cghs_label,Burns and Plastic Surgery Burns And Plastic Surgery,,Plastic & Reconstructive Surgery,procedure,CGHS section label,draft
+cghs_label,Orthopaedics Procedure Burns And Plastic Surgery,,Plastic & Reconstructive Surgery,procedure,CGHS section label,draft
+cghs_label,Procedure,,NONE,,generic label,draft
+cghs_label,Ophthalmology Investigation,,Ophthalmology,procedure,CGHS section label,draft
+cghs_label,Nuclear Medicine Investigation,,NONE,,CGHS section label,draft
+cghs_label,Cardiology Procedure,,Cardiology,procedure,CGHS section label,draft
+cghs_label,General Surgery,,NONE,,general surgery not in our speciality list,draft
+cghs_label,General Surgery Gastro and Hepatobiliary,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Cardiology Investigation,,Cardiology,procedure,CGHS section label,draft
+cghs_label,ENT Investigation,,ENT,procedure,CGHS section label,draft
+cghs_label,Critical Care,,Critical Care,procedure,CGHS section label,draft
+cghs_label,Physiotherapy,,NONE,,CGHS section label,draft
+cghs_label,General Procedure,,NONE,,CGHS section label,draft
+cghs_label,Radiotherapy,,Oncology,procedure,CGHS section label,draft
+cghs_label,Biopsies,,NONE,,CGHS section label,draft
+cghs_label,Neurology Investigation,,Neurology,procedure,CGHS section label,draft
+cghs_label,Radio-Isotope Therapy,,Oncology,procedure,CGHS section label,draft
+cghs_label,Skin Procedure,,Dermatology,procedure,CGHS section label,draft
+cghs_label,Chemotherapy,,Oncology,procedure,CGHS section label,draft
+cghs_label,Blood Component Charges,,NONE,,CGHS section label,draft
+cghs_label,Pulmonology Investigation,,Pulmonology,procedure,CGHS section label,draft
+cghs_label,Pulmonology Procedure,,Pulmonology,procedure,CGHS section label,draft
+cghs_label,Procedure Interventional Radiological,,NONE,,CGHS section label,draft
+cghs_label,Procedure Interventional Radiology,,NONE,,CGHS section label,draft
+cghs_label,Biopsies Interventional Radiological,,NONE,,CGHS section label,draft
+cghs_label,Investigation Gastroenterology / Endoscopic,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Investigation Gastro and Hepatobiliary/Nuclear,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Medicine Investigation Gastro and Hepatobiliary/Nuclear,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Medicine Investigation Gastroenterology/Interventional,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Radiology Investigation Gastroenterology / Endoscopic,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Radiology Procedures Gastroenterology/Interventional,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Radiology Procedures Gastroenterology / Endoscopic,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Procedures Gastro and Hepatobiliary,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Procedures Gastroenterology/Interventional,,Gastroenterology,procedure,CGHS section label,draft
+cghs_label,Behavioural therapy,,Psychiatry,procedure,CGHS section label,draft
+cghs_label,Surgery Procedure,,NONE,,generic label,draft
+cghs_label,Procedures,,NONE,,generic label,draft
+cghs_label,Investigation Nephrology And Urology,,Urology,procedure,CGHS section label,draft
+cghs_label,Biopsy Nephrology And Urology -,,Urology,procedure,CGHS section label,draft
+cghs_label,Biopsy Nephrology And Urology,,Urology,procedure,CGHS section label,draft
+cghs_label,Consultation,,NONE,,CGHS section label,draft
+cghs_label,Dental Investigation,,NONE,,CGHS section label,draft
+cghs_label,Dental Biopsy,,NONE,,CGHS section label,draft
+cghs_label,Cardiology Add on Procedure,,Cardiology,procedure,CGHS section label,draft
+cghs_label,Cardiology Add on Procedure Cardiovascular And Cardiac,,Cardiothoracic Surgery,procedure,CGHS section label,draft
+cghs_label,Cardiology Implant(Valve),,Cardiology,procedure,CGHS section label,draft
+cghs_label,Ophthalmology Physiotherapy,,Ophthalmology,procedure,CGHS section label,draft
+cghs_label,Ophthalmology Biopsy,,Ophthalmology,procedure,CGHS section label,draft
+cghs_label,Head and Neck Surgery,,Oncology,procedure,mostly head and neck cancer surgery; ENT also reasonable,draft
+cghs_label,Neuro-Surgery Investigation,,Neurosurgery,procedure,CGHS section label,draft
+cghs_label,Neuro-Surgery Biopsy,,Neurosurgery,procedure,CGHS section label,draft
+cghs_label,Annual Health Check-up,,General Medicine,procedure,CGHS section label,draft
+cghs_label,Obstetrics Investigation Obstetrics And Gynaecology,,Obstetrics & Gynaecology,procedure,CGHS section label,draft
+cghs_label,Orthopaedics Investigation,,Orthopaedics,procedure,CGHS section label,draft
+lay_term,chest pain,,Cardiology,strong,patient wording,draft
+lay_term,angina,,Cardiology,strong,patient wording,draft
+lay_term,heart attack,,Cardiology,strong,patient wording,draft
+lay_term,myocardial infarction,,Cardiology,strong,patient wording,draft
+lay_term,palpitations,,Cardiology,strong,patient wording,draft
+lay_term,arrhythmia,,Cardiology,strong,patient wording,draft
+lay_term,atrial fibrillation,,Cardiology,strong,patient wording,draft
+lay_term,tachycardia,,Cardiology,strong,patient wording,draft
+lay_term,bradycardia,,Cardiology,strong,patient wording,draft
+lay_term,heart failure,,Cardiology,strong,patient wording,draft
+lay_term,high blood pressure,,Cardiology,strong,patient wording,draft
+lay_term,hypertension,,Cardiology,strong,patient wording,draft
+lay_term,blood pressure,,Cardiology,strong,patient wording,draft
+lay_term,coronary artery disease,,Cardiology,strong,patient wording,draft
+lay_term,angioplasty,,Cardiology,strong,patient wording,draft
+lay_term,stent,,Cardiology,strong,patient wording,draft
+lay_term,pacemaker,,Cardiology,strong,patient wording,draft
+lay_term,ecg,,Cardiology,strong,patient wording,draft
+lay_term,echo,,Cardiology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,cardiac,,Cardiology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,heart,,Cardiology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,heart pain,,Cardiology,strong,patient wording,draft
+lay_term,heart problem,,Cardiology,strong,patient wording,draft
+lay_term,irregular heartbeat,,Cardiology,strong,patient wording,draft
+lay_term,cabg,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,bypass surgery,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,bypass,,Cardiothoracic Surgery,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,open heart surgery,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,valve replacement,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,valve repair,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,mitral valve,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,aortic valve,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,aortic stenosis,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,triple vessel disease,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,heart surgery,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,aortic aneurysm,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,varicose veins,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,thoracic surgery,,Cardiothoracic Surgery,strong,patient wording,draft
+lay_term,congenital heart,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,hole in the heart,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,vsd,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,asd,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,tetralogy,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,blue baby,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,child heart,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,baby heart,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,heart murmur in child,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,pediatric cardiac,,Pediatric Cardiology,strong,patient wording,draft
+lay_term,cancer,,Oncology,strong,patient wording,draft
+lay_term,tumour,,Oncology,strong,patient wording,draft
+lay_term,tumor,,Oncology,strong,patient wording,draft
+lay_term,carcinoma,,Oncology,strong,patient wording,draft
+lay_term,malignant,,Oncology,strong,patient wording,draft
+lay_term,malignancy,,Oncology,strong,patient wording,draft
+lay_term,metastasis,,Oncology,strong,patient wording,draft
+lay_term,chemotherapy,,Oncology,strong,patient wording,draft
+lay_term,chemo,,Oncology,strong,patient wording,draft
+lay_term,radiotherapy,,Oncology,strong,patient wording,draft
+lay_term,radiation therapy,,Oncology,strong,patient wording,draft
+lay_term,biopsy,,Oncology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,lump,,Oncology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,mass,,Oncology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,lymphoma,,Oncology,strong,patient wording,draft
+lay_term,sarcoma,,Oncology,strong,patient wording,draft
+lay_term,oncology,,Oncology,strong,patient wording,draft
+lay_term,weight loss without trying,,Oncology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,leukemia,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,leukaemia,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,myeloma,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,thalassemia,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,thalassaemia,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,bone marrow transplant,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,bmt,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,stem cell transplant,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,anemia,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,anaemia,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,platelets,,Hematology & Bone Marrow Transplant,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,bruising,,Hematology & Bone Marrow Transplant,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,hemophilia,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,haemophilia,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,sickle cell,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,blood disorder,,Hematology & Bone Marrow Transplant,strong,patient wording,draft
+lay_term,blood transfusion,,Hematology & Bone Marrow Transplant,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,knee pain,,Orthopaedics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,knee replacement,,Orthopaedics,strong,patient wording,draft
+lay_term,hip replacement,,Orthopaedics,strong,patient wording,draft
+lay_term,joint replacement,,Orthopaedics,strong,patient wording,draft
+lay_term,joint pain,,Orthopaedics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,arthritis,,Orthopaedics,strong,patient wording,draft
+lay_term,osteoarthritis,,Orthopaedics,strong,patient wording,draft
+lay_term,fracture,,Orthopaedics,strong,patient wording,draft
+lay_term,broken bone,,Orthopaedics,strong,patient wording,draft
+lay_term,back pain,,Orthopaedics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,slipped disc,,Orthopaedics,strong,patient wording,draft
+lay_term,sciatica,,Orthopaedics,strong,patient wording,draft
+lay_term,spine,,Orthopaedics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,shoulder pain,,Orthopaedics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,ligament,,Orthopaedics,strong,patient wording,draft
+lay_term,acl,,Orthopaedics,strong,patient wording,draft
+lay_term,sports injury,,Orthopaedics,strong,patient wording,draft
+lay_term,bone,,Orthopaedics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,spondylosis,,Orthopaedics,strong,patient wording,draft
+lay_term,neck pain,,Orthopaedics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,stiff joints,,Orthopaedics,strong,patient wording,draft
+lay_term,joint swelling,,Orthopaedics,strong,patient wording,draft
+lay_term,knee swelling,,Orthopaedics,strong,patient wording,draft
+lay_term,back ache,,Orthopaedics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,frozen shoulder,,Orthopaedics,strong,patient wording,draft
+lay_term,bone pain,,Orthopaedics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,headache,,Neurology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,migraine,,Neurology,strong,patient wording,draft
+lay_term,seizure,,Neurology,strong,patient wording,draft
+lay_term,epilepsy,,Neurology,strong,patient wording,draft
+lay_term,fits,,Neurology,strong,patient wording,draft
+lay_term,stroke,,Neurology,strong,patient wording,draft
+lay_term,paralysis,,Neurology,strong,patient wording,draft
+lay_term,slurred speech,,Neurology,strong,patient wording,draft
+lay_term,numbness,,Neurology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,tingling,,Neurology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,parkinson,,Neurology,strong,patient wording,draft
+lay_term,tremor,,Neurology,strong,patient wording,draft
+lay_term,dementia,,Neurology,strong,patient wording,draft
+lay_term,memory loss,,Neurology,strong,patient wording,draft
+lay_term,multiple sclerosis,,Neurology,strong,patient wording,draft
+lay_term,neuropathy,,Neurology,strong,patient wording,draft
+lay_term,dizziness,,Neurology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,vertigo,,Neurology,strong,patient wording,draft
+lay_term,weakness in arm,,Neurology,strong,patient wording,draft
+lay_term,weakness in leg,,Neurology,strong,patient wording,draft
+lay_term,nerve,,Neurology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,head pain,,Neurology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,migraine attacks,,Neurology,strong,patient wording,draft
+lay_term,fainting,,Neurology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,memory problem,,Neurology,strong,patient wording,draft
+lay_term,brain tumour,,Neurosurgery,strong,patient wording,draft
+lay_term,brain tumor,,Neurosurgery,strong,patient wording,draft
+lay_term,brain surgery,,Neurosurgery,strong,patient wording,draft
+lay_term,aneurysm,,Neurosurgery,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,spinal cord compression,,Neurosurgery,strong,patient wording,draft
+lay_term,spine surgery,,Neurosurgery,strong,patient wording,draft
+lay_term,decompression,,Neurosurgery,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,hydrocephalus,,Neurosurgery,strong,patient wording,draft
+lay_term,craniotomy,,Neurosurgery,strong,patient wording,draft
+lay_term,head injury surgery,,Neurosurgery,strong,patient wording,draft
+lay_term,neurosurgery,,Neurosurgery,strong,patient wording,draft
+lay_term,glioma,,Neurosurgery,strong,patient wording,draft
+lay_term,meningioma,,Neurosurgery,strong,patient wording,draft
+lay_term,stomach pain,,Gastroenterology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,abdominal pain,,Gastroenterology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,acidity,,Gastroenterology,strong,patient wording,draft
+lay_term,acid reflux,,Gastroenterology,strong,patient wording,draft
+lay_term,heartburn,,Gastroenterology,strong,patient wording,draft
+lay_term,gerd,,Gastroenterology,strong,patient wording,draft
+lay_term,indigestion,,Gastroenterology,strong,patient wording,draft
+lay_term,ulcer,,Gastroenterology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,gastritis,,Gastroenterology,strong,patient wording,draft
+lay_term,vomiting,,Gastroenterology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,diarrhoea,,Gastroenterology,strong,patient wording,draft
+lay_term,diarrhea,,Gastroenterology,strong,patient wording,draft
+lay_term,constipation,,Gastroenterology,strong,patient wording,draft
+lay_term,blood in stool,,Gastroenterology,strong,patient wording,draft
+lay_term,colonoscopy,,Gastroenterology,strong,patient wording,draft
+lay_term,endoscopy,,Gastroenterology,strong,patient wording,draft
+lay_term,crohn,,Gastroenterology,strong,patient wording,draft
+lay_term,colitis,,Gastroenterology,strong,patient wording,draft
+lay_term,ibs,,Gastroenterology,strong,patient wording,draft
+lay_term,liver,,Gastroenterology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,hepatitis,,Gastroenterology,strong,patient wording,draft
+lay_term,cirrhosis,,Gastroenterology,strong,patient wording,draft
+lay_term,jaundice,,Gastroenterology,strong,patient wording,draft
+lay_term,gallbladder,,Gastroenterology,strong,patient wording,draft
+lay_term,gallstones,,Gastroenterology,strong,patient wording,draft
+lay_term,pancreatitis,,Gastroenterology,strong,patient wording,draft
+lay_term,bloating,,Gastroenterology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,stomach infection,,Gastroenterology,strong,patient wording,draft
+lay_term,food poisoning,,Gastroenterology,strong,patient wording,draft
+lay_term,loose motions,,Gastroenterology,strong,patient wording,draft
+lay_term,gas,,Gastroenterology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,piles,,Gastroenterology,strong,patient wording,draft
+lay_term,fatty liver,,Gastroenterology,strong,patient wording,draft
+lay_term,kidney disease,,Nephrology,strong,patient wording,draft
+lay_term,kidney failure,,Nephrology,strong,patient wording,draft
+lay_term,ckd,,Nephrology,strong,patient wording,draft
+lay_term,chronic kidney,,Nephrology,strong,patient wording,draft
+lay_term,creatinine,,Nephrology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,dialysis,,Nephrology,strong,patient wording,draft
+lay_term,protein in urine,,Nephrology,strong,patient wording,draft
+lay_term,proteinuria,,Nephrology,strong,patient wording,draft
+lay_term,nephrotic,,Nephrology,strong,patient wording,draft
+lay_term,renal failure,,Nephrology,strong,patient wording,draft
+lay_term,swelling of feet,,Nephrology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,puffy face,,Nephrology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,kidney function,,Nephrology,strong,patient wording,draft
+lay_term,kidney stone,,Urology,strong,patient wording,draft
+lay_term,urinary,,Urology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,urine infection,,Urology,strong,patient wording,draft
+lay_term,uti,,Urology,strong,patient wording,draft
+lay_term,burning urination,,Urology,strong,patient wording,draft
+lay_term,prostate,,Urology,strong,patient wording,draft
+lay_term,psa,,Urology,strong,patient wording,draft
+lay_term,bladder,,Urology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,frequent urination,,Urology,strong,patient wording,draft
+lay_term,blood in urine,,Urology,strong,patient wording,draft
+lay_term,weak stream,,Urology,strong,patient wording,draft
+lay_term,incontinence,,Urology,strong,patient wording,draft
+lay_term,urology,,Urology,strong,patient wording,draft
+lay_term,testicular,,Urology,strong,patient wording,draft
+lay_term,kidney infection,,Urology,strong,patient wording,draft
+lay_term,pain while urinating,,Urology,strong,patient wording,draft
+lay_term,transplant,,Organ Transplant,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,kidney transplant,,Organ Transplant,strong,patient wording,draft
+lay_term,liver transplant,,Organ Transplant,strong,patient wording,draft
+lay_term,organ transplant,,Organ Transplant,strong,patient wording,draft
+lay_term,donor,,Organ Transplant,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,living donor,,Organ Transplant,strong,patient wording,draft
+lay_term,end stage,,Organ Transplant,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,heart transplant,,Organ Transplant,strong,patient wording,draft
+lay_term,lung transplant,,Organ Transplant,strong,patient wording,draft
+lay_term,pregnancy,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,pregnant,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,delivery,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,childbirth,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,caesarean,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,periods,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,menstrual,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,heavy periods,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,fibroids,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,uterus,,Obstetrics & Gynaecology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,ovarian cyst,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,ovary,,Obstetrics & Gynaecology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,pelvic pain,,Obstetrics & Gynaecology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,hysterectomy,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,menopause,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,gynaecology,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,gynecology,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,vaginal,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,cervix,,Obstetrics & Gynaecology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,irregular periods,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,white discharge,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,period pain,,Obstetrics & Gynaecology,strong,patient wording,draft
+lay_term,infertility,,Reproductive Medicine,strong,patient wording,draft
+lay_term,ivf,,Reproductive Medicine,strong,patient wording,draft
+lay_term,icsi,,Reproductive Medicine,strong,patient wording,draft
+lay_term,iui,,Reproductive Medicine,strong,patient wording,draft
+lay_term,trying for a baby,,Reproductive Medicine,strong,patient wording,draft
+lay_term,unable to conceive,,Reproductive Medicine,strong,patient wording,draft
+lay_term,conceive,,Reproductive Medicine,strong,patient wording,draft
+lay_term,fertility,,Reproductive Medicine,strong,patient wording,draft
+lay_term,sperm count,,Reproductive Medicine,strong,patient wording,draft
+lay_term,egg freezing,,Reproductive Medicine,strong,patient wording,draft
+lay_term,surrogacy,,Reproductive Medicine,strong,patient wording,draft
+lay_term,test tube baby,,Reproductive Medicine,strong,patient wording,draft
+lay_term,child,,Paediatrics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,baby,,Paediatrics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,infant,,Paediatrics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,newborn,,Paediatrics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,toddler,,Paediatrics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,premature,,Paediatrics,strong,patient wording,draft
+lay_term,nicu,,Paediatrics,strong,patient wording,draft
+lay_term,my son,,Paediatrics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,my daughter,,Paediatrics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,kid,,Paediatrics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,development delay,,Paediatrics,strong,patient wording,draft
+lay_term,growth,,Paediatrics,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,vaccination,,Paediatrics,strong,patient wording,draft
+lay_term,pediatric,,Paediatrics,strong,patient wording,draft
+lay_term,paediatric,,Paediatrics,strong,patient wording,draft
+lay_term,diabetes,,Endocrinology,strong,patient wording,draft
+lay_term,diabetic,,Endocrinology,strong,patient wording,draft
+lay_term,blood sugar,,Endocrinology,strong,patient wording,draft
+lay_term,sugar level,,Endocrinology,strong,patient wording,draft
+lay_term,insulin,,Endocrinology,strong,patient wording,draft
+lay_term,thyroid,,Endocrinology,strong,patient wording,draft
+lay_term,hypothyroid,,Endocrinology,strong,patient wording,draft
+lay_term,hyperthyroid,,Endocrinology,strong,patient wording,draft
+lay_term,goitre,,Endocrinology,strong,patient wording,draft
+lay_term,hormone,,Endocrinology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,hormonal,,Endocrinology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,pcos,,Endocrinology,strong,patient wording,draft
+lay_term,excess hair,,Endocrinology,strong,patient wording,draft
+lay_term,adrenal,,Endocrinology,strong,patient wording,draft
+lay_term,pituitary,,Endocrinology,strong,patient wording,draft
+lay_term,metabolic,,Endocrinology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,excessive thirst,,Endocrinology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,weight gain,,Endocrinology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,thyroid problem,,Endocrinology,strong,patient wording,draft
+lay_term,high sugar,,Endocrinology,strong,patient wording,draft
+lay_term,cough,,Pulmonology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,breathless,,Pulmonology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,breathlessness,,Pulmonology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,shortness of breath,,Pulmonology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,wheezing,,Pulmonology,strong,patient wording,draft
+lay_term,asthma,,Pulmonology,strong,patient wording,draft
+lay_term,copd,,Pulmonology,strong,patient wording,draft
+lay_term,lung,,Pulmonology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,tb,,Pulmonology,strong,patient wording,draft
+lay_term,tuberculosis,,Pulmonology,strong,patient wording,draft
+lay_term,pneumonia,,Pulmonology,strong,patient wording,draft
+lay_term,bronchitis,,Pulmonology,strong,patient wording,draft
+lay_term,sleep apnea,,Pulmonology,strong,patient wording,draft
+lay_term,sleep apnoea,,Pulmonology,strong,patient wording,draft
+lay_term,snoring,,Pulmonology;ENT,strong,patient wording,draft
+lay_term,phlegm,,Pulmonology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,sputum,,Pulmonology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,respiratory,,Pulmonology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,chest infection,,Pulmonology,strong,patient wording,draft
+lay_term,lung infection,,Pulmonology,strong,patient wording,draft
+lay_term,breathing problem,,Pulmonology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,persistent cough,,Pulmonology,strong,patient wording,draft
+lay_term,burn scars,,Plastic & Reconstructive Surgery,strong,patient wording,draft
+lay_term,burns,,Plastic & Reconstructive Surgery,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,reconstruction,,Plastic & Reconstructive Surgery,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,reconstructive,,Plastic & Reconstructive Surgery,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,cleft lip,,Plastic & Reconstructive Surgery,strong,patient wording,draft
+lay_term,cleft palate,,Plastic & Reconstructive Surgery,strong,patient wording,draft
+lay_term,plastic surgery,,Plastic & Reconstructive Surgery,strong,patient wording,draft
+lay_term,cosmetic surgery,,Plastic & Reconstructive Surgery,strong,patient wording,draft
+lay_term,scar revision,,Plastic & Reconstructive Surgery,strong,patient wording,draft
+lay_term,skin graft,,Plastic & Reconstructive Surgery,strong,patient wording,draft
+lay_term,rhinoplasty,,Plastic & Reconstructive Surgery,strong,patient wording,draft
+lay_term,hair transplant,,Plastic & Reconstructive Surgery,strong,patient wording,draft
+lay_term,obesity,,Bariatric Surgery,strong,patient wording,draft
+lay_term,obese,,Bariatric Surgery,strong,patient wording,draft
+lay_term,morbid obesity,,Bariatric Surgery,strong,patient wording,draft
+lay_term,bmi,,Bariatric Surgery,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,weight loss surgery,,Bariatric Surgery,strong,patient wording,draft
+lay_term,bariatric,,Bariatric Surgery,strong,patient wording,draft
+lay_term,gastric sleeve,,Bariatric Surgery,strong,patient wording,draft
+lay_term,sleeve gastrectomy,,Bariatric Surgery,strong,patient wording,draft
+lay_term,gastric bypass,,Bariatric Surgery,strong,patient wording,draft
+lay_term,gastric balloon,,Bariatric Surgery,strong,patient wording,draft
+lay_term,overweight,,Bariatric Surgery,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,emergency,,Emergency Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,accident,,Emergency Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,trauma,,Emergency Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,heavy bleeding,,Emergency Medicine,strong,patient wording,draft
+lay_term,bleeding,,Emergency Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,unconscious,,Emergency Medicine,strong,patient wording,draft
+lay_term,poison,,Emergency Medicine,strong,patient wording,draft
+lay_term,poisoning,,Emergency Medicine,strong,patient wording,draft
+lay_term,overdose,,Emergency Medicine,strong,patient wording,draft
+lay_term,anaphylaxis,,Emergency Medicine,strong,patient wording,draft
+lay_term,severe allergic reaction,,Emergency Medicine,strong,patient wording,draft
+lay_term,collapsed,,Emergency Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,burn injury,,Emergency Medicine,strong,patient wording,draft
+lay_term,snake bite,,Emergency Medicine,strong,patient wording,draft
+lay_term,choking,,Emergency Medicine,strong,patient wording,draft
+lay_term,icu,,Critical Care,strong,patient wording,draft
+lay_term,intensive care,,Critical Care,strong,patient wording,draft
+lay_term,ventilator,,Critical Care,strong,patient wording,draft
+lay_term,sepsis,,Critical Care,strong,patient wording,draft
+lay_term,septic,,Critical Care,strong,patient wording,draft
+lay_term,multi organ failure,,Critical Care,strong,patient wording,draft
+lay_term,critically ill,,Critical Care,strong,patient wording,draft
+lay_term,life support,,Critical Care,strong,patient wording,draft
+lay_term,oxygen falling,,Critical Care,strong,patient wording,draft
+lay_term,critical condition,,Critical Care,strong,patient wording,draft
+lay_term,eye,,Ophthalmology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,eyes,,Ophthalmology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,vision,,Ophthalmology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,blurry vision,,Ophthalmology,strong,patient wording,draft
+lay_term,blurred vision,,Ophthalmology,strong,patient wording,draft
+lay_term,cataract,,Ophthalmology,strong,patient wording,draft
+lay_term,glaucoma,,Ophthalmology,strong,patient wording,draft
+lay_term,retina,,Ophthalmology,strong,patient wording,draft
+lay_term,retinopathy,,Ophthalmology,strong,patient wording,draft
+lay_term,squint,,Ophthalmology,strong,patient wording,draft
+lay_term,red eye,,Ophthalmology,strong,patient wording,draft
+lay_term,floaters,,Ophthalmology,strong,patient wording,draft
+lay_term,lasik,,Ophthalmology,strong,patient wording,draft
+lay_term,cornea,,Ophthalmology,strong,patient wording,draft
+lay_term,eyesight,,Ophthalmology,strong,patient wording,draft
+lay_term,eye infection,,Ophthalmology,strong,patient wording,draft
+lay_term,eye pain,,Ophthalmology,strong,patient wording,draft
+lay_term,red eyes,,Ophthalmology,strong,patient wording,draft
+lay_term,watery eyes,,Ophthalmology,strong,patient wording,draft
+lay_term,itchy eyes,,Ophthalmology,strong,patient wording,draft
+lay_term,eye discharge,,Ophthalmology,strong,patient wording,draft
+lay_term,conjunctivitis,,Ophthalmology,strong,patient wording,draft
+lay_term,pink eye,,Ophthalmology,strong,patient wording,draft
+lay_term,stye,,Ophthalmology,strong,patient wording,draft
+lay_term,swollen eyelid,,Ophthalmology,strong,patient wording,draft
+lay_term,eye allergy,,Ophthalmology,strong,patient wording,draft
+lay_term,poor eyesight,,Ophthalmology,strong,patient wording,draft
+lay_term,double vision,,Ophthalmology,strong,patient wording,draft
+lay_term,ear,,ENT,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,ear pain,,ENT,strong,patient wording,draft
+lay_term,hearing loss,,ENT,strong,patient wording,draft
+lay_term,deaf,,ENT,strong,patient wording,draft
+lay_term,cochlear implant,,ENT,strong,patient wording,draft
+lay_term,tinnitus,,ENT,strong,patient wording,draft
+lay_term,nose,,ENT,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,blocked nose,,ENT,strong,patient wording,draft
+lay_term,sinus,,ENT,strong,patient wording,draft
+lay_term,sinusitis,,ENT,strong,patient wording,draft
+lay_term,tonsils,,ENT,strong,patient wording,draft
+lay_term,throat,,ENT,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,sore throat,,ENT,strong,patient wording,draft
+lay_term,hoarse voice,,ENT,strong,patient wording,draft
+lay_term,voice,,ENT,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,nasal,,ENT,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,adenoids,,ENT,strong,patient wording,draft
+lay_term,ear infection,,ENT,strong,patient wording,draft
+lay_term,ear discharge,,ENT,strong,patient wording,draft
+lay_term,ringing in ears,,ENT,strong,patient wording,draft
+lay_term,blocked ear,,ENT,strong,patient wording,draft
+lay_term,nose bleed,,ENT,strong,patient wording,draft
+lay_term,nosebleed,,ENT,strong,patient wording,draft
+lay_term,throat infection,,ENT,strong,patient wording,draft
+lay_term,tonsillitis,,ENT,strong,patient wording,draft
+lay_term,loss of smell,,ENT,strong,patient wording,draft
+lay_term,skin,,Dermatology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,rash,,Dermatology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,itching,,Dermatology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,itchy,,Dermatology,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,eczema,,Dermatology,strong,patient wording,draft
+lay_term,psoriasis,,Dermatology,strong,patient wording,draft
+lay_term,acne,,Dermatology,strong,patient wording,draft
+lay_term,vitiligo,,Dermatology,strong,patient wording,draft
+lay_term,white patches,,Dermatology,strong,patient wording,draft
+lay_term,fungal infection,,Dermatology,strong,patient wording,draft
+lay_term,ringworm,,Dermatology,strong,patient wording,draft
+lay_term,hives,,Dermatology,strong,patient wording,draft
+lay_term,dermatitis,,Dermatology,strong,patient wording,draft
+lay_term,pimples,,Dermatology,strong,patient wording,draft
+lay_term,hair loss,,Dermatology,strong,patient wording,draft
+lay_term,scaly,,Dermatology,strong,patient wording,draft
+lay_term,blisters,,Dermatology,strong,patient wording,draft
+lay_term,skin infection,,Dermatology,strong,patient wording,draft
+lay_term,skin allergy,,Dermatology,strong,patient wording,draft
+lay_term,skin rash,,Dermatology,strong,patient wording,draft
+lay_term,dandruff,,Dermatology,strong,patient wording,draft
+lay_term,dark spots,,Dermatology,strong,patient wording,draft
+lay_term,nail infection,,Dermatology,strong,patient wording,draft
+lay_term,warts,,Dermatology,strong,patient wording,draft
+lay_term,boils,,Dermatology,strong,patient wording,draft
+lay_term,depression,,Psychiatry,strong,patient wording,draft
+lay_term,depressed,,Psychiatry,strong,patient wording,draft
+lay_term,feeling low,,Psychiatry,strong,patient wording,draft
+lay_term,anxiety,,Psychiatry,strong,patient wording,draft
+lay_term,panic attack,,Psychiatry,strong,patient wording,draft
+lay_term,stress,,Psychiatry,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,mental health,,Psychiatry,strong,patient wording,draft
+lay_term,addiction,,Psychiatry,strong,patient wording,draft
+lay_term,alcohol,,Psychiatry,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,de-addiction,,Psychiatry,strong,patient wording,draft
+lay_term,bipolar,,Psychiatry,strong,patient wording,draft
+lay_term,schizophrenia,,Psychiatry,strong,patient wording,draft
+lay_term,suicidal,,Psychiatry,strong,patient wording,draft
+lay_term,insomnia,,Psychiatry,strong,patient wording,draft
+lay_term,cannot sleep,,Psychiatry,strong,patient wording,draft
+lay_term,ocd,,Psychiatry,strong,patient wording,draft
+lay_term,sleep problem,,Psychiatry,strong,patient wording,draft
+lay_term,mood swings,,Psychiatry,strong,patient wording,draft
+lay_term,panic,,Psychiatry,strong,patient wording,draft
+lay_term,nervousness,,Psychiatry,strong,patient wording,draft
+lay_term,fever,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,body ache,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,cold,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,flu,,General Medicine,strong,patient wording,draft
+lay_term,infection,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,malaria,,General Medicine,strong,patient wording,draft
+lay_term,dengue,,General Medicine,strong,patient wording,draft
+lay_term,typhoid,,General Medicine,strong,patient wording,draft
+lay_term,viral,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,weakness,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,tired,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,fatigue,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,health checkup,,General Medicine,strong,patient wording,draft
+lay_term,general checkup,,General Medicine,strong,patient wording,draft
+lay_term,check up,,General Medicine,strong,patient wording,draft
+lay_term,not sure what is wrong,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+lay_term,feeling unwell,,General Medicine,weak,"body part, age word, plain symptom or ambiguous word",draft
+hospital,Adult Interventional Cardiology,,Cardiology,,Interventional cardiology grouped under Cardiology,reviewed
+hospital,Assisted Reproduction (IVF),,Reproductive Medicine,,IVF and assisted reproduction grouped under Reproductive Medicine,reviewed
+hospital,Ayurveda & Modern Medicine,,NONE,,Mixed service category; not suitable as a canonical specialty without manual review,review_needed
+hospital,Bariatric & Minimal Access Surgery,,Bariatric Surgery,,Bariatric surgical service,reviewed
+hospital,BMT,,Hematology & Bone Marrow Transplant,,BMT interpreted as Bone Marrow Transplant,reviewed
+hospital,Bone & Joint,,Orthopaedics,,Bone and joint care grouped under Orthopaedics,reviewed
+hospital,Bone Marrow & Stem Cell Transplant,,Hematology & Bone Marrow Transplant,,Transplant service closely associated with hematology,reviewed
+hospital,Bone Marrow Transplant,,Hematology & Bone Marrow Transplant,,Bone marrow transplant service,reviewed
+hospital,Cancer,,Oncology,,General cancer service grouped under Oncology,reviewed
+hospital,Cardiac Sciences,,Cardiology,,Broad cardiac department label,reviewed
+hospital,Cardiac Surgery,,Cardiothoracic Surgery,,Cardiac surgical specialty,reviewed
+hospital,Cardiology,,Cardiology,,Already canonical,reviewed
+hospital,Cardiology & Cardiac Surgery,,Cardiology,,Mixed cardiology and surgical department; route primarily through Cardiology,reviewed
+hospital,Cardiology & Cardiothoracic Surgery,,Cardiology,,Mixed cardiology and surgical department,reviewed
+hospital,Cardiology & CTVS,,Cardiology,,Mixed cardiology and cardiothoracic vascular surgery service,reviewed
+hospital,Cardiology & CVTS,,Cardiology,,Mixed cardiology and cardiothoracic vascular surgery service,reviewed
+hospital,Cardiology & Heart Transplants,,Cardiology,,Broad cardiac service including transplant care,reviewed
+hospital,Cardiothoracic Surgery,,Cardiothoracic Surgery,,Already canonical,reviewed
+hospital,Children's Heart Centre,,Pediatric Cardiology,,Pediatric cardiac care,reviewed
+hospital,Cosmetic,,Plastic & Reconstructive Surgery,,Cosmetic care usually delivered through plastic surgery,reviewed
+hospital,Critical Care,,Critical Care,,Already canonical,reviewed
+hospital,Diabetes & Endocrinology,,Endocrinology,,Diabetes commonly managed under Endocrinology,reviewed
+hospital,Digestive & Hepatobiliary,,Gastroenterology,,Could involve gastroenterology hepatology or GI surgery depending on hospital,review_needed
+hospital,Digestive & Liver Diseases,,Gastroenterology,,Broad digestive and liver medicine service,reviewed
+hospital,Digestive Diseases,,Gastroenterology,,General digestive medicine,reviewed
+hospital,Electrophysiology,,Cardiology,,Cardiac electrophysiology is a cardiology subspecialty,reviewed
+hospital,Emergency,,Emergency Medicine,,Emergency clinical service,reviewed
+hospital,Emergency & Trauma,,Emergency Medicine,,Emergency and trauma service,reviewed
+hospital,Emergency Care,,Emergency Medicine,,Emergency clinical service,reviewed
+hospital,Endocrinology,,Endocrinology,,Already canonical,reviewed
+hospital,Gastro Sciences,,Gastroenterology,,Broad gastroenterology service,reviewed
+hospital,Bariatric Surgery,,Bariatric Surgery,,Step 1 canonical name,reviewed
+hospital,Dermatology,,Dermatology,,Step 1 canonical name,reviewed
+hospital,ENT,,ENT,,Step 1 canonical name,reviewed
+hospital,Emergency Medicine,,Emergency Medicine,,Step 1 canonical name,reviewed
+hospital,Gastroenterology,,Gastroenterology,,Step 1 canonical name,reviewed
+hospital,General Medicine,,General Medicine,,Step 1 canonical name,reviewed
+hospital,Hematology & Bone Marrow Transplant,,Hematology & Bone Marrow Transplant,,Step 1 canonical name,reviewed
+hospital,Nephrology,,Nephrology,,Step 1 canonical name,reviewed
+hospital,Neurology,,Neurology,,Step 1 canonical name,reviewed
+hospital,Neurosurgery,,Neurosurgery,,Step 1 canonical name,reviewed
+hospital,Obstetrics & Gynaecology,,Obstetrics & Gynaecology,,Step 1 canonical name,reviewed
+hospital,Oncology,,Oncology,,Step 1 canonical name,reviewed
+hospital,Ophthalmology,,Ophthalmology,,Step 1 canonical name,reviewed
+hospital,Organ Transplant,,Organ Transplant,,Step 1 canonical name,reviewed
+hospital,Orthopaedics,,Orthopaedics,,Step 1 canonical name,reviewed
+hospital,Paediatrics,,Paediatrics,,Step 1 canonical name,reviewed
+hospital,Pediatric Cardiology,,Pediatric Cardiology,,Step 1 canonical name,reviewed
+hospital,Plastic & Reconstructive Surgery,,Plastic & Reconstructive Surgery,,Step 1 canonical name,reviewed
+hospital,Psychiatry,,Psychiatry,,Step 1 canonical name,reviewed
+hospital,Pulmonology,,Pulmonology,,Step 1 canonical name,reviewed
+hospital,Reproductive Medicine,,Reproductive Medicine,,Step 1 canonical name,reviewed
+hospital,Urology,,Urology,,Step 1 canonical name,reviewed
+hospital,Neurosciences,,Neurology;Neurosurgery,,keyword rule: neurosciences = neurology + neurosurgery,draft
+hospital,Interventional Cardiology,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Organ Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Joint Replacement,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Radiation Oncology,,Oncology,,keyword rule: cancer care,draft
+hospital,Joint Arthroplasty,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Renal Care,,Nephrology,,keyword rule: kidney care,draft
+hospital,Surgical Oncology,,Oncology,,keyword rule: cancer care,draft
+hospital,Renal Transplantation,,Organ Transplant;Nephrology,,keyword rule: transplant; kidney care,draft
+hospital,Medical Oncology,,Oncology,,keyword rule: cancer care,draft
+hospital,Spine Surgery,,Neurosurgery;Orthopaedics,,keyword rule: brain / spine surgery,draft
+hospital,General Surgery,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Trauma Care,,Emergency Medicine,,keyword rule: trauma / emergency,draft
+hospital,Robotic Surgery,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Minimally Invasive Spine Surgery,,Neurosurgery;Orthopaedics,,keyword rule: brain / spine surgery,draft
+hospital,Minimally Invasive Cardiac Surgery,,Cardiothoracic Surgery,,keyword rule: heart / chest surgery,draft
+hospital,Trauma Management,,Emergency Medicine,,keyword rule: trauma / emergency,draft
+hospital,Pediatric Cardiac Surgery,,Pediatric Cardiology,,keyword rule: children's heart care,draft
+hospital,Minimal Access Surgery,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Orthopaedics & Trauma,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Interventional Radiology,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Robotic Joint Replacement,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Kidney Transplantation,,Organ Transplant;Nephrology,,keyword rule: transplant; kidney care,draft
+hospital,Interventional Oncology,,Oncology,,keyword rule: cancer care,draft
+hospital,Robotic Cancer Surgery,,Oncology,,keyword rule: cancer care,draft
+hospital,Renal Sciences,,Nephrology,,keyword rule: kidney care,draft
+hospital,Pediatric Oncology,,Oncology;Paediatrics,,keyword rule: cancer care; children,draft
+hospital,Nephrology & Urology,,Nephrology;Urology,,keyword rule: kidney care; urology,draft
+hospital,Head & Neck Oncology,,Oncology,,keyword rule: cancer care,draft
+hospital,Pulmonary Medicine,,Pulmonology,,keyword rule: lungs,draft
+hospital,Renal Transplant,,Organ Transplant;Nephrology,,keyword rule: transplant; kidney care,draft
+hospital,Vascular Surgery,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Interventional Pulmonology,,Pulmonology,,keyword rule: lungs,draft
+hospital,Epilepsy Surgery,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,Hemato-Oncology,,Hematology & Bone Marrow Transplant,,keyword rule: blood cancers / BMT,draft
+hospital,Liver and Kidney Transplantation,,Organ Transplant;Nephrology;Gastroenterology,,keyword rule: transplant; kidney care; digestive / liver care,draft
+hospital,Multi-organ Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Radiation Therapy,,Oncology,,keyword rule: cancer care,draft
+hospital,Arthroscopy,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Liver and Kidney Transplants,,Organ Transplant;Nephrology;Gastroenterology,,keyword rule: transplant; kidney care; digestive / liver care,draft
+hospital,Renal Dialysis,,Nephrology,,keyword rule: kidney care,draft
+hospital,Neurosurgical Trauma,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,Linear Accelerator Radiation,,Oncology,,keyword rule: cancer care,draft
+hospital,Robotic Joint Surgery,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Liver Transplantation,,Organ Transplant;Gastroenterology,,keyword rule: transplant; digestive / liver care,draft
+hospital,Hepatology,,Gastroenterology,,keyword rule: digestive / liver care,draft
+hospital,General & Laparoscopic Surgery,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Hepato-Pancreato-Biliary,,Gastroenterology,,keyword rule: digestive / liver care,draft
+hospital,Pediatrics,,Paediatrics,,keyword rule: children,draft
+hospital,Liver Care,,Gastroenterology,,keyword rule: digestive / liver care,draft
+hospital,Palliative Care,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Orthopaedics & Joint Replacement,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Trauma & Orthopaedics,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Pediatric Surgery,,Paediatrics,,keyword rule: children,draft
+hospital,Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Trauma,,Emergency Medicine,,keyword rule: trauma / emergency,draft
+hospital,Neuro-Rehabilitation,,Neurology,,keyword rule: neurology,draft
+hospital,Neuro-Oncology,,Oncology;Neurosurgery,,keyword rule: cancer care; brain tumours,draft
+hospital,Joint Reconstruction,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Living Donor Liver Transplant,,Organ Transplant;Gastroenterology,,keyword rule: transplant; digestive / liver care,draft
+hospital,Nuclear Medicine,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Radiosurgery,,Oncology,,keyword rule: cancer care,draft
+hospital,Stereotactic Radiosurgery,,Oncology,,keyword rule: cancer care,draft
+hospital,Spinal Arthroscopy,,Neurosurgery;Orthopaedics,,keyword rule: brain / spine surgery; bones and joints,draft
+hospital,Neurovascular Interventions,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,Mechanical Circulatory Support,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Robotic Urological Surgery,,Urology,,keyword rule: urology,draft
+hospital,Comprehensive Cancer Care,,Oncology,,keyword rule: cancer care,draft
+hospital,Pediatric Heart Transplants,,Pediatric Cardiology,,keyword rule: children's heart care,draft
+hospital,Robotic Heart Surgery,,Cardiothoracic Surgery,,keyword rule: heart / chest surgery,draft
+hospital,Heart & Lung Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Emergency Percutaneous Intervention,,Cardiology;Emergency Medicine,,keyword rule: heart procedures without open surgery; trauma / emergency,draft
+hospital,Stroke Intervention,,Neurology,,keyword rule: neurology,draft
+hospital,Complex Joint Surgery,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Trauma Resuscitation,,Emergency Medicine,,keyword rule: trauma / emergency,draft
+hospital,Deep Brain Stimulation,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,Linear Accelerator Radiotherapy,,Oncology,,keyword rule: cancer care,draft
+hospital,TAVR,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Internal Medicine,,General Medicine,,keyword rule: general medicine,draft
+hospital,Respiratory Medicine,,Pulmonology,,keyword rule: lungs,draft
+hospital,Heart & Lung Transplantation,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Liver Transplantation & HPB,,Organ Transplant;Gastroenterology,,keyword rule: transplant; digestive / liver care,draft
+hospital,Rehabilitation,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Solid Organ Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Urology & Nephrology,,Nephrology;Urology,,keyword rule: kidney care; urology,draft
+hospital,Medical & Surgical Oncology,,Oncology,,keyword rule: cancer care,draft
+hospital,Gynecology,,Obstetrics & Gynaecology,,keyword rule: women's health,draft
+hospital,Pediatric Hemato-Oncology,,Hematology & Bone Marrow Transplant,,keyword rule: blood cancers / BMT,draft
+hospital,Pediatric Care,,Paediatrics,,keyword rule: children,draft
+hospital,Palliative Medicine,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Hepatology & HPB,,Gastroenterology,,keyword rule: digestive / liver care,draft
+hospital,Neuro-Radiology,,Neurology,,keyword rule: neurology,draft
+hospital,Liver Transplant,,Organ Transplant;Gastroenterology,,keyword rule: transplant; digestive / liver care,draft
+hospital,Thoracic Surgery,,Cardiothoracic Surgery,,keyword rule: heart / chest surgery,draft
+hospital,Neurovascular Intervention,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,Orthopaedic Oncology,,Oncology;Orthopaedics,,keyword rule: cancer care; bones and joints,draft
+hospital,Paediatric Hemato-Oncology,,Hematology & Bone Marrow Transplant,,keyword rule: blood cancers / BMT,draft
+hospital,Adult BMT,,Hematology & Bone Marrow Transplant,,keyword rule: blood cancers / BMT,draft
+hospital,Hepato-Pancreato-Biliary Surgery,,Gastroenterology,,keyword rule: digestive / liver care,draft
+hospital,Robotic Cardiothoracic Surgery,,Cardiothoracic Surgery,,keyword rule: heart / chest surgery,draft
+hospital,Brain Tumor & Spine Radiosurgery,,Oncology;Neurosurgery,,keyword rule: cancer care; brain / spine surgery,draft
+hospital,Paediatric Cardiology & Cardiac Surgery,,Pediatric Cardiology,,keyword rule: children's heart care,draft
+hospital,Neuro-Intervention,,Neurology,,keyword rule: neurology,draft
+hospital,Robotic Oncology,,Oncology,,keyword rule: cancer care,draft
+hospital,Orthopaedic Trauma,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Critical Care Medicine,,Critical Care,,keyword rule: intensive care,draft
+hospital,Full-time Specialist System,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Breast Cancer Surgery,,Oncology,,keyword rule: cancer care,draft
+hospital,Musculoskeletal Oncology,,Oncology,,keyword rule: cancer care,draft
+hospital,Pulmonary Critical Care,,Pulmonology;Critical Care,,keyword rule: lungs; intensive care,draft
+hospital,Epilepsy Monitoring,,Neurology,,keyword rule: neurology,draft
+hospital,Pediatric Cardiac Care,,Pediatric Cardiology,,keyword rule: children's heart care,draft
+hospital,Functional Neurosurgery,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,IVF Treatments,,Reproductive Medicine,,keyword rule: fertility,draft
+hospital,Trauma & Joint Replacement,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Living-Donor Liver Transplant,,Organ Transplant;Gastroenterology,,keyword rule: transplant; digestive / liver care,draft
+hospital,Heart Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Proton Beam Therapy (Network),,Oncology,,keyword rule: cancer care,draft
+hospital,Joint Replacement & Revision,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Keyhole Spine Surgery,,Neurosurgery;Orthopaedics,,keyword rule: brain / spine surgery,draft
+hospital,Haploidentical BMT,,Hematology & Bone Marrow Transplant,,keyword rule: blood cancers / BMT,draft
+hospital,Pin-hole Interventional Radiology,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,VAD Implantation,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Neuro-endoscopy,,Neurosurgery;Gastroenterology,,keyword rule: brain / spine surgery; digestive / liver care,draft
+hospital,Pediatric Liver Transplant,,Organ Transplant;Gastroenterology;Paediatrics,,keyword rule: transplant; digestive / liver care; children,draft
+hospital,Critical Care Hepatology,,Gastroenterology;Critical Care,,keyword rule: digestive / liver care; intensive care,draft
+hospital,Neonatal Critical Care,,Critical Care;Paediatrics,,keyword rule: intensive care; children,draft
+hospital,Hematology & BMT,,Hematology & Bone Marrow Transplant,,keyword rule: blood cancers / BMT,draft
+hospital,Living-donor Liver Transplantation,,Organ Transplant;Gastroenterology,,keyword rule: transplant; digestive / liver care,draft
+hospital,HIFU Prostate Therapy,,Urology;Oncology,,keyword rule: prostate therapy,draft
+hospital,Computer Navigated Joint Surgery,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Japanese Healthcare Protocol,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Pet-CT guided Biopsy,,Oncology,,keyword rule: cancer care,draft
+hospital,Transcatheter Valve Therapies,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Complex Epilepsy Surgery,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,RapidArc Radiation Therapy,,Oncology,,keyword rule: cancer care,draft
+hospital,Robotic Thoracic Surgery,,Cardiothoracic Surgery,,keyword rule: heart / chest surgery,draft
+hospital,Endoscopic Ultrasound,,Gastroenterology,,keyword rule: digestive / liver care,draft
+hospital,Comprehensive Trauma,,Emergency Medicine,,keyword rule: trauma / emergency,draft
+hospital,Living-donor Liver and Kidney Transplants,,Organ Transplant;Nephrology;Gastroenterology,,keyword rule: transplant; kidney care; digestive / liver care,draft
+hospital,Pediatric Heart Surgery,,Pediatric Cardiology,,keyword rule: children's heart care,draft
+hospital,Minimally Invasive Heart Surgery,,Cardiothoracic Surgery,,keyword rule: heart / chest surgery,draft
+hospital,ECMO Therapy,,Critical Care,,keyword rule: intensive care,draft
+hospital,Interventional Nephrology,,Nephrology,,keyword rule: kidney care,draft
+hospital,Endoscopy,,Gastroenterology,,keyword rule: digestive / liver care,draft
+hospital,Intensity-Modulated Radiation,,Oncology,,keyword rule: cancer care,draft
+hospital,Neurovascular Coiling,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,Zero Technique Knee Replacement,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Revision Arthroplasty,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Heart Transplantation,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Bilateral Hand Transplants,,Plastic & Reconstructive Surgery;Organ Transplant,,keyword rule: hand transplant,draft
+hospital,Cranioplasty,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,Robotic Surgeries,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Interventional Gastroenterology,,Gastroenterology,,keyword rule: digestive / liver care,draft
+hospital,Living-Donor Kidney Transplantation,,Organ Transplant;Nephrology,,keyword rule: transplant; kidney care,draft
+hospital,Endocrine Surgery,,Endocrinology,,keyword rule: hormones / diabetes,draft
+hospital,Critical Care Pulmonology,,Pulmonology;Critical Care,,keyword rule: lungs; intensive care,draft
+hospital,Transcatheter Interventions,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Complex Joint Replacement,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Minimally Invasive Surgery,,NONE,,"not a Step 1 routing speciality (general surgery, technique, support service or marketing term)",draft
+hospital,Gynecological Oncology,,Oncology;Obstetrics & Gynaecology,,keyword rule: cancer care; women's health,draft
+hospital,Spinal Reconstructions,,Neurosurgery;Orthopaedics,,keyword rule: brain / spine surgery,draft
+hospital,Arthroplasty,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Liver and Heart Transplants,,Organ Transplant;Gastroenterology,,keyword rule: transplant; digestive / liver care,draft
+hospital,Interventional Neuro-Radiology,,Neurology,,keyword rule: neurology,draft
+hospital,Complex Trauma Arthroplasty,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Liver & Kidney Transplantation,,Organ Transplant;Nephrology;Gastroenterology,,keyword rule: transplant; kidney care; digestive / liver care,draft
+hospital,Emergency Trauma Care,,Emergency Medicine,,keyword rule: trauma / emergency,draft
+hospital,Primary PCI,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Endovascular Interventions,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Joint Surgery,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Comprehensive Cancer Surgery,,Oncology,,keyword rule: cancer care,draft
+hospital,Advanced Linear Accelerator Radiotherapy,,Oncology,,keyword rule: cancer care,draft
+hospital,Cadaveric and Living Donor Organ Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Transcatheter Aortic Valve Replacement (TAVR),,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Complex Joint Reconstruction,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Complex Trauma Surgery,,Emergency Medicine,,keyword rule: trauma / emergency,draft
+hospital,Complex Spine Surgery,,Neurosurgery;Orthopaedics,,keyword rule: brain / spine surgery,draft
+hospital,Hyperbaric Medicine,,Critical Care,,keyword rule: intensive care,draft
+hospital,Radical Cancer Surgeries,,Oncology,,keyword rule: cancer care,draft
+hospital,Chemotherapy,,Oncology,,keyword rule: cancer care,draft
+hospital,Dialysis,,Nephrology,,keyword rule: kidney care,draft
+hospital,Cancer Chemotherapy,,Oncology,,keyword rule: cancer care,draft
+hospital,Living-donor Liver & Kidney Transplants,,Organ Transplant;Nephrology;Gastroenterology,,keyword rule: transplant; kidney care; digestive / liver care,draft
+hospital,Heart & Liver Transplants,,Organ Transplant;Gastroenterology,,keyword rule: transplant; digestive / liver care,draft
+hospital,Complex Joint Arthroplasty,,Orthopaedics,,keyword rule: bones and joints,draft
+hospital,Intensity-Modulated Radiotherapy,,Oncology,,keyword rule: cancer care,draft
+hospital,Radical Resections,,Oncology,,keyword rule: cancer care,draft
+hospital,Advanced Structural Heart Disease,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Aneurysm Coiling,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,Heart & Kidney Transplants,,Organ Transplant;Nephrology,,keyword rule: transplant; kidney care,draft
+hospital,Kidney and Liver Transplants,,Organ Transplant;Nephrology;Gastroenterology,,keyword rule: transplant; kidney care; digestive / liver care,draft
+hospital,Stem Cell Transplants,,Hematology & Bone Marrow Transplant,,keyword rule: blood cancers / BMT,draft
+hospital,Primary Angioplasty,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,MitraClip,,Cardiology,,keyword rule: heart procedures without open surgery,draft
+hospital,Robotic Cardiac Surgery,,Cardiothoracic Surgery,,keyword rule: heart / chest surgery,draft
+hospital,Pediatric Cardiac Interventions,,Pediatric Cardiology,,keyword rule: children's heart care,draft
+hospital,Living-Donor Liver & Kidney Transplantation,,Organ Transplant;Nephrology;Gastroenterology,,keyword rule: transplant; kidney care; digestive / liver care,draft
+hospital,Living and Deceased Donor Liver & Kidney Transplants,,Organ Transplant;Nephrology;Gastroenterology,,keyword rule: transplant; kidney care; digestive / liver care,draft
+hospital,Heart Transplant,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Diabetic Foot Salvage,,Endocrinology,,keyword rule: hormones / diabetes,draft
+hospital,Robotic Bariatric Surgery,,Bariatric Surgery,,keyword rule: weight-loss surgery,draft
+hospital,Renal Transplants,,Organ Transplant;Nephrology,,keyword rule: transplant; kidney care,draft
+hospital,"Multi-organ Transplants (Liver, Kidney, Heart, Lung)",,Organ Transplant;Nephrology;Gastroenterology,,keyword rule: transplant; kidney care; digestive / liver care,draft
+hospital,Robotic Surgical Oncology,,Oncology,,keyword rule: cancer care,draft
+hospital,RapidArc Radiotherapy,,Oncology,,keyword rule: cancer care,draft
+hospital,Robotic Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,CyberKnife Radiosurgery,,Oncology,,keyword rule: cancer care,draft
+hospital,Combined Heart-Lung Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Multi-visceral Transplants,,Organ Transplant,,keyword rule: transplant,draft
+hospital,Complex BMT,,Hematology & Bone Marrow Transplant,,keyword rule: blood cancers / BMT,draft
+hospital,Interventional Endoscopy,,Gastroenterology,,keyword rule: digestive / liver care,draft
+hospital,Microvascular Neurosurgery,,Neurosurgery,,keyword rule: brain / spine surgery,draft
+hospital,Stroke Interventions,,Neurology,,keyword rule: neurology,draft

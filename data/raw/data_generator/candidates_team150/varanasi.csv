@@ -1,0 +1,3 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H141,"Sir Sunderlal Hospital, IMS BHU",Varanasi,Uttar Pradesh,Tier 2,Tier 1,Tertiary academic,Government,Sir,IMS BHU,,https://www.bhu.ac.in/ims/ssh/,,tiers are judgement; team 150 id H080,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H142,Homi Bhabha Cancer Hospital & MPMMCC,Varanasi,Uttar Pradesh,Tier 2,Tier 1,Cancer tertiary academic,Government (autonomous),Homi,,,https://tmc.gov.in/m_events/Events/mpmmcc,,tiers are judgement; team 150 id H081,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

@@ -1,0 +1,2 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H149,Dayanand Medical College and Hospital (DMCH),Ludhiana,Punjab,Tier 2,Tier 1,Tertiary academic,Private (trust),Dayanand,,,https://dmch.edu/,,tiers are judgement; team 150 id H088,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

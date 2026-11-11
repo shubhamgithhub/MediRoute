@@ -1,0 +1,4 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H114,"KMC Hospital, Mangalore",Mangalore,Karnataka,Tier 2,Tier 1,Tertiary academic,Private (deemed university),KMC,Mangalore,,https://www.manipalhospitals.com/mangalore/,,tiers are judgement; team 150 id H051,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H115,Father Muller Medical College Hospital,Mangalore,Karnataka,Tier 2,Tier 1,Tertiary academic,Private (trust),Father,,,https://fmmc.fathermuller.edu.in/,,tiers are judgement; team 150 id H052,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H116,A.J. Hospital and Research Centre,Mangalore,Karnataka,Tier 2,Tier 2,Multispeciality tertiary,Private,J,,,https://ajhospital.in/,,tiers are judgement; team 150 id H053,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

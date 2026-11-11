@@ -1,0 +1,453 @@
+{
+  "meta": {
+    "run_id": "20261111_201738_step1_benchmark_ollama",
+    "sets": [
+      "core50"
+    ],
+    "limit": 0,
+    "no_llm": false,
+    "started": "2026-11-11T20:17:38",
+    "llm": "ollama:llama3.2",
+    "queries": 50,
+    "finished": "2026-11-11T20:36:52"
+  },
+  "by_set": {
+    "core50": {
+      "n": 50,
+      "systems": {
+        "B0_majority": {
+          "n": 50,
+          "acceptable": 0.12,
+          "acceptable_ci95": [
+            0.056,
+            0.238
+          ],
+          "exact": 0.1,
+          "top3": 0.12,
+          "ndcg3": 0.103,
+          "mrr3": 0.12,
+          "macro_precision": 0.004,
+          "macro_recall": 0.04,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.12,
+          "confidently_wrong": 0.88,
+          "macro_f1": 0.007,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0
+        },
+        "B1_keyword_rules": {
+          "n": 50,
+          "acceptable": 0.72,
+          "acceptable_ci95": [
+            0.583,
+            0.825
+          ],
+          "exact": 0.66,
+          "top3": 0.76,
+          "ndcg3": 0.657,
+          "mrr3": 0.737,
+          "macro_precision": 0.783,
+          "macro_recall": 0.674,
+          "asked": null,
+          "answered": 0.76,
+          "precision_when_answered": 0.947,
+          "confidently_wrong": 0.04,
+          "macro_f1": 0.691,
+          "latency_p50_ms": 3,
+          "latency_p95_ms": 17
+        },
+        "B2_lookup_keyword": {
+          "n": 50,
+          "acceptable": 0.82,
+          "acceptable_ci95": [
+            0.692,
+            0.902
+          ],
+          "exact": 0.68,
+          "top3": 0.9,
+          "ndcg3": 0.765,
+          "mrr3": 0.857,
+          "macro_precision": 0.669,
+          "macro_recall": 0.702,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.82,
+          "confidently_wrong": 0.18,
+          "macro_f1": 0.67,
+          "latency_p50_ms": 57,
+          "latency_p95_ms": 1385
+        },
+        "B3_lookup_semantic": {
+          "n": 50,
+          "acceptable": 0.82,
+          "acceptable_ci95": [
+            0.692,
+            0.902
+          ],
+          "exact": 0.6,
+          "top3": 0.98,
+          "ndcg3": 0.812,
+          "mrr3": 0.897,
+          "macro_precision": 0.612,
+          "macro_recall": 0.622,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.82,
+          "confidently_wrong": 0.18,
+          "macro_f1": 0.592,
+          "latency_p50_ms": 81,
+          "latency_p95_ms": 1579
+        },
+        "B4_llm_only": {
+          "n": 50,
+          "acceptable": 0.82,
+          "acceptable_ci95": [
+            0.692,
+            0.902
+          ],
+          "exact": 0.74,
+          "top3": 0.9,
+          "ndcg3": 0.766,
+          "mrr3": 0.853,
+          "macro_precision": 0.828,
+          "macro_recall": 0.783,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.891,
+          "confidently_wrong": 0.1,
+          "macro_f1": 0.786,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A1_v1_llm_evidence": {
+          "n": 50,
+          "acceptable": 0.8,
+          "acceptable_ci95": [
+            0.67,
+            0.888
+          ],
+          "exact": 0.74,
+          "top3": 0.88,
+          "ndcg3": 0.756,
+          "mrr3": 0.83,
+          "macro_precision": 0.769,
+          "macro_recall": 0.767,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.87,
+          "confidently_wrong": 0.12,
+          "macro_f1": 0.753,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A2_v2_llm_evidence": {
+          "n": 50,
+          "acceptable": 0.82,
+          "acceptable_ci95": [
+            0.692,
+            0.902
+          ],
+          "exact": 0.76,
+          "top3": 0.86,
+          "ndcg3": 0.757,
+          "mrr3": 0.84,
+          "macro_precision": 0.775,
+          "macro_recall": 0.782,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.891,
+          "confidently_wrong": 0.1,
+          "macro_f1": 0.746,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A3_pipeline_no_llm": {
+          "n": 50,
+          "acceptable": 0.62,
+          "acceptable_ci95": [
+            0.482,
+            0.741
+          ],
+          "exact": 0.58,
+          "top3": 0.74,
+          "ndcg3": 0.644,
+          "mrr3": 0.703,
+          "macro_precision": 0.716,
+          "macro_recall": 0.614,
+          "asked": 0.34,
+          "answered": 0.66,
+          "precision_when_answered": 0.939,
+          "confidently_wrong": 0.04,
+          "macro_f1": 0.647,
+          "latency_p50_ms": 46,
+          "latency_p95_ms": 701
+        },
+        "OURS": {
+          "n": 50,
+          "acceptable": 0.8,
+          "acceptable_ci95": [
+            0.67,
+            0.888
+          ],
+          "exact": 0.74,
+          "top3": 0.9,
+          "ndcg3": 0.796,
+          "mrr3": 0.863,
+          "macro_precision": 0.789,
+          "macro_recall": 0.769,
+          "asked": 0.16,
+          "answered": 0.84,
+          "precision_when_answered": 0.952,
+          "confidently_wrong": 0.04,
+          "macro_f1": 0.769,
+          "latency_p50_ms": 15927,
+          "latency_p95_ms": 66839
+        }
+      },
+      "reference": "OURS",
+      "paired": {
+        "B0_majority": {
+          "n": 50,
+          "only_ours_right": 35,
+          "only_baseline_right": 1,
+          "p_value": 0.0
+        },
+        "B1_keyword_rules": {
+          "n": 50,
+          "only_ours_right": 7,
+          "only_baseline_right": 3,
+          "p_value": 0.3438
+        },
+        "B2_lookup_keyword": {
+          "n": 50,
+          "only_ours_right": 3,
+          "only_baseline_right": 4,
+          "p_value": 1.0
+        },
+        "B3_lookup_semantic": {
+          "n": 50,
+          "only_ours_right": 4,
+          "only_baseline_right": 5,
+          "p_value": 1.0
+        },
+        "B4_llm_only": {
+          "n": 50,
+          "only_ours_right": 3,
+          "only_baseline_right": 4,
+          "p_value": 1.0
+        },
+        "A1_v1_llm_evidence": {
+          "n": 50,
+          "only_ours_right": 2,
+          "only_baseline_right": 2,
+          "p_value": 1.0
+        },
+        "A2_v2_llm_evidence": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 2,
+          "p_value": 1.0
+        },
+        "A3_pipeline_no_llm": {
+          "n": 50,
+          "only_ours_right": 10,
+          "only_baseline_right": 1,
+          "p_value": 0.0117
+        }
+      },
+      "pipeline": {
+        "OURS": {
+          "decisions": {
+            "majority": 42,
+            "clarification_required": 8
+          },
+          "clarification_rate": 0.16,
+          "asked_and_right_in_candidates": 0.375,
+          "vague_cases_asked": "4/5",
+          "clear_cases_answered_correctly": "39/45"
+        },
+        "A3_pipeline_no_llm": {
+          "decisions": {
+            "majority": 33,
+            "clarification_required": 17
+          },
+          "clarification_rate": 0.34,
+          "asked_and_right_in_candidates": 0.235,
+          "vague_cases_asked": "5/5",
+          "clear_cases_answered_correctly": "31/45"
+        }
+      },
+      "extraction": {
+        "OURS": {
+          "recall": 0.71,
+          "omission_rate": 0.29,
+          "by_kind": {
+            "body_part": "28/45 (62%)",
+            "condition": "32/47 (68%)",
+            "procedure": "28/32 (88%)"
+          },
+          "missed": [
+            "C001 body_part=heart",
+            "C002 body_part=heart",
+            "C004 procedure=surgery",
+            "C005 procedure=tumour removal",
+            "C008 body_part=skin",
+            "C009 body_part=pancreas",
+            "C009 condition=type 1 diabetes",
+            "C010 body_part=blood",
+            "C012 condition=kidney stone",
+            "C013 body_part=heart",
+            "C014 body_part=heart",
+            "C018 body_part=uterus",
+            "C019 body_part=stomach",
+            "C019 condition=obesity",
+            "C020 body_part=lumbar spine",
+            "C021 body_part=heart",
+            "C026 body_part=heart",
+            "C026 condition=ventricular septal defect",
+            "C027 condition=cirrhosis",
+            "C029 body_part=fallopian tubes",
+            "C032 condition=dilated cardiomyopathy",
+            "C034 body_part=oesophagus",
+            "C034 condition=portal hypertension",
+            "C034 procedure=variceal band ligation",
+            "C035 condition=uterine fibroids",
+            "C037 condition=infertility",
+            "C038 body_part=ears",
+            "C038 condition=deafness",
+            "C045 condition=breathlessness",
+            "C046 body_part=speech",
+            "C046 condition=suspected stroke",
+            "C047 condition=suicidal thoughts",
+            "C048 condition=poor weight gain",
+            "C049 body_part=brain",
+            "C050 condition=premature birth (29 weeks)",
+            "C050 procedure=NICU care"
+          ]
+        },
+        "A3_pipeline_no_llm": {
+          "recall": 0.258,
+          "omission_rate": 0.742,
+          "by_kind": {
+            "body_part": "9/45 (20%)",
+            "condition": "10/47 (21%)",
+            "procedure": "13/32 (41%)"
+          },
+          "missed": [
+            "C001 body_part=heart",
+            "C001 procedure=ablation",
+            "C002 body_part=heart",
+            "C004 body_part=colon",
+            "C004 condition=colon cancer",
+            "C004 procedure=surgery",
+            "C005 body_part=brain",
+            "C005 procedure=tumour removal",
+            "C006 body_part=brain",
+            "C006 condition=Parkinson's disease",
+            "C006 procedure=deep brain stimulation",
+            "C007 body_part=neck",
+            "C007 condition=burn contracture",
+            "C008 body_part=skin",
+            "C008 condition=plaque psoriasis",
+            "C008 procedure=biologic treatment",
+            "C009 body_part=pancreas",
+            "C009 condition=type 1 diabetes",
+            "C009 procedure=insulin pump",
+            "C010 body_part=blood",
+            "C010 condition=beta thalassemia major",
+            "C011 condition=pulmonary fibrosis",
+            "C012 body_part=ureter",
+            "C012 condition=kidney stone",
+            "C012 procedure=laser removal",
+            "C013 body_part=heart",
+            "C014 body_part=heart",
+            "C014 procedure=TAVI",
+            "C016 body_part=eyes",
+            "C016 procedure=cataract surgery",
+            "C018 body_part=uterus",
+            "C018 procedure=laparoscopic hysterectomy",
+            "C019 body_part=stomach",
+            "C019 condition=obesity",
+            "C020 body_part=lumbar spine",
+            "C020 procedure=spinal fusion",
+            "C021 body_part=heart",
+            "C022 body_part=knee",
+            "C022 condition=ACL tear",
+            "C022 condition=meniscus tear",
+            "C023 body_part=breast",
+            "C023 condition=invasive ductal carcinoma",
+            "C024 body_part=kidneys",
+            "C024 condition=end-stage renal disease",
+            "C024 procedure=haemodialysis",
+            "C025 body_part=eyes",
+            "C025 procedure=vitrectomy",
+            "C026 body_part=heart",
+            "C026 condition=ventricular septal defect",
+            "C026 procedure=surgical closure",
+            "C027 body_part=liver",
+            "C027 condition=cirrhosis",
+            "C027 condition=portal hypertension",
+            "C028 condition=suspected papillary thyroid carcinoma",
+            "C029 body_part=fallopian tubes",
+            "C029 condition=tubal block",
+            "C030 body_part=ears",
+            "C030 condition=profound sensorineural hearing loss",
+            "C031 body_part=hip",
+            "C031 condition=avascular necrosis of femoral head",
+            "C031 procedure=total hip arthroplasty",
+            "C032 condition=dilated cardiomyopathy",
+            "C032 procedure=CRT-D implant",
+            "C033 body_part=brain",
+            "C033 condition=suspected high-grade glioma",
+            "C034 body_part=oesophagus",
+            "C034 condition=oesophageal varices",
+            "C034 condition=portal hypertension",
+            "C034 procedure=variceal band ligation",
+            "C035 body_part=uterus",
+            "C035 condition=uterine fibroids",
+            "C035 condition=heavy menstrual bleeding",
+            "C036 condition=end-stage liver disease",
+            "C037 condition=infertility",
+            "C038 body_part=ears",
+            "C038 condition=deafness",
+            "C039 body_part=breast",
+            "C039 condition=early breast cancer",
+            "C039 procedure=lumpectomy",
+            "C044 body_part=stomach",
+            "C044 body_part=head",
+            "C045 condition=breathlessness",
+            "C046 body_part=face",
+            "C046 body_part=speech",
+            "C046 condition=suspected stroke",
+            "C047 condition=suicidal thoughts",
+            "C048 condition=poor weight gain",
+            "C049 body_part=brain",
+            "C049 condition=seizures",
+            "C049 condition=abnormal EEG",
+            "C050 condition=premature birth (29 weeks)",
+            "C050 procedure=NICU care"
+          ]
+        }
+      },
+      "emergency": {
+        "OURS": {
+          "emergencies": 3,
+          "caught": 3,
+          "recall": 1.0,
+          "non_emergencies": 47,
+          "false_alarms": 0,
+          "missed": []
+        },
+        "A3_pipeline_no_llm": {
+          "emergencies": 3,
+          "caught": 3,
+          "recall": 1.0,
+          "non_emergencies": 47,
+          "false_alarms": 0,
+          "missed": []
+        }
+      }
+    }
+  }
+}

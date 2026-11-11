@@ -1,3 +1,10 @@
+"""Build the Step 2 search dataset (hospital_embedding_dataset.csv + hospital_metadata.json) from
+data/processed/hospitals.csv, the one hospital table. Then run build_faiss_index.
+
+    python -m mediroute.data_generator.build_hospitals_table
+    python -m mediroute.data_generator.build_hospital_embedding_dataset
+    python -m mediroute.data_generator.build_faiss_index
+"""
 from pathlib import Path
 import json
 import pandas as pd
@@ -13,20 +20,9 @@ from mediroute.hospital_recommendation.retrieval.hospital_search_text_builder im
 
 from mediroute.utils.paths import PROJECT_ROOT  # noqa: E402
 
-HOSPITAL_FILE = (
-    PROJECT_ROOT
-    / "data"
-    / "raw"
-    / "NewMediRoute_Hospital_Dataset_150.xlsx"
-)
+from mediroute.utils.paths import HOSPITALS_FILE as HOSPITAL_FILE  # noqa: E402
 
-SHEET_NAME = "Hospitals_150"
-
-OUTPUT_DIR = (
-    PROJECT_ROOT
-    / "data"
-    / "vector_store"
-)
+from mediroute.utils.paths import VECTOR_STORE_DIR as OUTPUT_DIR  # noqa: E402  (data/processed/vector_store)
 
 OUTPUT_CSV = (
     OUTPUT_DIR
@@ -115,9 +111,10 @@ def build_hospital_embedding_dataset():
     # Load Hospitals_150
     # -----------------------------------------------------
 
-    df = pd.read_excel(
+    df = pd.read_csv(
         HOSPITAL_FILE,
-        sheet_name=SHEET_NAME
+        dtype=str,
+        keep_default_na=False,
     )
 
     print(
@@ -264,24 +261,45 @@ def build_hospital_embedding_dataset():
                         )
                     ),
 
-                "verified_subspecialties":
+                "team_claimed_specialties":
                     clean_value(
                         hospital.get(
-                            "verified_subspecialties"
+                            "team_claimed_specialties"
                         )
                     ),
 
-                "verified_procedures":
+                "subspecialties":
                     clean_value(
                         hospital.get(
-                            "verified_procedures"
+                            "subspecialties"
                         )
                     ),
 
-                "verified_facilities":
+                "procedures":
                     clean_value(
                         hospital.get(
-                            "verified_facilities"
+                            "procedures"
+                        )
+                    ),
+
+                "facilities":
+                    clean_value(
+                        hospital.get(
+                            "facilities"
+                        )
+                    ),
+
+                "languages":
+                    clean_value(
+                        hospital.get(
+                            "languages"
+                        )
+                    ),
+
+                "detail_source":
+                    clean_value(
+                        hospital.get(
+                            "detail_source"
                         )
                     ),
 
@@ -289,6 +307,13 @@ def build_hospital_embedding_dataset():
                     clean_value(
                         hospital.get(
                             "international_patient_service"
+                        )
+                    ),
+
+                "url_Internantional_patients":
+                    clean_value(
+                        hospital.get(
+                            "url_Internantional_patients"
                         )
                     ),
 
@@ -334,10 +359,17 @@ def build_hospital_embedding_dataset():
                         )
                     ),
 
-                "data_use_status":
+                "record_origin":
                     clean_value(
                         hospital.get(
-                            "data_use_status"
+                            "record_origin"
+                        )
+                    ),
+
+                "team150_id":
+                    clean_value(
+                        hospital.get(
+                            "team150_id"
                         )
                     ),
 

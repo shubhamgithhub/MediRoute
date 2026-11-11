@@ -16,7 +16,7 @@ What is verified automatically, and how:
   official_source_url          must load; taken from the candidate file, else the NABH card's website.
   url_Internantional_patients  a link on the official site whose text/URL mentions "international".
   verified_specialties         specialty terms found on the official site, normalised with
-                               data/medical_taxonomy/specialty_normalization.csv.
+                               data/processed/specialty_mapping.csv (source = hospital).
 Fields that come from the candidate file (City_Tier, Hospital_Tier, hospital_type,
 ownership_type) are judgement calls and are flagged as such in the notes column.
 
@@ -38,7 +38,7 @@ from openpyxl.utils import get_column_letter
 from playwright.sync_api import sync_playwright
 
 from mediroute.data_generator import nabh_finder_scraper as nabh
-from mediroute.utils.paths import TAXONOMY_DIR
+from mediroute.common.specialties import mapping_rules
 
 SCHEMA = ["hospital_id", "hospital_name", "city", "state", "City_Tier", "Hospital_Tier", "hospital_type",
           "ownership_type", "nabh_status", "jci_status", "verified_specialties",
@@ -47,40 +47,37 @@ SCHEMA = ["hospital_id", "hospital_name", "city", "state", "City_Tier", "Hospita
 EVIDENCE = ["nabh_certificate_no", "nabh_listed_name", "nabh_certificate_url", "nabh_match",
             "jci_ihco_id", "jci_listed_name", "website_status", "specialties_all_found",
             "data_collected_on", "source", "notes"]
-TAXONOMY = TAXONOMY_DIR / "specialty_normalization.csv"
 MAX_SPECIALTIES = 6
 
 
 # ---------------------------------------------------------------- specialties
 def load_specialty_patterns():
-    """raw website wording -> canonical specialty. Canonical names also match themselves."""
-    pairs = {}
-    with open(TAXONOMY, newline="", encoding="utf-8-sig") as f:
-        for r in csv.DictReader(f):
-            canon = (r.get("canonical_specialty") or "").strip()
-            if canon:
-                pairs[r["raw_specialty"].strip()] = canon
-                pairs[canon] = canon
+    """raw website wording -> canonical specialities (a label can map to several, e.g.
+    Neurosciences -> Neurology + Neurosurgery). Canonical names also match themselves; rows mapped
+    to NONE (general surgery, marketing terms) are not specialities."""
+    pairs: dict[str, set[str]] = {}
+    for rule in mapping_rules("hospital"):
+        for canon in rule.specialties:  # empty for NONE
+            pairs.setdefault(rule.value, set()).add(canon)
+            pairs.setdefault(canon, set()).add(canon)
     # Common spellings the taxonomy does not list.
-    extra = {"Orthopedics": "Orthopaedics", "Orthopaedic": "Orthopaedics", "Neurosurgery": "Neurosurgery",
-             "Neurosciences": "Neurology", "Urology": "Urology", "Nephrology": "Nephrology",
-             "Pulmonology": "Pulmonology", "Paediatrics": "Paediatrics", "Pediatrics": "Paediatrics",
-             "Oncology": "Oncology", "Cardiology": "Cardiology", "Gastroenterology": "Gastroenterology",
+    extra = {"Orthopedics": "Orthopaedics", "Orthopaedic": "Orthopaedics", "Pediatrics": "Paediatrics",
              "Obstetrics": "Obstetrics & Gynaecology", "Gynaecology": "Obstetrics & Gynaecology",
-             "Transplant": "Organ Transplant", "Critical Care": "Critical Care"}
+             "Transplant": "Organ Transplant"}
     for raw, canon in extra.items():
-        pairs.setdefault(raw, canon)
+        pairs.setdefault(raw, {canon})
     # Longest phrases first so "Cardiac Surgery" wins over "Cardiac".
-    return sorted(((re.compile(r"\b" + re.escape(raw).replace(r"\ ", r"\s+") + r"\b", re.I), canon)
-                   for raw, canon in pairs.items()), key=lambda x: -len(x[0].pattern))
+    return sorted(((re.compile(r"\b" + re.escape(raw).replace(r"\ ", r"\s+") + r"\b", re.I), tuple(sorted(canons)))
+                   for raw, canons in pairs.items()), key=lambda x: -len(x[0].pattern))
 
 
 def find_specialties(text, patterns):
     counts = Counter()
-    for rx, canon in patterns:
+    for rx, canons in patterns:
         n = len(rx.findall(text))
         if n:
-            counts[canon] += n
+            for canon in canons:
+                counts[canon] += n
             text = rx.sub(" ", text)  # don't double count the words of a longer phrase
     # Emergency/critical care appear in every site's menu; list them after the real specialties.
     generic = {"Emergency Medicine", "Critical Care"}

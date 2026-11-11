@@ -3,7 +3,7 @@ code then keeps only phrases that really appear in the patient's text.
 
 The check is fuzzy (most words must be present, small typos allowed) because the LLM often
 normalises spelling, and patient text and OCR'd reports contain typos. If the LLM is unavailable,
-a rule extractor (speciality keywords from specialties.csv found in the text) is used instead.
+a rule extractor (strong lay terms from specialty_mapping.csv found in the text) is used instead.
 """
 
 from __future__ import annotations
@@ -13,13 +13,13 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from mediroute.common.specialties import load_specialties
+from mediroute.common.specialties import lay_terms
 from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
 
 PROMPT_DIR = Path(__file__).resolve().parents[1] / "prompts"
 EVIDENCE_PROMPT_VERSION = "evidence_v1"
 KINDS = ("conditions", "procedures", "body_parts")
-# keyword_matches: speciality keywords (specialties.csv) found word-for-word in the text. They are
+# keyword_matches: strong lay terms (specialty_mapping.csv) found word-for-word in the text. They are
 # always added, because the small local LLM sometimes misses obvious phrases ("vision is blurry").
 ALL_KINDS = KINDS + ("keyword_matches",)
 
@@ -53,6 +53,15 @@ GENERIC_WORDS = {
     "kolkata", "ahmedabad", "kochi", "bengaluru", "bangalore", "hyderabad", "visakhapatnam", "vizag",
     "navi", "mohali",
 }
+
+
+def search_text(phrase: str) -> str:
+    """The words of a phrase worth searching: generic words and small words removed, so
+    "problem in my stomach" is searched as "stomach", not matched to "heart problem" by "problem".
+    Returns the phrase unchanged if nothing would be left."""
+    words = [w for w in re.findall(r"[a-z0-9']+", (phrase or "").lower())
+             if w not in GENERIC_WORDS and w not in _STOP and not w.isdigit()]
+    return " ".join(words) if words else phrase
 
 
 def is_generic(phrase: str) -> bool:
@@ -133,7 +142,9 @@ class EvidenceExtractor:
     def __init__(self, client: OllamaClient | None = None) -> None:
         self.client = client or make_llm_client()
         self.template = (PROMPT_DIR / f"{EVIDENCE_PROMPT_VERSION}.txt").read_text(encoding="utf-8")
-        self._keywords = [(kw, spec.name) for spec in load_specialties() for kw in spec.keywords]
+        # strong lay terms are evidence; weak ones ("baby", "eye", "vision") only when no strong one is found
+        self._keywords = [(rule.value.lower(), name) for rule in lay_terms("strong") for name in rule.specialties]
+        self._weak_keywords = [(rule.value.lower(), name) for rule in lay_terms("weak") for name in rule.specialties]
 
     def build_prompt(self, text: str) -> str:
         return self.template.format(text=text.strip())
@@ -170,9 +181,14 @@ class EvidenceExtractor:
         return evidence
 
     def keyword_matches(self, text: str) -> list[str]:
-        """Speciality keywords that appear word-for-word in the text (deterministic)."""
+        """Lay terms that appear word-for-word in the text (deterministic): the strong ones, or the
+        weak ones if no strong term is present (so "my vision is blurry" still has evidence, while
+        "liver transplant for my child" is not pulled to Paediatrics by "child")."""
         lowered = " " + re.sub(r"[^a-z0-9']+", " ", text.lower()) + " "
-        found = [kw for kw, _ in self._keywords if f" {re.sub(r'[^a-z0-9]+', ' ', kw).strip()} " in lowered]
-        found = [k for k in found if not any(k != o and k in o for o in found)]  # keep the longer phrase
-        found = [k for k in found if not is_generic(k)]
-        return list(dict.fromkeys(found))[:8]
+        for terms in (self._keywords, self._weak_keywords):
+            found = [kw for kw, _ in terms if f" {re.sub(r'[^a-z0-9]+', ' ', kw).strip()} " in lowered]
+            found = [k for k in found if not any(k != o and k in o for o in found)]  # keep the longer phrase
+            found = [k for k in found if not is_generic(k)]
+            if found:
+                return list(dict.fromkeys(found))[:8]
+        return []

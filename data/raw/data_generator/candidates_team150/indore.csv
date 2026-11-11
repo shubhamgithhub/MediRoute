@@ -1,0 +1,4 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H117,"Medanta Super Speciality Hospital, Indore",Indore,Madhya Pradesh,Tier 2,Tier 2,Multispeciality tertiary,Private,Medanta,Indore,,https://www.medanta.org/indore-hospital,,tiers are judgement; team 150 id H054,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H118,CHL Hospitals,Indore,Madhya Pradesh,Tier 2,Tier 2,Multispeciality tertiary,Private,CHL,,,https://www.chlhospitals.com/,,tiers are judgement; team 150 id H055,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H119,"Apollo Hospitals, Indore",Indore,Madhya Pradesh,Tier 2,Tier 2,Multispeciality tertiary,Private,Apollo,Indore,,https://indore.apollohospitals.com/,,tiers are judgement; team 150 id H056,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)

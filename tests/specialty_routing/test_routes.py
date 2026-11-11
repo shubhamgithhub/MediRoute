@@ -6,18 +6,22 @@ import pytest
 
 from mediroute.common.specialties import load_specialties, specialty_names
 from mediroute.specialty_routing.routes import UNCLEAR, LLMRouter, RouteResult, RuleRouter, combine
-from mediroute.utils.paths import PROCESSED_DATA_DIR
 
 
-def test_specialty_list_covers_hospital_master():
+def test_specialty_list_covers_hospital_table():
+    """Every speciality in the hospital table is a Step 1 name, and Step 1's in_hospital_data flag
+    is true exactly for the specialities that have hospitals."""
     import csv
 
-    with (PROCESSED_DATA_DIR / "master-hospital-data.csv").open(encoding="utf-8-sig") as handle:
-        master = {s.strip() for row in csv.DictReader(handle)
-                  for s in (row["verified_specialties"] or "").split(";") if s.strip() not in ("", "NA")}
+    from mediroute.utils.paths import HOSPITALS_FILE
+
+    with HOSPITALS_FILE.open(encoding="utf-8-sig") as handle:
+        table = {s.strip() for row in csv.DictReader(handle)
+                 for col in ("verified_specialties", "team_claimed_specialties")
+                 for s in (row[col] or "").split(";") if s.strip() not in ("", "NA")}
     in_list = {s.name for s in load_specialties() if s.in_hospital_data}
-    assert master <= set(specialty_names()), master - set(specialty_names())
-    assert master == in_list
+    assert table <= set(specialty_names()), table - set(specialty_names())
+    assert table == in_list
 
 
 @pytest.mark.parametrize("text, expected", [
@@ -103,3 +107,9 @@ def test_combine_falls_back_to_rules_when_llm_fails():
     hybrid, confidence = combine(_result(UNCLEAR, ok=False), _result("Urology"))
     assert hybrid.primary == "Urology" and confidence == "low"
     assert hybrid.route == "hybrid:rules_fallback"
+
+
+def test_llm_prompt_includes_speciality_boundaries():
+    prompt = LLMRouter().build_prompt("planned CABG")
+    assert "Route here when:" in prompt and "Not here:" in prompt
+    assert "Route here when:" not in LLMRouter(prompt_version="specialty_v1").build_prompt("planned CABG")

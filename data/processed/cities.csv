@@ -1,0 +1,61 @@
+city,state,city_tier,search_area,notes
+Ahmedabad,Gujarat,Tier 1,Ahmedabad,
+Amritsar,Punjab,Tier 2,Amritsar,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Bambolim,Goa,Tier 3,Goa,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Belagavi,Karnataka,Tier 3,Belagavi,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Bengaluru,Karnataka,Tier 1,Bengaluru,
+Berhampur,Odisha,Tier 3,Berhampur,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Bhopal,Madhya Pradesh,Tier 2,Bhopal,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Bhubaneswar,Odisha,Tier 2,Bhubaneswar,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Bilaspur,Himachal Pradesh,Tier 3,Bilaspur,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Chandigarh,Chandigarh,Tier 2,Chandigarh tricity,
+Chennai,Tamil Nadu,Tier 1,Chennai,
+Chhatrapati Sambhajinagar,Maharashtra,Tier 2,Chhatrapati Sambhajinagar,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Coimbatore,Tamil Nadu,Tier 2,Coimbatore,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Dehradun,Uttarakhand,Tier 2,Dehradun,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Deoghar,Jharkhand,Tier 3,Deoghar,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Durgapur,West Bengal,Tier 3,Durgapur,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Gurugram,Haryana,Tier 1,Delhi NCR,
+Guwahati,Assam,Tier 2,Guwahati,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Hubballi,Karnataka,Tier 2,Hubballi,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Hyderabad,Telangana,Tier 1,Hyderabad,
+Indore,Madhya Pradesh,Tier 2,Indore,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Jaipur,Rajasthan,Tier 2,Jaipur,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Jammu,Jammu and Kashmir,Tier 2,Jammu,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Jamshedpur,Jharkhand,Tier 2,Jamshedpur,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Jodhpur,Rajasthan,Tier 2,Jodhpur,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Kanpur,Uttar Pradesh,Tier 2,Kanpur,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Kochi,Kerala,Tier 2,Kochi,
+Kolhapur,Maharashtra,Tier 2,Kolhapur,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Kolkata,West Bengal,Tier 1,Kolkata,
+Kozhikode,Kerala,Tier 2,Kozhikode,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Lucknow,Uttar Pradesh,Tier 2,Lucknow,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Ludhiana,Punjab,Tier 2,Ludhiana,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Madurai,Tamil Nadu,Tier 2,Madurai,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Mangalagiri,Andhra Pradesh,Tier 3,Mangalagiri,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Mangalore,Karnataka,Tier 2,Mangalore,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Mohali,Punjab,Tier 2,Chandigarh tricity,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Mumbai,Maharashtra,Tier 1,Mumbai,
+Mysuru,Karnataka,Tier 2,Mysuru,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Nagpur,Maharashtra,Tier 2,Nagpur,
+Nashik,Maharashtra,Tier 2,Nashik,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Navi Mumbai,Maharashtra,Tier 1,Mumbai,
+New Delhi,Delhi,Tier 1,Delhi NCR,
+Noida,Uttar Pradesh,Tier 2,Delhi NCR,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Panaji,Goa,Tier 2,Goa,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Patna,Bihar,Tier 2,Patna,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Pune,Maharashtra,Tier 1,Pune,
+Raipur,Chhattisgarh,Tier 2,Raipur,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Rajkot,Gujarat,Tier 2,Rajkot,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Ranchi,Jharkhand,Tier 2,Ranchi,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Rishikesh,Uttarakhand,Tier 3,Rishikesh,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Rourkela,Odisha,Tier 3,Rourkela,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Shimla,Himachal Pradesh,Tier 2,Shimla,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Siliguri,West Bengal,Tier 2,Siliguri,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Srinagar,Jammu and Kashmir,Tier 2,Srinagar,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Surat,Gujarat,Tier 2,Surat,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Thiruvananthapuram,Kerala,Tier 2,Thiruvananthapuram,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Vadodara,Gujarat,Tier 2,Vadodara,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Varanasi,Uttar Pradesh,Tier 2,Varanasi,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Vijayawada,Andhra Pradesh,Tier 2,Vijayawada,"tier is a judgement (metro = Tier 1, small town = Tier 3)"
+Visakhapatnam,Andhra Pradesh,Tier 2,Visakhapatnam,

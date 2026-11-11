@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MediRoute Step 1 Benchmark</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column (~900px) with full-width tables in scroll boxes; clinical teal accent, warm-slate neutrals */
+:root {
+  --bg: #f6f8f8; --surface: #ffffff; --surface-2: #eef3f3; --fg: #15201f; --muted: #5a6a68; --line: #d5dfde;
+  --accent: #0d7c74; --accent-soft: #d6efec; --good: #1d7a3a; --good-soft: #dcf1e2; --warn: #9a6200; --warn-soft: #fbefd6;
+  --bad: #b3261e; --bad-soft: #f8dedb; --bar-acc: #0d7c74; --bar-wrong: #c4473d; --bar-ask: #c79a2c;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1615; --surface: #172120; --surface-2: #1d2a29; --fg: #e3ecea; --muted: #94a6a3; --line: #2c3c3a;
+  --accent: #4fc2b6; --accent-soft: #163a37; --good: #6fd08c; --good-soft: #17331f; --warn: #e2b04f; --warn-soft: #3a2e14;
+  --bad: #f0857b; --bad-soft: #3d1d1a; --bar-acc: #4fc2b6; --bar-wrong: #e0675c; --bar-ask: #d8b04d; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1615; --surface: #172120; --surface-2: #1d2a29; --fg: #e3ecea; --muted: #94a6a3; --line: #2c3c3a;
+  --accent: #4fc2b6; --accent-soft: #163a37; --good: #6fd08c; --good-soft: #17331f; --warn: #e2b04f; --warn-soft: #3a2e14;
+  --bad: #f0857b; --bad-soft: #3d1d1a; --bar-acc: #4fc2b6; --bar-wrong: #e0675c; --bar-ask: #d8b04d; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 32px 64px }
+main { max-width: 940px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; text-wrap: balance; margin: 0 }
+h1 { font-size: 2.1rem; letter-spacing: -0.01em }
+h2 { font-size: 1.45rem; margin-bottom: 14px }
+h3 { font-size: 1.08rem; margin: 22px 0 10px }
+p { margin: 0 0 12px; max-width: 70ch }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent) }
+.meta { color: var(--muted); font-size: 0.9rem; margin-top: 8px }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em }
+code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px }
+section > p:last-child { margin-bottom: 0 }
+.findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 6px }
+.finding { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; min-width: 0 }
+.finding b { display: block; font-family: var(--font-display); font-size: 1rem; margin-bottom: 4px }
+.finding p { font-size: 0.92rem; margin: 0; color: var(--muted) }
+.tag { display: inline-block; font-family: var(--font-mono); font-size: 0.7rem; padding: 1px 7px; border-radius: 999px; margin-bottom: 6px; letter-spacing: .04em }
+.tag.good { background: var(--good-soft); color: var(--good) } .tag.bad { background: var(--bad-soft); color: var(--bad) }
+.tag.warn { background: var(--warn-soft); color: var(--warn) } .tag.info { background: var(--accent-soft); color: var(--accent) }
+/* flow diagram */
+.flow { display: flex; flex-direction: column; gap: 0; align-items: stretch }
+.flow-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center }
+.node { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; flex: 1 1 150px; min-width: 0; font-size: 0.86rem }
+.node b { display: block; font-family: var(--font-display); font-size: 0.95rem }
+.node span { color: var(--muted) }
+.node.key { border-color: var(--accent); background: var(--accent-soft) }
+.node.out { border-style: dashed }
+.arrow { text-align: center; color: var(--muted); font-size: 1.1rem; line-height: 1; padding: 6px 0 }
+.arrow small { display: block; font-size: 0.72rem; font-family: var(--font-mono) }
+.stage-label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 6px }
+.decide { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px }
+.decide .node { font-size: 0.82rem }
+/* tables */
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface) }
+table { border-collapse: collapse; width: 100%; font-size: 0.84rem; font-variant-numeric: tabular-nums }
+th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap }
+th:first-child, td:first-child { text-align: left; white-space: normal; min-width: 190px }
+th { font-weight: 600; background: var(--surface-2); font-size: 0.78rem }
+tr:last-child td { border-bottom: 0 }
+tr.m4 td { background: var(--accent-soft) }
+tr.before td { color: var(--muted) }
+td.best { font-weight: 700; color: var(--good) }
+td.worst { color: var(--bad); font-weight: 600 }
+.note { font-size: 0.85rem; color: var(--muted); margin-top: 8px }
+/* bars */
+.bars { display: flex; flex-direction: column; gap: 10px; margin-top: 10px }
+.bar-row { display: grid; grid-template-columns: 200px 1fr; gap: 12px; align-items: center; font-size: 0.84rem }
+.bar-row .lbl { min-width: 0 }
+.track { display: flex; height: 18px; border-radius: 4px; overflow: hidden; background: var(--surface-2) }
+.seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-family: var(--font-mono); color: var(--bg); white-space: nowrap; overflow: hidden }
+.seg.acc { background: var(--bar-acc) } .seg.ask { background: var(--bar-ask) } .seg.wrong { background: var(--bar-wrong) }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted) }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px }
+.tabs button { font: inherit; font-size: 0.85rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer }
+.tabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg) }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+ul { margin: 0; padding-left: 20px } li { margin-bottom: 6px; max-width: 72ch }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0 }
+@media (max-width: 560px) { .bar-row { grid-template-columns: 1fr; gap: 4px } h1 { font-size: 1.7rem } }
+@media (prefers-reduced-motion: no-preference) { .seg { transition: width .3s } }
+</style>
+</head>
+<body>
+
+<main>
+<header>
+  <div class="eyebrow">MediRoute · Step 1 · speciality routing</div>
+  <h1>Step 1 Benchmark: baselines vs the proposed design</h1>
+  <p class="meta">Run <span class="mono">20261111_144211</span> · 346 patient messages in 3 gold sets · LLM: llama3.2 3B on local Ollama · 11 Nov 2026 · Gold labels not yet doctor-reviewed</p>
+</header>
+
+<section>
+  <h2>What we found</h2>
+  <div class="findings">
+    <div class="finding"><span class="tag good">safety</span><b>Method 4 almost never answers wrongly</b><p>Confidently wrong 1–7%, against 26–34% for the single methods on lay-language messages (gretel).</p></div>
+    <div class="finding"><span class="tag bad">cost</span><b>But it asks too often</b><p>Clarification on 30% (core50), 32% (mediroute) and 58% (gretel) of messages, so accuracy before the patient answers drops to 34–68%.</p></div>
+    <div class="finding"><span class="tag good">ranking</span><b>Its options are good</b><p>Recall@3 90–99% and the best NDCG@3 on mediroute: when it asks, the right speciality is usually among the choices offered.</p></div>
+    <div class="finding"><span class="tag warn">tie-break</span><b>Neither voter can simply win ties</b><p>On disagreements the lookup is right more often on team-written cases (15 vs 3), the LLM on lay language (60 vs 25).</p></div>
+    <div class="finding"><span class="tag warn">LLM</span><b>The small LLM alone is not enough</b><p>LLM only: 73–81% accuracy with 16–26% confidently wrong. Ungrounded AI is the weakest real method on our own sets.</p></div>
+    <div class="finding"><span class="tag info">AI value</span><b>LLM evidence improves search</b><p>Searching the LLM-extracted phrases beats searching the raw text on mediroute (93% vs 87–88%), a measured gain from the AI step.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>How the benchmark works</h2>
+  <p>Every method gets exactly the same patient text and is scored against an answer written in advance. Method 4 is replayed on the LLM outputs saved from the same run, so it differs from the current pipeline only in design, not in LLM randomness.</p>
+  <div class="flow" role="img" aria-label="Benchmark flow: gold sets feed the same message to four methods; predictions are scored against the expected speciality into metrics and a report">
+    <div class="stage-label">1 · test cases with known answers</div>
+    <div class="flow-row">
+      <div class="node"><b>core50</b><span>50 team-written cases: diagnoses, reports, vague, emergencies</span></div>
+      <div class="node"><b>mediroute</b><span>84 team-written cases incl. typos and multi-complaint</span></div>
+      <div class="node"><b>gretel</b><span>212 public lay-language cases (Apache-2.0), diagnosis mapped to speciality</span></div>
+    </div>
+    <div class="arrow">↓<small>same message (query + report) to every method</small></div>
+    <div class="stage-label">2 · four methods</div>
+    <div class="flow-row">
+      <div class="node"><b>1 Keyword search</b><span>TF-IDF over the ICD-10-CM + CGHS lookup list; no AI</span></div>
+      <div class="node"><b>2 Semantic search</b><span>MiniLM embeddings over the same list; ML, no LLM</span></div>
+      <div class="node"><b>3 LLM only</b><span>LLM picks from 26 specialities; no medical data</span></div>
+      <div class="node key"><b>4 MediRoute (proposed)</b><span>LLM evidence → hybrid lookup (1+2 fused by rank) + LLM voter → agree or ask</span></div>
+    </div>
+    <div class="arrow">↓<small>also recorded: today's 3-voter pipeline as "Before", plus ablations</small></div>
+    <div class="stage-label">3 · score each answer</div>
+    <div class="flow-row">
+      <div class="node"><b>Answer vs gold</b><span>expected speciality = 2 · accepted alternative = 1 · other = 0 · asked = not answered</span></div>
+      <div class="node"><b>Pipeline extras</b><span>evidence vs critical details (omission) · emergency flags · decision taken</span></div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="flow-row">
+      <div class="node out"><b>Metrics</b><span>Accuracy (P@1) with 95% CI · Recall@3 · NDCG@3 · MRR · macro P/R/F1 · confidently wrong · asks</span></div>
+      <div class="node out"><b>Significance</b><span>McNemar exact test: on the same queries, is one method really better?</span></div>
+      <div class="node out"><b>Error list</b><span>every confidently wrong answer with its evidence and votes</span></div>
+    </div>
+  </div>
+
+  <h3>Method 4: how it decides</h3>
+  <div class="flow" role="img" aria-label="Method 4 decision: evidence goes to hybrid lookup voter and LLM voter; agree answers, disagree asks">
+    <div class="flow-row">
+      <div class="node"><b>Patient text</b><span>"kidney stone 12 mm, severe pain on one side of back"</span></div>
+    </div>
+    <div class="arrow">↓<small>LLM extracts evidence, code keeps only phrases really in the text</small></div>
+    <div class="flow-row">
+      <div class="node"><b>Hybrid lookup voter</b><span>keyword + semantic results fused by rank (RRF, k=60) → Orthopaedics</span></div>
+      <div class="node"><b>LLM voter</b><span>reads the whole text, picks from 26 → Urology</span></div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="decide">
+      <div class="node"><b>Agree</b><span>answer</span></div>
+      <div class="node key"><b>Disagree</b><span>ask a question (this case) · tie-break under discussion</span></div>
+      <div class="node"><b>LLM abstains</b><span>4: lookup answers · 4b: ask</span></div>
+      <div class="node"><b>No evidence / both General Medicine</b><span>ask</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Results</h2>
+  <div class="tabs" role="tablist" aria-label="Gold set">
+    <button role="tab" id="tab-core50" aria-selected="true" data-set="core50">core50 · n=50</button>
+    <button role="tab" id="tab-mediroute" aria-selected="false" data-set="mediroute">mediroute · n=84</button>
+    <button role="tab" id="tab-gretel" aria-selected="false" data-set="gretel">gretel · n=212</button>
+  </div>
+  <div class="legend"><span><i style="background:var(--bar-acc)"></i>Correct answer</span><span><i style="background:var(--bar-ask)"></i>Asked a question</span><span><i style="background:var(--bar-wrong)"></i>Confidently wrong</span></div>
+  <div class="bars" id="bars"></div>
+  <h3>All metrics</h3>
+  <div class="scroll"><table id="metrics"></table></div>
+  <p class="note" id="set-note"></p>
+</section>
+
+<section>
+  <h2>Why method 4 asks, and who is right when the voters disagree</h2>
+  <div class="two">
+    <div class="panel">
+      <h3 style="margin-top:0">Reasons for asking</h3>
+      <div class="scroll"><table>
+        <tr><th>Reason</th><th>core50</th><th>mediroute</th><th>gretel</th></tr>
+        <tr><td>Hybrid and LLM disagree</td><td>10</td><td>23</td><td>122</td></tr>
+        <tr><td>Both say General Medicine (ask once)</td><td>1</td><td>4</td><td>0</td></tr>
+        <tr><td>No evidence in the text</td><td>4</td><td>0</td><td>2</td></tr>
+        <tr><td><b>Total asked</b></td><td><b>15 / 50</b></td><td><b>27 / 84</b></td><td><b>124 / 212</b></td></tr>
+      </table></div>
+    </div>
+    <div class="panel">
+      <h3 style="margin-top:0">On disagreements, who was right?</h3>
+      <div class="scroll"><table>
+        <tr><th>Outcome</th><th>core50</th><th>mediroute</th><th>gretel</th></tr>
+        <tr><td>Only the lookup right</td><td>5</td><td>10</td><td>25</td></tr>
+        <tr><td>Only the LLM right</td><td>1</td><td>2</td><td>60</td></tr>
+        <tr><td>Both acceptable</td><td>2</td><td>7</td><td>21</td></tr>
+        <tr><td>Both wrong</td><td>2</td><td>4</td><td>16</td></tr>
+      </table></div>
+    </div>
+  </div>
+  <p class="note">"Lookup always wins" would suit the team-written sets and "LLM always wins" would suit lay language. Neither rule fits both, so the tie-break needs a signal per case (confidence, or an LLM judge that sees the matched ICD evidence). This is the open decision below.</p>
+</section>
+
+<section>
+  <h2>Evidence extraction and emergencies</h2>
+  <div class="two">
+    <div class="panel">
+      <h3 style="margin-top:0">Critical details found by the LLM (core50)</h3>
+      <div class="scroll"><table>
+        <tr><th>Kind</th><th>Found</th><th>Recall</th></tr>
+        <tr><td>Procedure</td><td>28 / 32</td><td>88%</td></tr>
+        <tr><td>Condition</td><td>32 / 47</td><td>68%</td></tr>
+        <tr><td>Body part</td><td>28 / 45</td><td>62%</td></tr>
+        <tr><td><b>All</b></td><td><b>88 / 124</b></td><td><b>71% (omission 29%)</b></td></tr>
+      </table></div>
+    </div>
+    <div class="panel">
+      <h3 style="margin-top:0">Emergency rules (core50)</h3>
+      <p>Caught <b>3 of 3</b> emergencies (heart attack signs, stroke signs, suicidal thoughts) with <b>0 false alarms</b> in 47 other messages. Emergency detection is fixed rules, shared by every pipeline.</p>
+      <p class="note">Only 3 emergency cases: too few to claim much. More emergency cases belong in the doctor-reviewed set.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>CCSR mapping and scoring fixes</h2>
+  <p>The lookup's ICD-to-speciality step was rebuilt on AHRQ's CCSR (v2023-1): ICD-10-CM code → CCSR clinical category → speciality, through a draft table of 547 categories (386 body-system defaults, 157 category rows with a written reason, awaiting doctor review). Same LLM outputs as the main run; one change per row.</p>
+  <div class="scroll"><table>
+    <tr><th>Lookup voter alone (on LLM evidence)</th><th>core50 acc / wrong</th><th>mediroute acc / wrong</th><th>gretel acc / wrong</th></tr>
+    <tr><td>C0 Current lookup (our ICD code ranges)</td><td>84% / 8%</td><td>90% / 10%</td><td>56% / 43%</td></tr>
+    <tr><td>C1 + CCSR mapping</td><td>84% / 8%</td><td>90% / 10%</td><td>57% / 42%</td></tr>
+    <tr><td>C2 + symptom matches count half</td><td>84% / 8%</td><td>90% / 10%</td><td>57% / 42%</td></tr>
+    <tr class="m4"><td><b>C3 + each phrase votes for its best match</b></td><td><b>86% / 6%</b></td><td><b>95% / 5%</b></td><td><b>57% / 42%</b></td></tr>
+  </table></div>
+  <h3>Known failures, before and after</h3>
+  <div class="scroll"><table>
+    <tr><th>Phrase</th><th>C0 current</th><th>C3 CCSR + scoring</th></tr>
+    <tr><td>throat pain</td><td class="worst">Cardiology</td><td class="best">ENT</td></tr>
+    <tr><td>kidney stone + severe pain on one side of back (Q031)</td><td class="worst">Orthopaedics</td><td class="best">Urology</td></tr>
+    <tr><td>kidney stone</td><td>Urology (Orthopaedics 3rd, via "Injury of kidney")</td><td>Urology (Orthopaedics gone)</td></tr>
+    <tr><td>difficulty in talking</td><td>Neurology</td><td class="worst">Paediatrics (new regression: speech symptoms halved)</td></tr>
+  </table></div>
+  <p class="note">CCSR fixes the mapping errors we found and makes the mapping defensible (AHRQ grouping plus a reviewable table), but the overall gain is modest: up to +5 points on mediroute, about +1 on lay language. With the LLM voter and "agree or ask", method 4 still asks on 29–52% of messages, because the bottleneck is disagreement with the LLM, not the lookup. CCSR covers ICD codes up to 2023: 61 newer codes have no category. Full tables: <code>report_ccsr.md</code> in the run folder.</p>
+</section>
+
+<section>
+  <h2>LLM judge results (POC)</h2>
+  <p>Judge: GPT-6 Luna via OpenRouter (pinned, reasoning off), asked twice per disagreement with the candidates swapped, under the guards in option 5. Step 1 evidence and votes: the same llama3.2 run. 518 calls, 0 failed, <b>$0.041 in total</b>.</p>
+  <div class="scroll"><table>
+    <tr><th>System</th><th>core50 acc / wrong / asks</th><th>mediroute acc / wrong / asks</th><th>gretel acc / wrong / asks</th></tr>
+    <tr class="before"><td>Before: current 3 voters</td><td>80% / 2% / 18%</td><td>89% / 2% / 8%</td><td>54% / 34% / 12%</td></tr>
+    <tr><td>Method 4, always ask</td><td>68% / 2% / 30%</td><td>67% / 1% / 32%</td><td>34% / 7% / 58%</td></tr>
+    <tr class="m4"><td><b>Method 4 + LLM judge</b></td><td><b>82% / 2% / 16%</b></td><td><b>86% / 4% / 11%</b></td><td><b>77% / 15% / 8%</b></td></tr>
+    <tr class="m4"><td><b>C3 (CCSR + scoring) + LLM judge</b></td><td><b>84% / 2% / 14%</b></td><td><b>88% / 2% / 10%</b></td><td><b>73% / 18% / 8%</b></td></tr>
+    <tr><td>Perfect judge (ceiling), C3</td><td>86% / 2% / 12%</td><td>92% / 1% / 7%</td><td>82% / 11% / 7%</td></tr>
+  </table></div>
+  <div class="scroll" style="margin-top:12px"><table>
+    <tr><th>Guard</th><th>Result over 293 judged disagreements</th></tr>
+    <tr><td>Answer outside the candidates</td><td>0 (blocked by the schema)</td></tr>
+    <tr><td>Cited evidence that does not support the choice</td><td>3 caught → asked the patient</td></tr>
+    <tr><td>Different answer when the candidate order was swapped</td><td>25 caught → asked the patient</td></tr>
+    <tr><td>Judge said "unclear"</td><td>34 → asked the patient</td></tr>
+    <tr><td>Judge's accepted answers that were right</td><td>84–100% depending on the set</td></tr>
+  </table></div>
+  <p class="note">The judge recovers most of the ceiling: on lay language (gretel) accuracy rises from 54% to 73–77% and confidently wrong falls from 34% to 15–18% compared with today. Many "wrong" judge answers are arguable gold labels (severe headache → Neurology, rashes → Dermatology, varicose veins → Cardiology where the gold says General Medicine or Cardiothoracic Surgery), which is one more reason the gold sets need clinical review. Full table: <code>report_judge.md</code> in the run folder.</p>
+</section>
+
+<section>
+  <h2>Read these numbers with care</h2>
+  <ul>
+    <li><b>Gold labels are drafts.</b> core50 and mediroute were written by the team; doctor review is pending. The TA asked for independently reviewed cases.</li>
+    <li><b>Team-written cases are easy for search.</b> They use textbook terms that match ICD descriptions, so semantic search scores 92% on core50 but 73% on lay language.</li>
+    <li><b>gretel favours General Medicine.</b> It is an accepted answer for 153 of 212 cases, so always answering General Medicine scores 72%. Pipelines that ask before settling on General Medicine are penalised there.</li>
+    <li><b>Pipelines are scored before the patient answers.</b> A question counts as not correct. A simulated clarification answer would give a fairer final score; not built yet.</li>
+    <li><b>Small local LLM.</b> llama3.2 3B. A larger model may change the LLM-only and method 4 results; one run only, so LLM variance is not measured.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Open decision: the tie-break for method 4</h2>
+  <div class="scroll"><table>
+    <tr><th>Option when hybrid and LLM disagree</th><th>Extra LLM calls</th><th>Status</th></tr>
+    <tr><td>T1 Always ask (method 4 as measured)</td><td>0</td><td>measured</td></tr>
+    <tr><td>T2 LLM always wins</td><td>0</td><td>replay, not run</td></tr>
+    <tr><td>T3 Lookup always wins</td><td>0</td><td>replay, not run</td></tr>
+    <tr><td>T4 Confidence: lookup margin / match type, LLM self-consistency (3 samples)</td><td>~2 per disagreement</td><td>proposed</td></tr>
+    <tr><td>T5 LLM judge shown both candidates and the matched ICD evidence (guarded, see below)</td><td>1–2 per disagreement</td><td>proposed</td></tr>
+  </table></div>
+  <p class="note">Any threshold will be tuned on one gold set and reported on the others, so the result is not fitted to the test cases.</p>
+
+  <h3>How much accuracy can a tie-break win?</h3>
+  <p>Computed from the saved votes of this run, no new LLM calls. "Perfect judge" always picks the voter that was right and asks when both were wrong: it is the ceiling for any tie-break, not a prediction.</p>
+  <div class="scroll"><table>
+    <tr><th>Tie-break on disagreement</th><th>core50 acc / wrong / asks</th><th>mediroute acc / wrong / asks</th><th>gretel acc / wrong / asks</th></tr>
+    <tr><td>T1 Always ask (method 4 now)</td><td>68% / 2% / 30%</td><td>67% / 1% / 32%</td><td>34% / 7% / 58%</td></tr>
+    <tr><td>T2 LLM always wins</td><td>74% / 16% / 10%</td><td>77% / 18% / 5%</td><td>73% / 26% / 1%</td></tr>
+    <tr><td>T3 Lookup always wins</td><td>82% / 8% / 10%</td><td>87% / 8% / 5%</td><td>56% / 43% / 1%</td></tr>
+    <tr class="m4"><td><b>Perfect judge (ceiling)</b></td><td><b>84% / 2% / 14%</b></td><td><b>89% / 1% / 10%</b></td><td><b>84% / 7% / 8%</b></td></tr>
+    <tr class="before"><td>Before: current 3 voters</td><td>80% / 2% / 18%</td><td>89% / 2% / 8%</td><td>54% / 34% / 12%</td></tr>
+  </table></div>
+  <p class="note">A real judge lands between the simple rules and the ceiling. The gain is largest on lay language (gretel): up to 84% accuracy with 7% confidently wrong, against 54% and 34% today. The cases where both voters are wrong (2, 4 and 16 cases) no tie-break can fix; that needs better retrieval (CCSR, scoring) or a better LLM.</p>
+
+  <h3>Option 5 in detail: an LLM judge that cannot invent answers</h3>
+  <p>The judge runs only when the hybrid lookup and the LLM voter disagree. It only chooses; it never writes text for the patient. Any failed check means the system asks the patient instead.</p>
+  <div class="scroll"><table>
+    <tr><th>Hallucination risk</th><th>Guard</th><th>Can it slip through?</th></tr>
+    <tr><td>Invents a speciality</td><td>JSON schema allows only the 2–3 disputed specialities or "unclear" (enforced by Ollama while generating)</td><td>No</td></tr>
+    <tr><td>Invents evidence</td><td>Must cite evidence line IDs (E1, E2); code checks each exists and maps to the chosen speciality</td><td>No: rejected, system asks</td></tr>
+    <tr><td>Misquotes the patient</td><td>Quoted phrase checked against the patient text (existing <code>verify_phrase</code>)</td><td>No</td></tr>
+    <tr><td>Unstable or order-biased</td><td>Asked twice with candidates swapped; act only if both answers match</td><td>Rarely; otherwise asks</td></tr>
+    <tr><td>Wrong reasoning on real evidence</td><td>Contained by the checks above; measured in the benchmark</td><td>Yes: counted and reported</td></tr>
+  </table></div>
+  <div class="flow" role="img" aria-label="Judge example for kidney stone case" style="margin-top:14px">
+    <div class="flow-row">
+      <div class="node"><b>Judge input</b><span>Candidates: Orthopaedics, Urology<br>E1 "kidney stone" → ICD N20.0 Calculus of kidney → Urology<br>E2 "severe pain on one side of back" → ICD M54.5 Low back pain → Orthopaedics</span></div>
+      <div class="node"><b>Judge output (schema)</b><span class="mono">{"choice": "Urology", "evidence": ["E1"], "patient_quote": "kidney stone"}</span></div>
+      <div class="node key"><b>Code checks</b><span>choice in candidates ✓ · E1 exists and maps to Urology ✓ · quote in text ✓ · same with order swapped ✓ → answer Urology. Any ✗ → ask.</span></div>
+    </div>
+  </div>
+  <p class="note">Judge metrics to add to the benchmark: invalid-output rate, citation-failure rate, order-swap flip rate, accuracy on disagreements against T2 and T3, and confidently wrong after the judge (must stay at or below method 4's 1–7%). The explanation shown to the patient is built from verified evidence, not from LLM wording, and the judge never overrides the emergency rules.</p>
+</section>
+
+<section>
+  <h2>Reproduce</h2>
+  <p>Standalone scripts; they change no app code and write their request trace to the run folder, not to the admin log.</p>
+  <div class="scroll"><table>
+    <tr><th>Step</th><th>Command</th></tr>
+    <tr><td>Full run (≈1 h on Ollama)</td><td><code>PYTHONPATH=src .venv/Scripts/python.exe scripts/benchmark_step1.py</code></td></tr>
+    <tr><td>Add method 4 (minutes, no LLM)</td><td><code>... scripts/benchmark_step1_replay.py data/evaluation/results/&lt;run&gt;</code></td></tr>
+    <tr><td>Outputs</td><td><code>report_method4.md · metrics_method4.json · predictions*.jsonl · trace.jsonl</code></td></tr>
+  </table></div>
+</section>
+</main>
+
+<script>
+const LABELS = ["1 Keyword search", "2 Semantic search", "3 LLM only", "4 MediRoute: hybrid + LLM", "4b same, asks if LLM abstains", "Before: current 3 voters"];
+const COLS = ["Accuracy (95% CI)", "Recall@3", "NDCG@3", "MRR@3", "Macro P", "Macro R", "Macro-F1", "Conf. wrong", "Asks"];
+// [acc, ciLo, ciHi, r3, ndcg, mrr, mP, mR, f1, wrong, asks|null]
+const DATA = {
+  core50: { note: "Team-written, draft labels. 5 vague cases: method 4 asked on all 5, the 3-voter pipeline on 4.", rows: [
+    [86,74,93,92,.78,.88,.76,.77,.73,14,null],[92,81,97,96,.84,.94,.80,.81,.77,8,null],[76,63,86,90,.77,.83,.76,.77,.74,16,null],
+    [68,54,79,90,.82,.86,.83,.74,.77,2,30],[68,54,79,90,.82,.86,.83,.74,.77,2,30],[80,67,89,88,.80,.86,.82,.79,.80,2,18]]},
+  mediroute: { note: "Team-written, draft labels. When method 4 asked, an acceptable speciality was among its options in 96% of cases.", rows: [
+    [88,80,93,98,.82,.93,.90,.84,.84,12,null],[87,78,92,98,.82,.92,.74,.71,.69,13,null],[81,71,88,94,.79,.87,.80,.74,.73,18,null],
+    [67,56,76,99,.86,.94,.81,.63,.69,1,32],[67,56,76,99,.86,.94,.82,.63,.70,0,33],[89,81,94,99,.86,.96,.83,.79,.80,2,8]]},
+  gretel: { note: "Public lay-language set. General Medicine is accepted for 153 of 212 cases, so 'always General Medicine' scores 72% here.", rows: [
+    [68,62,74,85,.60,.76,.58,.50,.53,32,null],[73,67,79,91,.64,.81,.57,.56,.54,27,null],[73,66,78,94,.73,.83,.58,.46,.44,26,null],
+    [34,28,41,92,.66,.73,.51,.28,.32,7,58],[34,28,41,92,.66,.73,.51,.28,.32,7,58],[54,48,61,76,.49,.65,.60,.49,.48,34,12]]},
+};
+const fmtP = v => v + "%", fmtD = v => v.toFixed(2);
+function render(set) {
+  const d = DATA[set];
+  const bars = document.getElementById("bars");
+  bars.innerHTML = d.rows.map((r, i) => {
+    const acc = r[0], wrong = r[9], ask = r[10] ?? 0, rest = Math.max(0, 100 - acc - wrong - ask);
+    const seg = (cls, w, t) => w > 0 ? `<div class="seg ${cls}" style="width:${w}%" title="${t}">${w >= 7 ? w + "%" : ""}</div>` : "";
+    return `<div class="bar-row"><div class="lbl">${LABELS[i]}</div><div class="track">${seg("acc", acc, "correct " + acc + "%")}${seg("ask", ask, "asked " + ask + "%")}${seg("wrong", wrong, "confidently wrong " + wrong + "%")}${rest ? `<div style="width:${rest}%"></div>` : ""}</div></div>`;
+  }).join("");
+  const colIdx = { acc: 0, r3: 3, ndcg: 4, mrr: 5, mP: 6, mR: 7, f1: 8, wrong: 9 };
+  const best = {}, worst = {};
+  for (const [k, j] of Object.entries(colIdx)) {
+    const vals = d.rows.map(r => r[j]);
+    best[k] = k === "wrong" ? Math.min(...vals) : Math.max(...vals);
+    worst[k] = k === "wrong" ? Math.max(...vals) : Math.min(...vals);
+  }
+  const cell = (k, v, txt) => `<td class="${v === best[k] ? "best" : v === worst[k] ? "worst" : ""}">${txt}</td>`;
+  document.getElementById("metrics").innerHTML =
+    `<tr><th>Method</th>${COLS.map(c => `<th>${c}</th>`).join("")}</tr>` +
+    d.rows.map((r, i) => `<tr class="${i === 3 ? "m4" : i === 5 ? "before" : ""}"><td>${LABELS[i]}</td>` +
+      cell("acc", r[0], `${r[0]}% <span style="color:var(--muted);font-weight:400">(${r[1]}–${r[2]})</span>`) +
+      cell("r3", r[3], fmtP(r[3])) + cell("ndcg", r[4], fmtD(r[4])) + cell("mrr", r[5], fmtD(r[5])) +
+      cell("mP", r[6], fmtD(r[6])) + cell("mR", r[7], fmtD(r[7])) + cell("f1", r[8], fmtD(r[8])) +
+      cell("wrong", r[9], fmtP(r[9])) + `<td>${r[10] == null ? "—" : r[10] + "%"}</td></tr>`).join("");
+  document.getElementById("set-note").textContent = d.note + " Green = best in column, red = worst. Accuracy counts a question as not correct.";
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.set === set)));
+  try { localStorage.setItem("step1-bench-set", set); } catch (e) {}
+}
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => render(b.dataset.set)));
+let start = "core50";
+try { const s = localStorage.getItem("step1-bench-set"); if (s && DATA[s]) start = s; } catch (e) {}
+render(start);
+</script>
+
+</body>
+</html>

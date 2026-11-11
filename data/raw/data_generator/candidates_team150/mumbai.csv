@@ -1,0 +1,4 @@
+hospital_id,hospital_name,city,state,City_Tier,Hospital_Tier,hospital_type,ownership_type,nabh_query,branch_hint,jci_name,official_source_url,url_international,review_note,source
+H196,S. L. Raheja Hospital (Fortis Associate),Mumbai,Maharashtra,Tier 1,Tier 2,Multispeciality tertiary,Private (trust),Raheja,,,https://www.rahejahospital.com/,,tiers are judgement; team 150 id H138,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H197,Saifee Hospital,Mumbai,Maharashtra,Tier 1,Tier 2,Multispeciality tertiary,Private (trust),Saifee,,,https://www.saifeehospital.com/,,tiers are judgement; team 150 id H139,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
+H198,Bombay Hospital and Medical Research Centre,Mumbai,Maharashtra,Tier 1,Tier 2,Multispeciality tertiary,Private (trust),Bombay,,,https://bombayhospital.com/,,tiers are judgement; team 150 id H140,Team 150-hospital sheet (NewMediRoute_Hospital_Dataset_150.xlsx)
