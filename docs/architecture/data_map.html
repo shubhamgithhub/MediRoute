@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MediRoute Data Map</title>
+<style>
+/* One page: a flow picture on top, then one lane per use (prep, Step 1, Step 2, evaluation), leftovers at the bottom */
+:root {
+  --bg: #f7f8f6; --card: #ffffff; --fg: #1b2321; --muted: #5d6b68; --line: #d8e0de;
+  --prep: #7a5af5; --prep-soft: #eeeafe; --s1: #0d7c74; --s1-soft: #dcf1ee; --s2: #c2611f; --s2-soft: #fbe9dc;
+  --ev: #2f6fd0; --ev-soft: #e1ebfb; --old: #8a8f8e; --old-soft: #eceeed;
+  --font: "Segoe UI", system-ui, -apple-system, Arial, sans-serif; --mono: Consolas, "Cascadia Mono", monospace;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #121716; --card: #1b2321; --fg: #e4ebe9; --muted: #9aaba7; --line: #2f3b39;
+  --prep: #a690ff; --prep-soft: #2a2447; --s1: #4fc2b6; --s1-soft: #16332f; --s2: #ef9a5c; --s2-soft: #3a2616;
+  --ev: #7fa9ec; --ev-soft: #1a2a44; --old: #9aa09f; --old-soft: #262c2b; color-scheme: dark } }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.55;
+  padding: 28px max(16px, 3vw) 60px }
+main { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 34px }
+h1 { margin: 0; font-size: 1.9rem } h2 { margin: 0 0 12px; font-size: 1.3rem }
+p { margin: 0 0 10px; max-width: 75ch } .muted { color: var(--muted) }
+code { font-family: var(--mono); font-size: .84em; background: var(--old-soft); padding: 1px 5px; border-radius: 4px; word-break: break-all }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px }
+.tag { display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .03em; padding: 2px 9px; border-radius: 999px }
+.t-prep { background: var(--prep-soft); color: var(--prep) } .t-s1 { background: var(--s1-soft); color: var(--s1) }
+.t-s2 { background: var(--s2-soft); color: var(--s2) } .t-ev { background: var(--ev-soft); color: var(--ev) }
+.t-old { background: var(--old-soft); color: var(--old) }
+/* flow picture */
+.flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: stretch }
+.col { display: flex; flex-direction: column; gap: 10px }
+.col h3 { margin: 0; font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted) }
+.box { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 8px; padding: 10px 12px; font-size: .88rem }
+.box b { display: block; font-size: .95rem }
+.box span { color: var(--muted) }
+.arrow { display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 1.5rem }
+.c-prep { --c: var(--prep) } .c-s1 { --c: var(--s1) } .c-s2 { --c: var(--s2) } .c-ev { --c: var(--ev) } .c-old { --c: var(--old) }
+/* lanes */
+.lane { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; border-top: 5px solid var(--c) }
+.lane .why { color: var(--muted); margin-bottom: 14px }
+.files { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px }
+.file { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; min-width: 0 }
+.file .name { font-family: var(--mono); font-size: .85rem; font-weight: 600; word-break: break-all }
+.file .folder { font-family: var(--mono); font-size: .75rem; color: var(--muted) }
+.file p { margin: 6px 0 0; font-size: .9rem }
+.file .used { font-size: .8rem; color: var(--muted); margin-top: 6px }
+.file.key { border-color: var(--c); box-shadow: 0 0 0 1px var(--c) inset }
+.star { color: var(--c); font-weight: 700 }
+details { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 20px }
+summary { cursor: pointer; font-weight: 600 }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; margin-top: 10px }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top }
+.scroll { overflow-x: auto }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px }
+.rule { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: .9rem }
+.rule b { display: block; margin-bottom: 4px }
+@media (max-width: 760px) { .flow { grid-template-columns: 1fr } .arrow { transform: rotate(90deg) } }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>MediRoute data map</h1>
+  <p class="muted">What each data file is for, in one page. Updated 11 Nov 2026, after the clean-up: <b>the app reads only <code>data/processed/</code></b>.</p>
+  <div class="legend">
+    <span class="tag t-s1">STEP 1 · which speciality</span>
+    <span class="tag t-s2">STEP 2 · which hospitals</span>
+    <span class="tag t-prep">SOURCES &amp; PIPELINE · builds data</span>
+    <span class="tag t-ev">EVALUATION · test answers</span>
+  </div>
+</header>
+
+<section>
+  <h2>The big picture</h2>
+  <p>Two small tables are maintained by hand and reviewed by a doctor. Everything else in <code>data/processed/</code> is
+  generated from official sources by one command, <code>python -m mediroute.data_generator.rebuild</code>.</p>
+  <div class="flow">
+    <div class="col">
+      <h3>1 · Sources (never edited)</h3>
+      <div class="box c-prep"><b>data/raw/</b><span>ICD-10-CM (CDC) · CCSR (AHRQ) · CGHS (Govt of India) · team hospital sheets</span></div>
+      <div class="box c-prep"><b>data/interim/</b><span>verified hospital master, NABH / JCI scrapes, id links</span></div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="col">
+      <h3>2 · Maintained by hand (reviewed)</h3>
+      <div class="box c-s1"><b>specialties.csv</b><span>the master list: 26 specialities, descriptions, boundaries</span></div>
+      <div class="box c-s1"><b>specialty_mapping.csv</b><span>every "X → speciality" rule: CCSR, CGHS, lay terms, hospital labels</span></div>
+      <div class="box c-s2"><b>cities.csv · hospital.schema.csv</b><span>search areas; hospital columns</span></div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="col">
+      <h3>3 · Generated → app</h3>
+      <div class="box c-s1"><b>step1_lookup.csv + embeddings</b><span>10,884 terms that V1 / V2 search</span></div>
+      <div class="box c-s2"><b>hospitals.csv + FAISS index</b><span>201 hospitals Step 2 filters and ranks</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="lane c-s1" style="--c: var(--s1)">
+  <h2><span class="tag t-s1">data/processed/</span> The only folder the app reads</h2>
+  <p class="why">★ = maintained by hand and reviewed. The rest is generated; never edit it, rebuild it.</p>
+  <div class="files">
+    <div class="file key"><div class="name"><span class="star">★</span> specialties.csv</div>
+      <p>The master list: 26 specialities with description, <b>route_here_when</b> and <b>not_here</b>. The LLM reads all of it; nothing else may invent a speciality.</p>
+      <div class="used"><span class="tag t-s1">Step 1</span> <span class="tag t-s2">Step 2</span></div></div>
+    <div class="file key"><div class="name"><span class="star">★</span> specialty_mapping.csv</div>
+      <p>1,363 rules, one table: <b>ccsr</b> (547 AHRQ categories), <b>cghs_label / cghs_name</b> (76), <b>lay_term</b> (473 patient words, strong or weak), <b>hospital</b> (267 department names).</p>
+      <div class="used"><span class="tag t-s1">Step 1</span> lookup + evidence · <span class="tag t-s2">Step 2</span> filter</div></div>
+    <div class="file key"><div class="name"><span class="star">★</span> cities.csv</div>
+      <p>60 cities and their search areas (Gurugram searches all of Delhi NCR).</p>
+      <div class="used"><span class="tag t-s2">Step 2</span> location filter, city list</div></div>
+    <div class="file key"><div class="name"><span class="star">★</span> hospital.schema.csv</div>
+      <p>Columns and allowed values of the hospital table.</p>
+      <div class="used"><span class="tag t-prep">build check</span></div></div>
+    <div class="file"><div class="name">step1_lookup.csv</div>
+      <p>Generated: ICD-10-CM codes through CCSR, CGHS procedures and lay terms. Each row has its speciality, evidence type and the rule that produced it.</p>
+      <div class="used"><span class="tag t-s1">Step 1</span> V1 keyword + V2 meaning search</div></div>
+    <div class="file"><div class="name">hospitals.csv</div>
+      <p>Generated: the verified master + team-sheet detail (marked "not verified").</p>
+      <div class="used"><span class="tag t-s2">Step 2</span> + Step 1 availability flag</div></div>
+    <div class="file"><div class="name">vector_store/</div>
+      <p>Generated: Step 2 FAISS index and metadata; Step 1 embedding cache (.npy, not committed).</p>
+      <div class="used"><span class="tag t-s1">Step 1</span> <span class="tag t-s2">Step 2</span></div></div>
+  </div>
+</section>
+
+<section class="lane c-prep" style="--c: var(--prep)">
+  <h2><span class="tag t-prep">SOURCES</span> data/raw/ and data/interim/</h2>
+  <p class="why">Inputs for the rebuild. The app never reads them.</p>
+  <div class="files">
+    <div class="file"><div class="folder">data/raw/icd10cm_2026/</div><div class="name">icd10cm-order-2026.txt</div>
+      <p>Official ICD-10-CM 2026 diagnosis list (CDC, public domain; download step in README).</p></div>
+    <div class="file"><div class="folder">data/raw/ccsr_v2023_1/</div><div class="name">DXCCSR-Reference-File-v2023-1.xlsx</div>
+      <p>AHRQ CCSR: each ICD-10-CM code → clinical category.</p></div>
+    <div class="file"><div class="folder">data/raw/data_generator/</div><div class="name">Hosp_Data_Final.xlsx</div>
+      <p>Team workbook: CGHS procedure list (~1,270) and per-person hospital sheets.</p></div>
+    <div class="file"><div class="folder">data/raw/</div><div class="name">NewMediRoute_Hospital_Dataset_150.xlsx · data_generator/candidates*/</div>
+      <p>Team hospital lists: the 150 sheet and per-city candidates.</p></div>
+    <div class="file"><div class="folder">data/interim/</div><div class="name">master-hospital-data.csv · hospital_id_links.csv</div>
+      <p>The verified master (website, NABH, JCI checks) and the reviewed links to the team sheet.</p></div>
+    <div class="file"><div class="folder">data/interim/</div><div class="name">master/ · master_team150/ · jci/ · nabh_master_matches.csv</div>
+      <p>Per-city verification outputs and scrapes: hours of work, kept so the master can be rebuilt in seconds.</p></div>
+  </div>
+</section>
+
+<section class="lane c-ev" style="--c: var(--ev)">
+  <h2><span class="tag t-ev">EVALUATION</span> data/evaluation/</h2>
+  <p class="why">Used only by the benchmark scripts.</p>
+  <div class="files">
+    <div class="file key"><div class="name"><span class="star">★</span> step1_gold_core50.csv</div>
+      <p>50 team-written cases with expected speciality, critical details, emergency flags. Awaiting doctor review.</p></div>
+    <div class="file"><div class="name">step1_gold_mediroute.csv · step1_gold_gretel.csv</div>
+      <p>84 more team cases; 212 public lay-language cases.</p></div>
+    <div class="file"><div class="name">results/&lt;run&gt;/</div>
+      <p>Benchmark outputs. Summary: <code>docs/evaluation/step1_benchmark_report.html</code>.</p></div>
+  </div>
+</section>
+
+<details>
+  <summary><span class="tag t-old">ARCHIVED</span> &nbsp; What moved to archive/ on 11 Nov (click to open)</summary>
+  <div class="scroll"><table>
+    <tr><th>Old file</th><th>Now</th></tr>
+    <tr><td><code>medical_taxonomy/icd10_block_specialty.csv</code> (126 hand-drawn ranges)</td><td>Replaced by AHRQ CCSR: <code>ccsr</code> rows of specialty_mapping.csv</td></tr>
+    <tr><td><code>medical_taxonomy/cghs_label_specialty.csv</code>, <code>cghs_name_overrides.csv</code></td><td><code>cghs_label</code> / <code>cghs_name</code> rows</td></tr>
+    <tr><td><code>medical_taxonomy/specialty_normalization.csv</code></td><td><code>hospital</code> rows</td></tr>
+    <tr><td>keywords column of <code>specialties.csv</code></td><td><code>lay_term</code> rows (strong / weak); no longer copied</td></tr>
+    <tr><td><code>medical_taxonomy/step1_lookup.csv</code></td><td><code>processed/step1_lookup.csv</code>, generated</td></tr>
+    <tr><td><code>reference/cities.csv</code>, <code>vector_store/</code></td><td>Moved into <code>processed/</code></td></tr>
+    <tr><td>Old routes <code>/api/icd10/*</code>, <code>/api/medical-context</code> and their mapping files</td><td><code>archive/code/</code>; replaced by the Step 1 vote pipeline</td></tr>
+  </table></div>
+  <p class="muted">Details: <code>archive/README.txt</code>.</p>
+</details>
+
+<section>
+  <h2>Three rules to remember</h2>
+  <div class="rules">
+    <div class="rule"><b>Edit only the ★ files</b>Change a speciality or a rule in the two maintained tables, then run the rebuild. Never edit a generated file.</div>
+    <div class="rule"><b>One fact, one place</b>Speciality names live only in specialties.csv; every rule only in specialty_mapping.csv. Tests fail on duplicates or unknown names.</div>
+    <div class="rule"><b>Everything is regeneratable</b><code>python -m mediroute.data_generator.rebuild</code> refreshes all generated files from raw/ and interim/.</div>
+  </div>
+</section>
+
+</main>
+
+</body>
+</html>

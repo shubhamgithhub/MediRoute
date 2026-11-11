@@ -1,6 +1,6 @@
 """Step 2 eligibility: which hospitals offer Step 1's speciality.
 
-Hospital labels reach Step 1's 26 names through data/medical_taxonomy/specialty_normalization.csv
+Hospital labels reach Step 1's 26 names through the ``hospital`` rows of data/processed/specialty_mapping.csv
 (a label can map to several, e.g. Neurosciences -> Neurology + Neurosurgery; NONE = not a routing
 speciality). A hospital is eligible when the speciality is either
   * verified: found on the hospital's own website (``verified_specialties``), or
@@ -8,35 +8,18 @@ speciality). A hospital is eligible when the speciality is either
 ``specialty_evidence`` says which, so the ranking and the screen can tell them apart.
 """
 
-import csv
-from pathlib import Path
+from mediroute.common.specialties import hospital_label_map, specialty_names
 
-from mediroute.common.specialties import specialty_names
-from mediroute.utils.paths import TAXONOMY_DIR
-
-SPECIALTY_NORMALIZATION_FILE = TAXONOMY_DIR / "specialty_normalization.csv"
 VERIFIED, TEAM_LISTED = "website", "team list"
 
 
 class SpecialtyFilter:
     """Maps raw specialty names to MediRoute canonical specialties."""
 
-    def __init__(self, mapping_file=None):
-        self.mapping_file = Path(mapping_file) if mapping_file else SPECIALTY_NORMALIZATION_FILE
-        self.raw_to_canonical: dict[str, set[str]] = {}
+    def __init__(self, mapping=None):
+        # hospital department name (casefolded) -> specialities, from specialty_mapping.csv
+        self.raw_to_canonical: dict[str, set[str]] = mapping if mapping is not None else hospital_label_map()
         self.canonical_specialties = {name.casefold(): name for name in specialty_names()}
-        self._load_mapping()
-
-    def _load_mapping(self):
-        with open(self.mapping_file, "r", encoding="utf-8-sig", newline="") as file:
-            for row in csv.DictReader(file):
-                raw = (row.get("raw_specialty") or "").strip()
-                canonical = (row.get("canonical_specialty") or "").strip()
-                if not raw:
-                    continue
-                known = self.raw_to_canonical.setdefault(raw.casefold(), set())
-                if canonical and canonical != "NONE":
-                    known.add(canonical)
 
     def canonical_set(self, value) -> set[str]:
         """All Step 1 specialities a label stands for (empty for NONE or unknown)."""

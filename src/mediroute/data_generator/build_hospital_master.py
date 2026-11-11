@@ -16,7 +16,7 @@ What is verified automatically, and how:
   official_source_url          must load; taken from the candidate file, else the NABH card's website.
   url_Internantional_patients  a link on the official site whose text/URL mentions "international".
   verified_specialties         specialty terms found on the official site, normalised with
-                               data/medical_taxonomy/specialty_normalization.csv.
+                               data/processed/specialty_mapping.csv (source = hospital).
 Fields that come from the candidate file (City_Tier, Hospital_Tier, hospital_type,
 ownership_type) are judgement calls and are flagged as such in the notes column.
 
@@ -38,7 +38,7 @@ from openpyxl.utils import get_column_letter
 from playwright.sync_api import sync_playwright
 
 from mediroute.data_generator import nabh_finder_scraper as nabh
-from mediroute.utils.paths import TAXONOMY_DIR
+from mediroute.common.specialties import mapping_rules
 
 SCHEMA = ["hospital_id", "hospital_name", "city", "state", "City_Tier", "Hospital_Tier", "hospital_type",
           "ownership_type", "nabh_status", "jci_status", "verified_specialties",
@@ -47,7 +47,6 @@ SCHEMA = ["hospital_id", "hospital_name", "city", "state", "City_Tier", "Hospita
 EVIDENCE = ["nabh_certificate_no", "nabh_listed_name", "nabh_certificate_url", "nabh_match",
             "jci_ihco_id", "jci_listed_name", "website_status", "specialties_all_found",
             "data_collected_on", "source", "notes"]
-TAXONOMY = TAXONOMY_DIR / "specialty_normalization.csv"
 MAX_SPECIALTIES = 6
 
 
@@ -57,12 +56,10 @@ def load_specialty_patterns():
     Neurosciences -> Neurology + Neurosurgery). Canonical names also match themselves; rows mapped
     to NONE (general surgery, marketing terms) are not specialities."""
     pairs: dict[str, set[str]] = {}
-    with open(TAXONOMY, newline="", encoding="utf-8-sig") as f:
-        for r in csv.DictReader(f):
-            canon = (r.get("canonical_specialty") or "").strip()
-            if canon and canon != "NONE":
-                pairs.setdefault(r["raw_specialty"].strip(), set()).add(canon)
-                pairs.setdefault(canon, set()).add(canon)
+    for rule in mapping_rules("hospital"):
+        for canon in rule.specialties:  # empty for NONE
+            pairs.setdefault(rule.value, set()).add(canon)
+            pairs.setdefault(canon, set()).add(canon)
     # Common spellings the taxonomy does not list.
     extra = {"Orthopedics": "Orthopaedics", "Orthopaedic": "Orthopaedics", "Pediatrics": "Paediatrics",
              "Obstetrics": "Obstetrics & Gynaecology", "Gynaecology": "Obstetrics & Gynaecology",

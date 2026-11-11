@@ -22,11 +22,7 @@ from mediroute.utils.paths import PROJECT_ROOT  # noqa: E402
 
 from mediroute.utils.paths import HOSPITALS_FILE as HOSPITAL_FILE  # noqa: E402
 
-OUTPUT_DIR = (
-    PROJECT_ROOT
-    / "data"
-    / "vector_store"
-)
+from mediroute.utils.paths import VECTOR_STORE_DIR as OUTPUT_DIR  # noqa: E402  (data/processed/vector_store)
 
 OUTPUT_CSV = (
     OUTPUT_DIR

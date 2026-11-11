@@ -77,3 +77,47 @@ data/medical_taxonomy/icd10_specialty_mapping.csv
     icd10_block_specialty.csv. Candidate for the next clean-up.
 data/raw/data_generator/Hosp_Data_Final.xlsx
     CGHS procedure list (Step 1 lookup list) and the team's per-person hospital sheets.
+
+
+Second clean-up, 11 Nov 2026 (later the same day): one folder for app data
+------------------------------------------------------------------------
+data/processed/ is now the only folder the app reads. Each file there is either maintained by hand
+and reviewed (specialties.csv, specialty_mapping.csv, cities.csv, hospital.schema.csv) or rebuilt
+from data/raw/ and data/interim/ by `python -m mediroute.data_generator.rebuild`.
+
+Why: the speciality data was spread over nine files, several overlapping. The 474 keywords in
+specialties.csv were copied into the lookup list and then counted twice; the 126 hand-drawn ICD-10
+code ranges had never been reviewed and disagreed with AHRQ's CCSR grouping for 18% of codes
+(e.g. "Pain in throat" -> Cardiology, "Injury of kidney" -> Orthopaedics). Five different files
+held "X -> speciality" rules.
+
+archive/data/medical_taxonomy/
+  specialties.csv                 -> data/processed/specialties.csv (keywords column removed;
+                                     route_here_when / not_here added for the LLM)
+  icd10_block_specialty.csv       -> replaced by AHRQ CCSR categories: `ccsr` rows of
+                                     data/processed/specialty_mapping.csv (raw CCSR file in
+                                     data/raw/ccsr_v2023_1/)
+  cghs_label_specialty.csv,
+  cghs_name_overrides.csv         -> `cghs_label` / `cghs_name` rows of specialty_mapping.csv
+  specialty_normalization.csv     -> `hospital` rows of specialty_mapping.csv
+  (keywords of specialties.csv)   -> `lay_term` rows of specialty_mapping.csv, marked strong / weak
+  step1_lookup.csv                -> data/processed/step1_lookup.csv (now generated, never edited)
+  ccsr_category_specialty_draft.csv, step1_lookup_ccsr_draft.csv
+                                  -> benchmark drafts, superseded by the two files above
+  icd10_specialty_mapping.csv, icd10_mapping_test_cases.csv, medical_context_test_cases.csv
+                                  -> only used by the old routes below
+archive/code/specialty_routing/   router.py, icd10_mapper.py, extraction/medical_context_extractor.py,
+                                  patient_context_aggregator.py, patient_context_validator.py: the old
+                                  /api/icd10/* and /api/medical-context routes, replaced by the Step 1
+                                  vote pipeline behind /api/analyze
+archive/code/tests/               tests of those modules
+archive/code/scripts/             eval_step1.py (replaced by scripts/benchmark_step1.py),
+                                  debug_specialty_check.py (used the old router),
+                                  build_ccsr_specialty_draft.py, benchmark_step1_ccsr.py (CCSR
+                                  experiment, now part of the app), migrate_to_specialty_mapping.py
+                                  (the one-off script that built specialty_mapping.csv)
+archive/data/interim/jci/         jci_chennai_run1/run2: early scraper runs, not read by any script
+
+Moved, not archived: data/reference/cities.csv -> data/processed/cities.csv;
+data/vector_store/ -> data/processed/vector_store/; data/processed/master-hospital-data.csv and
+hospital_id_links.csv -> data/interim/ (pipeline inputs of hospitals.csv, not read by the app).

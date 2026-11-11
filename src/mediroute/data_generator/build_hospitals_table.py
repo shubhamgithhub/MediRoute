@@ -3,13 +3,13 @@
 Build data/processed/hospitals.csv: the one hospital table Step 1 and Step 2 both read.
 
 Inputs
-  data/processed/master-hospital-data.csv   verified rows (NABH / JCI / website), from merge_master
-  data/processed/hospital_id_links.csv      master id <-> team 150 sheet id (reviewed matches)
+  data/interim/master-hospital-data.csv     verified rows (NABH / JCI / website), from merge_master
+  data/interim/hospital_id_links.csv        master id <-> team 150 sheet id (reviewed matches)
   data/raw/NewMediRoute_Hospital_Dataset_150.xlsx (sheet Hospitals_150)
                                             sub-specialities, procedures, facilities, languages,
                                             cost band and claimed specialities, NOT verified
-  data/medical_taxonomy/specialty_normalization.csv   hospital labels -> Step 1 specialities
-  data/reference/cities.csv                 every city must be listed
+  data/processed/specialty_mapping.csv      hospital labels -> Step 1 specialities (source = hospital)
+  data/processed/cities.csv                 every city must be listed
 
 Rules
   * Identity, accreditation, verification level and verified_specialties come from the master
@@ -32,18 +32,16 @@ from collections import Counter
 import pandas as pd
 
 from mediroute.common.locations import city_names
-from mediroute.common.specialties import specialty_names
+from mediroute.common.specialties import hospital_label_map, specialty_names
 from mediroute.utils.paths import (
     HOSPITAL_LINKS_FILE,
     HOSPITAL_MASTER_FILE,
     HOSPITALS_FILE,
-    PROCESSED_DATA_DIR,
-    TAXONOMY_DIR,
+    HOSPITAL_SCHEMA_FILE,
     TEAM_150_SHEET_FILE,
 )
 
-SCHEMA_FILE = PROCESSED_DATA_DIR / "hospital.schema.csv"
-NORMALIZATION_FILE = TAXONOMY_DIR / "specialty_normalization.csv"
+SCHEMA_FILE = HOSPITAL_SCHEMA_FILE
 TEAM_SHEET = "Hospitals_150"
 TEAM_DETAIL = "team 150 sheet (not verified)"
 
@@ -61,16 +59,8 @@ def clean_list(value) -> str:
 
 
 def load_normalization() -> dict[str, set[str]]:
-    mapping: dict[str, set[str]] = {}
-    with open(NORMALIZATION_FILE, newline="", encoding="utf-8-sig") as f:
-        for r in csv.DictReader(f):
-            canon = r["canonical_specialty"].strip()
-            known = mapping.setdefault(r["raw_specialty"].strip().casefold(), set())  # NONE = known, no speciality
-            if canon and canon != "NONE":
-                known.add(canon)
-    for name in specialty_names():
-        mapping.setdefault(name.casefold(), set()).add(name)
-    return mapping
+    """Hospital label (casefolded) -> specialities; NONE labels are known with an empty set."""
+    return {label: set(names) for label, names in hospital_label_map().items()}
 
 
 def normalise(labels: str, mapping: dict[str, set[str]], unmapped: Counter) -> list[str]:
@@ -87,7 +77,7 @@ def normalise(labels: str, mapping: dict[str, set[str]], unmapped: Counter) -> l
     return sorted(out)
 
 
-def build() -> list[dict]:
+def build(out_path=HOSPITALS_FILE) -> list[dict]:
     with open(SCHEMA_FILE, newline="", encoding="utf-8-sig") as f:
         columns = [r["column_name"] for r in sorted(csv.DictReader(f), key=lambda r: int(r["column_order"]))]
     master = pd.read_csv(HOSPITAL_MASTER_FILE, dtype=str, keep_default_na=False)
@@ -132,16 +122,16 @@ def build() -> list[dict]:
             if bad:
                 problems.append(f"{r['hospital_id']}: {col} not in Step 1 list: {bad}")
         if r["city"] not in cities:
-            problems.append(f"{r['hospital_id']}: city '{r['city']}' not in data/reference/cities.csv")
+            problems.append(f"{r['hospital_id']}: city '{r['city']}' not in data/processed/cities.csv")
     ids = Counter(r["hospital_id"] for r in rows)
     problems += [f"duplicate hospital_id {i}" for i, n in ids.items() if n > 1]
     if unmapped:
-        problems.append(f"team labels missing from specialty_normalization.csv: {dict(unmapped)}")
+        problems.append(f"team labels missing from specialty_mapping.csv (source = hospital): {dict(unmapped)}")
     if problems:
         print("\n".join(problems[:40]))
         sys.exit("hospitals.csv NOT written; fix the problems above")
 
-    with open(HOSPITALS_FILE, "w", newline="", encoding="utf-8") as f:
+    with open(out_path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=columns)
         w.writeheader()
         w.writerows(rows)

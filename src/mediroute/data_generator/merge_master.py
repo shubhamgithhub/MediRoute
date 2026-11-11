@@ -6,7 +6,7 @@ validate every row against data/processed/hospital.schema.csv.
 Inputs: data/interim/master (team city lists) and data/interim/master_team150 (hospitals from the
 team 150 sheet, verified the same way). A team-150 row is kept only if its id is in
 data/processed/hospital_id_links.csv, so candidates found to duplicate a master hospital are skipped.
-Cities must be listed in data/reference/cities.csv.
+Cities must be listed in data/processed/cities.csv.
 
 Usage:
   python -m mediroute.data_generator.merge_master
@@ -35,7 +35,7 @@ def allowed_set(spec):
     """'Tier 1|Tier 2' -> {'Tier 1','Tier 2'}; free-text specs (URLs, patterns) -> None."""
     v = spec["allowed_values"].strip()
     if spec["column_name"] == "city":
-        return set(city_names())  # data/reference/cities.csv
+        return set(city_names())  # data/processed/cities.csv
     if spec["data_type"] != "category" and spec["column_name"] != "nabh_match":
         return None
     return {x.strip() for x in v.split("|")} if v else None

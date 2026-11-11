@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from mediroute.specialty_routing.step1.evidence import EvidenceExtractor, verify_phrase
-from mediroute.specialty_routing.step1.lookup import LookupEntry, LookupIndex, icd_specialty_for
+from mediroute.specialty_routing.step1.lookup import LookupEntry, LookupIndex
 from mediroute.specialty_routing.step1.ollama_client import LLMCall
 from mediroute.specialty_routing.step1.pipeline import Step1Input, Step1Pipeline
 from mediroute.specialty_routing.step1.protect import redact
@@ -142,17 +142,48 @@ def test_eye_infection_query_drops_generic_evidence():
 
 
 def test_lay_terms_are_in_the_lookup_list():
+    from collections import Counter
+
     from mediroute.specialty_routing.step1.lookup import _lay_term_entries
-    lay = {(e.text, e.specialty) for e in _lay_term_entries()}
-    assert ("eye infection", "Ophthalmology") in lay
-    assert ("ear discharge", "ENT") in lay
+    lay = {(e.text, e.specialty, e.evidence_type) for e in _lay_term_entries(set(), Counter())}
+    assert ("eye infection", "Ophthalmology", "strong") in lay
+    assert ("baby", "Paediatrics", "weak") in lay
+    # a lay term already present as official text is not copied again
+    assert not any(t == "asthma" for t, _, _ in {(e.text, e.specialty, e.evidence_type)
+                                                 for e in _lay_term_entries({"asthma"}, Counter())})
 
 
-def test_icd_narrowest_range_wins():
-    blocks = [{"code_from": "I80", "code_to": "I89", "specialty": "Cardiothoracic Surgery"},
-              {"code_from": "I85", "code_to": "I85", "specialty": "Gastroenterology"}]
-    assert icd_specialty_for("I850", blocks) == "Gastroenterology"
-    assert icd_specialty_for("I83", blocks) == "Cardiothoracic Surgery"
+@pytest.fixture(scope="module")
+def built_lookup():
+    """The generated lookup in data/processed (rebuild: python -m mediroute.data_generator.rebuild)."""
+    from mediroute.specialty_routing.step1.lookup import load_lookup
+    rows: dict[str, set] = {}
+    for e in load_lookup():
+        rows.setdefault(e.code or e.text, set()).add((e.specialty, e.evidence_type, e.mapping_rule))
+    return rows
+
+
+@pytest.mark.parametrize("code, specialty, evidence_type, rule", [
+    ("N200", "Urology", "diagnosis", "ccsr:GEN005"),      # calculus of kidney
+    ("R070", "ENT", "symptom", "ccsr:SYM013"),            # pain in throat: no longer Cardiology
+    ("M545", "Orthopaedics", "symptom", "ccsr:MUS038"),   # low back pain counts as a symptom
+])
+def test_icd_codes_reach_specialities_through_ccsr(built_lookup, code, specialty, evidence_type, rule):
+    assert (specialty, evidence_type, rule) in built_lookup[code]
+
+
+def test_known_mapping_errors_are_gone(built_lookup):
+    assert not any(s == "Cardiology" for s, _, _ in built_lookup["R070"])          # throat pain
+    assert not any(s == "Orthopaedics" for s, _, _ in built_lookup.get("S370", set()))  # kidney injury
+    assert "R07" not in built_lookup  # "Pain in throat and chest": sub-codes differ, header left out
+
+
+def test_weak_evidence_counts_half():
+    from mediroute.specialty_routing.step1.voters import _aggregate
+    strong = LookupEntry("a", "icd10cm", "N200", "Calculus of kidney", "Urology", "diagnosis")
+    symptom = LookupEntry("b", "icd10cm", "M545", "Low back pain", "Orthopaedics", "symptom")
+    top3, _ = _aggregate([("kidney stone", [(strong, 0.6)]), ("back pain", [(symptom, 0.8)])], 0.25)
+    assert top3[0][0] == "Urology"  # 0.6 beats 0.8 x 0.5
 
 
 # ---------------------------------------------------------------- decisions

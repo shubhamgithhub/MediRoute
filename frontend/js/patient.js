@@ -512,7 +512,7 @@ const emergencyBanner = document.querySelector("#emergency-banner");
 // rounds of one search share the first Step 1 request id (parent_request_id in the logs)
 let search = { parentRequestId: null, round: 0 };
 
-// The location list comes from GET /api/cities (data/reference/cities.csv: only search areas that
+// The location list comes from GET /api/cities (data/processed/cities.csv: only search areas that
 // have hospitals). The chosen value is sent as preferred_city; the API expands a search area
 // such as "Delhi NCR" into its cities. "Other" sends the typed city as it is.
 const loadLocationOptions = async () => {

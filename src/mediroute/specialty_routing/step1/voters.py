@@ -6,7 +6,9 @@
   it reads the whole text and does not use the lookup list, which keeps it independent.
 
 V1 and V2 score a speciality by its best hit for each phrase, summed over phrases, so one strong
-match for "knee replacement" counts more than many weak partial matches.
+match for "knee replacement" counts more than many weak partial matches. A hit on a symptom or a
+weak lay term (evidence_type in the lookup, from specialty_mapping.csv) counts half: "back pain"
+must not outweigh "kidney stone".
 """
 
 from __future__ import annotations
@@ -14,7 +16,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
-from mediroute.common.specialties import specialty_names
+from mediroute.common.specialties import WEAK_EVIDENCE, specialty_names
 from mediroute.specialty_routing.routes import UNCLEAR, LLMRouter
 from mediroute.specialty_routing.step1.lookup import LookupIndex
 from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
@@ -23,6 +25,7 @@ CATCH_ALL = "General Medicine"
 KEYWORD_MIN_SCORE = 0.25
 EMBEDDING_MIN_SCORE = 0.45
 HITS_PER_PHRASE = 8
+WEAK_EVIDENCE_WEIGHT = 0.5
 
 
 @dataclass
@@ -48,8 +51,11 @@ def _aggregate(per_phrase: list[tuple[str, list[tuple[Any, float]]]], min_score:
         for entry, score in results:
             hits.append({"phrase": phrase, "entry_id": entry.entry_id, "text": entry.text[:120],
                          "specialty": entry.specialty, "score": round(score, 3)})
-            if score >= min_score and score > best.get(entry.specialty, 0):
-                best[entry.specialty] = score
+            # General Medicine is the catch-all with its own rules below, so it is not weakened twice
+            weak = getattr(entry, "evidence_type", "") in WEAK_EVIDENCE and entry.specialty != CATCH_ALL
+            weighted = score * (WEAK_EVIDENCE_WEIGHT if weak else 1.0)
+            if score >= min_score and weighted > best.get(entry.specialty, 0):
+                best[entry.specialty] = weighted
         # A phrase whose best match is the catch-all ("weakness") is a general symptom: its weaker
         # partial hits ("weakness in arm" -> Neurology) must not turn it into a specialist vote.
         if best and max(best, key=best.get) == CATCH_ALL:

@@ -8,7 +8,7 @@ from mediroute.utils.paths import (
     PROCESSED_DATA_DIR,
     PROJECT_ROOT,
     RAW_DATA_DIR,
-    TAXONOMY_DIR,
+    EVALUATION_DIR,
     VECTOR_STORE_DIR,
 )
 
@@ -20,6 +20,6 @@ __all__ = [
     "PROCESSED_DATA_DIR",
     "PROJECT_ROOT",
     "RAW_DATA_DIR",
-    "TAXONOMY_DIR",
+    "EVALUATION_DIR",
     "VECTOR_STORE_DIR",
 ]

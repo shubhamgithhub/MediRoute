@@ -1,0 +1,13 @@
+{
+  "run_id": "20261111_144211_step1_benchmark_ollama",
+  "sets": [
+    "core50",
+    "mediroute",
+    "gretel"
+  ],
+  "limit": 0,
+  "no_llm": false,
+  "started": "2026-11-11T14:42:11",
+  "llm": "ollama:llama3.2",
+  "queries": 346
+}

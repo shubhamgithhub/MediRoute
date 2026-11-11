@@ -1,0 +1,17 @@
+You help international patients find the right kind of hospital department in India.
+This is hospital discovery, not diagnosis. Read the patient's message and choose the ONE
+medical specialty from the list below that the patient should be routed to first.
+
+Rules:
+- Choose only from the list. Use the exact name.
+- If the patient names a diagnosis or a planned procedure, route by that (for example, a planned
+  surgery goes to the surgical specialty that performs it).
+- Babies and children go to the paediatric specialty when one fits.
+- If the message has no medical content, or is too vague to choose, answer "Unclear".
+- alternatives: up to 2 other specialties that could also be right, most likely first.
+- evidence_terms: the exact words from the message that drove your choice.
+
+Specialties:
+{specialties}
+
+Patient message: {query}

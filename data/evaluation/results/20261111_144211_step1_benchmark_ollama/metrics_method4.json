@@ -1,0 +1,1268 @@
+{
+  "meta": {
+    "run_id": "20261111_144211_step1_benchmark_ollama",
+    "sets": [
+      "core50",
+      "mediroute",
+      "gretel"
+    ],
+    "limit": 0,
+    "no_llm": false,
+    "started": "2026-11-11T14:42:11",
+    "llm": "ollama:llama3.2",
+    "queries": 346
+  },
+  "by_set": {
+    "core50": {
+      "n": 50,
+      "systems": {
+        "B0_majority": {
+          "n": 50,
+          "acceptable": 0.12,
+          "acceptable_ci95": [
+            0.056,
+            0.238
+          ],
+          "exact": 0.1,
+          "top3": 0.12,
+          "ndcg3": 0.103,
+          "mrr3": 0.12,
+          "macro_precision": 0.004,
+          "macro_recall": 0.04,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.12,
+          "confidently_wrong": 0.88,
+          "macro_f1": 0.007,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0
+        },
+        "B1_keyword_rules": {
+          "n": 50,
+          "acceptable": 0.72,
+          "acceptable_ci95": [
+            0.583,
+            0.825
+          ],
+          "exact": 0.66,
+          "top3": 0.76,
+          "ndcg3": 0.657,
+          "mrr3": 0.737,
+          "macro_precision": 0.783,
+          "macro_recall": 0.674,
+          "asked": null,
+          "answered": 0.76,
+          "precision_when_answered": 0.947,
+          "confidently_wrong": 0.04,
+          "macro_f1": 0.691,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 4
+        },
+        "B2_lookup_keyword": {
+          "n": 50,
+          "acceptable": 0.86,
+          "acceptable_ci95": [
+            0.738,
+            0.93
+          ],
+          "exact": 0.74,
+          "top3": 0.92,
+          "ndcg3": 0.78,
+          "mrr3": 0.88,
+          "macro_precision": 0.755,
+          "macro_recall": 0.765,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.86,
+          "confidently_wrong": 0.14,
+          "macro_f1": 0.731,
+          "latency_p50_ms": 17,
+          "latency_p95_ms": 634
+        },
+        "B3_lookup_semantic": {
+          "n": 50,
+          "acceptable": 0.92,
+          "acceptable_ci95": [
+            0.812,
+            0.968
+          ],
+          "exact": 0.78,
+          "top3": 0.96,
+          "ndcg3": 0.836,
+          "mrr3": 0.94,
+          "macro_precision": 0.799,
+          "macro_recall": 0.809,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.92,
+          "confidently_wrong": 0.08,
+          "macro_f1": 0.771,
+          "latency_p50_ms": 34,
+          "latency_p95_ms": 230
+        },
+        "B4_llm_only": {
+          "n": 50,
+          "acceptable": 0.76,
+          "acceptable_ci95": [
+            0.626,
+            0.857
+          ],
+          "exact": 0.72,
+          "top3": 0.9,
+          "ndcg3": 0.765,
+          "mrr3": 0.827,
+          "macro_precision": 0.764,
+          "macro_recall": 0.767,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.826,
+          "confidently_wrong": 0.16,
+          "macro_f1": 0.739,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A1_v1_llm_evidence": {
+          "n": 50,
+          "acceptable": 0.82,
+          "acceptable_ci95": [
+            0.692,
+            0.902
+          ],
+          "exact": 0.78,
+          "top3": 0.88,
+          "ndcg3": 0.766,
+          "mrr3": 0.85,
+          "macro_precision": 0.819,
+          "macro_recall": 0.793,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.891,
+          "confidently_wrong": 0.1,
+          "macro_f1": 0.786,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A2_v2_llm_evidence": {
+          "n": 50,
+          "acceptable": 0.86,
+          "acceptable_ci95": [
+            0.738,
+            0.93
+          ],
+          "exact": 0.78,
+          "top3": 0.9,
+          "ndcg3": 0.8,
+          "mrr3": 0.877,
+          "macro_precision": 0.793,
+          "macro_recall": 0.792,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.935,
+          "confidently_wrong": 0.06,
+          "macro_f1": 0.765,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A3_pipeline_no_llm": {
+          "n": 50,
+          "acceptable": 0.64,
+          "acceptable_ci95": [
+            0.501,
+            0.759
+          ],
+          "exact": 0.6,
+          "top3": 0.74,
+          "ndcg3": 0.658,
+          "mrr3": 0.717,
+          "macro_precision": 0.713,
+          "macro_recall": 0.634,
+          "asked": 0.32,
+          "answered": 0.68,
+          "precision_when_answered": 0.941,
+          "confidently_wrong": 0.04,
+          "macro_f1": 0.647,
+          "latency_p50_ms": 45,
+          "latency_p95_ms": 140
+        },
+        "OURS": {
+          "n": 50,
+          "acceptable": 0.8,
+          "acceptable_ci95": [
+            0.67,
+            0.888
+          ],
+          "exact": 0.78,
+          "top3": 0.88,
+          "ndcg3": 0.795,
+          "mrr3": 0.86,
+          "macro_precision": 0.824,
+          "macro_recall": 0.79,
+          "asked": 0.18,
+          "answered": 0.82,
+          "precision_when_answered": 0.976,
+          "confidently_wrong": 0.02,
+          "macro_f1": 0.798,
+          "latency_p50_ms": 10911,
+          "latency_p95_ms": 16456
+        },
+        "A4_hybrid_llm_evidence": {
+          "n": 50,
+          "acceptable": 0.84,
+          "acceptable_ci95": [
+            0.715,
+            0.917
+          ],
+          "exact": 0.8,
+          "top3": 0.88,
+          "ndcg3": 0.791,
+          "mrr3": 0.86,
+          "macro_precision": 0.837,
+          "macro_recall": 0.827,
+          "asked": null,
+          "answered": 0.92,
+          "precision_when_answered": 0.913,
+          "confidently_wrong": 0.08,
+          "macro_f1": 0.806,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "M4_HYBRID_LLM": {
+          "n": 50,
+          "acceptable": 0.68,
+          "acceptable_ci95": [
+            0.542,
+            0.792
+          ],
+          "exact": 0.68,
+          "top3": 0.9,
+          "ndcg3": 0.817,
+          "mrr3": 0.863,
+          "macro_precision": 0.83,
+          "macro_recall": 0.743,
+          "asked": 0.3,
+          "answered": 0.7,
+          "precision_when_answered": 0.971,
+          "confidently_wrong": 0.02,
+          "macro_f1": 0.768,
+          "latency_p50_ms": 10911,
+          "latency_p95_ms": 16456
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "n": 50,
+          "acceptable": 0.68,
+          "acceptable_ci95": [
+            0.542,
+            0.792
+          ],
+          "exact": 0.68,
+          "top3": 0.9,
+          "ndcg3": 0.817,
+          "mrr3": 0.863,
+          "macro_precision": 0.83,
+          "macro_recall": 0.743,
+          "asked": 0.3,
+          "answered": 0.7,
+          "precision_when_answered": 0.971,
+          "confidently_wrong": 0.02,
+          "macro_f1": 0.768,
+          "latency_p50_ms": 10911,
+          "latency_p95_ms": 16456
+        }
+      },
+      "reference": "M4_HYBRID_LLM",
+      "paired": {
+        "B0_majority": {
+          "n": 50,
+          "only_ours_right": 29,
+          "only_baseline_right": 1,
+          "p_value": 0.0
+        },
+        "B1_keyword_rules": {
+          "n": 50,
+          "only_ours_right": 6,
+          "only_baseline_right": 8,
+          "p_value": 0.7905
+        },
+        "B2_lookup_keyword": {
+          "n": 50,
+          "only_ours_right": 2,
+          "only_baseline_right": 11,
+          "p_value": 0.0225
+        },
+        "B3_lookup_semantic": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 13,
+          "p_value": 0.0018
+        },
+        "B4_llm_only": {
+          "n": 50,
+          "only_ours_right": 0,
+          "only_baseline_right": 4,
+          "p_value": 0.125
+        },
+        "A1_v1_llm_evidence": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 8,
+          "p_value": 0.0391
+        },
+        "A2_v2_llm_evidence": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 10,
+          "p_value": 0.0117
+        },
+        "A3_pipeline_no_llm": {
+          "n": 50,
+          "only_ours_right": 8,
+          "only_baseline_right": 6,
+          "p_value": 0.7905
+        },
+        "OURS": {
+          "n": 50,
+          "only_ours_right": 1,
+          "only_baseline_right": 7,
+          "p_value": 0.0703
+        },
+        "A4_hybrid_llm_evidence": {
+          "n": 50,
+          "only_ours_right": 0,
+          "only_baseline_right": 8,
+          "p_value": 0.0078
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "n": 50,
+          "only_ours_right": 0,
+          "only_baseline_right": 0,
+          "p_value": 1.0
+        }
+      },
+      "pipeline": {
+        "M4_HYBRID_LLM": {
+          "decisions": {
+            "majority": 35,
+            "clarification_required": 15
+          },
+          "clarification_rate": 0.3,
+          "asked_and_right_in_candidates": 0.6,
+          "vague_cases_asked": "5/5",
+          "clear_cases_answered_correctly": "34/45"
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "decisions": {
+            "majority": 35,
+            "clarification_required": 15
+          },
+          "clarification_rate": 0.3,
+          "asked_and_right_in_candidates": 0.6,
+          "vague_cases_asked": "5/5",
+          "clear_cases_answered_correctly": "34/45"
+        },
+        "OURS": {
+          "decisions": {
+            "majority": 41,
+            "clarification_required": 9
+          },
+          "clarification_rate": 0.18,
+          "asked_and_right_in_candidates": 0.444,
+          "vague_cases_asked": "4/5",
+          "clear_cases_answered_correctly": "39/45"
+        }
+      },
+      "extraction": {
+        "M4_HYBRID_LLM": {
+          "recall": 0.71,
+          "omission_rate": 0.29,
+          "by_kind": {
+            "body_part": "28/45 (62%)",
+            "condition": "32/47 (68%)",
+            "procedure": "28/32 (88%)"
+          },
+          "missed": [
+            "C001 body_part=heart",
+            "C002 body_part=heart",
+            "C004 procedure=surgery",
+            "C005 procedure=tumour removal",
+            "C008 body_part=skin",
+            "C009 body_part=pancreas",
+            "C009 condition=type 1 diabetes",
+            "C010 body_part=blood",
+            "C012 condition=kidney stone",
+            "C013 body_part=heart",
+            "C014 body_part=heart",
+            "C018 body_part=uterus",
+            "C019 body_part=stomach",
+            "C019 condition=obesity",
+            "C020 body_part=lumbar spine",
+            "C021 body_part=heart",
+            "C026 body_part=heart",
+            "C026 condition=ventricular septal defect",
+            "C027 condition=cirrhosis",
+            "C029 body_part=fallopian tubes",
+            "C032 condition=dilated cardiomyopathy",
+            "C034 body_part=oesophagus",
+            "C034 condition=portal hypertension",
+            "C034 procedure=variceal band ligation",
+            "C035 condition=uterine fibroids",
+            "C037 condition=infertility",
+            "C038 body_part=ears",
+            "C038 condition=deafness",
+            "C045 condition=breathlessness",
+            "C046 body_part=speech",
+            "C046 condition=suspected stroke",
+            "C047 condition=suicidal thoughts",
+            "C048 condition=poor weight gain",
+            "C049 body_part=brain",
+            "C050 condition=premature birth (29 weeks)",
+            "C050 procedure=NICU care"
+          ]
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "recall": 0.71,
+          "omission_rate": 0.29,
+          "by_kind": {
+            "body_part": "28/45 (62%)",
+            "condition": "32/47 (68%)",
+            "procedure": "28/32 (88%)"
+          },
+          "missed": [
+            "C001 body_part=heart",
+            "C002 body_part=heart",
+            "C004 procedure=surgery",
+            "C005 procedure=tumour removal",
+            "C008 body_part=skin",
+            "C009 body_part=pancreas",
+            "C009 condition=type 1 diabetes",
+            "C010 body_part=blood",
+            "C012 condition=kidney stone",
+            "C013 body_part=heart",
+            "C014 body_part=heart",
+            "C018 body_part=uterus",
+            "C019 body_part=stomach",
+            "C019 condition=obesity",
+            "C020 body_part=lumbar spine",
+            "C021 body_part=heart",
+            "C026 body_part=heart",
+            "C026 condition=ventricular septal defect",
+            "C027 condition=cirrhosis",
+            "C029 body_part=fallopian tubes",
+            "C032 condition=dilated cardiomyopathy",
+            "C034 body_part=oesophagus",
+            "C034 condition=portal hypertension",
+            "C034 procedure=variceal band ligation",
+            "C035 condition=uterine fibroids",
+            "C037 condition=infertility",
+            "C038 body_part=ears",
+            "C038 condition=deafness",
+            "C045 condition=breathlessness",
+            "C046 body_part=speech",
+            "C046 condition=suspected stroke",
+            "C047 condition=suicidal thoughts",
+            "C048 condition=poor weight gain",
+            "C049 body_part=brain",
+            "C050 condition=premature birth (29 weeks)",
+            "C050 procedure=NICU care"
+          ]
+        },
+        "OURS": {
+          "recall": 0.71,
+          "omission_rate": 0.29,
+          "by_kind": {
+            "body_part": "28/45 (62%)",
+            "condition": "32/47 (68%)",
+            "procedure": "28/32 (88%)"
+          },
+          "missed": [
+            "C001 body_part=heart",
+            "C002 body_part=heart",
+            "C004 procedure=surgery",
+            "C005 procedure=tumour removal",
+            "C008 body_part=skin",
+            "C009 body_part=pancreas",
+            "C009 condition=type 1 diabetes",
+            "C010 body_part=blood",
+            "C012 condition=kidney stone",
+            "C013 body_part=heart",
+            "C014 body_part=heart",
+            "C018 body_part=uterus",
+            "C019 body_part=stomach",
+            "C019 condition=obesity",
+            "C020 body_part=lumbar spine",
+            "C021 body_part=heart",
+            "C026 body_part=heart",
+            "C026 condition=ventricular septal defect",
+            "C027 condition=cirrhosis",
+            "C029 body_part=fallopian tubes",
+            "C032 condition=dilated cardiomyopathy",
+            "C034 body_part=oesophagus",
+            "C034 condition=portal hypertension",
+            "C034 procedure=variceal band ligation",
+            "C035 condition=uterine fibroids",
+            "C037 condition=infertility",
+            "C038 body_part=ears",
+            "C038 condition=deafness",
+            "C045 condition=breathlessness",
+            "C046 body_part=speech",
+            "C046 condition=suspected stroke",
+            "C047 condition=suicidal thoughts",
+            "C048 condition=poor weight gain",
+            "C049 body_part=brain",
+            "C050 condition=premature birth (29 weeks)",
+            "C050 procedure=NICU care"
+          ]
+        }
+      },
+      "emergency": {
+        "M4_HYBRID_LLM": {
+          "emergencies": 3,
+          "caught": 3,
+          "recall": 1.0,
+          "non_emergencies": 47,
+          "false_alarms": 0,
+          "missed": []
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "emergencies": 3,
+          "caught": 3,
+          "recall": 1.0,
+          "non_emergencies": 47,
+          "false_alarms": 0,
+          "missed": []
+        },
+        "OURS": {
+          "emergencies": 3,
+          "caught": 3,
+          "recall": 1.0,
+          "non_emergencies": 47,
+          "false_alarms": 0,
+          "missed": []
+        }
+      }
+    },
+    "mediroute": {
+      "n": 84,
+      "systems": {
+        "B0_majority": {
+          "n": 84,
+          "acceptable": 0.107,
+          "acceptable_ci95": [
+            0.057,
+            0.191
+          ],
+          "exact": 0.048,
+          "top3": 0.107,
+          "ndcg3": 0.064,
+          "mrr3": 0.107,
+          "macro_precision": 0.002,
+          "macro_recall": 0.038,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.107,
+          "confidently_wrong": 0.893,
+          "macro_f1": 0.003,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0
+        },
+        "B1_keyword_rules": {
+          "n": 84,
+          "acceptable": 0.881,
+          "acceptable_ci95": [
+            0.795,
+            0.934
+          ],
+          "exact": 0.833,
+          "top3": 0.905,
+          "ndcg3": 0.773,
+          "mrr3": 0.893,
+          "macro_precision": 0.946,
+          "macro_recall": 0.846,
+          "asked": null,
+          "answered": 0.905,
+          "precision_when_answered": 0.974,
+          "confidently_wrong": 0.024,
+          "macro_f1": 0.88,
+          "latency_p50_ms": 1,
+          "latency_p95_ms": 2
+        },
+        "B2_lookup_keyword": {
+          "n": 84,
+          "acceptable": 0.881,
+          "acceptable_ci95": [
+            0.795,
+            0.934
+          ],
+          "exact": 0.833,
+          "top3": 0.976,
+          "ndcg3": 0.824,
+          "mrr3": 0.925,
+          "macro_precision": 0.895,
+          "macro_recall": 0.843,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.881,
+          "confidently_wrong": 0.119,
+          "macro_f1": 0.838,
+          "latency_p50_ms": 16,
+          "latency_p95_ms": 80
+        },
+        "B3_lookup_semantic": {
+          "n": 84,
+          "acceptable": 0.869,
+          "acceptable_ci95": [
+            0.781,
+            0.925
+          ],
+          "exact": 0.714,
+          "top3": 0.976,
+          "ndcg3": 0.817,
+          "mrr3": 0.919,
+          "macro_precision": 0.736,
+          "macro_recall": 0.708,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.869,
+          "confidently_wrong": 0.131,
+          "macro_f1": 0.689,
+          "latency_p50_ms": 30,
+          "latency_p95_ms": 279
+        },
+        "B4_llm_only": {
+          "n": 84,
+          "acceptable": 0.81,
+          "acceptable_ci95": [
+            0.713,
+            0.879
+          ],
+          "exact": 0.75,
+          "top3": 0.94,
+          "ndcg3": 0.786,
+          "mrr3": 0.867,
+          "macro_precision": 0.8,
+          "macro_recall": 0.74,
+          "asked": null,
+          "answered": 0.988,
+          "precision_when_answered": 0.819,
+          "confidently_wrong": 0.179,
+          "macro_f1": 0.73,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A1_v1_llm_evidence": {
+          "n": 84,
+          "acceptable": 0.929,
+          "acceptable_ci95": [
+            0.853,
+            0.967
+          ],
+          "exact": 0.833,
+          "top3": 0.988,
+          "ndcg3": 0.839,
+          "mrr3": 0.954,
+          "macro_precision": 0.826,
+          "macro_recall": 0.833,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.929,
+          "confidently_wrong": 0.071,
+          "macro_f1": 0.823,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A2_v2_llm_evidence": {
+          "n": 84,
+          "acceptable": 0.929,
+          "acceptable_ci95": [
+            0.853,
+            0.967
+          ],
+          "exact": 0.81,
+          "top3": 0.988,
+          "ndcg3": 0.849,
+          "mrr3": 0.956,
+          "macro_precision": 0.806,
+          "macro_recall": 0.804,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.929,
+          "confidently_wrong": 0.071,
+          "macro_f1": 0.793,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A3_pipeline_no_llm": {
+          "n": 84,
+          "acceptable": 0.821,
+          "acceptable_ci95": [
+            0.726,
+            0.889
+          ],
+          "exact": 0.75,
+          "top3": 0.905,
+          "ndcg3": 0.787,
+          "mrr3": 0.893,
+          "macro_precision": 0.891,
+          "macro_recall": 0.756,
+          "asked": 0.155,
+          "answered": 0.845,
+          "precision_when_answered": 0.972,
+          "confidently_wrong": 0.024,
+          "macro_f1": 0.798,
+          "latency_p50_ms": 47,
+          "latency_p95_ms": 109
+        },
+        "OURS": {
+          "n": 84,
+          "acceptable": 0.893,
+          "acceptable_ci95": [
+            0.809,
+            0.943
+          ],
+          "exact": 0.798,
+          "top3": 0.988,
+          "ndcg3": 0.86,
+          "mrr3": 0.962,
+          "macro_precision": 0.826,
+          "macro_recall": 0.792,
+          "asked": 0.083,
+          "answered": 0.917,
+          "precision_when_answered": 0.974,
+          "confidently_wrong": 0.024,
+          "macro_f1": 0.799,
+          "latency_p50_ms": 10795,
+          "latency_p95_ms": 19075
+        },
+        "A4_hybrid_llm_evidence": {
+          "n": 84,
+          "acceptable": 0.905,
+          "acceptable_ci95": [
+            0.823,
+            0.951
+          ],
+          "exact": 0.786,
+          "top3": 0.988,
+          "ndcg3": 0.838,
+          "mrr3": 0.942,
+          "macro_precision": 0.806,
+          "macro_recall": 0.779,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.905,
+          "confidently_wrong": 0.095,
+          "macro_f1": 0.774,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "M4_HYBRID_LLM": {
+          "n": 84,
+          "acceptable": 0.667,
+          "acceptable_ci95": [
+            0.561,
+            0.758
+          ],
+          "exact": 0.643,
+          "top3": 0.988,
+          "ndcg3": 0.861,
+          "mrr3": 0.937,
+          "macro_precision": 0.814,
+          "macro_recall": 0.628,
+          "asked": 0.321,
+          "answered": 0.679,
+          "precision_when_answered": 0.982,
+          "confidently_wrong": 0.012,
+          "macro_f1": 0.695,
+          "latency_p50_ms": 10795,
+          "latency_p95_ms": 19075
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "n": 84,
+          "acceptable": 0.667,
+          "acceptable_ci95": [
+            0.561,
+            0.758
+          ],
+          "exact": 0.643,
+          "top3": 0.988,
+          "ndcg3": 0.861,
+          "mrr3": 0.937,
+          "macro_precision": 0.824,
+          "macro_recall": 0.628,
+          "asked": 0.333,
+          "answered": 0.667,
+          "precision_when_answered": 1.0,
+          "confidently_wrong": 0.0,
+          "macro_f1": 0.7,
+          "latency_p50_ms": 10795,
+          "latency_p95_ms": 19075
+        }
+      },
+      "reference": "M4_HYBRID_LLM",
+      "paired": {
+        "B0_majority": {
+          "n": 84,
+          "only_ours_right": 49,
+          "only_baseline_right": 2,
+          "p_value": 0.0
+        },
+        "B1_keyword_rules": {
+          "n": 84,
+          "only_ours_right": 5,
+          "only_baseline_right": 23,
+          "p_value": 0.0009
+        },
+        "B2_lookup_keyword": {
+          "n": 84,
+          "only_ours_right": 5,
+          "only_baseline_right": 23,
+          "p_value": 0.0009
+        },
+        "B3_lookup_semantic": {
+          "n": 84,
+          "only_ours_right": 2,
+          "only_baseline_right": 19,
+          "p_value": 0.0002
+        },
+        "B4_llm_only": {
+          "n": 84,
+          "only_ours_right": 0,
+          "only_baseline_right": 12,
+          "p_value": 0.0005
+        },
+        "A1_v1_llm_evidence": {
+          "n": 84,
+          "only_ours_right": 1,
+          "only_baseline_right": 23,
+          "p_value": 0.0
+        },
+        "A2_v2_llm_evidence": {
+          "n": 84,
+          "only_ours_right": 0,
+          "only_baseline_right": 22,
+          "p_value": 0.0
+        },
+        "A3_pipeline_no_llm": {
+          "n": 84,
+          "only_ours_right": 5,
+          "only_baseline_right": 18,
+          "p_value": 0.0106
+        },
+        "OURS": {
+          "n": 84,
+          "only_ours_right": 0,
+          "only_baseline_right": 19,
+          "p_value": 0.0
+        },
+        "A4_hybrid_llm_evidence": {
+          "n": 84,
+          "only_ours_right": 0,
+          "only_baseline_right": 20,
+          "p_value": 0.0
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "n": 84,
+          "only_ours_right": 0,
+          "only_baseline_right": 0,
+          "p_value": 1.0
+        }
+      },
+      "pipeline": {
+        "M4_HYBRID_LLM": {
+          "decisions": {
+            "majority": 57,
+            "clarification_required": 27
+          },
+          "clarification_rate": 0.321,
+          "asked_and_right_in_candidates": 0.963
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "decisions": {
+            "majority": 56,
+            "clarification_required": 28
+          },
+          "clarification_rate": 0.333,
+          "asked_and_right_in_candidates": 0.964
+        },
+        "OURS": {
+          "decisions": {
+            "majority": 77,
+            "clarification_required": 7
+          },
+          "clarification_rate": 0.083,
+          "asked_and_right_in_candidates": 0.857
+        }
+      },
+      "extraction": {
+        "M4_HYBRID_LLM": {},
+        "M4b_HYBRID_LLM_ASK": {},
+        "OURS": {}
+      },
+      "emergency": {
+        "M4_HYBRID_LLM": {},
+        "M4b_HYBRID_LLM_ASK": {},
+        "OURS": {}
+      }
+    },
+    "gretel": {
+      "n": 212,
+      "systems": {
+        "B0_majority": {
+          "n": 212,
+          "acceptable": 0.722,
+          "acceptable_ci95": [
+            0.658,
+            0.778
+          ],
+          "exact": 0.316,
+          "top3": 0.722,
+          "ndcg3": 0.393,
+          "mrr3": 0.722,
+          "macro_precision": 0.032,
+          "macro_recall": 0.1,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.722,
+          "confidently_wrong": 0.278,
+          "macro_f1": 0.048,
+          "latency_p50_ms": 0,
+          "latency_p95_ms": 0
+        },
+        "B1_keyword_rules": {
+          "n": 212,
+          "acceptable": 0.453,
+          "acceptable_ci95": [
+            0.387,
+            0.52
+          ],
+          "exact": 0.297,
+          "top3": 0.651,
+          "ndcg3": 0.426,
+          "mrr3": 0.543,
+          "macro_precision": 0.504,
+          "macro_recall": 0.276,
+          "asked": null,
+          "answered": 0.83,
+          "precision_when_answered": 0.545,
+          "confidently_wrong": 0.377,
+          "macro_f1": 0.324,
+          "latency_p50_ms": 2,
+          "latency_p95_ms": 6
+        },
+        "B2_lookup_keyword": {
+          "n": 212,
+          "acceptable": 0.684,
+          "acceptable_ci95": [
+            0.619,
+            0.743
+          ],
+          "exact": 0.509,
+          "top3": 0.854,
+          "ndcg3": 0.603,
+          "mrr3": 0.76,
+          "macro_precision": 0.577,
+          "macro_recall": 0.504,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.684,
+          "confidently_wrong": 0.316,
+          "macro_f1": 0.526,
+          "latency_p50_ms": 27,
+          "latency_p95_ms": 276
+        },
+        "B3_lookup_semantic": {
+          "n": 212,
+          "acceptable": 0.731,
+          "acceptable_ci95": [
+            0.668,
+            0.786
+          ],
+          "exact": 0.58,
+          "top3": 0.906,
+          "ndcg3": 0.64,
+          "mrr3": 0.809,
+          "macro_precision": 0.567,
+          "macro_recall": 0.565,
+          "asked": null,
+          "answered": 1.0,
+          "precision_when_answered": 0.731,
+          "confidently_wrong": 0.269,
+          "macro_f1": 0.538,
+          "latency_p50_ms": 50,
+          "latency_p95_ms": 298
+        },
+        "B4_llm_only": {
+          "n": 212,
+          "acceptable": 0.726,
+          "acceptable_ci95": [
+            0.663,
+            0.782
+          ],
+          "exact": 0.519,
+          "top3": 0.939,
+          "ndcg3": 0.728,
+          "mrr3": 0.827,
+          "macro_precision": 0.578,
+          "macro_recall": 0.456,
+          "asked": null,
+          "answered": 0.991,
+          "precision_when_answered": 0.733,
+          "confidently_wrong": 0.264,
+          "macro_f1": 0.438,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A1_v1_llm_evidence": {
+          "n": 212,
+          "acceptable": 0.528,
+          "acceptable_ci95": [
+            0.461,
+            0.594
+          ],
+          "exact": 0.415,
+          "top3": 0.717,
+          "ndcg3": 0.459,
+          "mrr3": 0.616,
+          "macro_precision": 0.524,
+          "macro_recall": 0.46,
+          "asked": null,
+          "answered": 0.986,
+          "precision_when_answered": 0.536,
+          "confidently_wrong": 0.458,
+          "macro_f1": 0.44,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A2_v2_llm_evidence": {
+          "n": 212,
+          "acceptable": 0.575,
+          "acceptable_ci95": [
+            0.508,
+            0.64
+          ],
+          "exact": 0.448,
+          "top3": 0.731,
+          "ndcg3": 0.479,
+          "mrr3": 0.645,
+          "macro_precision": 0.624,
+          "macro_recall": 0.493,
+          "asked": null,
+          "answered": 0.991,
+          "precision_when_answered": 0.581,
+          "confidently_wrong": 0.415,
+          "macro_f1": 0.473,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "A3_pipeline_no_llm": {
+          "n": 212,
+          "acceptable": 0.368,
+          "acceptable_ci95": [
+            0.306,
+            0.435
+          ],
+          "exact": 0.25,
+          "top3": 0.542,
+          "ndcg3": 0.335,
+          "mrr3": 0.483,
+          "macro_precision": 0.49,
+          "macro_recall": 0.259,
+          "asked": 0.307,
+          "answered": 0.693,
+          "precision_when_answered": 0.531,
+          "confidently_wrong": 0.325,
+          "macro_f1": 0.303,
+          "latency_p50_ms": 54,
+          "latency_p95_ms": 174
+        },
+        "OURS": {
+          "n": 212,
+          "acceptable": 0.542,
+          "acceptable_ci95": [
+            0.475,
+            0.608
+          ],
+          "exact": 0.439,
+          "top3": 0.759,
+          "ndcg3": 0.495,
+          "mrr3": 0.648,
+          "macro_precision": 0.603,
+          "macro_recall": 0.489,
+          "asked": 0.123,
+          "answered": 0.877,
+          "precision_when_answered": 0.618,
+          "confidently_wrong": 0.335,
+          "macro_f1": 0.484,
+          "latency_p50_ms": 13704,
+          "latency_p95_ms": 22833
+        },
+        "A4_hybrid_llm_evidence": {
+          "n": 212,
+          "acceptable": 0.561,
+          "acceptable_ci95": [
+            0.494,
+            0.626
+          ],
+          "exact": 0.453,
+          "top3": 0.708,
+          "ndcg3": 0.475,
+          "mrr3": 0.628,
+          "macro_precision": 0.586,
+          "macro_recall": 0.487,
+          "asked": null,
+          "answered": 0.991,
+          "precision_when_answered": 0.567,
+          "confidently_wrong": 0.429,
+          "macro_f1": 0.468,
+          "latency_p50_ms": null,
+          "latency_p95_ms": null
+        },
+        "M4_HYBRID_LLM": {
+          "n": 212,
+          "acceptable": 0.344,
+          "acceptable_ci95": [
+            0.284,
+            0.411
+          ],
+          "exact": 0.288,
+          "top3": 0.92,
+          "ndcg3": 0.655,
+          "mrr3": 0.73,
+          "macro_precision": 0.51,
+          "macro_recall": 0.28,
+          "asked": 0.585,
+          "answered": 0.415,
+          "precision_when_answered": 0.83,
+          "confidently_wrong": 0.071,
+          "macro_f1": 0.318,
+          "latency_p50_ms": 13704,
+          "latency_p95_ms": 22833
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "n": 212,
+          "acceptable": 0.344,
+          "acceptable_ci95": [
+            0.284,
+            0.411
+          ],
+          "exact": 0.288,
+          "top3": 0.92,
+          "ndcg3": 0.655,
+          "mrr3": 0.73,
+          "macro_precision": 0.51,
+          "macro_recall": 0.28,
+          "asked": 0.585,
+          "answered": 0.415,
+          "precision_when_answered": 0.83,
+          "confidently_wrong": 0.071,
+          "macro_f1": 0.318,
+          "latency_p50_ms": 13704,
+          "latency_p95_ms": 22833
+        }
+      },
+      "reference": "M4_HYBRID_LLM",
+      "paired": {
+        "B0_majority": {
+          "n": 212,
+          "only_ours_right": 40,
+          "only_baseline_right": 120,
+          "p_value": 0.0
+        },
+        "B1_keyword_rules": {
+          "n": 212,
+          "only_ours_right": 18,
+          "only_baseline_right": 41,
+          "p_value": 0.0038
+        },
+        "B2_lookup_keyword": {
+          "n": 212,
+          "only_ours_right": 9,
+          "only_baseline_right": 81,
+          "p_value": 0.0
+        },
+        "B3_lookup_semantic": {
+          "n": 212,
+          "only_ours_right": 5,
+          "only_baseline_right": 87,
+          "p_value": 0.0
+        },
+        "B4_llm_only": {
+          "n": 212,
+          "only_ours_right": 0,
+          "only_baseline_right": 81,
+          "p_value": 0.0
+        },
+        "A1_v1_llm_evidence": {
+          "n": 212,
+          "only_ours_right": 4,
+          "only_baseline_right": 43,
+          "p_value": 0.0
+        },
+        "A2_v2_llm_evidence": {
+          "n": 212,
+          "only_ours_right": 3,
+          "only_baseline_right": 52,
+          "p_value": 0.0
+        },
+        "A3_pipeline_no_llm": {
+          "n": 212,
+          "only_ours_right": 20,
+          "only_baseline_right": 25,
+          "p_value": 0.5515
+        },
+        "OURS": {
+          "n": 212,
+          "only_ours_right": 1,
+          "only_baseline_right": 43,
+          "p_value": 0.0
+        },
+        "A4_hybrid_llm_evidence": {
+          "n": 212,
+          "only_ours_right": 0,
+          "only_baseline_right": 46,
+          "p_value": 0.0
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "n": 212,
+          "only_ours_right": 0,
+          "only_baseline_right": 0,
+          "p_value": 1.0
+        }
+      },
+      "pipeline": {
+        "M4_HYBRID_LLM": {
+          "decisions": {
+            "majority": 88,
+            "clarification_required": 124
+          },
+          "clarification_rate": 0.585,
+          "asked_and_right_in_candidates": 0.758
+        },
+        "M4b_HYBRID_LLM_ASK": {
+          "decisions": {
+            "majority": 88,
+            "clarification_required": 124
+          },
+          "clarification_rate": 0.585,
+          "asked_and_right_in_candidates": 0.758
+        },
+        "OURS": {
+          "decisions": {
+            "majority": 186,
+            "clarification_required": 26
+          },
+          "clarification_rate": 0.123,
+          "asked_and_right_in_candidates": 0.308
+        }
+      },
+      "extraction": {
+        "M4_HYBRID_LLM": {},
+        "M4b_HYBRID_LLM_ASK": {},
+        "OURS": {}
+      },
+      "emergency": {
+        "M4_HYBRID_LLM": {},
+        "M4b_HYBRID_LLM_ASK": {},
+        "OURS": {}
+      }
+    }
+  }
+}

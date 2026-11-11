@@ -103,7 +103,7 @@ diagram are planned, not built.
 
 | # | Stage | What it does | Type |
 |---|-------|--------------|------|
-| 2.1 | **Hard filters** | Keep hospitals whose verified specialities include Step 1's speciality (names normalised by `specialty_normalization.csv`), then the preferred city / state. None left: say no hospital has the speciality yet, or ask whether to search other cities | Code |
+| 2.1 | **Hard filters** | Keep hospitals whose verified specialities include Step 1's speciality (hospital department names mapped by the `hospital` rows of `specialty_mapping.csv`), then the preferred city / state. None left: say no hospital has the speciality yet, or ask whether to search other cities | Code |
 | 2.2 | **Semantic search** | Query = speciality + diagnoses + procedures + findings from Step 1. Cosine search (`multi-qa-MiniLM-L6-cos-v1`, FAISS) over the filtered hospitals only, keeping 3×K candidates | Embeddings |
 | 2.3 | **Rerank: semantic + bonus** | Final score = semantic score + a rule bonus capped at 0.20: matched procedure up to 0.08, verified 0.03, NABH 0.02, JCI 0.02, international patient services 0.02, evidence quality up to 0.03. Each bonus is shown as a ranking reason | Code |
 | 2.4 | **Result** | Top 5 hospitals with final score and reasons | Code |
@@ -195,7 +195,8 @@ MediRoute/
 │   │   ├── build_hospital_master.py                      # Verify candidates (NABH, JCI, website) per city
 │   │   ├── merge_master.py, compare_team_sheet.py        # Build/validate master CSV; check team sheets
 │   │   ├── build_hospitals_table.py                      # The one hospital table (master + team detail)
-│   │   ├── validate_specialty_normalization.py
+│   │   ├── validate_specialty_mapping.py                 # Check specialty_mapping.csv
+│   │   ├── rebuild.py                                    # Rebuild every generated file in data/processed/
 │   │   └── build_hospital_embedding_dataset.py, build_faiss_index.py   # Vector store
 │   └── utils/
 │       ├── paths.py               # Single source of truth for all project paths
@@ -206,12 +207,15 @@ MediRoute/
 │   ├── hospital_recommendation/   # Step 2 tests
 │   └── workflow/                  # Step 1 + Step 2 graph tests
 ├── data/
-│   ├── raw/                       # Source datasets and scraper inputs
-│   ├── interim/                   # Scraper outputs (JCI, NABH, per-city masters)
-│   ├── processed/                 # hospitals.csv (shared), master-hospital-data.csv, id links, schema
-│   ├── reference/                 # cities.csv: cities, tiers, search areas (Delhi NCR...)
-│   ├── medical_taxonomy/          # specialties.csv, specialty_normalization.csv, ICD/CGHS tables, step1_lookup.csv
-│   └── vector_store/              # FAISS index and hospital metadata
+│   ├── processed/                 # THE ONLY FOLDER THE APP READS (section 6.4)
+│   │   ├── specialties.csv        #   speciality master list (hand-maintained, reviewed)
+│   │   ├── specialty_mapping.csv  #   every "X -> speciality" rule (hand-maintained, reviewed)
+│   │   ├── cities.csv, hospital.schema.csv          # hand-maintained
+│   │   ├── hospitals.csv, step1_lookup.csv          # generated
+│   │   └── vector_store/          #   generated: Step 2 FAISS index + Step 1 embedding cache
+│   ├── raw/                       # Official sources and team sheets, never edited
+│   ├── interim/                   # Pipeline intermediates: JCI/NABH scrapes, per-city and merged verified master, id links
+│   └── evaluation/                # Gold test sets and benchmark results (not read by the app)
 ├── archive/                       # Retired data files and scripts; README.txt says why and what replaced them
 ├── scripts/                       # restart_app.ps1, smoke and verification scripts
 ├── docs/                          # Architecture diagram, project tracker, API playground, references
@@ -259,17 +263,17 @@ Per call, the admin page shows "wait for first token" and which models were trie
 back to the two search voters like the no-LLM mode. Send only synthetic test data. Never commit the
 key.
 
-The Step 1 lookup list (`data/medical_taxonomy/step1_lookup.csv`) is in the repo. To rebuild it,
-download the CDC ICD-10-CM code descriptions (public domain) and run the builder:
+The Step 1 lookup list (`data/processed/step1_lookup.csv`) is in the repo. To rebuild it,
+download the CDC ICD-10-CM code descriptions (public domain) and run the rebuild (section 6.4):
 
 ```powershell
 # ICD-10-CM 2026 order file -> data/raw/icd10cm_2026/extracted/ (not committed; ~23 MB)
 Invoke-WebRequest "https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/ICD10CM/2026/icd10cm-Code%20Descriptions-2026.zip" -OutFile icd10cm.zip
 Expand-Archive icd10cm.zip -DestinationPath data/raw/icd10cm_2026/extracted
-python -m mediroute.specialty_routing.step1.lookup
+python -m mediroute.data_generator.rebuild --step lookup
 ```
 
-The embedding cache for the lookup list (`data/vector_store/step1_lookup_embeddings_*.npy`) is
+The embedding cache for the lookup list (`data/processed/vector_store/step1_lookup_embeddings_*.npy`) is
 built on the first start (about 90 s) and reused afterwards.
 
 ```powershell
@@ -396,11 +400,8 @@ python -m mediroute.data_generator.build_hospital_master --candidates (Get-Child
     --jci data/interim/jci/jci_all_cities.csv --out-dir data/interim/master
 python -m mediroute.data_generator.merge_master
 
-# The one hospital table, then the Step 2 vector store (rebuild after hospital data changes)
-python -m mediroute.data_generator.build_hospitals_table
-python -m mediroute.data_generator.validate_specialty_normalization
-python -m mediroute.data_generator.build_hospital_embedding_dataset
-python -m mediroute.data_generator.build_faiss_index
+# Everything in data/processed/ that is generated: hospital table, Step 1 lookup, search indexes
+python -m mediroute.data_generator.rebuild
 ```
 
 ## 6. How hospital data is extracted
@@ -417,7 +418,7 @@ certificate number, JCI ID, website status or source, so anyone can re-check it.
 | JCI accredited organisations (India) | JCI status, IHCO ID, listed website | [jointcommission.org: JCI-accredited organisations](https://www.jointcommission.org/en/about-us/recognizing-excellence/find-accredited-international-organizations) |
 | Each hospital's official website | Whether the site loads, the international-patients page, specialties | `official_source_url` column |
 | Team workbook (one sheet per person) | Candidate hospitals, tiers, type, ownership | [Hosp_Data_Final.xlsx](data/raw/data_generator/Hosp_Data_Final.xlsx) |
-| Specialty taxonomy | Normalises website wording to canonical specialties | [specialty_normalization.csv](data/medical_taxonomy/specialty_normalization.csv) |
+| Speciality mapping | Normalises website wording to canonical specialties (`hospital` rows) | [specialty_mapping.csv](data/processed/specialty_mapping.csv) |
 
 Please read the [NABH terms and conditions](https://nabh.co/terms-and-conditions/) before
 running the scrapers. The scrapers identify themselves with a contact email, wait between requests,
@@ -432,7 +433,7 @@ flowchart LR
     C[nabh_finder_scraper.py<br/>NABH name search] --> D
     D[build_hospital_master.py<br/>NABH + JCI + website checks] --> E[Per-city masters<br/>data/interim/master]
     E --> F[merge_master.py<br/>validate against schema]
-    F --> G[master-hospital-data.csv<br/>data/processed]
+    F --> G[master-hospital-data.csv<br/>data/interim]
     E --> H[compare_team_sheet.py<br/>team values vs verified]
 ```
 
@@ -486,12 +487,12 @@ flowchart LR
 | [data/interim/jci/](data/interim/jci/) | JCI scraper output, e.g. `jci_all_cities.csv` |
 | [data/interim/master/](data/interim/master/) | Per-city verified masters (`<city>_master.csv/.xlsx`), run logs, `<person>_comparison.csv` |
 | [data/processed/hospital.schema.csv](data/processed/hospital.schema.csv) | **Final schema**: every column's type, allowed values and how it is populated |
-| [data/processed/master-hospital-data.csv](data/processed/master-hospital-data.csv) | **Verified master**: every hospital checked against NABH, JCI and its website (written by `merge_master.py`) |
+| [data/interim/master-hospital-data.csv](data/interim/master-hospital-data.csv) | **Verified master**: every hospital checked against NABH, JCI and its website (written by `merge_master.py`) |
 | [data/raw/data_generator/candidates_team150/](data/raw/data_generator/candidates_team150/) | Candidate files for the team 150-sheet hospitals that were not in the master |
 | [data/interim/master_team150/](data/interim/master_team150/) | Their verified per-city outputs (same pipeline) |
-| [data/processed/hospital_id_links.csv](data/processed/hospital_id_links.csv) | Master id ↔ team 150-sheet id, with match score and method (reviewed) |
+| [data/interim/hospital_id_links.csv](data/interim/hospital_id_links.csv) | Master id ↔ team 150-sheet id, with match score and method (reviewed) |
 | [data/processed/hospitals.csv](data/processed/hospitals.csv) | **The one hospital table** both steps read: the verified master plus the team sheet's procedures, facilities and sub-specialities, marked "not verified" |
-| [data/reference/cities.csv](data/reference/cities.csv) | Cities, state, tier and search area (Delhi NCR = New Delhi + Gurugram + Noida) |
+| [data/processed/cities.csv](data/processed/cities.csv) | Cities, state, tier and search area (Delhi NCR = New Delhi + Gurugram + Noida) |
 
 ### 6.4 Data shared by Step 1 and Step 2, and the archive
 
@@ -502,12 +503,30 @@ found 2 hospitals), and "Delhi NCR" on the patient page silently searched all of
 is **one file per kind of data**, and tests (`tests/hospital_recommendation/test_shared_data.py`)
 fail if the steps drift apart again.
 
-| Data | The one file | Read by |
-|------|--------------|---------|
-| Specialities | [specialties.csv](data/medical_taxonomy/specialties.csv) (26 names) | Step 1 output, Step 2 filter, patient page list |
-| Hospital labels → specialities | [specialty_normalization.csv](data/medical_taxonomy/specialty_normalization.csv) (every label, incl. sub-specialities; `NONE` = not a routing speciality; `draft_rule` rows await doctor review) | Website checks, hospital table, Step 2 filter |
-| Hospitals | [hospitals.csv](data/processed/hospitals.csv) | Step 2 index and ranking, `/api/hospitals`, `/api/cities`, Step 1's "hospitals available" flag (`in_hospital_data` is computed from it, no longer typed by hand) |
-| Cities and search areas | [cities.csv](data/reference/cities.csv) | Hospital checks (allowed cities), Step 2 location filter, patient page location list (`/api/cities`) |
+**`data/processed/` is the only folder the app reads.** Each file is either maintained by hand
+(and reviewed) or generated from `data/raw/` and `data/interim/`, so it can always be refreshed:
+
+| File | Kind | Contents | Read by |
+|------|------|----------|---------|
+| [specialties.csv](data/processed/specialties.csv) | Hand-maintained | The **master list**: 26 specialities with description, `route_here_when` and `not_here` | Step 1 LLM prompt and output, Step 2 filter, patient page |
+| [specialty_mapping.csv](data/processed/specialty_mapping.csv) | Hand-maintained | **Every "X → speciality" rule**, one table: `ccsr` (AHRQ diagnosis categories), `cghs_label` / `cghs_name` (CGHS procedures), `lay_term` (patient words, strong or weak), `hospital` (hospital department names). `NONE` = not routing evidence | Step 1 lookup build and evidence, Step 2 filter, hospital table build |
+| [cities.csv](data/processed/cities.csv) | Hand-maintained | Cities, state, tier and search area | Hospital checks, Step 2 location filter, `/api/cities` |
+| [hospital.schema.csv](data/processed/hospital.schema.csv) | Hand-maintained | Hospital table columns and allowed values | Hospital table build |
+| [hospitals.csv](data/processed/hospitals.csv) | Generated | The one hospital table | Step 2 index and ranking, Step 1's "hospitals available" flag |
+| [step1_lookup.csv](data/processed/step1_lookup.csv) | Generated | ~10,900 searchable terms (ICD-10-CM via CCSR, CGHS, lay terms), each with speciality, evidence type and the rule that produced it | Step 1 voters V1 and V2 |
+| `vector_store/` | Generated | Step 2 FAISS index + metadata; Step 1 embedding cache (`.npy`, not committed) | Step 2 search, Step 1 V2 |
+
+**Refresh everything** after editing a hand-maintained file (tests check the generated files match):
+
+```powershell
+python -m mediroute.data_generator.rebuild                 # mapping check -> hospitals -> lookup -> indexes
+python -m mediroute.data_generator.rebuild --step lookup   # or one step
+```
+
+The hospital *verification* itself (website, NABH, JCI checks into `data/interim/`) is slower and is
+rerun only when hospitals change (section 6.5). Tests (`tests/hospital_recommendation/test_shared_data.py`,
+`tests/specialty_routing/test_step1_pipeline.py`) fail if the steps drift apart or a rule points
+to a name that is not in the master list.
 
 What each hospital field means and where it came from:
 - **Identity, NABH, JCI, verification level, `verified_specialties`**: from the master's own checks.
@@ -522,6 +541,44 @@ What each hospital field means and where it came from:
 **Archived files.** Old prototype lists and the scripts that only read them were moved to
 [archive/](archive/). [archive/README.txt](archive/README.txt) lists each archived file, why it was
 moved and which file replaces it.
+
+#### Where every dataset comes from
+
+A visual map of which file is used where (Step 1, Step 2, pre-processing, evaluation) is in
+[docs/architecture/data_map.html](docs/architecture/data_map.html) (open it in a browser).
+
+**Hospitals.** All 201 rows of `hospitals.csv` are verified master rows; the team 150 sheet only
+adds detail columns.
+
+| Rows | First listed in | Verified by our pipeline (website + NABH + JCI) | Detail columns from the 150 sheet |
+|------|-----------------|:---:|:---:|
+| H001–H020 | RaviTeja's sheet in the team workbook `Hosp_Data_Final.xlsx` (re-checked; differences in `raviteja_comparison.csv`) | ✅ | some |
+| H021–H100 | Candidate lists per city, drafted with AI assistance (Claude); each teammate reviews their own cities | ✅ | some |
+| H101–H204 (101) | Team 150-hospital sheet (`NewMediRoute_Hospital_Dataset_150.xlsx`), compiled by the team | ✅ | ✅ |
+
+49 hospitals of the 150 sheet were already among H001–H100: they are linked in
+`hospital_id_links.csv`, not added twice. 150 hospitals have procedures and facilities; 51 have
+only verified identity, accreditation and specialities.
+
+**Every source.**
+
+| Data | Origin | Made by | Licence / terms | Checked |
+|------|--------|---------|-----------------|---------|
+| Hospital identity, website, specialities | Hospitals' own websites | Our pipeline | Public pages | Automatic, per row (`verification_status`, evidence columns) |
+| NABH accreditation | [NABH directory](https://nabh.co/find-a-healthcare-organisation/) | Our scraper (robots.txt, delays) | NABH terms | Only `H-` hospital certificates count |
+| JCI accreditation | [JCI accredited organisations](https://www.jointcommission.org/en/about-us/recognizing-excellence/find-accredited-international-organizations) | Our scraper | Public directory | Chain branches matched by hand |
+| Procedures, facilities, languages, cost band | Team 150 sheet | Team | Ours | **Not verified**, labelled so in data and app |
+| ICD-10-CM 2026 diagnoses | [CDC / CMS official release](https://www.cdc.gov/nchs/icd/icd-10-cm/files.html) | US government | Public domain | Official |
+| CCSR clinical categories (benchmark draft) | AHRQ HCUP DXCCSR v2023-1 ([AHRQ page](https://hcup-us.ahrq.gov/toolssoftware/ccsr/dxccsr.jsp); unchanged copy taken from a GitHub mirror because the AHRQ site was unreachable from our network) | AHRQ | Free public tool | Official |
+| CGHS procedures and rates | CGHS rate list (Government of India), `CGHS_Data` sheet of the team workbook | Government; compiled by the team | Government publication | Tier I rows used |
+| 26 specialities, descriptions, keywords | `specialties.csv` | Team | Ours | Doctor review requested |
+| Mappings: CCSR category, CGHS label, lay term, hospital label → speciality | `processed/specialty_mapping.csv` | Team drafts | Ours | Doctor review requested ([docs/review/MediRoute_doctor_review.pdf](docs/review/MediRoute_doctor_review.pdf)) |
+| Step 1 test cases core50 + mediroute (134) | `data/evaluation/` | Team, synthetic | Ours | Doctor review requested |
+| Step 1 test cases gretel (212) | [gretelai/symptom_to_diagnosis](https://huggingface.co/datasets/gretelai/symptom_to_diagnosis), test split; diagnosis mapped to speciality by us | Gretel | Apache-2.0 | Mapping in the doctor review |
+| Test report PDFs | `data/raw/test_reports/` | Team, synthetic | Ours | – |
+| Models | all-MiniLM-L6-v2 and multi-qa-MiniLM (sentence-transformers), llama3.2 3B (Meta, via Ollama), GPT-6 Luna (OpenAI, via OpenRouter, judge POC) | Third parties | Model licences | – |
+
+No real patient data is used anywhere.
 
 ### 6.5 How to regenerate
 
@@ -544,7 +601,7 @@ python -m mediroute.data_generator.build_hospital_master `
     --candidates (Get-ChildItem data/raw/data_generator/candidates/*.csv) `
     --jci data/interim/jci/jci_all_cities.csv --out-dir data/interim/master
 
-# 3. Merge, validate and write data/processed/master-hospital-data.csv
+# 3. Merge, validate and write data/interim/master-hospital-data.csv
 python -m mediroute.data_generator.merge_master
 
 # 4. (optional) Compare a team member's sheet with the verified values
@@ -556,10 +613,8 @@ python -m mediroute.data_generator.build_hospital_master `
     --jci data/interim/jci/jci_india_all.csv --out-dir data/interim/master_team150
 python -m mediroute.data_generator.merge_master        # reads both folders
 
-# 6. The one hospital table, then Step 2's search index
-python -m mediroute.data_generator.build_hospitals_table
-python -m mediroute.data_generator.build_hospital_embedding_dataset
-python -m mediroute.data_generator.build_faiss_index
+# 6. Everything in data/processed/: hospital table, Step 1 lookup, Step 2 search index
+python -m mediroute.data_generator.rebuild
 ```
 
 To rebuild just one city, pass its candidate file with `--force`, e.g.
@@ -605,11 +660,11 @@ pytest tests/hospital_recommendation     # Step 2 only
 python tests/hospital_recommendation/test_retrieval_pipeline.py   # Each file also runs as a script with a printed report
 ```
 
-- `tests/specialty_routing/` covers ICD-10 mapping, medical context extraction, context
-  validation and specialty inference.
+- `tests/specialty_routing/` covers the Step 1 pipeline (protection, emergency rules, evidence,
+  votes, decisions, LLM providers), the CCSR-based lookup and the speciality inference.
 - `tests/hospital_recommendation/` covers the semantic query builder, keyword and FAISS
   retrieval, and the end-to-end recommendation pipeline.
-- Test cases are kept as data in `data/medical_taxonomy/*_test_cases.csv`.
+- Gold test sets and the benchmark scripts (`scripts/benchmark_step1*.py`) are in `data/evaluation/`; results are summarised in [docs/evaluation/step1_benchmark_report.html](docs/evaluation/step1_benchmark_report.html).
 - To run end-to-end API smoke checks, start a server and then run
   `python scripts/smoke_test_api.py`, or run `python scripts/verify_specialty_route.py`, which
   starts and stops its own server.

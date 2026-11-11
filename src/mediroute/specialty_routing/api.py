@@ -4,18 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 
-from mediroute.common.medical_context import MedicalContext
-from mediroute.specialty_routing.extraction.medical_context_extractor import (
-    MedicalContextExtractor,
-)
-from mediroute.specialty_routing.extraction.patient_context_aggregator import (
-    PatientContextAggregator,
-)
-from mediroute.specialty_routing.extraction.patient_context_validator import (
-    PatientContextValidator,
-)
 from mediroute.specialty_routing.extraction.pdf_parser import PDFParser
-from mediroute.specialty_routing.icd10_mapper import ICD10Mapper
 from mediroute.specialty_routing.service import get_service
 from mediroute.specialty_routing.schemas import PatientRequest
 from mediroute.utils.logging_config import get_logger
@@ -24,21 +13,9 @@ logger = get_logger()
 
 router = APIRouter(tags=["Step 1 - Specialty routing"])
 
-icd10_mapper = ICD10Mapper()
 pdf_parser = PDFParser()
-medical_context_extractor = MedicalContextExtractor()
-patient_context_aggregator = PatientContextAggregator()
-patient_context_validator = PatientContextValidator()
-
-
-@router.get("/api/icd10/map")
-def map_medical_condition(condition: str):
-    return icd10_mapper.find_by_condition(condition)
-
-
-@router.get("/api/icd10/code/{icd10_code}")
-def map_icd10_code(icd10_code: str):
-    return icd10_mapper.find_by_icd10_code(icd10_code)
+# The old /api/icd10/* and /api/medical-context routes (keyword ICD mapper, 11 Nov 2026) were moved to
+# archive/code/specialty_routing/: the Step 1 vote pipeline behind /api/analyze replaced them.
 
 
 def infer_medical_context(query: str | PatientRequest):
@@ -98,63 +75,3 @@ async def parse_medical_reports(
 ):
     uploaded_files = await _read_pdf_uploads(files)
     return pdf_parser.parse_multiple_pdfs(uploaded_files)
-
-
-@router.post("/api/medical-context")
-async def extract_medical_context(files: list[UploadFile] = File(...)):
-    uploaded_files = await _read_pdf_uploads(files)
-
-    # Parse all uploaded PDFs
-    parse_result = pdf_parser.parse_multiple_pdfs(uploaded_files)
-
-    document_contexts = []
-    medical_context_objects = []
-
-    # Extract medical context from each PDF separately
-    for document in parse_result["documents"]:
-        filename = document["filename"]
-        status = document["status"]
-        text = document.get("text", "")
-
-        if status == "success":
-            context = medical_context_extractor.extract(text)
-        elif status == "needs_ocr":
-            context = MedicalContext(
-                extraction_status="failed",
-                clarification_required=True,
-                clarification_reason=f"{filename} requires OCR before medical extraction",
-            )
-        else:
-            context = MedicalContext(
-                extraction_status="failed",
-                clarification_required=True,
-                clarification_reason=f"{filename} could not be parsed",
-            )
-
-        medical_context_objects.append(context)
-        document_contexts.append(
-            {
-                "filename": filename,
-                "parse_status": status,
-                "medical_context": context.model_dump(),
-            }
-        )
-
-    # Aggregate all reports into one patient-level context
-    patient_context = patient_context_aggregator.aggregate(medical_context_objects)
-    consistency_result = patient_context_validator.validate(
-        medical_context_objects, patient_context
-    )
-
-    return {
-        "parse_summary": {
-            "overall_status": parse_result.get("overall_status"),
-            "total_files": parse_result.get("total_files"),
-            "successful_files": parse_result.get("successful_files"),
-            "needs_ocr_files": parse_result.get("needs_ocr_files"),
-            "error_files": parse_result.get("error_files"),
-        },
-        "document_contexts": document_contexts,
-        "patient_medical_context": patient_context.model_dump(),
-        "consistency_validation": consistency_result,
-    }

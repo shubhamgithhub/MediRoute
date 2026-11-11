@@ -62,7 +62,7 @@ class HospitalRecommendationEngine:
                 "results": [],
             }
 
-        # a city or a search area ("Delhi NCR" = New Delhi + Gurugram + Noida), from data/reference/cities.csv
+        # a city or a search area ("Delhi NCR" = New Delhi + Gurugram + Noida), from data/processed/cities.csv
         allowed_cities = resolve_location(preferred_city) if preferred_city_value else None
         location_positions = []
         specialty_position_set = set(specialty_positions)

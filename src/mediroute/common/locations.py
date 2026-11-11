@@ -1,6 +1,6 @@
 """Cities and search areas shared by the hospital data, Step 2 and the patient page.
 
-Source: data/reference/cities.csv (city, state, city_tier, search_area). A search area groups
+Source: data/processed/cities.csv (city, state, city_tier, search_area). A search area groups
 cities a patient treats as one place: "Delhi NCR" = New Delhi + Gurugram + Noida, "Mumbai" =
 Mumbai + Navi Mumbai. Change the CSV, not code, to add a city.
 """

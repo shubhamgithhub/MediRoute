@@ -1,19 +1,22 @@
 """The lookup list searched by voters V1 and V2: ICD-10-CM diagnoses + CGHS procedures + lay terms.
 
-Each entry is a description with the speciality it maps to, via doctor-reviewable tables:
+Generated, never edited by hand: data/processed/step1_lookup.csv is rebuilt from official sources
+and the one rules table, data/processed/specialty_mapping.csv:
 
-* ICD-10-CM 3- and 4-character categories (CDC 2026 order file, public domain), mapped by
-  ``data/medical_taxonomy/icd10_block_specialty.csv`` (narrowest matching code range wins).
-* CGHS procedures (Tier I rows of the CGHS_Data sheet), mapped by
-  ``cghs_label_specialty.csv`` with name overrides from ``cghs_name_overrides.csv``.
-* Lay terms: the patient-language keywords of each speciality in ``specialties.csv``.
+* ICD-10-CM 3- and 4-character codes (CDC 2026 order file, public domain). Each code's AHRQ CCSR
+  category (CCSR reference file, data/raw/ccsr_v2023_1) gives the speciality through the
+  mapping's ``ccsr`` rows. A header code whose sub-codes point to different specialities
+  ("R07 Pain in throat and chest") is left out: its sub-codes carry the detail.
+* CGHS procedures (Tier I rows of the CGHS_Data sheet): ``cghs_name`` rules first (text in the
+  procedure name), then the ``cghs_label`` rule of the procedure's section.
+* Lay terms: the mapping's ``lay_term`` rows (patient wording), unless the same text already
+  comes from ICD-10-CM or CGHS.
 
-Rows mapped to ``NONE`` (lab tests, imaging, dental, symptoms of abnormal findings...) are left
-out: they are not routing evidence.
+Every row records its evidence type (diagnosis, symptom, status, procedure, strong or weak lay
+term) and the rule that produced it, so a wrong row can be traced to one rule. Rules mapped to
+NONE (lab tests, imaging, dental, abnormal findings...) produce no rows.
 
-Build the list (writes data/medical_taxonomy/step1_lookup.csv)::
-
-    python -m mediroute.specialty_routing.step1.lookup
+    python -m mediroute.specialty_routing.step1.lookup      (or the full rebuild, see README)
 """
 
 from __future__ import annotations
@@ -22,34 +25,33 @@ import csv
 import hashlib
 import re
 import threading
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 
-from mediroute.common.specialties import specialty_names
+from mediroute.common.specialties import lay_terms, mapping_rules, validate_mapping
 from mediroute.utils.logging_config import get_logger
-from mediroute.utils.paths import GENERATOR_INPUT_DIR, RAW_DATA_DIR, TAXONOMY_DIR, VECTOR_STORE_DIR
+from mediroute.utils.paths import CCSR_FILE, CGHS_WORKBOOK, ICD_ORDER_FILE, STEP1_LOOKUP_FILE, VECTOR_STORE_DIR
 
 logger = get_logger()
 
-LOOKUP_FILE = TAXONOMY_DIR / "step1_lookup.csv"
-ICD_BLOCK_FILE = TAXONOMY_DIR / "icd10_block_specialty.csv"
-CGHS_LABEL_FILE = TAXONOMY_DIR / "cghs_label_specialty.csv"
-CGHS_OVERRIDE_FILE = TAXONOMY_DIR / "cghs_name_overrides.csv"
-ICD_ORDER_FILE = RAW_DATA_DIR / "icd10cm_2026" / "extracted" / "icd10cm-order-2026.txt"
-CGHS_WORKBOOK = GENERATOR_INPUT_DIR / "Hosp_Data_Final.xlsx"
+LOOKUP_FILE = STEP1_LOOKUP_FILE
 EMBEDDING_CACHE = VECTOR_STORE_DIR / "step1_lookup_embeddings.npy"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+FIELDS = ["entry_id", "source", "code", "text", "specialty", "evidence_type", "mapping_rule"]
 
 
 @dataclass(frozen=True)
 class LookupEntry:
     entry_id: str
-    source: str  # "icd10cm" or "cghs"
+    source: str  # "icd10cm", "cghs" or "lay_term"
     code: str
     text: str
     specialty: str
+    evidence_type: str = "diagnosis"  # diagnosis | symptom | status | procedure | strong | weak
+    mapping_rule: str = ""  # e.g. "ccsr:GEN005", "cghs_label:Nephrology", "lay_term:kidney stone"
 
 
 # ---------------------------------------------------------------------------
@@ -62,41 +64,29 @@ def _read_csv(path: Path) -> list[dict]:
         return list(csv.DictReader(handle))
 
 
-def _check_specialty(value: str, where: str) -> str:
-    value = value.strip()
-    if value != "NONE" and value not in set(specialty_names()):
-        raise ValueError(f"{where}: '{value}' is not a canonical speciality or NONE")
-    return value
+def _ccsr_default_categories() -> dict[str, str]:
+    """ICD-10-CM code -> its CCSR category (the outpatient default when a code has several)."""
+    from openpyxl import load_workbook
+
+    sheet = load_workbook(CCSR_FILE, read_only=True, data_only=True)["DX_to_CCSR_Mapping"]
+    default: dict[str, str] = {}
+    for row in list(sheet.iter_rows(values_only=True))[2:]:
+        code, category, outpatient_default = row[0], row[2], row[5]
+        if code and category and (outpatient_default == "Y" or code not in default):
+            default[code] = category
+    return default
 
 
-def icd_specialty_for(code: str, blocks: list[dict]) -> str | None:
-    """Speciality of an ICD-10-CM code from the narrowest block range that contains it."""
-    category = code[:3].upper()
-    candidates = [b for b in blocks if b["code_from"] <= category <= b["code_to"]]
-    if not candidates:
-        return None
-    # narrowest range first; ranges are compared on their 3-character bounds
-    best = min(candidates, key=lambda b: (_range_width(b["code_from"], b["code_to"]), b["code_from"]))
-    return best["specialty"]
-
-
-def _range_width(start: str, end: str) -> int:
-    def as_number(code: str) -> int:
-        letter = ord(code[0]) - ord("A")
-        digits = int(re.sub(r"\D", "0", code[1:3]))
-        return letter * 100 + digits
-    return as_number(end) - as_number(start)
-
-
-def _icd_entries() -> list[LookupEntry]:
+def _icd_entries(stats: Counter) -> list[LookupEntry]:
     if not ICD_ORDER_FILE.exists():
-        logger.warning("ICD-10-CM order file not found at %s; lookup list will be CGHS only", ICD_ORDER_FILE)
+        logger.warning("ICD-10-CM order file not found at %s; lookup list will have no diagnoses", ICD_ORDER_FILE)
         return []
-    blocks = [
-        {**row, "code_from": row["code_from"].strip().upper(), "code_to": row["code_to"].strip().upper(),
-         "specialty": _check_specialty(row["specialty"], f"{ICD_BLOCK_FILE.name} {row['code_from']}")}
-        for row in _read_csv(ICD_BLOCK_FILE)
-    ]
+    rules = {r.value: r for r in mapping_rules("ccsr")}
+    default = _ccsr_default_categories()
+    by_prefix: dict[str, Counter] = defaultdict(Counter)
+    for code, category in default.items():
+        for n in (3, 4):
+            by_prefix[code[:n]][category] += 1
     entries, seen = [], set()
     with ICD_ORDER_FILE.open(encoding="utf-8", errors="replace") as handle:
         for line in handle:
@@ -104,83 +94,97 @@ def _icd_entries() -> list[LookupEntry]:
             if len(code) not in (3, 4) or code[0] in "VWXY":  # external causes are not routing evidence
                 continue
             description = line[77:].strip() or line[16:76].strip()
-            specialty = icd_specialty_for(code, blocks)
-            if not specialty or specialty == "NONE":
+            categories = Counter({default[code]: 1}) if code in default else by_prefix.get(code, Counter())
+            if not categories:
+                stats["icd: no CCSR category (code newer than CCSR)"] += 1
                 continue
-            key = (description.lower(), specialty)
-            if key in seen:
+            spec_sets = {rules[c].specialties for c in categories if c in rules}
+            if len(spec_sets) != 1:
+                stats["icd: header with sub-codes in different specialities"] += 1
                 continue
-            seen.add(key)
-            entries.append(LookupEntry(f"icd:{code}", "icd10cm", code, description, specialty))
+            rule = rules[categories.most_common(1)[0][0]]
+            if not rule.specialties:
+                stats["icd: CCSR category maps to NONE"] += 1
+                continue
+            for specialty in rule.specialties:
+                key = (description.lower(), specialty)
+                if key in seen:
+                    continue
+                seen.add(key)
+                entries.append(LookupEntry(f"icd:{code}:{specialty}", "icd10cm", code, description, specialty,
+                                           rule.evidence_type, f"ccsr:{rule.value}"))
+            stats["icd: mapped"] += 1
     return entries
 
 
-def cghs_specialty_for(name: str, label: str, labels: dict[str, str], overrides: list[dict]) -> str | None:
-    lowered = name.lower()
-    for row in overrides:  # first match wins, so specific phrases come first in the file
-        if row["name_contains"].strip().lower() in lowered:
-            return row["specialty"]
-    return labels.get(label.strip())
-
-
-def _cghs_entries() -> list[LookupEntry]:
+def _cghs_entries(stats: Counter) -> list[LookupEntry]:
     from openpyxl import load_workbook
 
-    labels = {row["cghs_label"].strip(): _check_specialty(row["specialty"], f"{CGHS_LABEL_FILE.name} {row['cghs_label']}")
-              for row in _read_csv(CGHS_LABEL_FILE)}
-    overrides = [{**row, "specialty": _check_specialty(row["specialty"], CGHS_OVERRIDE_FILE.name)}
-                 for row in _read_csv(CGHS_OVERRIDE_FILE)]
+    name_rules = mapping_rules("cghs_name")  # file order: specific phrases first
+    label_rules = {r.value.casefold(): r for r in mapping_rules("cghs_label")}
     sheet = load_workbook(CGHS_WORKBOOK, data_only=True, read_only=True)["CGHS_Data"]
     entries, unmapped = [], set()
     for row in list(sheet.iter_rows(values_only=True))[2:]:
         if not row or not row[1] or row[7] != "Tier I":
             continue
         code, name, label = str(row[1]).strip(), re.sub(r"\s+", " ", str(row[2] or "")).strip(), str(row[6] or "").strip()
-        specialty = cghs_specialty_for(name, label, labels, overrides)
-        if specialty is None:
+        rule = next((r for r in name_rules if r.value.lower() in name.lower()), None) or label_rules.get(label.casefold())
+        if rule is None:
             unmapped.add(label)
             continue
-        if specialty == "NONE" or not name:
+        if not rule.specialties or not name:
+            stats["cghs: rule maps to NONE"] += 1
             continue
-        entries.append(LookupEntry(f"cghs:{code}", "cghs", code, name, specialty))
+        for specialty in rule.specialties:
+            entries.append(LookupEntry(f"cghs:{code}:{specialty}", "cghs", code, name, specialty,
+                                       rule.evidence_type, f"{rule.source}:{rule.value}"))
+        stats["cghs: mapped"] += 1
     if unmapped:
-        logger.warning("CGHS labels with no mapping (left out): %s", sorted(unmapped))
+        logger.warning("CGHS labels with no rule in specialty_mapping.csv (left out): %s", sorted(unmapped))
     return entries
 
 
-def _lay_term_entries() -> list[LookupEntry]:
-    """Patients' own wording ("eye infection", "red eyes") from specialties.csv keywords.
-
-    ICD-10-CM and CGHS use clinical language ("conjunctivitis", "gonococcal infection of eye"),
-    so keyword search missed common lay terms; these entries give V1/V2 a direct match."""
-    from mediroute.common.specialties import load_specialties
-
-    entries, seen = [], set()
-    for spec in load_specialties():
-        for keyword in spec.keywords:
-            key = (keyword.lower(), spec.name)
-            if len(keyword) < 3 or key in seen:
-                continue
-            seen.add(key)
-            entries.append(LookupEntry(f"lay:{spec.name}:{keyword}", "lay_term", "", keyword, spec.name))
+def _lay_term_entries(official_texts: set[str], stats: Counter) -> list[LookupEntry]:
+    """Patients' own wording ("red eyes", "kidney stone"); clinical sources say "conjunctivitis"."""
+    entries = []
+    for rule in lay_terms():
+        term = rule.value.lower()
+        if len(term) < 3:
+            stats["lay: shorter than 3 letters"] += 1
+            continue
+        if term in official_texts:
+            stats["lay: same text already from ICD/CGHS"] += 1
+            continue
+        for specialty in rule.specialties:
+            entries.append(LookupEntry(f"lay:{specialty}:{term}", "lay_term", "", term, specialty,
+                                       rule.evidence_type, f"lay_term:{rule.value}"))
+        stats["lay: added"] += 1
     return entries
 
 
 def build_lookup(path: Path = LOOKUP_FILE) -> list[LookupEntry]:
-    entries = _icd_entries() + _cghs_entries() + _lay_term_entries()
+    problems = validate_mapping()
+    if problems:
+        raise ValueError("specialty_mapping.csv has problems:\n  " + "\n  ".join(problems[:20]))
+    stats: Counter = Counter()
+    official = _icd_entries(stats) + _cghs_entries(stats)
+    entries = official + _lay_term_entries({e.text.lower() for e in official}, stats)
+    path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
-        writer.writerow(["entry_id", "source", "code", "text", "specialty"])
+        writer.writerow(FIELDS)
         for e in entries:
-            writer.writerow([e.entry_id, e.source, e.code, e.text, e.specialty])
-    logger.info("Step 1 lookup list written: %d entries -> %s", len(entries), path)
+            writer.writerow([e.entry_id, e.source, e.code, e.text, e.specialty, e.evidence_type, e.mapping_rule])
+    logger.info("Step 1 lookup list written: %d entries -> %s (%s)", len(entries), path, dict(stats))
     return entries
 
 
 def load_lookup(path: Path = LOOKUP_FILE) -> list[LookupEntry]:
     if not path.exists():
         return build_lookup(path)
-    return [LookupEntry(r["entry_id"], r["source"], r["code"], r["text"], r["specialty"]) for r in _read_csv(path)]
+    return [LookupEntry(r["entry_id"], r["source"], r["code"], r["text"], r["specialty"],
+                        r.get("evidence_type") or "diagnosis", r.get("mapping_rule") or "")
+            for r in _read_csv(path)]
 
 
 # ---------------------------------------------------------------------------
@@ -252,7 +256,4 @@ class LookupIndex:
 
 if __name__ == "__main__":
     built = build_lookup()
-    by_source: dict[str, int] = {}
-    for item in built:
-        by_source[item.source] = by_source.get(item.source, 0) + 1
-    print(f"{len(built)} entries {by_source} -> {LOOKUP_FILE}")
+    print(f"{len(built)} entries {dict(Counter(e.source for e in built))} -> {LOOKUP_FILE}")

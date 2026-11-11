@@ -1,16 +1,22 @@
 """Step 1 and Step 2 read the same data files; these tests fail if they drift apart again."""
 
-import csv
 import json
 
 import pandas as pd
 import pytest
 
 from mediroute.common.locations import city_names, resolve_location
-from mediroute.common.specialties import hospital_specialty_counts, load_specialties, specialty_names
+from mediroute.common.specialties import (
+    hospital_label_map,
+    hospital_specialty_counts,
+    lay_terms,
+    load_specialties,
+    specialty_names,
+    validate_mapping,
+)
 from mediroute.hospital_recommendation.ranking.hospital_reranker import HospitalReranker
 from mediroute.hospital_recommendation.specialty_filter import SpecialtyFilter
-from mediroute.utils.paths import HOSPITALS_FILE, TAXONOMY_DIR, TEAM_150_SHEET_FILE, VECTOR_STORE_DIR
+from mediroute.utils.paths import HOSPITALS_FILE, TEAM_150_SHEET_FILE, VECTOR_STORE_DIR
 
 STEP1 = set(specialty_names())
 
@@ -25,19 +31,22 @@ def _names(value):
 
 
 # ---------------------------------------------------------------- one speciality list
-def test_normalization_maps_only_to_step1_names_or_none():
-    with open(TAXONOMY_DIR / "specialty_normalization.csv", encoding="utf-8-sig") as f:
-        targets = {r["canonical_specialty"].strip() for r in csv.DictReader(f)}
-    assert targets - STEP1 <= {"NONE"}, targets - STEP1 - {"NONE"}
+def test_mapping_table_is_valid():
+    """Every rule in specialty_mapping.csv points to the master list, once, with an allowed type."""
+    assert validate_mapping() == []
 
 
 def test_every_team_sheet_label_is_mapped():
     sheet = pd.read_excel(TEAM_150_SHEET_FILE, sheet_name="Hospitals_150")
     labels = {s.strip().casefold() for col in ("verified_specialties", "verified_subspecialties")
               for v in sheet[col].dropna() for s in str(v).split(";") if s.strip()}
-    with open(TAXONOMY_DIR / "specialty_normalization.csv", encoding="utf-8-sig") as f:
-        known = {r["raw_specialty"].strip().casefold() for r in csv.DictReader(f)}
-    assert labels <= known, sorted(labels - known)
+    assert labels <= set(hospital_label_map()), sorted(labels - set(hospital_label_map()))
+
+
+def test_weak_lay_terms_are_not_strong_evidence():
+    strong = {r.value for r in lay_terms("strong")}
+    assert {"kidney stone", "cataract"} <= strong
+    assert not {"baby", "child", "eye", "bleeding"} & strong
 
 
 def test_neurosciences_reaches_neurology_and_neurosurgery():
