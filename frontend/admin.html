@@ -8,9 +8,11 @@
   <title>Admin · Request History | MediRoute</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/theme.css">
   <script src="https://unpkg.com/lucide@latest" defer></script>
   <script src="js/admin.js" defer></script>
 </head>
@@ -42,6 +44,7 @@
           <option value="agreement">Voters agree</option>
           <option value="judge">AI judge decided</option>
           <option value="lookup_only">Lookup only (no LLM)</option>
+          <option value="patient_answer">Patient answer decided</option>
           <option value="clarification_required">Clarification</option>
           <option value="needs_user_choice">User choice offered</option>
           <option value="user_selected">User selected</option>
@@ -69,5 +72,6 @@
       </section>
     </div>
   </main>
+  <p class="academic-notice" style="text-align:center;padding:12px">MediRoute is an independent academic capstone project. It is not a commercial service and is not affiliated with any company, website or product of the same or a similar name.</p>
 </body>
 </html>

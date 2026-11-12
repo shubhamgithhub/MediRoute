@@ -35,3 +35,9 @@ docs/base/capstone_guidelines.pdf
 # Step 1: regenerable inputs/caches (see README §4)
 data/raw/icd10cm_2026/
 data/processed/vector_store/step1_lookup_embeddings_*.npy
+
+# Step 2 grading: cached copies of hospital web pages (rebuildable, third-party content) and the temporary to-grade list
+data/evaluation/step2_site_cache/
+data/evaluation/step2_to_grade.csv
+# scraper run logs
+data/interim/master/*.log

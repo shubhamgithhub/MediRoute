@@ -510,7 +510,7 @@ const clarifyState = document.querySelector("#clarify-state");
 const choiceState = document.querySelector("#choice-state");
 const emergencyBanner = document.querySelector("#emergency-banner");
 // rounds of one search share the first Step 1 request id (parent_request_id in the logs)
-let search = { parentRequestId: null, round: 0 };
+let search = { parentRequestId: null, round: 0, answers: {} };
 
 // The location list comes from GET /api/cities (data/processed/cities.csv: only search areas that
 // have hospitals). The chosen value is sent as preferred_city; the API expands a search area
@@ -536,6 +536,9 @@ loadLocationOptions();
 
 const showStep1Panel = (panel) => {
   [form, loadingState, successState, clarifyState, choiceState].forEach((el) => { if (el) el.hidden = el !== panel; });
+  // the "Tell us what you need" heading belongs to the form; results start at the top of the panel
+  const intro = document.querySelector(".patient-intro");
+  if (intro) intro.hidden = panel !== form;
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
@@ -621,6 +624,8 @@ const toRoutingView = (result) => {
       ? {
           status: recommendation.status,
           count: recommendation.count,
+          primary_specialty: recommendation.primary_specialty,
+          in_area_count: recommendation.in_area_count,
           results: recommendation.results.map((hospital) => ({
             hospital_id: hospital.hospital_id,
             hospital_name: hospital.hospital_name,
@@ -640,7 +645,9 @@ const toRoutingView = (result) => {
             semantic_score: hospital.semantic_score,
             final_score: hospital.final_score,
             final_rank: hospital.final_rank,
-            ranking_reasons: hospital.ranking_reasons
+            ranking_reasons: hospital.ranking_reasons,
+            outside_area: hospital.outside_area === true,
+            area_group: hospital.area_group || ""
           }))
         }
       : { status: recommendation.status || "clarification_required", results: [] }
@@ -725,17 +732,54 @@ const renderClarification = (step1) => {
   if (window.lucide) window.lucide.createIcons();
 };
 
+// A short list of the candidates (with what each speciality covers); "something else" opens the full list
 const renderChoice = (step1) => {
   const info = step1.user_choice || {};
   document.querySelector("#choice-message").textContent = info.message || "";
+  const shortlist = Array.isArray(info.shortlist) && info.shortlist.length
+    ? info.shortlist
+    : (info.suggested_first || []).map((name) => ({ name, description: "" }));
+  const holder = document.querySelector("#choice-options");
+  holder.replaceChildren();
+  const addOption = (value, title, description, checked) => {
+    const label = document.createElement("label");
+    label.className = "choice-option";
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "choice";
+    input.value = value;
+    input.checked = checked;
+    const text = document.createElement("span");
+    const strong = document.createElement("strong");
+    strong.textContent = title;
+    text.append(strong);
+    if (description) {
+      const small = document.createElement("small");
+      small.textContent = description;
+      text.append(small);
+    }
+    label.append(input, text);
+    holder.append(label);
+  };
+  shortlist.forEach((item) => addOption(item.name, item.name, item.description, false));  // no pre-selection: no nudge
+  addOption("__other__", "Something else…", "Choose from the full list of specialities", false);
   const select = document.querySelector("#choice-select");
   select.innerHTML = "";
-  (info.options || []).forEach((name, index) => {
+  const listed = new Set(shortlist.map((item) => item.name));
+  (info.options || []).filter((name) => !listed.has(name)).forEach((name) => {
     const option = document.createElement("option");
     option.value = name;
-    option.textContent = index < (info.suggested_first || []).length ? `${name} (suggested)` : name;
+    option.textContent = name;
     select.appendChild(option);
   });
+  const otherWrap = document.querySelector("#choice-other");
+  otherWrap.hidden = true;
+  const submit = document.querySelector("#choice-form button[type='submit']");
+  if (submit) submit.disabled = true;
+  holder.onchange = () => {
+    otherWrap.hidden = holder.querySelector("input:checked")?.value !== "__other__";
+    if (submit) submit.disabled = false;
+  };
   showStep1Panel(choiceState);
   if (window.lucide) window.lucide.createIcons();
 };
@@ -743,16 +787,20 @@ const renderChoice = (step1) => {
 document.querySelector("#clarify-form")?.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (isSubmitting) return;
-  const answers = {};
-  new FormData(event.target).forEach((value, key) => { answers[`clarification_${key}`] = String(value).trim(); });
+  // answers add up over the rounds: a question answered once is never asked or lost again
+  new FormData(event.target).forEach((value, key) => {
+    if (String(value).trim()) search.answers[`clarification_${key}`] = String(value).trim();
+  });
   search.round += 1;
-  await runRouting(answers);
+  await runRouting({ ...search.answers });
 });
 
 document.querySelector("#choice-form")?.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (isSubmitting) return;
-  await runRouting({ selected_specialty: document.querySelector("#choice-select").value });
+  const picked = document.querySelector("#choice-options input:checked")?.value;
+  const specialty = picked === "__other__" || !picked ? document.querySelector("#choice-select").value : picked;
+  await runRouting({ ...search.answers, selected_specialty: specialty });
 });
 
 const backToForm = () => {
@@ -778,7 +826,7 @@ form.addEventListener("submit", async (event) => {
   if (errorSummary) errorSummary.hidden = true;
   window.sessionStorage.removeItem("mediroute_routing_result");
   window.sessionStorage.removeItem("mediroute_report_parse_result");
-  search = { parentRequestId: null, round: 0 };
+  search = { parentRequestId: null, round: 0, answers: {} };
   await runRouting();
 });
 
@@ -830,6 +878,7 @@ form.addEventListener("submit", async (event) => {
     loadingState.hidden = true;
     if (emergencyBanner) emergencyBanner.hidden = true;
     form.hidden = false;
+    document.querySelector(".patient-intro")?.removeAttribute("hidden");
     progressLabel.textContent = "Step 1 of 3";
     progressSteps.forEach((step, index) => {
       step.classList.toggle("is-active", index === 0);

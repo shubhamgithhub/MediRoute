@@ -8,9 +8,11 @@
   <title>Your Information | MediRoute</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/patient.css">
+  <link rel="stylesheet" href="css/theme.css">
   <script src="https://unpkg.com/lucide@latest" defer></script>
   <script src="js/patient.js" defer></script>
 </head>
@@ -20,7 +22,7 @@
     <nav class="navbar container" aria-label="Main navigation">
       <a class="brand" href="index.html" aria-label="MediRoute home">
         <span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span>
-        <span>Medi<span class="brand-accent">Route</span></span>
+        <span>Medi<span class="brand-accent">Route</span></span><small class="brand-tag">Academic project</small>
       </a>
       <button class="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="patient-navigation">
         <i data-lucide="menu" aria-hidden="true"></i>
@@ -65,8 +67,7 @@
         <div class="patient-intro">
           <span class="section-kicker"><span class="intro-dot"></span> A little about what you need</span>
           <h1 id="patient-heading">Tell us what you need</h1>
-          <p>Share your healthcare requirement so MediRoute can help identify relevant hospitals and specialties.</p>
-          <div class="intro-note"><i data-lucide="heart-handshake" aria-hidden="true"></i><span>You can describe your needs in your own words. A medical report is optional.</span></div>
+          <p>Describe your need in your own words. MediRoute suggests a speciality to search and matching hospitals. A medical report is optional.</p>
         </div>
 
         <form id="patient-form" novalidate>
@@ -74,11 +75,11 @@
           <section class="form-section" aria-labelledby="requirement-heading">
             <div class="form-section-heading">
               <span class="section-icon"><i data-lucide="message-square-text" aria-hidden="true"></i></span>
-              <div><h2 id="requirement-heading">Your healthcare requirement</h2><p>Start with what you would like help exploring.</p></div>
+              <div><h2 id="requirement-heading">Your healthcare requirement</h2></div>
             </div>
             <label class="field-label-main" for="requirement">What healthcare support are you looking for?</label>
-            <textarea id="requirement" name="requirement" maxlength="1000" rows="6" placeholder="Example: “I am looking for cardiac treatment in Mumbai. I have been experiencing chest discomfort and would like to explore hospitals with cardiology and cardiac surgery facilities.”" aria-describedby="requirement-help requirement-counter requirement-error"></textarea>
-            <div class="field-meta"><span id="requirement-help" class="field-help">Describe your symptoms, treatment requirement, specialty or care needs. Do not include unnecessary personal information. A report may be provided instead.</span><span id="requirement-counter" class="character-count">0 / 1000</span></div>
+            <textarea id="requirement" name="requirement" maxlength="1000" rows="4" placeholder="Example: “I am looking for cardiac treatment in Mumbai. I have been experiencing chest discomfort and would like to explore hospitals with cardiology and cardiac surgery facilities.”" aria-describedby="requirement-help requirement-counter requirement-error"></textarea>
+            <div class="field-meta"><span id="requirement-help" class="field-help">Symptoms, a condition, or the treatment your doctor mentioned. No names or ID numbers needed.</span><span id="requirement-counter" class="character-count">0 / 1000</span></div>
             <p class="field-error" id="requirement-error" aria-live="polite"></p>
           </section>
 
@@ -86,18 +87,17 @@
           <section class="form-section" aria-labelledby="report-heading">
             <div class="form-section-heading form-section-heading-inline">
               <span class="section-icon"><i data-lucide="file-up" aria-hidden="true"></i></span>
-              <div><h2 id="report-heading">Have medical reports?</h2><p>Upload one or more PDFs if you would like MediRoute to extract relevant information from them.</p></div>
+              <div><h2 id="report-heading">Medical reports</h2></div>
               <span class="optional-badge">OPTIONAL</span>
             </div>
             <div class="upload-zone" id="upload-zone">
               <span class="upload-icon"><i data-lucide="upload-cloud" aria-hidden="true"></i></span>
-              <strong>Drag &amp; drop your PDF here</strong>
-              <span class="upload-or">or</span>
-              <button class="browse-button" id="browse-report" type="button">Browse files</button>
-              <span class="upload-formats">PDF only <span aria-hidden="true">·</span> Maximum file size: 10 MB per file</span>
+              <strong>Drag a PDF here or</strong>
+              <button class="browse-button" id="browse-report" type="button">browse files</button>
+              <span class="upload-formats">PDF only <span aria-hidden="true">·</span> max 10 MB each <span aria-hidden="true">·</span> use test files only</span>
               <input class="visually-hidden" id="medicalReports" name="report" type="file" accept=".pdf,application/pdf" multiple tabindex="-1" aria-label="Select medical report PDF files" aria-describedby="report-help report-error">
             </div>
-            <p id="report-help" class="field-help upload-help">Selected reports are attached to the routing request. Use fictional or test files only.</p>
+            <p id="report-help" class="visually-hidden">Selected reports are attached to the routing request. Use fictional or test files only.</p>
             <ul class="selected-file-list" id="selected-files" aria-label="Selected medical reports" hidden></ul>
             <p class="field-error" id="report-error" aria-live="polite"></p>
           </section>
@@ -106,7 +106,7 @@
           <section class="form-section" aria-labelledby="preferences-heading">
             <div class="form-section-heading">
               <span class="section-icon"><i data-lucide="sliders-horizontal" aria-hidden="true"></i></span>
-              <div><h2 id="preferences-heading">Your preferences</h2><p>Help us understand what matters to you.</p></div>
+              <div><h2 id="preferences-heading">Your preferences</h2></div>
             </div>
             <div class="field-grid">
               <div class="form-field">
@@ -121,7 +121,7 @@
                   <option value="Pune">Pune</option>
                   <option value="Other">Other</option>
                 </select><i data-lucide="chevron-down" aria-hidden="true"></i></div>
-                <p class="field-help" id="location-help">Location will be considered as one factor when ranking relevant hospitals.</p>
+                <p class="field-help" id="location-help">Hospitals in this area come first; if there are fewer than 3, we also show the nearest others.</p>
                 <p class="field-error" id="location-error" aria-live="polite"></p>
                 <div class="other-location-field" id="other-location-field" hidden>
                   <label class="field-label-main" for="other-location">Other location<span class="required-mark" aria-hidden="true">*</span></label>
@@ -140,42 +140,35 @@
                   <option value="Tamil">Tamil</option>
                   <option value="Telugu">Telugu</option>
                 </select><i data-lucide="chevron-down" aria-hidden="true"></i></div>
-                <p class="field-help" id="language-help">This preference is preserved for the demo. The current routing API does not yet support language selection.</p>
+                <p class="field-help" id="language-help">Results are in English for now.</p>
                 <p class="field-error" id="language-error" aria-live="polite"></p>
               </div>
             </div>
             <div class="form-field additional-field">
               <label class="field-label-main" for="additional-preference">Anything else we should consider? <span class="optional-inline">Optional</span></label>
-              <textarea id="additional-preference" name="additionalPreference" maxlength="500" rows="3" placeholder="Example: “I prefer a hospital with cardiac ICU facilities.”" aria-describedby="additional-help additional-counter additional-error"></textarea>
-              <div class="field-meta"><span id="additional-help" class="field-help">This preference is saved for editing, but the current routing API does not yet accept it as a ranking input.</span><span id="additional-counter" class="character-count">0 / 500</span></div>
+              <textarea id="additional-preference" name="additionalPreference" maxlength="500" rows="2" placeholder="Example: “I prefer a hospital with cardiac ICU facilities.”" aria-describedby="additional-help additional-counter additional-error"></textarea>
+              <div class="field-meta"><span id="additional-help" class="field-help">Saved with your request; not used for ranking yet.</span><span id="additional-counter" class="character-count">0 / 500</span></div>
               <p class="field-error" id="additional-error" aria-live="polite"></p>
             </div>
           </section>
 
-          <!-- NOTICE -->
-          <section class="notice-card" aria-labelledby="notice-heading">
-            <span class="notice-icon"><i data-lucide="info" aria-hidden="true"></i></span>
-            <div class="notice-content">
-              <h2 id="notice-heading">Before you continue</h2>
-              <p>MediRoute is designed to help with hospital discovery and information organization. It does not provide medical diagnosis or treatment advice.</p>
-              <p class="prototype-warning"><i data-lucide="lock-keyhole" aria-hidden="true"></i> For this prototype, please use fictional or test medical reports. Do not upload real patient information.</p>
-              <label class="consent-label" for="medical-disclaimer">
-                <input id="medical-disclaimer" name="medicalDisclaimer" type="checkbox" required aria-describedby="consent-error">
-                <span class="custom-checkbox" aria-hidden="true"><i data-lucide="check"></i></span>
-                <span>I understand that MediRoute provides informational hospital recommendations and does not replace professional medical advice.<span class="required-mark" aria-hidden="true">*</span></span>
-              </label>
-              <p class="field-error" id="consent-error" aria-live="polite"></p>
-            </div>
-          </section>
-
-          <!-- ACTIONS -->
+          <!-- ACTIONS: stays at the bottom of the screen (consent + submit) -->
           <div class="form-actions">
-            <p class="submit-hint" id="submit-hint" aria-live="polite">Please describe your healthcare requirement or select a medical report to continue.</p>
             <p class="form-error-summary" id="form-error-summary" role="alert" hidden></p>
-            <button class="button button-primary analyze-button" id="analyze-button" type="submit" disabled>
-              Analyze My Needs <span aria-hidden="true">→</span>
-            </button>
-            <p class="secure-note"><i data-lucide="shield-check" aria-hidden="true"></i> Your information stays in this browser prototype.</p>
+            <div class="action-row">
+              <div class="action-consent">
+                <label class="consent-label" for="medical-disclaimer">
+                  <input id="medical-disclaimer" name="medicalDisclaimer" type="checkbox" required aria-describedby="consent-error">
+                  <span class="custom-checkbox" aria-hidden="true"><i data-lucide="check"></i></span>
+                  <span>I understand MediRoute helps find hospitals; it does not give a diagnosis or treatment advice.<span class="required-mark" aria-hidden="true">*</span></span>
+                </label>
+                <p class="field-error" id="consent-error" aria-live="polite"></p>
+                <p class="submit-hint" id="submit-hint" aria-live="polite">Please describe your healthcare requirement or select a medical report to continue.</p>
+              </div>
+              <button class="button button-primary analyze-button" id="analyze-button" type="submit" disabled>
+                Analyze My Needs <span aria-hidden="true">→</span>
+              </button>
+            </div>
           </div>
         </form>
 
@@ -184,11 +177,11 @@
           <span class="state-icon state-icon-loading"><i data-lucide="sparkles" aria-hidden="true"></i></span>
           <span class="section-kicker">Step 2 · AI analysis</span>
           <h2 id="loading-heading">Understanding your healthcare requirement...</h2>
-          <p>Sending your request securely to the local MediRoute routing service. Three independent methods (keyword search, meaning search and a local AI model) check which speciality fits, then matching hospitals are ranked. This takes about 10–30 seconds.</p>
+          <p>A medical lookup and an AI model each suggest a speciality from your words; if they differ, an AI judge checks the evidence. Then matching hospitals are ranked. This usually takes a few seconds.</p>
           <ol class="loading-checklist">
             <li class="is-complete"><span><i data-lucide="check" aria-hidden="true"></i></span>Reading your information</li>
             <li class="is-current"><span class="loading-spinner" aria-hidden="true"></span>Finding the evidence in your text</li>
-            <li><span><i data-lucide="circle" aria-hidden="true"></i></span>Comparing three methods</li>
+            <li><span><i data-lucide="circle" aria-hidden="true"></i></span>Comparing the lookup and the AI model</li>
             <li><span><i data-lucide="circle" aria-hidden="true"></i></span>Suggesting a speciality to search</li>
           </ol>
           <div class="loading-progress" aria-label="Analysis in progress"><span></span></div>
@@ -225,11 +218,14 @@
         <section class="result-state choice-state" id="choice-state" aria-labelledby="choice-heading" hidden>
           <span class="state-icon"><i data-lucide="list-checks" aria-hidden="true"></i></span>
           <span class="section-kicker">Choose a speciality</span>
-          <h2 id="choice-heading">Which speciality is closest to your need?</h2>
+          <h2 id="choice-heading">Which speciality fits best?</h2>
           <p id="choice-message"></p>
           <form id="choice-form" class="clarify-form" novalidate>
-            <label class="field-label" for="choice-select">Speciality</label>
-            <select id="choice-select" required></select>
+            <fieldset class="choice-options" id="choice-options" aria-label="Specialities to choose from"></fieldset>
+            <div class="choice-other" id="choice-other" hidden>
+              <label class="field-label" for="choice-select">All specialities</label>
+              <select id="choice-select"></select>
+            </div>
             <div class="success-actions">
               <button class="button button-primary" type="submit">Use this speciality <span aria-hidden="true">→</span></button>
               <button class="edit-button" id="choice-edit" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i> Edit Information</button>
@@ -241,31 +237,26 @@
         <section class="result-state success-state" id="success-state" aria-labelledby="success-heading" hidden>
           <span class="state-icon state-icon-success"><i data-lucide="check" aria-hidden="true"></i></span>
           <span class="section-kicker">Step 1 complete</span>
-          <h2 id="success-heading">Your information is ready</h2>
+          <h2 id="success-heading">Your result</h2>
           <div class="suggestion-card" id="suggestion-card" hidden>
             <p class="suggestion-label" id="suggestion-label"></p>
             <p class="suggestion-evidence" id="suggestion-evidence"></p>
             <p class="suggestion-disclaimer" id="suggestion-disclaimer"></p>
             <p class="suggestion-meta" id="suggestion-meta"></p>
           </div>
-          <p class="success-lead" id="success-lead">MediRoute has completed the routing request on a local server. Review the result before choosing a hospital.</p>
+          <p class="recommendation-message" id="recommendation-message" role="status" aria-live="polite"></p>
+          <div class="success-actions">
+            <button class="button button-primary continue-button" id="continue-button" type="button">See Recommended Hospitals <span aria-hidden="true">→</span></button>
+            <button class="edit-button" id="edit-button" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i> Edit Information</button>
+          </div>
           <div class="summary-card" aria-label="Your submitted information">
-            <h3><i data-lucide="clipboard-list" aria-hidden="true"></i> Your request summary</h3>
+            <h3><i data-lucide="clipboard-list" aria-hidden="true"></i> What you told us</h3>
             <dl>
               <div><dt>Healthcare requirement</dt><dd id="summary-requirement"></dd></div>
               <div><dt>Preferred location</dt><dd id="summary-location"></dd></div>
               <div><dt>Preferred language</dt><dd id="summary-language"></dd></div>
               <div><dt>Medical report</dt><dd id="summary-report"></dd></div>
             </dl>
-          </div>
-          <div class="next-step-card">
-            <span class="next-step-icon"><i data-lucide="sparkles" aria-hidden="true"></i></span>
-            <span><small>NEXT STEP</small><strong>AI-assisted hospital discovery</strong></span>
-          </div>
-          <p class="recommendation-message" id="recommendation-message" role="status" aria-live="polite"></p>
-          <div class="success-actions">
-            <button class="button button-primary continue-button" id="continue-button" type="button">Continue to Recommendations <span aria-hidden="true">→</span></button>
-            <button class="edit-button" id="edit-button" type="button"><i data-lucide="arrow-left" aria-hidden="true"></i> Edit Information</button>
           </div>
         </section>
       </section>
@@ -276,7 +267,7 @@
     <div class="container">
       <a class="brand brand-footer" href="index.html" aria-label="MediRoute home"><span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span><span>Medi<span class="brand-accent">Route</span></span></a>
       <p>MediRoute provides informational recommendations and does not constitute medical advice.</p>
-    </div>
+    <p class="academic-notice">MediRoute is an independent academic capstone project. It is not a commercial service and is not affiliated with any company, website or product of the same or a similar name.</p></div>
   </footer>
 </body>
 </html>

@@ -442,3 +442,50 @@ def test_weak_hits_on_several_phrases_do_not_outweigh_one_clear_match():
                   ("problem in my head", [(heart, 0.017)])]
     assert _aggregate(per_phrase, 0.0)[0][0][0] == "Cardiology"                  # summing: weak hits win
     assert _aggregate(per_phrase, 0.0, best_only=True)[0][0][0] == "Gastroenterology"  # best match per phrase
+
+
+# ---------------------------------------------------------------- the patient's answers count (12 Nov 2026)
+# Portal case: "sciatic nerve pain" -> lookup Neurology vs AI Orthopaedics; the patient answered
+# "Bones, joints and muscles", yet the same question came back and then the full list of 26.
+def test_body_area_answers_match_the_form_options():
+    from mediroute.common.specialties import body_area_specialties, mapping_rules
+    from mediroute.specialty_routing.step1.pipeline import BODY_AREAS
+    assert {r.value for r in mapping_rules("body_area")} == set(BODY_AREAS)
+    assert body_area_specialties("Bones, joints and muscles") == {"Orthopaedics"}
+    assert body_area_specialties("Other / not sure") == set()
+
+
+def test_a_body_area_answer_that_fits_one_disputed_speciality_decides():
+    judge = FakeJudgeClient({"choice": "unclear", "evidence": [], "patient_quote": "", "reason": ""})
+    result = make_pipeline(specialty={"cabg": "Pulmonology"}, judge_client=judge).analyze(Step1Input(
+        text="need cabg bypass surgery for my father", clarification_round=1,
+        clarification={"body_area": "Heart and blood vessels"}))
+    assert result["decision"] == "patient_answer" and result["suggested_specialty"] == "Cardiothoracic Surgery"
+    assert "Heart and blood vessels" in result["reason"]
+    assert judge.prompts == []  # the patient's answer settled it; no judge call needed
+
+
+def test_an_answer_that_fits_both_does_not_decide_and_the_form_is_not_repeated():
+    result = make_pipeline(specialty=DISAGREE).analyze(Step1Input(
+        text="need cabg bypass surgery for my father", clarification_round=1,
+        clarification={"body_area": "Heart and blood vessels"}))
+    assert result["decision"] == "needs_user_choice"  # a short list, not the same form again
+    names = [item["name"] for item in result["user_choice"]["shortlist"]]
+    assert names[:2] == ["Cardiothoracic Surgery", "Cardiology"] and len(names) <= 4
+    assert all(item["description"] for item in result["user_choice"]["shortlist"])
+
+
+def test_questions_already_answered_are_not_asked_again():
+    result = make_pipeline().analyze(Step1Input(text="invented message with no medical words", clarification_round=1,
+                                                clarification={"body_area": "Other / not sure"}))
+    assert result["decision"] == "clarification_required"
+    assert [f["name"] for f in result["clarification"]["fields"]] == ["existing_diagnosis", "recommended_procedure"]
+
+
+def test_when_the_ai_finds_the_text_vague_a_fitting_answer_confirms_the_lookup():
+    vague = {**SPECIALTY}
+    vague.pop("osteoarthritis")  # the fake LLM answers Unclear
+    result = make_pipeline(specialty=vague).analyze(Step1Input(
+        text="osteoarthritis of the knee, knee replacement", clarification_round=1,
+        clarification={"body_area": "Bones, joints and muscles"}))
+    assert result["decision"] == "patient_answer" and result["suggested_specialty"] == "Orthopaedics"

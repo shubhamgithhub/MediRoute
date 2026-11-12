@@ -9,7 +9,7 @@ column_order,column_name,group,data_type,required,allowed_values,description,how
 8,ownership_type,core,category,yes,Private|Private (trust)|Private (deemed university)|Government|Government (autonomous),Ownership of the hospital,Candidate list (manual judgement),Private
 9,nabh_status,core,category,yes,Accredited|Certified|Empaneled|Needs verification|Not found in NABH directory,"NABH status of this hospital branch. Only a hospital-programme certificate (H-xxxx) for the right city and branch counts; blood bank, lab or ethics-committee certificates do not",NABH 'Find a Healthcare Organisation' name search (nabh_finder_scraper),Accredited
 10,jci_status,core,category,yes,Accredited|Not listed,Whether JCI lists this hospital (this branch) as accredited,JCI accredited-organisations list for India (jci_scraper) matched via jci_name in the candidate list,Accredited
-11,verified_specialties,core,string (semicolon list),yes,canonical names from data/medical_taxonomy/specialty_normalization.csv or NA,"Up to 6 specialties found on the hospital's official website, ranked by how often they appear; emergency/critical care listed last",Website text + menu links matched against the specialty taxonomy,Oncology; Cardiology; Orthopaedics
+11,verified_specialties,core,string (semicolon list),yes,canonical names from data/medical_taxonomy/specialty_normalization.csv or NA,"Every speciality found on the hospital's official website (home page + departments page), ranked by how often it appears; emergency/critical care listed last",Website text + menu links matched against the specialty taxonomy,Oncology; Cardiology; Orthopaedics
 12,international_patient_service,core,category,yes,Available|Not found on website,Whether the official site has an international-patients page,Link search on the official website (or url_international given in candidate list and checked to load),Available
 13,official_source_url,core,url,yes,URL or blank,"Official hospital website, as it resolved when checked (after redirects)",Candidate list URL; else the website on the JCI or NABH record; must load,https://www.kauveryhospital.com/
 14,url_Internantional_patients,core,url,yes,URL or NA,Official international-patients page (column name kept from team template),Found on the official website or supplied and verified to load,https://mgmhealthcare.in/international-patients/
@@ -23,7 +23,7 @@ column_order,column_name,group,data_type,required,allowed_values,description,how
 22,jci_ihco_id,evidence,string,no,,JCI IHCO identifier,JCI list,60011073
 23,jci_listed_name,evidence,string,no,,Name as listed by JCI,JCI list,Kauvery Hospital Alwarpet
 24,website_status,evidence,string,yes,OK|HTTP <code>|error: <type>|no URL,Result of loading the official website,build_hospital_master,OK
-25,specialties_all_found,evidence,string (semicolon list),no,,Every taxonomy specialty found on the website (verified_specialties is the top 6),build_hospital_master,
+25,specialties_all_found,evidence,string (semicolon list),no,,Every taxonomy specialty found on the website (same as verified_specialties in hospitals.csv; the master sheet shows only the top 6),build_hospital_master,
 26,data_collected_on,evidence,date (YYYY-MM-DD),yes,,Date the checks were run,build_hospital_master,2026-11-05
 27,source,evidence,string,yes,,Where the hospital row came from (team sheet row or drafted candidate list),Candidate list,RaviTeja sheet (H001)
 28,notes,evidence,string,no,,"Caveats: branch ambiguities, unreachable websites, manual-judgement fields",build_hospital_master,

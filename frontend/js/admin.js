@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return isNaN(d) ? ts : d.toLocaleString(undefined, { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" });
   };
   const decisionLabel = {
-    majority: "Majority (old)", agreement: "Voters agree", judge: "AI judge decided", lookup_only: "Lookup only", clarification_required: "Asked a question", needs_user_choice: "List offered",
+    majority: "Majority (old)", agreement: "Voters agree", judge: "AI judge decided", lookup_only: "Lookup only", patient_answer: "Patient answer decided", clarification_required: "Asked a question", needs_user_choice: "List offered",
     user_selected: "User selected", none: "No Step 1"
   };
   const kv = (pairs) => {

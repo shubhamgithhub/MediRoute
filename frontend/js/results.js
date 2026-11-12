@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
       notice.id = "llm-notice";
       notice.className = "llm-notice";
       notice.append(createIconSafe("info"), ` ${step1.notice}`);
-      document.querySelector(".context-values")?.after(notice);
+      document.querySelector(".request-facts")?.after(notice);
     }
     const location = typeof patientData.location === "string" && patientData.location.trim()
       ? patientData.location.trim()
@@ -134,9 +134,15 @@ document.addEventListener("DOMContentLoaded", () => {
           : [],
         semanticScore: hospital.semantic_score,
         finalScore: hospital.final_score,
-        rank: Number.isInteger(hospital.final_rank) ? hospital.final_rank : index + 1
+        rank: Number.isInteger(hospital.final_rank) ? hospital.final_rank : index + 1,
+        outsideArea: hospital.outside_area === true,
+        areaGroup: hospital.area_group || ""
       }))
     : [];
+
+  const MAX_CHIPS = 6;
+  const searchedSpecialty = String(routingResult.recommendation_result?.primary_specialty
+    || routingResult.step1?.suggested_specialty || "").trim();
 
   const createElement = (tagName, className, text) => {
     const element = document.createElement(tagName);
@@ -163,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     card.dataset.hospitalId = hospital.id;
 
     const main = createElement("div", "hospital-main");
-    const rankCaption = `Backend rank #${hospital.rank || index + 1}`;
+    const rankCaption = `#${hospital.rank || index + 1}`;
     main.append(
       createElement("span", "rank-badge", rankCaption),
       createElement("h3", "hospital-name", hospital.name),
@@ -172,7 +178,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (hospital.specialties.length) {
       const specialties = createElement("div", "hospital-specialties");
-      hospital.specialties.forEach((specialty) => specialties.append(createElement("span", "", specialty)));
+      const wanted = searchedSpecialty.toLowerCase();
+      const ordered = [...hospital.specialties].sort((a, b) =>
+        (b.toLowerCase() === wanted) - (a.toLowerCase() === wanted));
+      ordered.slice(0, MAX_CHIPS).forEach((specialty) => specialties.append(
+        createElement("span", specialty.toLowerCase() === wanted ? "is-match" : "", specialty)));
+      if (ordered.length > MAX_CHIPS) {
+        const more = createElement("span", "chip-more", `+${ordered.length - MAX_CHIPS} more`);
+        more.title = ordered.slice(MAX_CHIPS).join(", ");
+        specialties.append(more);
+      }
       main.append(specialties);
     }
 
@@ -192,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
     extra.append(createInfoRow("JCI status", hospital.jciStatus));
 
     if (hospital.rankingReasons.length) {
-      extra.append(createElement("h4", "", "Why the backend ranked this hospital"));
+      extra.append(createElement("h4", "", "Why this hospital"));
       const reasons = createElement("ul", "relevance-list");
       hospital.rankingReasons.forEach((reason) => {
         const item = createElement("li");
@@ -200,13 +215,6 @@ document.addEventListener("DOMContentLoaded", () => {
         reasons.append(item);
       });
       extra.append(reasons);
-    }
-
-    if (typeof hospital.semanticScore === "number" || typeof hospital.finalScore === "number") {
-      const labels = [];
-      if (typeof hospital.semanticScore === "number") labels.push(`Semantic development score: ${hospital.semanticScore}`);
-      if (typeof hospital.finalScore === "number") labels.push(`Final development score: ${hospital.finalScore}`);
-      extra.append(createElement("p", "development-score-note", labels.join(" • ") + " — not a probability of treatment success."));
     }
 
     if (hospital.website) {
@@ -294,9 +302,31 @@ document.addEventListener("DOMContentLoaded", () => {
   if (routingResult.workflow_status === "waiting_for_clarification" || routingResult.clarification_required) {
     showClarification();
   } else if (hospitals.length > 0) {
-    setText("#result-count", `${hospitals.length} hospitals found`);
+    const inArea = hospitals.filter((hospital) => !hospital.outsideArea).length;
+    setText("#result-count", inArea < hospitals.length
+      ? `· ${inArea} in ${location}, ${hospitals.length - inArea} outside`
+      : `· ${hospitals.length} found`);
     hospitalList.replaceChildren();
-    hospitals.forEach((hospital, index) => hospitalList.append(createHospitalCard(hospital, index)));
+    if (inArea === 0) {
+      hospitalList.append(createElement("p", "area-note",
+        `No hospital in ${location} offers ${searchedSpecialty || "this speciality"} in our data. These are the closest options we have.`));
+    }
+    let lastGroup = "";
+    hospitals.forEach((hospital, index) => {
+      if (hospital.outsideArea && hospital.areaGroup !== lastGroup) {
+        const divider = createElement("div", "area-divider");
+        divider.append(createElement("h3", "", `Outside your area · ${hospital.areaGroup}`));
+        if (lastGroup === "" && inArea > 0) {
+          divider.append(createElement("p", "",
+            `Only ${inArea} hospital${inArea === 1 ? "" : "s"} in ${location} offer${inArea === 1 ? "s" : ""} ${searchedSpecialty || "this speciality"} in our data, so we also show these.`));
+        }
+        hospitalList.append(divider);
+        lastGroup = hospital.areaGroup;
+      }
+      const card = createHospitalCard(hospital, index);
+      if (hospital.outsideArea) card.classList.add("is-outside-area");
+      hospitalList.append(card);
+    });
   } else {
     if (toolbar) toolbar.hidden = true;
     const card = createElement("section", "clarification-card");

@@ -13,6 +13,8 @@ Two hand-maintained files (both in data/processed/, both in the doctor review):
     cghs_name    text in a procedure name  Organ Transplant          procedure
     lay_term     patient wording           Urology                   strong | weak
     hospital     hospital department name  Neurology;Neurosurgery    (Step 2)
+    body_area    answer to "which part of  Orthopaedics              answer
+                 the body?" (Step 1 form)
 
   NONE = known value that is not routing evidence. Several specialities are joined with ";".
 
@@ -29,9 +31,10 @@ from pathlib import Path
 
 from mediroute.utils.paths import HOSPITALS_FILE, SPECIALTIES_FILE, SPECIALTY_MAPPING_FILE
 
-MAPPING_SOURCES = ("ccsr", "cghs_label", "cghs_name", "lay_term", "hospital")
+MAPPING_SOURCES = ("ccsr", "cghs_label", "cghs_name", "lay_term", "hospital", "body_area")
 EVIDENCE_TYPES = {"ccsr": {"diagnosis", "symptom", "status"}, "cghs_label": {"procedure"},
-                  "cghs_name": {"procedure"}, "lay_term": {"strong", "weak"}, "hospital": {""}}
+                  "cghs_name": {"procedure"}, "lay_term": {"strong", "weak"}, "hospital": {""},
+                  "body_area": {"answer"}}
 # matches of these kinds are weak routing evidence: they count half in the lookup voters
 WEAK_EVIDENCE = {"symptom", "weak"}
 
@@ -114,6 +117,16 @@ def hospital_label_map() -> dict[str, set[str]]:
     for name in specialty_names():
         mapping.setdefault(name.casefold(), set()).add(name)
     return mapping
+
+
+def body_area_specialties(answer: str) -> set[str]:
+    """Specialities that treat the body area the patient chose in the clarification form
+    (empty for "Other / not sure" or an unknown answer)."""
+    wanted = (answer or "").strip().casefold()
+    for rule in mapping_rules("body_area"):
+        if rule.value.casefold() == wanted:
+            return set(rule.specialties)
+    return set()
 
 
 def validate_mapping() -> list[str]:
