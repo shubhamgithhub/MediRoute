@@ -1,0 +1,27 @@
+{"tag": "Cardiology", "ok": true, "cost": 0.01695001, "error": null}
+{"tag": "Cardiothoracic Surgery", "ok": true, "cost": 0.02333639, "error": null}
+{"tag": "Pediatric Cardiology", "ok": true, "cost": 0.0135814, "error": null}
+{"tag": "Oncology", "ok": true, "cost": 0.0149345, "error": null}
+{"tag": "Hematology & Bone Marrow Transplant", "ok": true, "cost": 0.0146377, "error": null}
+{"tag": "Orthopaedics", "ok": true, "cost": 0.0173649, "error": null}
+{"tag": "Neurology", "ok": true, "cost": 0.0115346, "error": null}
+{"tag": "Neurosurgery", "ok": true, "cost": 0.0124222, "error": null}
+{"tag": "Gastroenterology", "ok": true, "cost": 0.01454299, "error": null}
+{"tag": "Nephrology", "ok": true, "cost": 0.010087, "error": null}
+{"tag": "Urology", "ok": true, "cost": 0.01648493, "error": null}
+{"tag": "Organ Transplant", "ok": true, "cost": 0.02005157, "error": null}
+{"tag": "Obstetrics & Gynaecology", "ok": true, "cost": 0.0127708, "error": null}
+{"tag": "Reproductive Medicine", "ok": true, "cost": 0.0123123, "error": null}
+{"tag": "Paediatrics", "ok": true, "cost": 0.0150794, "error": null}
+{"tag": "Endocrinology", "ok": true, "cost": 0.0149639, "error": null}
+{"tag": "Pulmonology", "ok": true, "cost": 0.0157892, "error": null}
+{"tag": "Plastic & Reconstructive Surgery", "ok": true, "cost": 0.0153811, "error": null}
+{"tag": "Bariatric Surgery", "ok": true, "cost": 0.01176483, "error": null}
+{"tag": "Emergency Medicine", "ok": true, "cost": 0.01047816, "error": null}
+{"tag": "Critical Care", "ok": true, "cost": 0.01754984, "error": null}
+{"tag": "Ophthalmology", "ok": true, "cost": 0.011256, "error": null}
+{"tag": "ENT", "ok": true, "cost": 0.0134876, "error": null}
+{"tag": "Dermatology", "ok": true, "cost": 0.01766457, "error": null}
+{"tag": "Psychiatry", "ok": true, "cost": 0.01488179, "error": null}
+{"tag": "General Medicine", "ok": true, "cost": 0.0201523, "error": null}
+{"tag": "vague", "ok": true, "cost": 0.00886963, "error": null}

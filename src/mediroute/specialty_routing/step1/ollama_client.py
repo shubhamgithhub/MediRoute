@@ -189,7 +189,10 @@ class OpenRouterClient:
     parallel_calls = True  # hosted: the evidence and V3 calls can run at the same time
 
     def __init__(self, model: str | None = None, api_key: str | None = None, base_url: str = OPENROUTER_URL,
-                 timeout_s: float = DEFAULT_TIMEOUT_S) -> None:
+                 timeout_s: float = DEFAULT_TIMEOUT_S, reasoning_effort: str | None = None) -> None:
+        # None: reasoning on/off from MEDIROUTE_OPENROUTER_REASONING (default off). "low" etc.: for
+        # models that reject "off" (OpenRouter returns HTTP 400), ask for a short reasoning budget instead.
+        self.reasoning_effort = reasoning_effort
         spec = model or os.getenv("MEDIROUTE_OPENROUTER_MODEL", DEFAULT_OPENROUTER_MODEL)
         self.models = [m.strip() for m in spec.split(",") if m.strip()]
         self.model = self.models[0]
@@ -300,7 +303,8 @@ class OpenRouterClient:
             details["skipped"] = True
             return LLMCall(False, error=f"LLM unavailable: {state['reason']}", details=details)
         payload = {"messages": [{"role": "user", "content": prompt}], **options,
-                   "reasoning": {"enabled": REASONING_ON},
+                   "reasoning": ({"effort": self.reasoning_effort} if self.reasoning_effort
+                                 else {"enabled": REASONING_ON}),
                    "response_format": {"type": "json_schema",
                                        "json_schema": {"name": purpose, "strict": False, "schema": schema}}}
         start = time.perf_counter()

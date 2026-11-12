@@ -1,0 +1,110 @@
+{"id": "U001", "decision1": "clarification_required", "spec1": null, "ms1": 7732, "decision2": "agreement", "spec2": "Cardiology", "shortlist": []}
+{"id": "U002", "decision1": "agreement", "spec1": "Cardiology", "ms1": 43, "decision2": "agreement", "spec2": "Cardiology", "shortlist": []}
+{"id": "U003", "decision1": "agreement", "spec1": "Cardiology", "ms1": 54, "decision2": "agreement", "spec2": "Cardiology", "shortlist": []}
+{"id": "U004", "decision1": "agreement", "spec1": "Cardiology", "ms1": 108, "decision2": "agreement", "spec2": "Cardiology", "shortlist": []}
+{"id": "U005", "decision1": "judge", "spec1": "Cardiothoracic Surgery", "ms1": 8157, "decision2": "judge", "spec2": "Cardiothoracic Surgery", "shortlist": []}
+{"id": "U006", "decision1": "agreement", "spec1": "Cardiothoracic Surgery", "ms1": 35, "decision2": "agreement", "spec2": "Cardiothoracic Surgery", "shortlist": []}
+{"id": "U007", "decision1": "agreement", "spec1": "Cardiothoracic Surgery", "ms1": 34, "decision2": "agreement", "spec2": "Cardiothoracic Surgery", "shortlist": []}
+{"id": "U008", "decision1": "agreement", "spec1": "Oncology", "ms1": 103, "decision2": "agreement", "spec2": "Oncology", "shortlist": []}
+{"id": "U009", "decision1": "clarification_required", "spec1": null, "ms1": 9088, "decision2": "judge", "spec2": "Pediatric Cardiology", "shortlist": []}
+{"id": "U010", "decision1": "agreement", "spec1": "Pediatric Cardiology", "ms1": 35, "decision2": "agreement", "spec2": "Pediatric Cardiology", "shortlist": []}
+{"id": "U011", "decision1": "judge", "spec1": "Pediatric Cardiology", "ms1": 6823, "decision2": "judge", "spec2": "Pediatric Cardiology", "shortlist": []}
+{"id": "U012", "decision1": "judge", "spec1": "Pediatric Cardiology", "ms1": 8898, "decision2": "judge", "spec2": "Pediatric Cardiology", "shortlist": []}
+{"id": "U013", "decision1": "clarification_required", "spec1": null, "ms1": 7580, "decision2": "agreement", "spec2": "Oncology", "shortlist": []}
+{"id": "U014", "decision1": "agreement", "spec1": "Oncology", "ms1": 27, "decision2": "agreement", "spec2": "Oncology", "shortlist": []}
+{"id": "U015", "decision1": "judge", "spec1": "Oncology", "ms1": 10703, "decision2": "judge", "spec2": "Oncology", "shortlist": []}
+{"id": "U016", "decision1": "agreement", "spec1": "Oncology", "ms1": 66, "decision2": "agreement", "spec2": "Oncology", "shortlist": []}
+{"id": "U017", "decision1": "judge", "spec1": "Hematology & Bone Marrow Transplant", "ms1": 7647, "decision2": "judge", "spec2": "Hematology & Bone Marrow Transplant", "shortlist": []}
+{"id": "U018", "decision1": "agreement", "spec1": "Hematology & Bone Marrow Transplant", "ms1": 43, "decision2": "agreement", "spec2": "Hematology & Bone Marrow Transplant", "shortlist": []}
+{"id": "U019", "decision1": "agreement", "spec1": "Hematology & Bone Marrow Transplant", "ms1": 37, "decision2": "agreement", "spec2": "Hematology & Bone Marrow Transplant", "shortlist": []}
+{"id": "U020", "decision1": "agreement", "spec1": "Hematology & Bone Marrow Transplant", "ms1": 110, "decision2": "agreement", "spec2": "Hematology & Bone Marrow Transplant", "shortlist": []}
+{"id": "U021", "decision1": "clarification_required", "spec1": null, "ms1": 30, "decision2": "needs_user_choice", "spec2": null, "shortlist": ["Orthopaedics", "Emergency Medicine"]}
+{"id": "U022", "decision1": "agreement", "spec1": "Orthopaedics", "ms1": 32, "decision2": "agreement", "spec2": "Orthopaedics", "shortlist": []}
+{"id": "U023", "decision1": "agreement", "spec1": "Orthopaedics", "ms1": 19, "decision2": "agreement", "spec2": "Orthopaedics", "shortlist": []}
+{"id": "U024", "decision1": "judge", "spec1": "Orthopaedics", "ms1": 8700, "decision2": "judge", "spec2": "Orthopaedics", "shortlist": []}
+{"id": "U025", "decision1": "clarification_required", "spec1": null, "ms1": 57, "decision2": "patient_answer", "spec2": "Neurosurgery", "shortlist": []}
+{"id": "U026", "decision1": "agreement", "spec1": "Neurology", "ms1": 31, "decision2": "agreement", "spec2": "Neurology", "shortlist": []}
+{"id": "U027", "decision1": "agreement", "spec1": "Neurology", "ms1": 19, "decision2": "agreement", "spec2": "Neurology", "shortlist": []}
+{"id": "U028", "decision1": "judge", "spec1": "Neurology", "ms1": 9707, "decision2": "judge", "spec2": "Neurology", "shortlist": []}
+{"id": "U029", "decision1": "clarification_required", "spec1": null, "ms1": 10458, "decision2": "patient_answer", "spec2": "Neurosurgery", "shortlist": []}
+{"id": "U030", "decision1": "agreement", "spec1": "Neurosurgery", "ms1": 33, "decision2": "agreement", "spec2": "Neurosurgery", "shortlist": []}
+{"id": "U031", "decision1": "judge", "spec1": "Neurosurgery", "ms1": 8590, "decision2": "judge", "spec2": "Neurosurgery", "shortlist": []}
+{"id": "U032", "decision1": "agreement", "spec1": "Neurosurgery", "ms1": 85, "decision2": "agreement", "spec2": "Neurosurgery", "shortlist": []}
+{"id": "U033", "decision1": "judge", "spec1": "Gastroenterology", "ms1": 9271, "decision2": "judge", "spec2": "Gastroenterology", "shortlist": []}
+{"id": "U034", "decision1": "agreement", "spec1": "Gastroenterology", "ms1": 32, "decision2": "agreement", "spec2": "Gastroenterology", "shortlist": []}
+{"id": "U035", "decision1": "agreement", "spec1": "Gastroenterology", "ms1": 32, "decision2": "agreement", "spec2": "Gastroenterology", "shortlist": []}
+{"id": "U036", "decision1": "agreement", "spec1": "Gastroenterology", "ms1": 146, "decision2": "agreement", "spec2": "Gastroenterology", "shortlist": []}
+{"id": "U037", "decision1": "clarification_required", "spec1": null, "ms1": 12235, "decision2": "judge", "spec2": "Nephrology", "shortlist": []}
+{"id": "U038", "decision1": "agreement", "spec1": "Nephrology", "ms1": 38, "decision2": "agreement", "spec2": "Nephrology", "shortlist": []}
+{"id": "U039", "decision1": "agreement", "spec1": "Nephrology", "ms1": 33, "decision2": "agreement", "spec2": "Nephrology", "shortlist": []}
+{"id": "U040", "decision1": "agreement", "spec1": "Nephrology", "ms1": 48, "decision2": "agreement", "spec2": "Nephrology", "shortlist": []}
+{"id": "U041", "decision1": "agreement", "spec1": "Urology", "ms1": 18, "decision2": "agreement", "spec2": "Urology", "shortlist": []}
+{"id": "U042", "decision1": "agreement", "spec1": "Urology", "ms1": 17, "decision2": "agreement", "spec2": "Urology", "shortlist": []}
+{"id": "U043", "decision1": "agreement", "spec1": "Urology", "ms1": 28, "decision2": "agreement", "spec2": "Urology", "shortlist": []}
+{"id": "U044", "decision1": "judge", "spec1": "Urology", "ms1": 11143, "decision2": "judge", "spec2": "Urology", "shortlist": []}
+{"id": "U045", "decision1": "judge", "spec1": "Organ Transplant", "ms1": 10198, "decision2": "judge", "spec2": "Organ Transplant", "shortlist": []}
+{"id": "U046", "decision1": "judge", "spec1": "Organ Transplant", "ms1": 9599, "decision2": "judge", "spec2": "Organ Transplant", "shortlist": []}
+{"id": "U047", "decision1": "judge", "spec1": "Organ Transplant", "ms1": 9132, "decision2": "judge", "spec2": "Organ Transplant", "shortlist": []}
+{"id": "U048", "decision1": "agreement", "spec1": "Pulmonology", "ms1": 95, "decision2": "agreement", "spec2": "Pulmonology", "shortlist": []}
+{"id": "U049", "decision1": "agreement", "spec1": "Obstetrics & Gynaecology", "ms1": 39, "decision2": "agreement", "spec2": "Obstetrics & Gynaecology", "shortlist": []}
+{"id": "U050", "decision1": "agreement", "spec1": "Endocrinology", "ms1": 37, "decision2": "agreement", "spec2": "Endocrinology", "shortlist": []}
+{"id": "U051", "decision1": "agreement", "spec1": "Obstetrics & Gynaecology", "ms1": 34, "decision2": "agreement", "spec2": "Obstetrics & Gynaecology", "shortlist": []}
+{"id": "U052", "decision1": "agreement", "spec1": "Obstetrics & Gynaecology", "ms1": 44, "decision2": "agreement", "spec2": "Obstetrics & Gynaecology", "shortlist": []}
+{"id": "U053", "decision1": "clarification_required", "spec1": null, "ms1": 16, "decision2": "agreement", "spec2": "Reproductive Medicine", "shortlist": []}
+{"id": "U054", "decision1": "judge", "spec1": "Reproductive Medicine", "ms1": 8476, "decision2": "judge", "spec2": "Reproductive Medicine", "shortlist": []}
+{"id": "U055", "decision1": "agreement", "spec1": "Reproductive Medicine", "ms1": 77, "decision2": "agreement", "spec2": "Reproductive Medicine", "shortlist": []}
+{"id": "U056", "decision1": "agreement", "spec1": "Reproductive Medicine", "ms1": 118, "decision2": "agreement", "spec2": "Reproductive Medicine", "shortlist": []}
+{"id": "U057", "decision1": "clarification_required", "spec1": null, "ms1": 30, "decision2": "judge", "spec2": "Paediatrics", "shortlist": []}
+{"id": "U058", "decision1": "judge", "spec1": "Paediatrics", "ms1": 11815, "decision2": "judge", "spec2": "Paediatrics", "shortlist": []}
+{"id": "U059", "decision1": "clarification_required", "spec1": null, "ms1": 9999, "decision2": "patient_answer", "spec2": "Paediatrics", "shortlist": []}
+{"id": "U060", "decision1": "agreement", "spec1": "Hematology & Bone Marrow Transplant", "ms1": 48, "decision2": "agreement", "spec2": "Hematology & Bone Marrow Transplant", "shortlist": []}
+{"id": "U061", "decision1": "clarification_required", "spec1": null, "ms1": 31, "decision2": "agreement", "spec2": "Endocrinology", "shortlist": []}
+{"id": "U062", "decision1": "agreement", "spec1": "Endocrinology", "ms1": 30, "decision2": "agreement", "spec2": "Endocrinology", "shortlist": []}
+{"id": "U063", "decision1": "agreement", "spec1": "Endocrinology", "ms1": 30, "decision2": "agreement", "spec2": "Endocrinology", "shortlist": []}
+{"id": "U064", "decision1": "agreement", "spec1": "Endocrinology", "ms1": 44, "decision2": "agreement", "spec2": "Endocrinology", "shortlist": []}
+{"id": "U065", "decision1": "clarification_required", "spec1": null, "ms1": 11918, "decision2": "patient_answer", "spec2": "Pulmonology", "shortlist": []}
+{"id": "U066", "decision1": "agreement", "spec1": "Pulmonology", "ms1": 43, "decision2": "agreement", "spec2": "Pulmonology", "shortlist": []}
+{"id": "U067", "decision1": "agreement", "spec1": "Pulmonology", "ms1": 30, "decision2": "agreement", "spec2": "Pulmonology", "shortlist": []}
+{"id": "U068", "decision1": "judge", "spec1": "Pulmonology", "ms1": 9995, "decision2": "judge", "spec2": "Pulmonology", "shortlist": []}
+{"id": "U069", "decision1": "clarification_required", "spec1": null, "ms1": 9516, "decision2": "agreement", "spec2": "Plastic & Reconstructive Surgery", "shortlist": []}
+{"id": "U070", "decision1": "agreement", "spec1": "Plastic & Reconstructive Surgery", "ms1": 36, "decision2": "agreement", "spec2": "Plastic & Reconstructive Surgery", "shortlist": []}
+{"id": "U071", "decision1": "agreement", "spec1": "Plastic & Reconstructive Surgery", "ms1": 28, "decision2": "agreement", "spec2": "Plastic & Reconstructive Surgery", "shortlist": []}
+{"id": "U072", "decision1": "judge", "spec1": "Oncology", "ms1": 19122, "decision2": "judge", "spec2": "Oncology", "shortlist": []}
+{"id": "U073", "decision1": "agreement", "spec1": "Bariatric Surgery", "ms1": 65, "decision2": "agreement", "spec2": "Bariatric Surgery", "shortlist": []}
+{"id": "U074", "decision1": "agreement", "spec1": "Bariatric Surgery", "ms1": 29, "decision2": "agreement", "spec2": "Bariatric Surgery", "shortlist": []}
+{"id": "U075", "decision1": "agreement", "spec1": "Bariatric Surgery", "ms1": 14, "decision2": "agreement", "spec2": "Bariatric Surgery", "shortlist": []}
+{"id": "U076", "decision1": "judge", "spec1": "Bariatric Surgery", "ms1": 13463, "decision2": "judge", "spec2": "Bariatric Surgery", "shortlist": []}
+{"id": "U077", "decision1": "clarification_required", "spec1": null, "ms1": 9820, "decision2": "patient_answer", "spec2": "Neurosurgery", "shortlist": []}
+{"id": "U078", "decision1": "agreement", "spec1": "Emergency Medicine", "ms1": 41, "decision2": "agreement", "spec2": "Emergency Medicine", "shortlist": []}
+{"id": "U079", "decision1": "judge", "spec1": "Critical Care", "ms1": 10813, "decision2": "judge", "spec2": "Critical Care", "shortlist": []}
+{"id": "U080", "decision1": "agreement", "spec1": "Critical Care", "ms1": 78, "decision2": "agreement", "spec2": "Critical Care", "shortlist": []}
+{"id": "U081", "decision1": "clarification_required", "spec1": null, "ms1": 45, "decision2": "agreement", "spec2": "Ophthalmology", "shortlist": []}
+{"id": "U082", "decision1": "agreement", "spec1": "Ophthalmology", "ms1": 27, "decision2": "agreement", "spec2": "Ophthalmology", "shortlist": []}
+{"id": "U083", "decision1": "agreement", "spec1": "Ophthalmology", "ms1": 29, "decision2": "agreement", "spec2": "Ophthalmology", "shortlist": []}
+{"id": "U084", "decision1": "agreement", "spec1": "Ophthalmology", "ms1": 43, "decision2": "agreement", "spec2": "Ophthalmology", "shortlist": []}
+{"id": "U085", "decision1": "clarification_required", "spec1": null, "ms1": 19549, "decision2": "agreement", "spec2": "ENT", "shortlist": []}
+{"id": "U086", "decision1": "agreement", "spec1": "ENT", "ms1": 32, "decision2": "agreement", "spec2": "ENT", "shortlist": []}
+{"id": "U087", "decision1": "agreement", "spec1": "ENT", "ms1": 44, "decision2": "agreement", "spec2": "ENT", "shortlist": []}
+{"id": "U088", "decision1": "agreement", "spec1": "ENT", "ms1": 63, "decision2": "agreement", "spec2": "ENT", "shortlist": []}
+{"id": "U089", "decision1": "clarification_required", "spec1": null, "ms1": 51, "decision2": "judge", "spec2": "Dermatology", "shortlist": []}
+{"id": "U090", "decision1": "agreement", "spec1": "Dermatology", "ms1": 43, "decision2": "agreement", "spec2": "Dermatology", "shortlist": []}
+{"id": "U091", "decision1": "judge", "spec1": "Plastic & Reconstructive Surgery", "ms1": 9573, "decision2": "judge", "spec2": "Plastic & Reconstructive Surgery", "shortlist": []}
+{"id": "U092", "decision1": "agreement", "spec1": "Dermatology", "ms1": 79, "decision2": "agreement", "spec2": "Dermatology", "shortlist": []}
+{"id": "U093", "decision1": "clarification_required", "spec1": null, "ms1": 11935, "decision2": "agreement", "spec2": "Psychiatry", "shortlist": []}
+{"id": "U094", "decision1": "agreement", "spec1": "Psychiatry", "ms1": 30, "decision2": "agreement", "spec2": "Psychiatry", "shortlist": []}
+{"id": "U095", "decision1": "agreement", "spec1": "Psychiatry", "ms1": 27, "decision2": "agreement", "spec2": "Psychiatry", "shortlist": []}
+{"id": "U096", "decision1": "clarification_required", "spec1": null, "ms1": 48, "decision2": "patient_answer", "spec2": "Psychiatry", "shortlist": []}
+{"id": "U097", "decision1": "clarification_required", "spec1": null, "ms1": 10422, "decision2": "judge", "spec2": "General Medicine", "shortlist": []}
+{"id": "U098", "decision1": "clarification_required", "spec1": null, "ms1": 9347, "decision2": "judge", "spec2": "General Medicine", "shortlist": []}
+{"id": "U099", "decision1": "clarification_required", "spec1": null, "ms1": 11295, "decision2": "judge", "spec2": "General Medicine", "shortlist": []}
+{"id": "U100", "decision1": "clarification_required", "spec1": null, "ms1": 14746, "decision2": "judge", "spec2": "General Medicine", "shortlist": []}
+{"id": "U101", "decision1": "clarification_required", "spec1": null, "ms1": 8943, "decision2": "needs_user_choice", "spec2": null, "shortlist": ["Urology", "Psychiatry", "Neurology", "Hematology & Bone Marrow Transplant"]}
+{"id": "U102", "decision1": "clarification_required", "spec1": null, "ms1": 1, "decision2": "agreement", "spec2": "Orthopaedics", "shortlist": []}
+{"id": "U103", "decision1": "clarification_required", "spec1": null, "ms1": 2, "decision2": "patient_answer", "spec2": "Cardiology", "shortlist": []}
+{"id": "U104", "decision1": "clarification_required", "spec1": null, "ms1": 16061, "decision2": "judge", "spec2": "General Medicine", "shortlist": []}
+{"id": "U105", "decision1": "clarification_required", "spec1": null, "ms1": 16, "decision2": "patient_answer", "spec2": "Gastroenterology", "shortlist": []}
+{"id": "U106", "decision1": "clarification_required", "spec1": null, "ms1": 16, "decision2": "agreement", "spec2": "Endocrinology", "shortlist": []}
+{"id": "U107", "decision1": "agreement", "spec1": "Psychiatry", "ms1": 15, "decision2": "agreement", "spec2": "Psychiatry", "shortlist": []}
+{"id": "U108", "decision1": "agreement", "spec1": "Pulmonology", "ms1": 15, "decision2": "agreement", "spec2": "Pulmonology", "shortlist": []}
+{"id": "U109", "decision1": "clarification_required", "spec1": null, "ms1": 1, "decision2": "patient_answer", "spec2": "Endocrinology", "shortlist": []}
+{"id": "U110", "decision1": "judge", "spec1": "Paediatrics", "ms1": 10103, "decision2": "judge", "spec2": "Paediatrics", "shortlist": []}
