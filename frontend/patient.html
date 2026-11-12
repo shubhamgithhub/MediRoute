@@ -9,12 +9,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
-  <script src="js/theme.js?v=20261112h"></script>
-  <link rel="stylesheet" href="css/style.css?v=20261112h">
-  <link rel="stylesheet" href="css/patient.css?v=20261112h">
-  <link rel="stylesheet" href="css/theme.css?v=20261112h">
+  <script src="js/theme.js?v=20261112s"></script>
+  <link rel="stylesheet" href="css/style.css?v=20261112s">
+  <link rel="stylesheet" href="css/patient.css?v=20261112s">
+  <link rel="stylesheet" href="css/theme.css?v=20261112s">
   <script src="https://unpkg.com/lucide@latest" defer></script>
-  <script src="js/patient.js?v=20261112h" defer></script>
+  <script src="js/patient.js?v=20261112s" defer></script>
 </head>
 <body class="patient-page">
   <!-- NAVBAR -->
@@ -215,15 +215,20 @@
         <section class="result-state loading-state" id="loading-state" aria-labelledby="loading-heading" aria-live="polite" hidden>
           <span class="state-icon state-icon-loading"><i data-lucide="sparkles" aria-hidden="true"></i></span>
           <span class="section-kicker">Step 2 · AI analysis</span>
-          <h2 id="loading-heading">Understanding your healthcare requirement...</h2>
-          <p>A medical lookup and an AI model each suggest a speciality from your words; if they differ, an AI judge checks the evidence. Then matching hospitals are ranked. This usually takes a few seconds.</p>
-          <ol class="loading-checklist">
-            <li class="is-complete"><span><i data-lucide="check" aria-hidden="true"></i></span>Reading your information</li>
-            <li class="is-current"><span class="loading-spinner" aria-hidden="true"></span>Finding the evidence in your text</li>
-            <li><span><i data-lucide="circle" aria-hidden="true"></i></span>Comparing the lookup and the AI model</li>
-            <li><span><i data-lucide="circle" aria-hidden="true"></i></span>Suggesting a speciality to search</li>
+          <h2 id="loading-heading">Understanding your healthcare need</h2>
+          <p class="ls-lead">We check your words in two independent ways and agree on a speciality to search.</p>
+          <div class="ls-bar" role="progressbar" aria-label="Analysis progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10"><span id="ls-fill"></span></div>
+          <ol class="ls-steps" id="ls-steps">
+            <li class="is-current"><span class="ls-dot"><i data-lucide="file-text" aria-hidden="true"></i></span>
+              <strong>Reading your request</strong><small>Your words and any report</small></li>
+            <li><span class="ls-dot"><i data-lucide="search" aria-hidden="true"></i></span>
+              <strong>Spotting medical clues</strong><small>Symptoms, conditions, treatments</small></li>
+            <li><span class="ls-dot"><i data-lucide="scale" aria-hidden="true"></i></span>
+              <strong>Double-checking</strong><small>A medical lookup and an AI model compare answers</small></li>
+            <li><span class="ls-dot"><i data-lucide="stethoscope" aria-hidden="true"></i></span>
+              <strong>Choosing the speciality</strong><small>The speciality to search hospitals for</small></li>
           </ol>
-          <div class="loading-progress" aria-label="Analysis in progress"><span></span></div>
+          <p class="ls-time" aria-live="off"><i data-lucide="clock" aria-hidden="true"></i> <span id="ls-elapsed">0</span> s · usually 5–20 seconds</p>
         </section>
 
         <!-- EMERGENCY NOTICE (shown with any Step 1 result when red-flag words are found) -->

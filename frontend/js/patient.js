@@ -695,11 +695,40 @@ const handleRoutingResult = (result) => {
   showSuccessState(step1 || {});
 };
 
+// Loading stepper. The server answers in one call, so the steps advance on a timer (typical timings);
+// the last step stays "in progress" until the answer arrives.
+const LOADING_STEPS_AT = [0, 1200, 3000, 6000];   // ms after start
+const LOADING_FILL = [12, 38, 62, 84];             // % of the bar for each step
+let loadingTimers = [];
+const startLoadingSteps = () => {
+  stopLoadingSteps();
+  const items = [...document.querySelectorAll("#ls-steps li")];
+  const fill = document.querySelector("#ls-fill");
+  const bar = fill?.parentElement;
+  const elapsed = document.querySelector("#ls-elapsed");
+  const started = Date.now();
+  const show = (k) => {
+    items.forEach((li, i) => { li.classList.toggle("is-complete", i < k); li.classList.toggle("is-current", i === k); });
+    if (fill) fill.style.width = `${LOADING_FILL[k]}%`;
+    bar?.setAttribute("aria-valuenow", String(LOADING_FILL[k]));
+  };
+  LOADING_STEPS_AT.forEach((at, k) => loadingTimers.push(window.setTimeout(() => show(k), at)));
+  if (elapsed) elapsed.textContent = "0";
+  loadingTimers.push(window.setInterval(() => {
+    if (elapsed) elapsed.textContent = String(Math.round((Date.now() - started) / 1000));
+  }, 1000));
+};
+function stopLoadingSteps() {
+  loadingTimers.forEach((t) => { window.clearTimeout(t); window.clearInterval(t); });
+  loadingTimers = [];
+}
+
 const runRouting = async (extra = {}) => {
   isSubmitting = true;
   analyzeButton.disabled = true;
   setProgress(2);
   showStep1Panel(loadingState);
+  startLoadingSteps();
   try {
     handleRoutingResult(await callRouting(extra));
   } catch (error) {
@@ -711,6 +740,7 @@ const runRouting = async (extra = {}) => {
     }
     setError(fileInput, "", "report-error");
   } finally {
+    stopLoadingSteps();
     isSubmitting = false;
     analyzeButton.disabled = false;
   }

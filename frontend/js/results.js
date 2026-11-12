@@ -150,6 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
     : [];
 
   const MAX_CHIPS = 6;
+  // treatments the patient named (Step 1 evidence); used to say when a hospital's list lacks them
+  const askedProcedures = (routingResult.step1?.evidence_detail?.procedures || []).filter(Boolean);
   const searchedSpecialty = String(routingResult.recommendation_result?.primary_specialty
     || routingResult.step1?.suggested_specialty || "").trim();
 
@@ -220,11 +222,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // right: treatments (the patient's own first), services, accreditation, website. No cost for now.
     const extra = createElement("div", "hospital-extra");
-    if (hospital.procedures.length) {
+    if (hospital.procedures.length || askedProcedures.length) {
       const matched = new Set(hospital.matchedProcedures.map((p) => p.toLowerCase()));
       const ordered = [...hospital.procedures].sort((a, b) =>
         matched.has(b.toLowerCase()) - matched.has(a.toLowerCase()));
-      extra.append(createElement("h4", "", hospital.detailSource ? "Treatments & procedures (team list, not verified)" : "Treatments & procedures"));
+      const unverified = hospital.detailSource ? " (team list, not verified)" : "";
+      // the patient named a treatment that this hospital's list does not contain: say so first, so the
+      // rest of the list is not read as related to the request
+      const missing = askedProcedures.length && !matched.size;
+      if (missing) {
+        const note = createElement("p", "treatment-missing");
+        note.append(createIcon("info"), document.createTextNode(
+          ordered.length ? ` No “${askedProcedures[0]}” in this hospital's treatment list. Please ask the hospital.`
+                         : ` No treatment list for this hospital yet. Please ask them about “${askedProcedures[0]}”.`));
+        extra.append(createElement("h4", "", "Your treatment"), note);
+      }
+      if (ordered.length) extra.append(createElement("h4", "", (missing ? "Other treatments listed" : "Treatments & procedures") + unverified));
       const chips = createElement("div", "hospital-treatments");
       ordered.slice(0, 8).forEach((name) => chips.append(createElement("span", matched.has(name.toLowerCase()) ? "is-match" : "", name)));
       if (ordered.length > 8) {
@@ -232,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
         more.title = ordered.slice(8).join(", ");
         chips.append(more);
       }
-      extra.append(chips);
+      if (ordered.length) extra.append(chips);
     }
     extra.append(createElement("h4", "details-heading", "Hospital details"));
     extra.append(createInfoRow("International patient service", hospital.internationalPatientService));
