@@ -9,12 +9,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
-  <script src="js/theme.js"></script>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/patient.css">
-  <link rel="stylesheet" href="css/theme.css">
+  <script src="js/theme.js?v=20261112h"></script>
+  <link rel="stylesheet" href="css/style.css?v=20261112h">
+  <link rel="stylesheet" href="css/patient.css?v=20261112h">
+  <link rel="stylesheet" href="css/theme.css?v=20261112h">
   <script src="https://unpkg.com/lucide@latest" defer></script>
-  <script src="js/patient.js" defer></script>
+  <script src="js/patient.js?v=20261112h" defer></script>
 </head>
 <body class="patient-page">
   <!-- NAVBAR -->
@@ -80,6 +80,45 @@
             <label class="field-label-main" for="requirement">What healthcare support are you looking for?</label>
             <textarea id="requirement" name="requirement" maxlength="1000" rows="4" placeholder="Example: “I am looking for cardiac treatment in Mumbai. I have been experiencing chest discomfort and would like to explore hospitals with cardiology and cardiac surgery facilities.”" aria-describedby="requirement-help requirement-counter requirement-error"></textarea>
             <div class="field-meta"><span id="requirement-help" class="field-help">Symptoms, a condition, or the treatment your doctor mentioned. No names or ID numbers needed.</span><span id="requirement-counter" class="character-count">0 / 1000</span></div>
+            <div class="examples is-collapsed" aria-labelledby="examples-title">
+              <button type="button" class="examples-title" id="examples-title" aria-expanded="false" aria-controls="example-grid">
+                <i data-lucide="sparkles" aria-hidden="true"></i> Not sure what to write? Click a sample question to use it
+                <span class="examples-toggle"><span class="examples-toggle-label">Show all 6</span><i data-lucide="chevron-down" aria-hidden="true"></i></span>
+              </button>
+              <div class="example-grid" id="example-grid">
+                <button type="button" class="example-card" title="My mother has osteoarthritis of both knees and the surgeon advised knee replacement." data-text="My mother has osteoarthritis of both knees and the surgeon advised knee replacement." data-city="Pune" aria-pressed="false">
+                  <span class="ex-icon"><i data-lucide="bone" aria-hidden="true"></i></span>
+                  <span class="ex-text"><span class="ex-query">“My mother has osteoarthritis of both knees and the surgeon advised knee replacement.”</span><small><i data-lucide="map-pin" aria-hidden="true"></i> Pune</small></span>
+                  <span class="ex-check" aria-hidden="true"><i data-lucide="check"></i></span>
+                </button>
+                <button type="button" class="example-card" title="I get chest tightness when I climb stairs and it goes away when I rest." data-text="I get chest tightness when I climb stairs and it goes away when I rest." data-city="Mumbai" aria-pressed="false">
+                  <span class="ex-icon"><i data-lucide="heart-pulse" aria-hidden="true"></i></span>
+                  <span class="ex-text"><span class="ex-query">“I get chest tightness when I climb stairs and it goes away when I rest.”</span><small><i data-lucide="map-pin" aria-hidden="true"></i> Mumbai</small></span>
+                  <span class="ex-check" aria-hidden="true"><i data-lucide="check"></i></span>
+                </button>
+                <button type="button" class="example-card" title="I have kidney stones and severe pain in my lower back." data-text="I have kidney stones and severe pain in my lower back." data-city="Delhi NCR" aria-pressed="false">
+                  <span class="ex-icon"><i data-lucide="droplets" aria-hidden="true"></i></span>
+                  <span class="ex-text"><span class="ex-query">“I have kidney stones and severe pain in my lower back.”</span><small><i data-lucide="map-pin" aria-hidden="true"></i> Delhi NCR</small></span>
+                  <span class="ex-check" aria-hidden="true"><i data-lucide="check"></i></span>
+                </button>
+                <button type="button" class="example-card" title="Cataract in both eyes; the eye doctor advised cataract surgery." data-text="Cataract in both eyes; the eye doctor advised cataract surgery." data-city="Bengaluru" aria-pressed="false">
+                  <span class="ex-icon"><i data-lucide="eye" aria-hidden="true"></i></span>
+                  <span class="ex-text"><span class="ex-query">“Cataract in both eyes; the eye doctor advised cataract surgery.”</span><small><i data-lucide="map-pin" aria-hidden="true"></i> Bengaluru</small></span>
+                  <span class="ex-check" aria-hidden="true"><i data-lucide="check"></i></span>
+                </button>
+                <button type="button" class="example-card" title="We have been trying for a baby for 4 years and our doctor suggested IVF." data-text="We have been trying for a baby for 4 years and our doctor suggested IVF." data-city="Hyderabad" aria-pressed="false">
+                  <span class="ex-icon"><i data-lucide="baby" aria-hidden="true"></i></span>
+                  <span class="ex-text"><span class="ex-query">“We have been trying for a baby for 4 years and our doctor suggested IVF.”</span><small><i data-lucide="map-pin" aria-hidden="true"></i> Hyderabad</small></span>
+                  <span class="ex-check" aria-hidden="true"><i data-lucide="check"></i></span>
+                </button>
+                <button type="button" class="example-card" title="My 4-year-old daughter has a hole in the heart and needs surgery." data-text="My 4-year-old daughter has a hole in the heart and needs surgery." data-city="Chennai" aria-pressed="false">
+                  <span class="ex-icon"><i data-lucide="heart" aria-hidden="true"></i></span>
+                  <span class="ex-text"><span class="ex-query">“My 4-year-old daughter has a hole in the heart and needs surgery.”</span><small><i data-lucide="map-pin" aria-hidden="true"></i> Chennai</small></span>
+                  <span class="ex-check" aria-hidden="true"><i data-lucide="check"></i></span>
+                </button>
+              </div>
+              <p class="example-hint" id="example-hint" role="status" hidden><i data-lucide="pencil" aria-hidden="true"></i> Example added. Change it to describe your own situation.</p>
+            </div>
             <p class="field-error" id="requirement-error" aria-live="polite"></p>
           </section>
 

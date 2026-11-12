@@ -356,7 +356,7 @@ and the app still works.
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
-python -m http.server 5500 --bind 127.0.0.1 --directory frontend
+python scripts/serve_frontend.py   # no caching: every reload shows the latest files
 ```
 
 **Open in the browser**
@@ -401,7 +401,7 @@ python -m uvicorn mediroute.backend.main:app --reload --host 127.0.0.1 --port 80
 The frontend is static and calls the API at `http://127.0.0.1:8000`.
 
 ```powershell
-python -m http.server 5500 --directory frontend
+python scripts/serve_frontend.py
 # open http://127.0.0.1:5500/index.html
 ```
 

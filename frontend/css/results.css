@@ -369,3 +369,40 @@
 .area-divider p, .area-note { margin: 4px 0 0; color: #7a5410; font-size: 11px; line-height: 1.5; }
 .area-note { padding: 10px 14px; border: 1px solid #f1d9a6; border-radius: 10px; background: #fffaf0; }
 .results-output .hospital-card.is-outside-area { border-color: #eadfc8; background: #fffdf8; }
+
+/* hospital cards v2 (12 Nov): readable sizes, a header band per hospital, clear separation */
+.results-output .hospital-list { gap: 22px; }
+.results-output .hospital-card { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 26px; padding: 0 0 16px;
+  border: 1.5px solid #cfd9df; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(11, 59, 96, .08); }
+.results-output .hospital-card:hover { transform: none; border-color: var(--teal); }
+.hospital-head { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+  background: color-mix(in srgb, var(--teal) 9%, #fff); border-bottom: 1.5px solid color-mix(in srgb, var(--teal) 25%, #e3e9ec); margin-bottom: 12px; }
+.results-output .hospital-head .rank-badge { flex: 0 0 auto; display: grid; place-items: center; width: 40px; height: 40px; margin: 0;
+  border-radius: 10px; background: var(--teal); color: #fff; font-size: 16px; }
+.hospital-title { flex: 1; min-width: 0; }
+.results-output .hospital-name { margin: 0; font-size: 19px; line-height: 1.3; }
+.results-output .hospital-location { margin-top: 2px; font-size: 13px; color: #5f7484; }
+.hospital-badges { display: flex; gap: 6px; }
+.acc-badge { padding: 4px 9px; border-radius: 6px; background: #fff; border: 1px solid color-mix(in srgb, var(--teal) 45%, #ddd);
+  color: var(--teal-dark); font-size: 12px; font-weight: 800; letter-spacing: .4px; }
+.results-output .hospital-main, .results-output .hospital-extra { padding: 0 18px; }
+.results-output .hospital-card h4 { margin: 10px 0 6px; color: #3f586a; font-size: 13px; font-weight: 800; }
+.results-output .hospital-specialties span, .hospital-treatments span { font-size: 12px; padding: 5px 9px; }
+.hospital-treatments { display: flex; flex-wrap: wrap; gap: 6px; }
+.hospital-treatments span { border: 1px solid #e3eaee; border-radius: 6px; background: #f8fbfc; color: #456174; font-weight: 600; }
+.hospital-treatments span.is-match { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 11.6%, #fff); color: var(--teal-dark); font-weight: 800; }
+.hospital-treatments span.chip-more { border-style: dashed; background: #fff; color: #7c8e9b; cursor: help; }
+.results-output .relevance-list li { font-size: 13px; color: #445d6e; }
+.results-output .relevance-list svg { width: 15px; height: 15px; }
+.results-output .routing-info-row span { font-size: 12.5px; }
+.results-output .routing-info-row strong { font-size: 13px; }
+.results-output .official-hospital-link { font-size: 13px; }
+.results-output .hospital-actions { margin: 14px 18px 0; padding-top: 12px; }
+.results-output .details-button { font-size: 13px; min-height: 40px; }
+.results-output .hospital-card.is-outside-area .hospital-head { background: #fff7e8; border-bottom-color: #eadfc8; }
+@media (max-width: 760px) {
+  .results-output .hospital-card { grid-template-columns: 1fr; }
+  .hospital-head { flex-wrap: wrap; }
+}
+.results-output .hospital-treatments { margin-bottom: 6px; }
+.results-output .hospital-card h4.details-heading { margin-top: 22px; padding-top: 14px; border-top: 1px solid #e6edf0; }
