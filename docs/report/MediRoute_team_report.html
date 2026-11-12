@@ -163,7 +163,7 @@ python -m uvicorn mediroute.backend.main:app --host 127.0.0.1 --port 8000
 
 # Terminal 2: frontend (port 5500)
 .\.venv\Scripts\Activate.ps1
-python -m http.server 5500 --bind 127.0.0.1 --directory frontend</pre>
+python scripts/serve_frontend.py      # no caching: every reload shows the latest files</pre>
 <table class=""><colgroup><col style="width:45%"><col style="width:55%"></colgroup><thead><tr><th>Page</th><th>URL</th></tr></thead><tbody><tr><td>Patient app</td><td>http://127.0.0.1:5500/index.html</td></tr><tr><td>Admin (request history, traces)</td><td>http://127.0.0.1:5500/admin.html</td></tr><tr><td>API docs</td><td>http://127.0.0.1:8000/docs</td></tr><tr><td>Health check</td><td>http://127.0.0.1:8000/api/health</td></tr></tbody></table>
 <h2>Rerun things</h2>
 <pre>python -m pytest -q                                   # 124 tests

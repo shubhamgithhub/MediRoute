@@ -447,3 +447,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* AI icon in the hero label */
+.eyebrow-ai { display: grid; width: 22px; height: 22px; place-items: center; border-radius: 50%; color: #fff;
+  background: linear-gradient(135deg, var(--teal), color-mix(in srgb, var(--teal) 55%, #7c6bd6));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 12%, transparent); }
+.eyebrow-ai svg { width: 13px; height: 13px; stroke-width: 2.4; }

@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         finalScore: hospital.final_score,
         rank: Number.isInteger(hospital.final_rank) ? hospital.final_rank : index + 1,
         outsideArea: hospital.outside_area === true,
+        matchedProcedures: Array.isArray(hospital.matched_procedures) ? hospital.matched_procedures : [],
         areaGroup: hospital.area_group || ""
       }))
     : [];
@@ -176,15 +177,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const card = createElement("article", "hospital-card");
     card.dataset.hospitalId = hospital.id;
 
-    const main = createElement("div", "hospital-main");
-    const rankCaption = `#${hospital.rank || index + 1}`;
-    main.append(
-      createElement("span", "rank-badge", rankCaption),
-      createElement("h3", "hospital-name", hospital.name),
-      createElement("p", "hospital-location", `${hospital.city}${hospital.state ? `, ${hospital.state}` : ""}`)
-    );
+    // header band: rank, name, place (one clear block per hospital)
+    const head = createElement("header", "hospital-head");
+    head.append(createElement("span", "rank-badge", `#${hospital.rank || index + 1}`));
+    const title = createElement("div", "hospital-title");
+    title.append(createElement("h3", "hospital-name", hospital.name),
+                 createElement("p", "hospital-location", `${hospital.city}${hospital.state ? `, ${hospital.state}` : ""}`));
+    head.append(title);
+    const badges = createElement("div", "hospital-badges");
+    if (isPositiveStatus(hospital.nabhStatus)) badges.append(createElement("span", "acc-badge", "NABH"));
+    if (isPositiveStatus(hospital.jciStatus)) badges.append(createElement("span", "acc-badge", "JCI"));
+    head.append(badges);
+    card.append(head);
 
+    // left: specialities (searched one first) and why this hospital
+    const main = createElement("div", "hospital-main");
     if (hospital.specialties.length) {
+      main.append(createElement("h4", "", "Specialities"));
       const specialties = createElement("div", "hospital-specialties");
       const wanted = searchedSpecialty.toLowerCase();
       const ordered = [...hospital.specialties].sort((a, b) =>
@@ -198,33 +207,37 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       main.append(specialties);
     }
-
-    const accreditation = [];
-    if (isPositiveStatus(hospital.nabhStatus)) accreditation.push("NABH status: positive in hospital record");
-    if (isPositiveStatus(hospital.jciStatus)) accreditation.push("JCI status: positive in hospital record");
-    if (accreditation.length) main.append(createElement("p", "accreditation-badge", accreditation.join(" • ")));
-
-    const extra = createElement("div", "hospital-extra");
-    if (hospital.procedures.length) {
-      const label = hospital.detailSource ? "Procedures (team list, not verified)" : "Relevant procedures";
-      extra.append(createInfoRow(label, hospital.procedures.join(", ")));
-    }
-    extra.append(createInfoRow("International patient service", hospital.internationalPatientService));
-    extra.append(createInfoRow("Cost band", hospital.costBand));
-    extra.append(createInfoRow("NABH status", hospital.nabhStatus));
-    extra.append(createInfoRow("JCI status", hospital.jciStatus));
-
     if (hospital.rankingReasons.length) {
-      extra.append(createElement("h4", "", "Why this hospital"));
+      main.append(createElement("h4", "", "Why this hospital"));
       const reasons = createElement("ul", "relevance-list");
       hospital.rankingReasons.forEach((reason) => {
         const item = createElement("li");
         item.append(createIcon("check"), document.createTextNode(reason));
         reasons.append(item);
       });
-      extra.append(reasons);
+      main.append(reasons);
     }
 
+    // right: treatments (the patient's own first), services, accreditation, website. No cost for now.
+    const extra = createElement("div", "hospital-extra");
+    if (hospital.procedures.length) {
+      const matched = new Set(hospital.matchedProcedures.map((p) => p.toLowerCase()));
+      const ordered = [...hospital.procedures].sort((a, b) =>
+        matched.has(b.toLowerCase()) - matched.has(a.toLowerCase()));
+      extra.append(createElement("h4", "", hospital.detailSource ? "Treatments & procedures (team list, not verified)" : "Treatments & procedures"));
+      const chips = createElement("div", "hospital-treatments");
+      ordered.slice(0, 8).forEach((name) => chips.append(createElement("span", matched.has(name.toLowerCase()) ? "is-match" : "", name)));
+      if (ordered.length > 8) {
+        const more = createElement("span", "chip-more", `+${ordered.length - 8} more`);
+        more.title = ordered.slice(8).join(", ");
+        chips.append(more);
+      }
+      extra.append(chips);
+    }
+    extra.append(createElement("h4", "details-heading", "Hospital details"));
+    extra.append(createInfoRow("International patient service", hospital.internationalPatientService));
+    extra.append(createInfoRow("NABH", hospital.nabhStatus));
+    extra.append(createInfoRow("JCI", hospital.jciStatus));
     if (hospital.website) {
       const link = createElement("a", "official-hospital-link", "Visit official hospital website");
       link.href = hospital.website;
@@ -232,9 +245,10 @@ document.addEventListener("DOMContentLoaded", () => {
       link.rel = "noopener noreferrer";
       extra.append(link);
     }
+    card.append(main, extra);
 
     const actions = createElement("div", "hospital-actions");
-    const detailsButton = createElement("button", "button button-primary details-button", "View Hospital Details ");
+    const detailsButton = createElement("button", "button button-primary details-button", "Select and proceed with this hospital ");
     detailsButton.type = "button";
     detailsButton.append(createIcon("arrow-right"));
     detailsButton.addEventListener("click", () => {
@@ -248,7 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const message = createElement("p", "hospital-card-message");
     message.setAttribute("role", "status");
     actions.append(detailsButton);
-    card.append(main, extra, actions, message);
+    card.append(actions, message);
     return card;
   };
 
@@ -299,9 +313,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const actions = createElement("div", "clarification-actions");
     const upload = createElement("a", "button button-primary", "Upload or Change Information");
-    upload.href = "patient.html";
+    upload.href = "patient.html?edit=1";
     const home = createElement("a", "button button-secondary", "Review Hospital Search Input");
-    home.href = "patient.html";
+    home.href = "patient.html?edit=1";
     actions.append(upload, home);
     card.append(actions);
     recommendationSection.insertBefore(card, hospitalList);

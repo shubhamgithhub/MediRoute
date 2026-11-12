@@ -1,282 +1,213 @@
 "use strict";
 
+// Hospital page: header, four at-a-glance tiles and tabs (no long scrolling). Everything comes from
+// the routing result kept in sessionStorage by the patient page; nothing is fetched here.
 document.addEventListener("DOMContentLoaded", () => {
-  const splitValues = (value) => {
-    if (Array.isArray(value)) return value.filter((item) => typeof item === "string" && item.trim());
-    if (typeof value === "string" && value.trim()) return value.split(/[,;|]/).map((item) => item.trim()).filter(Boolean);
-    return [];
+  const $ = (sel) => document.querySelector(sel);
+  const el = (tag, cls, text) => {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
   };
-  const isPositiveStatus = (value) => {
-    const text = typeof value === "string" ? value.toLowerCase() : "";
-    return text.includes("accredited") || text.includes("certified") || text.includes("yes") || text.includes("verified");
+  const icon = (name) => {
+    const i = document.createElement("i");
+    i.setAttribute("data-lucide", name);
+    i.setAttribute("aria-hidden", "true");
+    return i;
   };
-  let hospitals = [];
-  try {
-    const raw = window.sessionStorage.getItem("mediroute_routing_result");
-    const routing = raw ? JSON.parse(raw) : null;
-    const records = routing?.recommendation_result?.status === "success" ? routing.recommendation_result.results || [] : [];
-    hospitals = records.map((hospital, index) => ({
-      id: String(hospital.hospital_id || `hospital-${index + 1}`),
-      name: hospital.hospital_name || "Hospital name unavailable",
-      city: hospital.city || "City unavailable",
-      state: hospital.state || "",
-      accreditation: [
-        isPositiveStatus(hospital.nabh_status) ? "NABH status positive" : "",
-        isPositiveStatus(hospital.jci_status) ? "JCI status positive" : ""
-      ].filter(Boolean).join(", ") || "Accreditation not specified in record",
-      hospitalType: "Hospital record",
-      patientServices: hospital.international_patient_service || "Not specified in hospital record",
-      specialties: [...new Set([...splitValues(hospital.verified_specialties).filter((s) => s !== "NA"),
-                                ...splitValues(hospital.team_claimed_specialties)])],
-      facilities: splitValues(hospital.facilities || hospital.procedures || hospital.verified_procedures),
-      medicalFit: 0,
-      locationScore: 0,
-      facilitiesScore: 0,
-      overallScore: typeof hospital.final_score === "number" ? hospital.final_score : 0,
-      reasons: Array.isArray(hospital.ranking_reasons) ? hospital.ranking_reasons : ["Backend hospital ranking result"],
-      referenceCost: hospital.cost_band_inr || "Cost band not specified",
-      website: hospital.official_source_url || "",
-      rank: Number.isInteger(hospital.final_rank) ? hospital.final_rank : index + 1
-    }));
-  } catch (error) {
-    hospitals = [];
-  }
+  const split = (value) => (typeof value === "string" ? value.split(/[;|]/) : Array.isArray(value) ? value : [])
+    .map((x) => String(x).trim()).filter((x) => x && x.toUpperCase() !== "NA");
+  const positive = (value) => /accredited|certified|^yes|^verified|available/i.test(String(value || "")) &&
+    !/not |partially/i.test(String(value || ""));
+  const read = (key) => { try { return JSON.parse(window.sessionStorage.getItem(key) || "null"); } catch (e) { return null; } };
 
+  const routing = read("mediroute_routing_result");
+  const request = read("mediroute_patient_request") || {};
+  let selectedId = null;
+  try { selectedId = window.sessionStorage.getItem("mediroute_selected_hospital"); } catch (e) { selectedId = null; }
+  const records = routing?.recommendation_result?.status === "success" ? routing.recommendation_result.results || [] : [];
+  const h = records.find((r) => String(r.hospital_id) === String(selectedId)) || null;
 
-  const errorState = document.querySelector("#hospital-error-state");
-  const hospitalContent = document.querySelector("#hospital-content");
-  const patientMatchSection = document.querySelector("#patient-match-section");
-  const hospitalActionMessage = document.querySelector("#hospital-action-message");
-  const selectHospitalButton = document.querySelector("#select-hospital-button");
-
-  // SESSION STORAGE
-  const getStoredValue = (key) => {
-    try {
-      return window.sessionStorage.getItem(key);
-    } catch (error) {
-      console.error(`Unable to read ${key} from session storage.`, error);
-      return null;
-    }
-  };
-
-  // SELECTED HOSPITAL
-  const getSelectedHospitalId = () => getStoredValue("mediroute_selected_hospital");
-
-  const getHospital = (hospitalId) => hospitals.find((hospital) => hospital.id === hospitalId) || null;
-
-  // PATIENT DATA
-  const getPatientData = () => {
-    const stored = getStoredValue("mediroute_patient_request");
-    if (!stored) {
-      return null;
-    }
-    try {
-      const patientData = JSON.parse(stored);
-      return patientData && typeof patientData === "object" && !Array.isArray(patientData)
-        ? patientData
-        : null;
-    } catch (error) {
-      console.error("Unable to parse MediRoute patient information.", error);
-      return null;
-    }
-  };
-
-  const patientData = getPatientData();
-  const selectedHospital = getHospital(getSelectedHospitalId());
-
-  if (!selectedHospital) {
-    // ERROR HANDLING
-    errorState.hidden = false;
-    hospitalContent.hidden = true;
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
+  if (!h) {
+    $("#hospital-error-state").hidden = false;
+    if (window.lucide) window.lucide.createIcons();
     return;
   }
+  $("#hospital-content").hidden = false;
+  document.title = `${h.hospital_name} | MediRoute`;
 
-  const setText = (selector, value) => {
-    const element = document.querySelector(selector);
-    if (element) {
-      element.textContent = value;
+  const wanted = String(routing.recommendation_result.primary_specialty || routing.step1?.suggested_specialty || "").trim();
+  const website = split(h.verified_specialties);
+  const team = split(h.team_claimed_specialties);
+  const evidence = h.specialty_evidence || (website.includes(wanted) ? "website" : team.includes(wanted) ? "team list" : "");
+  const procedures = split(h.procedures);
+  const matched = new Set((h.matched_procedures || []).map((x) => x.toLowerCase()));
+
+  // ---------------------------------------------------------------- header
+  $("#hospital-rank").textContent = `#${h.final_rank || 1}`;
+  $("#hospital-name").textContent = h.hospital_name;
+  $("#hospital-location").textContent = [h.city, h.state].filter(Boolean).join(", ");
+  if (h.outside_area) {
+    $("#hospital-outside").hidden = false;
+    $("#hospital-outside").textContent = `Outside your area · ${h.area_group || ""}`;
+  }
+  const badges = $("#hero-badges");
+  if (positive(h.nabh_status)) badges.append(el("span", "hp-badge", "NABH accredited"));
+  if (positive(h.jci_status)) badges.append(el("span", "hp-badge", "JCI accredited"));
+  if (h.verification_status) badges.append(el("span", "hp-badge hp-badge-soft", h.verification_status));
+  const site = $("#hospital-website");
+  if (h.official_source_url) site.href = h.official_source_url; else site.hidden = true;
+
+  // ---------------------------------------------------------------- tiles
+  const tiles = $("#hp-tiles");
+  const tile = (iconName, label, value, note, state) => {
+    const t = el("article", `hp-tile is-${state}`);
+    const top = el("div", "hp-tile-top");
+    top.append(el("span", "hp-tile-icon"), el("span", "hp-tile-label", label));
+    top.firstChild.append(icon(iconName));
+    t.append(top, el("strong", "hp-tile-value", value), el("small", "hp-tile-note", note));
+    tiles.append(t);
+  };
+  tile("stethoscope", "Your speciality", wanted || "—",
+       evidence === "website" ? "Confirmed on the hospital's website" : evidence === "team list" ? "Team list only, not verified" : "Not listed",
+       evidence === "website" ? "good" : evidence ? "warn" : "neutral");
+  // Three different situations, each said plainly:
+  //   your message names no treatment / the hospital has no treatment list / its list does not include it
+  const firstMatch = procedures.find((p) => matched.has(p.toLowerCase()));
+  const asked = (routing.step1?.evidence_detail?.procedures || []).filter(Boolean);
+  let tValue, tNote, tState;
+  if (firstMatch) {
+    [tValue, tNote, tState] = [firstMatch, h.detail_source ? "Listed (team list, not verified)" : "Listed by the hospital", "good"];
+  } else if (!asked.length) {
+    [tValue, tNote, tState] = ["No treatment named", "Your message names no procedure, so the search is by speciality", "neutral"];
+  } else if (!procedures.length) {
+    [tValue, tNote, tState] = ["No treatment list yet", `We have no procedure list for this hospital. Ask them about ${asked[0]}`, "neutral"];
+  } else {
+    [tValue, tNote, tState] = ["Not in their list", `Their list is short and unverified. Ask them about ${asked[0]}`, "warn"];
+  }
+  tile("activity", "Your treatment", tValue, tNote, tState);
+  const acc = [positive(h.nabh_status) && "NABH", positive(h.jci_status) && "JCI"].filter(Boolean);
+  tile("badge-check", "Accreditation", acc.length ? acc.join(" + ") : "None listed",
+       acc.length ? "Checked in the NABH / JCI directories" : "Not found in NABH / JCI directories", acc.length ? "good" : "neutral");
+  const intl = positive(h.international_patient_service);
+  tile("globe", "International patients", intl ? "Available" : "Not found",
+       intl ? "Service mentioned on the website" : "Not mentioned on the website", intl ? "good" : "neutral");
+
+  // ---------------------------------------------------------------- why this hospital
+  const reasons = $("#match-reasons");
+  (h.ranking_reasons || []).forEach((reason) => {
+    const card = el("div", "hp-reason");
+    card.append(icon("check-circle-2"), el("span", "", reason));
+    reasons.append(card);
+  });
+  if (!reasons.children.length) reasons.append(el("p", "hp-note", "No ranking reasons were returned for this hospital."));
+
+  // ---------------------------------------------------------------- specialities
+  const specs = [...new Set([...website, ...team])].sort((a, b) => (b === wanted) - (a === wanted));
+  const specGrid = $("#specialties-grid");
+  specs.forEach((name) => {
+    const chip = el("span", `hp-chip ${website.includes(name) ? "is-web" : "is-team"}${name === wanted ? " is-match" : ""}`, name);
+    chip.title = website.includes(name) ? "Found on the hospital's own website" : "Listed by the team sheet only (not verified)";
+    specGrid.append(chip);
+  });
+  $("#count-spec").textContent = specs.length;
+
+  // ---------------------------------------------------------------- treatments
+  const treat = [...procedures].sort((a, b) => matched.has(b.toLowerCase()) - matched.has(a.toLowerCase()));
+  const treatGrid = $("#facilities-grid");
+  treat.forEach((name) => treatGrid.append(el("span", `hp-chip${matched.has(name.toLowerCase()) ? " is-match" : ""}`, name)));
+  split(h.facilities).forEach((name) => treatGrid.append(el("span", "hp-chip is-facility", name)));
+  $("#count-treat").textContent = treat.length || "";
+  $("#treat-note").textContent = treat.length
+    ? `${h.detail_source ? "From the team's hospital sheet (not verified). " : ""}Highlighted: matches your request. Please confirm with the hospital.`
+    : "No treatment list is available for this hospital yet. Please ask the hospital directly.";
+
+  // ---------------------------------------------------------------- your request
+  $("#patient-requirement").textContent = request.requirement || "Not provided";
+  $("#patient-speciality").textContent = wanted || "—";
+  $("#patient-location").textContent = request.location || "No preference";
+
+  // ---------------------------------------------------------------- data & verification
+  const data = $("#hp-data");
+  const row = (label, value, ok) => {
+    const card = el("div", `hp-data-row${ok === true ? " is-good" : ok === false ? " is-warn" : ""}`);
+    card.append(el("span", "", label), el("strong", "", value || "Not available"));
+    data.append(card);
+  };
+  row("Overall verification", h.verification_status, /^verified/i.test(h.verification_status || ""));
+  row("NABH", h.nabh_status, positive(h.nabh_status));
+  row("JCI", h.jci_status, positive(h.jci_status));
+  row("Speciality evidence", evidence === "website" ? "Hospital's own website" : evidence === "team list" ? "Team sheet only" : "—",
+      evidence === "website");
+  row("Treatment list", h.detail_source ? "Team sheet (not verified)" : procedures.length ? "Hospital record" : "Not available",
+      h.detail_source ? false : undefined);
+  row("Official website", h.official_source_url ? new URL(h.official_source_url).hostname : "", Boolean(h.official_source_url));
+
+  // ---------------------------------------------------------------- select this hospital + next steps
+  const selectBtn = $("#select-hospital-button");
+  const next = $("#hp-next");
+  $("#hp-next-name").textContent = h.hospital_name;
+  const nextSite = $("#hp-next-website");
+  if (h.official_source_url) nextSite.href = h.official_source_url; else nextSite.hidden = true;
+  if (h.url_Internantional_patients) {
+    $("#hp-intl-wrap").hidden = false;
+    $("#hp-intl-link").href = h.url_Internantional_patients;
+  }
+  const chosenKey = "mediroute_chosen_hospital";
+  const setSelected = (on) => {
+    selectBtn.classList.toggle("is-selected", on);
+    selectBtn.setAttribute("aria-pressed", String(on));
+    selectBtn.querySelector("span").textContent = on ? "Selected" : "Select this hospital";
+    next.hidden = !on;
+    try { if (on) window.sessionStorage.setItem(chosenKey, String(h.hospital_id)); else window.sessionStorage.removeItem(chosenKey); } catch (e) { /* not remembered */ }
+  };
+  let alreadyChosen = false;
+  try { alreadyChosen = window.sessionStorage.getItem(chosenKey) === String(h.hospital_id); } catch (e) { alreadyChosen = false; }
+  setSelected(alreadyChosen);
+  selectBtn.addEventListener("click", () => {
+    setSelected(true);
+    next.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+  $("#hp-unselect").addEventListener("click", () => setSelected(false));
+  $("#hp-copy").addEventListener("click", async () => {
+    const summary = [
+      `Hospital: ${h.hospital_name}, ${[h.city, h.state].filter(Boolean).join(", ")}`,
+      `My request: ${request.requirement || "-"}`,
+      `Suggested speciality to search: ${wanted || "-"}`,
+      `Preferred location: ${request.location || "No preference"}`,
+      "(Prepared with MediRoute, an academic hospital-discovery project; not medical advice.)",
+    ].join("\n");
+    const label = $("#hp-copy span");
+    try {
+      await navigator.clipboard.writeText(summary);
+      label.textContent = "Copied";
+    } catch (e) {
+      window.prompt("Copy this summary:", summary);
     }
-  };
+    setTimeout(() => { label.textContent = "Copy summary"; }, 2000);
+  });
 
-  const createElement = (tagName, className, text) => {
-    const element = document.createElement(tagName);
-    if (className) {
-      element.className = className;
-    }
-    if (text !== undefined) {
-      element.textContent = text;
-    }
-    return element;
-  };
-
-  const createIcon = (name) => {
-    const icon = document.createElement("i");
-    icon.setAttribute("data-lucide", name);
-    icon.setAttribute("aria-hidden", "true");
-    return icon;
-  };
-
-  const setAnimatedBar = (bar, score) => {
-    bar.style.setProperty("--match-width", `${score}%`);
-    requestAnimationFrame(() => bar.classList.add("is-animated"));
-  };
-
-  // HOSPITAL HERO
-  const getRecommendationRank = (hospital) => {
-    const sorted = [...hospitals].sort((first, second) => second.overallScore - first.overallScore);
-    return sorted.findIndex((item) => item.id === hospital.id) + 1;
-  };
-
-  const renderHospitalHero = (hospital) => {
-    setText("#hospital-rank", `Recommendation #${getRecommendationRank(hospital)}`);
-    setText("#hospital-name", hospital.name);
-    setText("#hospital-location", `${hospital.city}, ${hospital.state}`);
-    setText("#hero-score", typeof hospital.overallScore === "number" ? String(hospital.overallScore) : "N/A");
-    setText("#about-hospital-name", hospital.name);
-    setText("#about-hospital-type", hospital.hospitalType);
-    setText("#about-location", `${hospital.city}, ${hospital.state}`);
-    setText("#about-accreditation", hospital.accreditation);
-    setText("#about-type", hospital.hospitalType);
-    setText("#about-services", hospital.patientServices);
-    setText("#reference-cost", hospital.referenceCost);
-    setText("#flow-hospital-name", hospital.name);
-
-    const heroBadges = document.querySelector("#hero-badges");
-    const accreditationBadge = createElement("span", "");
-    accreditationBadge.append(createIcon("badge-check"), document.createTextNode(hospital.accreditation));
-    heroBadges.append(accreditationBadge);
-    hospital.specialties.forEach((specialty) => {
-      const badge = createElement("span", "");
-      badge.append(createIcon("stethoscope"), document.createTextNode(specialty));
-      heroBadges.append(badge);
+  // ---------------------------------------------------------------- tabs (click + arrow keys)
+  const tabs = [...document.querySelectorAll(".hp-tab")];
+  const show = (tab) => {
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
     });
-    if (hospital.website) {
-      const website = createElement("a", "");
-      website.href = hospital.website;
-      website.target = "_blank";
-      website.rel = "noopener noreferrer";
-      website.append(createIcon("external-link"), document.createTextNode("Official website"));
-      heroBadges.append(website);
-    }
   };
-
-  // MATCH EXPLANATION
-  const renderMatchExplanation = (hospital) => {
-    const scoreGrid = document.querySelector("#match-score-grid");
-    const card = createElement("div", "match-score-card");
-    card.append(
-      createElement("span", "", "Development ranking score"),
-      createElement("strong", "", typeof hospital.overallScore === "number" ? String(hospital.overallScore) : "N/A")
-    );
-    scoreGrid.append(card);
-
-    const reasons = document.querySelector("#match-reasons");
-    hospital.reasons.forEach((reason) => {
-      const item = createElement("li", "");
-      item.append(createIcon("check"), document.createTextNode(reason));
-      reasons.append(item);
+  tabs.forEach((tab, i) => {
+    tab.addEventListener("click", () => show(tab));
+    tab.addEventListener("keydown", (event) => {
+      const step = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+      if (!step) return;
+      const next = tabs[(i + step + tabs.length) % tabs.length];
+      next.focus();
+      show(next);
     });
-  };
+  });
 
-  const renderPatientMatch = (hospital, data) => {
-    if (!data) {
-      patientMatchSection.hidden = true;
-      const unavailable = createElement("p", "patient-info-unavailable", "Patient requirement information is unavailable.");
-      document.querySelector(".match-section").after(unavailable);
-      return;
-    }
-
-    setText("#patient-requirement", typeof data.requirement === "string" && data.requirement.trim() ? data.requirement.trim() : "Not provided");
-    setText("#patient-location", typeof data.location === "string" && data.location.trim() ? data.location.trim() : "No preference");
-    setText("#patient-preference", typeof data.additionalPreference === "string" && data.additionalPreference.trim() ? data.additionalPreference.trim() : "None provided");
-
-    const relevantTags = document.querySelector("#relevant-info-tags");
-    [...hospital.specialties, ...hospital.facilities].forEach((name) => {
-      const tag = createElement("span", "");
-      tag.append(createIcon("check"), document.createTextNode(name));
-      relevantTags.append(tag);
-    });
-  };
-
-  // SPECIALTIES
-  const renderSpecialties = (hospital) => {
-    const container = document.querySelector("#specialties-grid");
-    if (hospital.specialties.length === 0) {
-      container.append(createElement("p", "", "Verified specialties are not specified in the hospital record."));
-      return;
-    }
-    hospital.specialties.forEach((specialty) => {
-      const card = createElement("article", "specialty-card is-relevant");
-      const icon = createElement("span", "small-card-icon");
-      icon.append(createIcon("stethoscope"));
-      const copy = createElement("span", "");
-      copy.append(createElement("strong", "", specialty));
-      copy.append(createElement("small", "", "Listed in the hospital record"));
-      card.append(icon, copy);
-      container.append(card);
-    });
-  };
-
-  // FACILITIES
-  const renderFacilities = (hospital) => {
-    const container = document.querySelector("#facilities-grid");
-    if (hospital.facilities.length === 0) {
-      container.append(createElement("p", "", "Verified procedures are not specified in the hospital record."));
-      return;
-    }
-    hospital.facilities.forEach((facilityName) => {
-      const card = createElement("article", "facility-card is-included");
-      const icon = createElement("span", "small-card-icon");
-      icon.append(createIcon("hospital"));
-      const copy = createElement("span", "");
-      copy.append(createElement("strong", "", facilityName));
-      copy.append(createElement("small", "", "Listed as a verified procedure"));
-      card.append(icon, copy);
-      container.append(card);
-    });
-  };
-
-  // COST INFORMATION
-  // Cost values are fictional examples and are explicitly labeled as non-quotations in the page.
-
-  // RANKING
-  const renderRanking = (hospital) => {
-    setText("#calculation-medical-fit", String(hospital.overallScore));
-    setText("#calculation-location", "Backend");
-    setText("#calculation-facilities", "ranking result");
-  };
-
-  const renderTransparencyFlow = (data, hospital) => {
-    const requirement = typeof data?.requirement === "string" && data.requirement.trim()
-      ? data.requirement.trim()
-      : "Cardiac treatment";
-    setText("#flow-requirement", requirement);
-  };
-
-  // ACTIONS
-  const handleHospitalSelection = () => {
-    hospitalActionMessage.textContent = "Hospital enquiry functionality will be added in a later MediRoute development stage.";
-  };
-  selectHospitalButton.addEventListener("click", handleHospitalSelection);
-
-  // ERROR HANDLING
-  const renderHospital = (hospital, data) => {
-    errorState.hidden = true;
-    hospitalContent.hidden = false;
-    renderHospitalHero(hospital);
-    renderMatchExplanation(hospital);
-    renderPatientMatch(hospital, data);
-    renderSpecialties(hospital);
-    renderFacilities(hospital);
-    renderRanking(hospital);
-    renderTransparencyFlow(data, hospital);
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
-  };
-
-  renderHospital(selectedHospital, patientData);
+  if (window.lucide) window.lucide.createIcons();
 });

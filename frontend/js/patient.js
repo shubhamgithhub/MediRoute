@@ -646,6 +646,10 @@ const toRoutingView = (result) => {
             final_score: hospital.final_score,
             final_rank: hospital.final_rank,
             ranking_reasons: hospital.ranking_reasons,
+            matched_procedures: hospital.matched_procedures || [],
+            verification_status: hospital.verification_status || "",
+            url_Internantional_patients: hospital.url_Internantional_patients || "",
+            subspecialties: hospital.subspecialties || "",
             outside_area: hospital.outside_area === true,
             area_group: hospital.area_group || ""
           }))
@@ -920,8 +924,63 @@ form.addEventListener("submit", async (event) => {
   updateCounter(requirementInput, "requirement-counter", 1000);
   updateCounter(additionalInput, "additional-counter", 500);
   updateSubmitState();
-  restorePatientRequest().catch((error) => {
-    console.error("Unable to restore the MediRoute patient form.", error);
-    setError(fileInput, "Previously saved information could not be fully restored. Please review the form before continuing.", "report-error");
+  // Example cards: fill the form with a sample request (the patient can still edit it)
+  const exampleCards = [...document.querySelectorAll(".example-card")];
+  const exampleHint = document.querySelector("#example-hint");
+  exampleCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      requirementInput.value = card.dataset.text || "";
+      requirementInput.dispatchEvent(new Event("input", { bubbles: true }));
+      const city = card.dataset.city;
+      if (city && [...locationSelect.options].some((option) => option.value === city)) {
+        locationSelect.value = city;
+        locationSelect.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      exampleCards.forEach((c) => {
+        c.classList.toggle("is-active", c === card);
+        c.setAttribute("aria-pressed", String(c === card));
+      });
+      requirementInput.classList.remove("just-filled");
+      void requirementInput.offsetWidth;  // restart the highlight animation
+      requirementInput.classList.add("just-filled");
+      if (exampleHint) exampleHint.hidden = false;
+      requirementInput.focus();
+      requirementInput.setSelectionRange(requirementInput.value.length, requirementInput.value.length);
+    });
   });
+  // collapsible list: first row by default, all sample questions after a click on the arrow
+  const examplesBox = document.querySelector(".examples");
+  const examplesToggle = document.querySelector("#examples-title");
+  examplesToggle?.addEventListener("click", () => {
+    const collapsed = examplesBox.classList.toggle("is-collapsed");
+    examplesToggle.setAttribute("aria-expanded", String(!collapsed));
+    const label = examplesToggle.querySelector(".examples-toggle-label");
+    if (label) label.textContent = collapsed ? `Show all ${exampleCards.length}` : "Show fewer";
+  });
+
+  // typing your own text un-selects the example
+  requirementInput.addEventListener("input", (event) => {
+    if (!event.isTrusted) return;
+    const active = exampleCards.find((c) => c.classList.contains("is-active"));
+    if (active && requirementInput.value !== active.dataset.text) {
+      active.classList.remove("is-active");
+      active.setAttribute("aria-pressed", "false");
+    }
+  });
+
+  // A new visit starts empty; only "Edit" from the results page (patient.html?edit=1) brings the
+  // previous request and reports back.
+  const editing = new URLSearchParams(window.location.search).has("edit");
+  if (editing) {
+    restorePatientRequest().catch((error) => {
+      console.error("Unable to restore the MediRoute patient form.", error);
+      setError(fileInput, "Previously saved information could not be fully restored. Please review the form before continuing.", "report-error");
+    });
+  } else {
+    try {
+      ["mediroute_patient_request", "mediroute_routing_result", "mediroute_report_parse_result",
+       "mediroute_selected_hospital"].forEach((key) => window.sessionStorage.removeItem(key));
+    } catch (error) { /* storage blocked: nothing to clear */ }
+    withReportStore("readwrite", (store) => store.clear()).catch(() => {});
+  }
 });
