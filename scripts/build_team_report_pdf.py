@@ -111,8 +111,13 @@ def s_use_case():
 
 
 def s_architecture():
+    diagram = ROOT / "docs" / "architecture" / "mediroute_pipeline_architecture.png"
+    img = (f'<img src="{diagram.as_uri()}" style="display:block;height:248mm;margin:0 auto">' if diagram.exists() else "")
     return f"""
 <h1>2 · Architecture</h1>
+{img}
+</section><section>
+<h1>2 · Architecture (system parts)</h1>
 {flow([("Browser", "patient.html · results.html · admin.html (static, port 5500)"),
        ("FastAPI backend", "POST /api/patient-routing (port 8000)"),
        ("Workflow", "parse reports → Step 1 → Step 2 → finalize"),
@@ -140,27 +145,77 @@ def s_architecture():
 
 
 def s_step1():
+    S1 = "specialty_routing/step1/"
     steps = [
-        ["1 Protect", "Remove phone numbers, e-mails, ID numbers", "code", "Clinical numbers (e.g. L4-L5) kept"],
-        ["2 Emergency check", "Fixed red-flag rules", "code", "Notice shown first; routing continues"],
-        ["3 Evidence", "LLM copies conditions, procedures, body parts", "LLM + code", "Phrase kept only if it is really in the text; generic words dropped"],
-        ["4a Lookup voter", "Keyword (TF-IDF) + meaning (MiniLM) search over 10,884 ICD-10 / CGHS / lay-term entries, fused", "code", "Symptom-type evidence counts half"],
-        ["4b LLM voter", "Picks 1 of 26 specialities; prompt lists each one's “route here when / not here”", "LLM", "Closed list; “Unclear” allowed"],
-        ["5 Decide", "Agree → answer. Disagree → patient's body-area answer if it fits one, else the LLM judge", "code + LLM", "Judge: closed choice of the 2, cited evidence lines, quote checked, asked twice with order swapped; any failure → ask"],
-        ["5b Ask", "One short form (body area, diagnosis, procedure); then a short list of 2–4 candidates", "code", "A question is never repeated; answers are kept"],
-        ["6 Output", "“Suggested speciality to search: X”, evidence words, disclaimer", "code", "General Medicine asks once before it is accepted"],
+        ["0 Input", "Message + text of readable reports + earlier answers, joined: message, “Report: …”, “Body area: …”",
+         "code", "Reports: text-based PDFs only (no OCR); English only (no translation)", S1 + "pipeline.py · compose_text()"],
+        ["1 Protect", "Remove phone numbers, e-mails, ID numbers", "code", "Clinical numbers (L4-L5, eGFR 8) kept",
+         S1 + "protect.py · redact()"],
+        ["2 Emergency check", "Fixed red-flag rules (crushing chest pain, stroke signs, suicidal words…)", "code",
+         "Notice shown first; routing continues", S1 + "safety.py · check_emergency()"],
+        ["3a Extract evidence", "LLM copies conditions, procedures, body parts from the text", "LLM",
+         "Prompt asks to copy, not interpret", S1 + "evidence.py · EvidenceExtractor.extract()"],
+        ["3b Check evidence", "Keep a phrase only if it is really in the text (small typos allowed); drop generic words",
+         "code", "Invented phrases are dropped; no evidence → ask", S1 + "evidence.py · verify_phrase(), is_generic()"],
+        ["3c Keyword matches", "Add known patient wording from the lay-term list (e.g. “kidney stones”)", "code",
+         "Works with no LLM too", S1 + "evidence.py · keyword_matches()"],
+        ["4a Lookup voter", "Search each phrase in 10,884 ICD-10 / CCSR / CGHS / lay-term entries by keyword (TF-IDF) and "
+         "meaning (MiniLM); fuse the two rankings; best match per phrase; symptom-type matches count half", "ML search",
+         "Only names from the 26-speciality list", S1 + "voters.py · HybridLookupVoter · lookup.py · LookupIndex"],
+        ["4b LLM voter", "LLM picks 1 of 26 specialities (or “unclear”) using each one's “route here when / not here” rules",
+         "LLM", "Closed list; runs in parallel with 4a", S1 + "voters.py · LLMVoter · routes.py · prompts/specialty_v2.txt"],
+        ["5 Decide", "Apply the decision rules below, in order", "code", "General Medicine asks once before it is accepted",
+         S1 + "pipeline.py · Step1Pipeline.analyze()"],
+        ["5b Patient's answer", "Body-area answer that fits only one of the two disputed specialities decides", "code",
+         "Never adds a speciality the voters did not suggest", S1 + "pipeline.py · _answer_decides()"],
+        ["6 LLM judge", "Chooses between the two candidates, citing evidence lines built by code", "LLM + code",
+         "Closed choice · cited lines must exist and support it · quote must be in the text · asked twice in swapped order; "
+         "any failure → ask", S1 + "judge.py · LLMJudge.judge(), check()"],
+        ["7 Ask", "One short form (questions already answered never repeated); still open → short list of 2–4 with "
+         "descriptions + “Something else…”", "code", "No pre-selection in the list",
+         S1 + "pipeline.py · _ask_or_offer_choice(), _open_fields(), _shortlist()"],
+        ["8 Output + trace", "“Suggested speciality to search: X”, evidence, disclaimer; every stage logged", "code",
+         "Admin page reads the trace", S1 + "pipeline.py · _respond() · trace.py · Step1Trace"],
     ]
+    rules = [
+        ["a", "Lookup and LLM give the same speciality", "Answer (“agreement”)"],
+        ["b", "They disagree; the patient's body-area answer fits only one of the two", "Answer (“patient answer”)"],
+        ["c", "They disagree otherwise", "LLM judge (stage 6): answer (“judge”) or ask"],
+        ["d", "LLM says “unclear”; the lookup's pick fits the patient's body-area answer", "Answer (“patient answer”)"],
+        ["e", "LLM says “unclear”", "Ask (“message too general”)"],
+        ["f", "LLM unavailable (error, no key, provider “none”); the lookup has a pick", "Answer with a notice (“lookup only”)"],
+        ["g", "Nothing usable", "Ask"],
+        ["+", "Any answer = General Medicine on the first round", "Ask once, then accept"],
+    ]
+    models = [["3a evidence, 4b voter", "GPT-6 Luna via OpenRouter (same client); local llama3.2 or none as options",
+               "MEDIROUTE_LLM_PROVIDER, MEDIROUTE_OPENROUTER_MODEL"],
+              ["4a lookup", "No LLM: TF-IDF + all-MiniLM-L6-v2 embeddings (local)", "fixed"],
+              ["6 judge", "GPT-6 Luna, its own client (disagreements only)", "MEDIROUTE_JUDGE_MODEL"]]
     return f"""
 <h1>3 · Step 1: patient words → speciality to search</h1>
 {flow([("Patient text", "+ report, answers"), ("Evidence", "LLM, checked by code"), ("Lookup voter", "keyword + meaning"),
        ("LLM voter", "1 of 26"), ("Decide", "agree / answer / judge / ask")], ["data", "ai", "code", "ai", "code"])}
-{table(["Stage", "What happens", "By", "Guardrail"], steps, ["16%", "40%", "11%", "33%"])}
+{table(["Stage", "What happens", "By", "Guardrail", "Code (src/mediroute/)"], steps, ["12%", "33%", "8%", "22%", "25%"], "small")}
+</section><section>
+<h1>3 · Step 1: decision rules, models and examples</h1>
+<h2>Decision rules (stage 5, first that applies)</h2>
+{table(["", "Situation", "Result"], rules, ["5%", "60%", "35%"])}
+<h2>Models</h2>
+{table(["Stage", "Model", "Setting"], models, ["22%", "50%", "28%"])}
+<h2>Why changing the judge model did not change the results</h2>
+{bullets([
+    "The judge is only called when the two voters disagree: about 20% of requests. The other ~80% never reach it.",
+    "Its guards require an evidence line from the medical lookup. When the lookup has no matching line (very colloquial "
+    "wording), even a perfect judge cannot confirm the answer, so the app asks. The bottleneck is the evidence, not the judge.",
+    "Measured on 77 unseen English messages: GPT-6 Luna 84% / Gemini 4 Carbon 83% / GPT-6.1 Terra 81% first-answer correct; "
+    "within 1–3 messages of each other (noise). Luna is kept: same accuracy, 3–6× cheaper, faster (section 7b).",
+])}
 <h2>Worked examples (real portal requests)</h2>
 {bullets([
-    "<b>“I have kidney stones and severe pain in my lower back… Mumbai”</b>: evidence “kidney stones”, “severe pain”, “lower back”; lookup Urology, LLM Urology → <b>agreement: Urology</b> (2.2 s).",
-    "<b>“I am having sciatic nerve pain since 3 months”</b>: lookup Neurology (“Lesion of sciatic nerve”), LLM Orthopaedics (“Sciatica”); the judge says unclear → one question; answer “Bones, joints and muscles” fits Orthopaedics only → <b>patient_answer: Orthopaedics</b>.",
+    "<b>“I have kidney stones and severe pain in my lower back… Mumbai”</b>: evidence “kidney stones”, “severe pain”, “lower back”; lookup Urology, LLM Urology → <b>rule a: Urology</b> (2.2 s).",
+    "<b>“I am having sciatic nerve pain since 3 months”</b>: lookup Neurology (“Lesion of sciatic nerve”), LLM Orthopaedics (“Sciatica”); rule c → the judge says unclear → one question; answer “Bones, joints and muscles” fits Orthopaedics only → <b>rule b: Orthopaedics</b>.",
 ])}
-{where("specialty_routing/step1/pipeline.py (decision block)", "data/processed/specialties.csv, specialty_mapping.csv, step1_lookup.csv",
+{where("specialty_routing/step1/ (all files above)", "data/processed/specialties.csv, specialty_mapping.csv, step1_lookup.csv",
        "python scripts/api_smoke_step1.py")}
 """
 
@@ -224,6 +279,8 @@ def s_evolution():
         ["Full speciality list", "Use every speciality found on the website", "Lists were cut at 6; hospitals wrongly filtered out", "NDCG@5 0.73 → 0.81 (p = 0.002)"],
         ["Outside-area group", "Fill with nearest hospitals when < 3 in the area", "Empty or one-hospital pages", "Capable@3 91% → 93%"],
         ["Patient answers count", "Body-area answer decides between the 2 candidates; short list", "Same question asked twice, then all 26 specialities", "Sciatica case: one question → Orthopaedics"],
+        ["Unseen-data test", "110 brand-new messages written by a model MediRoute does not use (labels by construction)", "Numbers so far came from cases we had tuned on", "English: 84% first answer, 94% right outcome, 96% after one answer, 1% confidently wrong"],
+        ["Stronger judge (tried, reverted)", "F1: boundaries in the judge prompt; F2: Gemini 4 Carbon or GPT-6.1 Terra as judge", "Too many questions on disagreements", "No gain on unseen data (all within ±3%); 3–6× the cost, Gemini ~11 s per call → kept GPT-6 Luna"],
         ["Screens", "Compact form, input vs output, honest ranking text, themes, academic disclaimer", "Scrolling, fake weights, look-alike theme", "Form 1,896 → 1,084 px; hospitals start on screen one"],
     ]
     return f"""
@@ -274,6 +331,37 @@ def s_bench1():
 {img}
 {where("", "data/evaluation/results/, data/evaluation/portal_runs/20261111_230644",
        "python scripts/portal_benchmark.py --n 100 --spacing 15")}
+</section><section>
+<h1>7b · Step 1 on unseen data, and a stronger judge (tried and reverted)</h1>
+{bullets([
+    "<b>Why:</b> the numbers above come from cases we had looked at while tuning. To check they hold, a <b>brand-new set</b> of 110 messages was written by a model MediRoute does not use (Mistral Large 4): for each of the 26 specialities we fixed the speciality and the kind of message first (everyday symptoms, named diagnosis, advised procedure, report snippet), so the expected answer is known by construction; plus 10 vague messages. Labels are drafts.",
+    "<b>Measures:</b> <b>first answer</b> (as before); <b>right outcome</b> = correct, or a question on a message that is really vague; <b>after one answer</b> = the simulated patient answers the body-area question once.",
+    "<b>Tried:</b> F1 = the judge also sees each candidate's “route here when / not here” rules; F2 = a stronger judge model (Gemini 4 Carbon or GPT-6.1 Terra). The judge is only called on disagreements.",
+])}
+<h2>English messages (77): the project's scope</h2>
+{table(["Judge", "First answer correct", "Confidently wrong", "Asked", "Right outcome", "Correct after 1 answer"], [
+    ["<b>Today: GPT-6 Luna</b>", "<b>84%</b>", "<b>1%</b>", "14%", "<b>94%</b>", "<b>96%</b>"],
+    ["F1: boundaries in the judge prompt", "82%", "1%", "17%", "91%", "95%"],
+    ["F1 + GPT-6.1 Terra", "81%", "3%", "17%", "90%", "95%"],
+    ["F1 + Gemini 4 Carbon", "83%", "1%", "16%", "92%", "96%"],
+], ["34%", "14%", "13%", "11%", "13%", "15%"])}
+<h2>All 110 messages, including 33 in Hinglish (out of scope)</h2>
+{table(["Judge", "First answer correct", "Confidently wrong", "Asked", "Right outcome", "Correct after 1 answer"], [
+    ["Today: GPT-6 Luna", "73%", "1%", "26%", "79%", "95%"],
+    ["F1", "71%", "1%", "28%", "77%", "95%"],
+    ["F1 + GPT-6.1 Terra", "70%", "2%", "28%", "76%", "95%"],
+    ["F1 + Gemini 4 Carbon", "72%", "1%", "27%", "78%", "95%"],
+], ["34%", "14%", "13%", "11%", "13%", "15%"])}
+{table(["Judge model", "Cost per judge call", "Time per judge call"], [
+    ["GPT-6 Luna (kept)", "≈ $0.0002", "≈ 2 s"], ["GPT-6.1 Terra", "$0.0008", "2.7 s"], ["Gemini 4 Carbon", "$0.0022", "11 s"]],
+    ["40%", "30%", "30%"])}
+{bullets([
+    "<b>Target met on unseen English data with today's design:</b> right outcome 94% (> 90%), confidently wrong 1% (≤ 2%); 96% end on the right speciality after at most one question. First-answer accuracy (84%) matches the tuned set (85%): no sign of over-fitting.",
+    "<b>F1 and F2 did not help</b> (all within ±3 points) and cost 3–6× more; Gemini adds ~11 s to the wait. Both were <b>reverted</b>; the app keeps the GPT-6 Luna judge and its original prompt.",
+    "<b>Why a better judge cannot help:</b> most questions come from messages the medical lookup cannot match (very colloquial or Hinglish wording). The judge must cite a lookup evidence line, so with no line it cannot confirm the LLM even when the LLM is right. Translation is out of scope, so Hinglish is excluded from the target.",
+])}
+{where("scripts/benchmark_step1_unseen.py, scripts/make_step1_unseen_set.py", "data/evaluation/step1_gold_unseen.csv, data/evaluation/step1_unseen/",
+       "python scripts/benchmark_step1_unseen.py --set new --configs base")}
 """
 
 
@@ -480,7 +568,7 @@ def s_limits():
     "<b>Labels and rules are drafts:</b> test labels, 1,381 mapping rules and body-area rules await the doctor review; four “wrong” portal cases have questionable labels.",
     "<b>Hospital data:</b> 201 hospitals; procedure lists come from the team sheet and are unverified (~50% recall), which limits procedure matching.",
     "<b>Grades:</b> Step 2 grades are model-drafted from website snippets; 20% human spot-check pending; sites that block automated reading cannot be graded.",
-    "<b>Scope:</b> no costs, doctor profiles, availability or booking; English only.",
+    "<b>Scope:</b> English input only (no translation: Hinglish or regional-language messages often end in a question); text-based PDFs only (no OCR for scanned or photographed reports); no costs, doctor profiles, availability or booking.",
     "<b>State of the code:</b> the 12 Nov work (fixes, screens, themes, comparison) is local and not yet committed.",
 ])}
 <h2>Next steps</h2>
