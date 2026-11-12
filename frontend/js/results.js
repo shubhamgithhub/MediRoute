@@ -51,6 +51,14 @@ document.addEventListener("DOMContentLoaded", () => {
     ? (patientData.reportName.join(", ") || "Not uploaded")
     : "Not uploaded");
   setText("#summary-preference", patientData.additionalPreference?.trim() || "None provided");
+  const unreadable = routingResult.parse_summary?.unreadable_files || [];
+  if (unreadable.length) {
+    const note = document.createElement("p");
+    note.className = "llm-notice report-notice";
+    note.setAttribute("role", "status");
+    note.textContent = `Not used (could not be read): ${unreadable.map((f) => `${f.filename}: ${f.reason}`).join(" · ")}`;
+    document.querySelector(".request-facts")?.after(note);
+  }
 
   const hospitalList = document.querySelector("#hospital-list");
   const recommendationSection = document.querySelector(".hospital-results-section");

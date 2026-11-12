@@ -3,6 +3,11 @@ import pymupdf
 
 
 MIN_TEXT_LENGTH = 20
+# plain-language reasons, shown to the patient next to the file name
+REASON_PASSWORD = "it is password-protected; please upload an unlocked copy"
+REASON_SCAN = ("it looks like a scan or photo with no text inside; scanned reports are not supported yet, "
+               "so please type the key finding (for example the diagnosis or impression) or upload a text PDF")
+REASON_BROKEN = "the file could not be read; it may be damaged"
 
 
 class PDFParser:
@@ -35,7 +40,19 @@ class PDFParser:
             return {
                 "filename": filename,
                 "status": "error",
-                "reason": f"Unable to open PDF: {str(exc)}",
+                "reason": REASON_BROKEN,
+                "detail": f"Unable to open PDF: {exc}",
+                "page_count": 0,
+                "text_length": 0,
+                "text": ""
+            }
+
+        if document.needs_pass:  # locked: no page can be read without the password
+            document.close()
+            return {
+                "filename": filename,
+                "status": "error",
+                "reason": REASON_PASSWORD,
                 "page_count": 0,
                 "text_length": 0,
                 "text": ""
@@ -70,6 +87,17 @@ class PDFParser:
 
             page_count = len(document)
 
+        except Exception as exc:  # one damaged file must not fail the whole upload
+            return {
+                "filename": filename,
+                "status": "error",
+                "reason": REASON_BROKEN,
+                "detail": f"{type(exc).__name__}: {exc}",
+                "page_count": 0,
+                "text_length": 0,
+                "text": ""
+            }
+
         finally:
             document.close()
 
@@ -80,10 +108,7 @@ class PDFParser:
             return {
                 "filename": filename,
                 "status": "needs_ocr",
-                "reason": (
-                    "PDF contains little or no "
-                    "extractable text"
-                ),
+                "reason": REASON_SCAN,
                 "page_count": page_count,
                 "text_length": len(combined_text),
                 "pages": extracted_pages,
@@ -173,5 +198,10 @@ class PDFParser:
             "needs_ocr_files": needs_ocr_files,
             "error_files": error_files,
             "documents": documents,
+            # files the patient must be told about (name + plain reason; never their text)
+            "unreadable_files": [
+                {"filename": d["filename"], "reason": d.get("reason") or REASON_BROKEN}
+                for d in documents if d["status"] != "success"
+            ],
             "combined_text": combined_text
         }

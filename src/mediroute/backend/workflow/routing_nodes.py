@@ -83,7 +83,7 @@ class RoutingNodes:
         text = (summary.get("combined_text") or "").strip()[:MAX_REPORT_CHARS]
         _log(state, "parse_reports", files=len(files), status=summary.get("overall_status"),
              successful=summary.get("successful_files"), needs_ocr=summary.get("needs_ocr_files"),
-             report_chars=len(text))
+             report_chars=len(text), unreadable=summary.get("unreadable_files"))
         return {"parse_summary": summary, "report_text": text, "workflow_status": "reports_parsed",
                 "current_step": "parse_reports"}
 
