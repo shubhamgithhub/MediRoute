@@ -32,7 +32,30 @@ async def lifespan(_app: FastAPI):
     from mediroute.specialty_routing.service import get_service
 
     threading.Thread(target=get_service().warm_up, daemon=True).start()
+    stop = threading.Event()
+    threading.Thread(target=_prune_trace_loop, args=(stop,), daemon=True).start()
     yield
+    stop.set()
+
+
+TRACE_PRUNE_EVERY_S = 600
+
+
+def _prune_trace_loop(stop: threading.Event) -> None:
+    """Keep the admin request history to the newest MEDIROUTE_TRACE_KEEP (default 100) requests:
+    prune at start-up, then every 10 minutes."""
+    from mediroute.backend.admin.trace_reader import prune_trace
+
+    while True:
+        try:
+            result = prune_trace()
+            if result["removed_lines"]:
+                logger.info("Trace pruned: kept the newest %s requests, removed %s old lines",
+                            result["kept_requests"], result["removed_lines"])
+        except Exception as error:  # never stop the API over log housekeeping
+            logger.warning("Trace prune failed: %s", error)
+        if stop.wait(TRACE_PRUNE_EVERY_S):
+            return
 
 
 app = FastAPI(

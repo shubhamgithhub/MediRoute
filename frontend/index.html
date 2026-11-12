@@ -9,11 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
-  <script src="js/theme.js?v=20261112h"></script>
-  <link rel="stylesheet" href="css/style.css?v=20261112h">
-  <link rel="stylesheet" href="css/theme.css?v=20261112h">
+  <script src="js/theme.js?v=20261112s"></script>
+  <link rel="stylesheet" href="css/style.css?v=20261112s">
+  <link rel="stylesheet" href="css/theme.css?v=20261112s">
   <script src="https://unpkg.com/lucide@latest" defer></script>
-  <script src="js/app.js?v=20261112h" defer></script>
+  <script src="js/app.js?v=20261112s" defer></script>
 </head>
 <body>
   <!-- NAVBAR -->
@@ -84,14 +84,16 @@
             <div class="hospital-preview">
               <div class="hospital-avatar" aria-hidden="true"><i data-lucide="building-2"></i></div>
               <div class="hospital-info"><span class="field-label">RECOMMENDED HOSPITAL</span><strong>Example Multispecialty Hospital</strong><span class="hospital-location">Mumbai, Maharashtra</span></div>
-              <div class="match-score"><strong>94<small>%</small></strong><span>Match</span></div>
+              <div class="match-score"><span>Ranked</span><strong>#1</strong></div>
             </div>
             <div class="specialty-tags"><span>Cardiology</span><span>Cardiac Surgery</span></div>
             <div class="match-breakdown">
-              <div class="breakdown-heading"><span>Match factors</span><span class="info-mark" title="Illustrative match factors">i</span></div>
-              <div class="metric"><span>Medical fit</span><div class="metric-track"><span style="width:94%"></span></div><strong>94%</strong></div>
-              <div class="metric"><span>Location</span><div class="metric-track"><span style="width:90%"></span></div><strong>90%</strong></div>
-              <div class="metric"><span>Facilities</span><div class="metric-track"><span style="width:88%"></span></div><strong>88%</strong></div>
+              <div class="breakdown-heading"><span>Why this hospital</span></div>
+              <ul class="why-list">
+                <li><i data-lucide="check" aria-hidden="true"></i> Speciality confirmed on the hospital's website</li>
+                <li><i data-lucide="check" aria-hidden="true"></i> Offers the treatment you mentioned</li>
+                <li><i data-lucide="check" aria-hidden="true"></i> NABH / JCI accredited</li>
+              </ul>
             </div>
             <button class="button button-card" type="button" data-discovery-trigger>View Details <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
           </article>
@@ -170,12 +172,12 @@
           </div>
           <div class="preview-results">
             <div class="results-heading"><div><span class="field-label">YOUR SHORTLIST</span><h3>Recommended Hospitals</h3></div><span class="results-count">3 examples</span></div>
-            <article class="result-card result-card-featured"><span class="result-rank">01</span><span class="hospital-avatar avatar-teal"><i data-lucide="building-2" aria-hidden="true"></i></span><div class="result-details"><h4>Example Multispecialty Hospital</h4><span><i data-lucide="map-pin" aria-hidden="true"></i> Mumbai</span><div class="specialty-tags"><span>Cardiology</span><span>Cardiac Surgery</span></div></div><div class="result-match"><strong>94<small>%</small></strong><span>Match</span></div></article>
-            <article class="result-card"><span class="result-rank">02</span><span class="hospital-avatar avatar-blue"><i data-lucide="building-2" aria-hidden="true"></i></span><div class="result-details"><h4>Example Heart Institute</h4><span><i data-lucide="map-pin" aria-hidden="true"></i> Mumbai</span><div class="specialty-tags"><span>Cardiology</span></div></div><div class="result-match"><strong>89<small>%</small></strong><span>Match</span></div></article>
-            <article class="result-card"><span class="result-rank">03</span><span class="hospital-avatar avatar-violet"><i data-lucide="building-2" aria-hidden="true"></i></span><div class="result-details"><h4>Example Medical Centre</h4><span><i data-lucide="map-pin" aria-hidden="true"></i> Pune</span><div class="specialty-tags"><span>Cardiology</span></div></div><div class="result-match"><strong>82<small>%</small></strong><span>Match</span></div></article>
+            <article class="result-card result-card-featured"><span class="result-rank">01</span><span class="hospital-avatar avatar-teal"><i data-lucide="building-2" aria-hidden="true"></i></span><div class="result-details"><h4>Example Multispecialty Hospital</h4><span><i data-lucide="map-pin" aria-hidden="true"></i> Mumbai</span><div class="specialty-tags"><span>Cardiology</span><span>Cardiac Surgery</span></div></div><div class="result-match"><span>Ranked</span><strong>#1</strong></div></article>
+            <article class="result-card"><span class="result-rank">02</span><span class="hospital-avatar avatar-blue"><i data-lucide="building-2" aria-hidden="true"></i></span><div class="result-details"><h4>Example Heart Institute</h4><span><i data-lucide="map-pin" aria-hidden="true"></i> Mumbai</span><div class="specialty-tags"><span>Cardiology</span></div></div><div class="result-match"><span>Ranked</span><strong>#2</strong></div></article>
+            <article class="result-card"><span class="result-rank">03</span><span class="hospital-avatar avatar-violet"><i data-lucide="building-2" aria-hidden="true"></i></span><div class="result-details"><h4>Example Medical Centre</h4><span><i data-lucide="map-pin" aria-hidden="true"></i> Pune</span><div class="specialty-tags"><span>Cardiology</span></div></div><div class="result-match"><span>Ranked</span><strong>#3</strong></div></article>
           </div>
         </div>
-        <p class="ranking-note"><i data-lucide="info" aria-hidden="true"></i> Ranking is based on multiple factors such as medical fit, location and facilities. Ranking weights will be evaluated during the project.</p>
+        <p class="ranking-note"><i data-lucide="info" aria-hidden="true"></i> Hospitals are ranked by how well their listed services match your request, then by speciality confirmed on their own website, matching treatments, verified details and NABH / JCI accreditation. Illustrative example.</p>
       </div>
     </section>
 
@@ -190,7 +192,7 @@
         <div class="features-grid">
           <article class="feature-card reveal"><span class="feature-icon feature-teal"><i data-lucide="brain-circuit" aria-hidden="true"></i></span><h3>AI-Assisted Medical Context</h3><p>Understand relevant information from patient queries and uploaded reports.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
           <article class="feature-card reveal"><span class="feature-icon feature-blue"><i data-lucide="hospital" aria-hidden="true"></i></span><h3>Hospital Requirement Matching</h3><p>Match healthcare requirements with hospital specialties and services.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
-          <article class="feature-card reveal"><span class="feature-icon feature-violet"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span><h3>Smart Ranking</h3><p>Rank candidate hospitals using medical fit, location and facility-related factors.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
+          <article class="feature-card reveal"><span class="feature-icon feature-violet"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span><h3>Smart Ranking</h3><p>Rank hospitals by how well they match your request, with the reasons shown for each.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
           <article class="feature-card reveal"><span class="feature-icon feature-amber"><i data-lucide="languages" aria-hidden="true"></i></span><h3>Multilingual Results</h3><p>Prepare patient-friendly translated information to help make comparisons clearer.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
           <article class="feature-card reveal"><span class="feature-icon feature-cyan"><i data-lucide="badge-indian-rupee" aria-hidden="true"></i></span><h3>Reference Cost Information</h3><p>Help patients understand available cost reference information.</p><span class="reference-label">Reference information, not a live quotation.</span><span class="feature-arrow" aria-hidden="true">↗</span></article>
           <article class="feature-card reveal"><span class="feature-icon feature-rose"><i data-lucide="notebook-tabs" aria-hidden="true"></i></span><h3>Patient Summary</h3><p>Prepare a consolidated summary of the interaction and recommendations.</p><span class="feature-arrow" aria-hidden="true">↗</span></article>
@@ -225,7 +227,7 @@
               <li><i data-lucide="check" aria-hidden="true"></i> Healthcare requirement-based matching</li>
               <li><i data-lucide="check" aria-hidden="true"></i> AI-assisted report understanding</li>
               <li><i data-lucide="check" aria-hidden="true"></i> Relevant hospital retrieval</li>
-              <li><i data-lucide="check" aria-hidden="true"></i> Ranking based on multiple factors</li>
+              <li><i data-lucide="check" aria-hidden="true"></i> Ranking with the reasons shown</li>
               <li><i data-lucide="check" aria-hidden="true"></i> Patient-friendly results</li>
               <li><i data-lucide="check" aria-hidden="true"></i> Consolidated information</li>
             </ul>

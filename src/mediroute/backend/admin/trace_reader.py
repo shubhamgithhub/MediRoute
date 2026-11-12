@@ -13,6 +13,8 @@ a blank PDF with no text) are listed too.
 from __future__ import annotations
 
 import json
+import logging
+import os
 from collections import defaultdict
 from pathlib import Path
 from threading import Lock
@@ -159,3 +161,55 @@ def request_detail(request_id: str, path: Path = TRACE_FILE) -> dict | None:
                              h.get("parent_request_id") == history["parent_request_id"]) or
                             h["request_id"] == history.get("parent_request_id"))],
     }
+
+
+def trace_keep() -> int:
+    """How many requests the trace keeps (MEDIROUTE_TRACE_KEEP, default 100)."""
+    try:
+        return max(1, int(os.getenv("MEDIROUTE_TRACE_KEEP", "100")))
+    except ValueError:
+        return 100
+
+
+def prune_trace(keep: int | None = None, path: Path = TRACE_FILE) -> dict[str, int]:
+    """Keep only the newest ``keep`` request histories in the trace file; delete older lines.
+
+    A history's lines are its Step 1 request id and, if any, its workflow id. Lines with no
+    request id or from partial runs (no input stage) are dropped with the old data. The rewrite
+    holds the trace logger's lock, so no event is written half-way through it.
+    """
+    keep = keep or trace_keep()
+    if not path.exists():
+        return {"kept_requests": 0, "removed_lines": 0}
+    histories = load_histories(path)
+    if len(histories) <= keep:
+        return {"kept_requests": len(histories), "removed_lines": 0}
+    ids = set()
+    for h in histories[:keep]:
+        ids.add(h["request_id"])
+        wid = (h.get("workflow") or {}).get("workflow_id")
+        if wid:
+            ids.add(wid)
+    handlers = logging.getLogger("mediroute.step1.trace").handlers
+    for handler in handlers:
+        handler.acquire()
+    try:
+        kept, removed = [], 0
+        with path.open(encoding="utf-8", errors="replace") as handle:
+            for line in handle:
+                try:
+                    rid = json.loads(line).get("request_id")
+                except (json.JSONDecodeError, AttributeError):
+                    rid = None
+                if rid in ids:
+                    kept.append(line if line.endswith("\n") else line + "\n")
+                else:
+                    removed += 1
+        with path.open("w", encoding="utf-8") as handle:  # in place: the log handler keeps its append handle
+            handle.writelines(kept)
+    finally:
+        for handler in handlers:
+            handler.release()
+    with _lock:
+        _cache.update(mtime=None, size=None, histories=[])
+    return {"kept_requests": keep, "removed_lines": removed}
