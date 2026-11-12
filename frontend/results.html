@@ -7,9 +7,11 @@
   <title>Your Hospital Recommendations | MediRoute</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/results.css">
+  <link rel="stylesheet" href="css/theme.css">
   <script src="https://unpkg.com/lucide@latest" defer></script>
   <script src="js/results.js" defer></script>
 </head>
@@ -19,7 +21,7 @@
     <nav class="navbar container" aria-label="Main navigation">
       <a class="brand" href="index.html" aria-label="MediRoute home">
         <span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span>
-        <span>Medi<span class="brand-accent">Route</span></span>
+        <span>Medi<span class="brand-accent">Route</span></span><small class="brand-tag">Academic project</small>
       </a>
       <div class="results-nav-actions">
         <a class="button button-small button-secondary" href="patient.html"><i data-lucide="pencil" aria-hidden="true"></i> Edit Information</a>
@@ -52,89 +54,32 @@
       </section>
 
       <div id="results-content">
-        <!-- PAGE HEADER -->
-        <section class="results-intro">
-          <div class="results-intro-copy">
-            <span class="section-kicker">YOUR MEDIROUTE RESULTS</span>
-            <h1>Your Hospital Recommendations</h1>
-            <p>Based on your healthcare information, MediRoute has prepared hospital routing results when available.</p>
+        <!-- INPUT: what the patient asked (grey bar) -->
+        <section class="request-bar" aria-labelledby="request-bar-heading">
+          <div class="request-bar-head">
+            <h2 id="request-bar-heading" class="request-bar-title"><i data-lucide="message-square-text" aria-hidden="true"></i> Your request</h2>
+            <a class="text-action" href="patient.html"><i data-lucide="pencil" aria-hidden="true"></i> Edit</a>
           </div>
-          <div class="demo-results-badge"><i data-lucide="flask-conical" aria-hidden="true"></i><span><strong>DEMO RESULTS</strong><small>Illustrative prototype data</small></span></div>
-          <p class="demo-disclaimer"><i data-lucide="info" aria-hidden="true"></i> These recommendations use illustrative data for the current prototype.</p>
+          <p class="request-text" id="summary-requirement"></p>
+          <dl class="request-facts">
+            <div><dt>Location</dt><dd id="summary-location"></dd></div>
+            <div><dt>Medical report</dt><dd id="summary-report"></dd></div>
+            <div class="request-fact-speciality"><dt>Suggested speciality to search</dt><dd id="context-specialty"></dd></div>
+          </dl>
         </section>
 
-        <div class="top-results-bar" aria-label="Summary and sorting panel">
-          <div class="top-results-left">
-            <div class="sidebar-panel sidebar-panel-context">
-              <div class="context-head">
-                <span class="context-icon"><i data-lucide="brain-circuit" aria-hidden="true"></i></span>
-                <div class="context-title"><span class="section-kicker">STEP 1 RESULT</span><h2 id="medical-context-heading">Suggested speciality to search</h2></div>
-              </div>
-              <div class="context-values">
-                <div><span>Relevant specialty</span><strong id="context-specialty"><i data-lucide="heart-pulse" aria-hidden="true"></i> Cardiology</strong></div>
-                <div><span>Care category</span><strong id="context-care-category"><i data-lucide="stethoscope" aria-hidden="true"></i> Cardiac Care</strong></div>
-                <div><span>Location</span><strong><i data-lucide="map-pin" aria-hidden="true"></i><span id="context-location"></span></strong></div>
-              </div>
-              <p class="context-disclaimer"><i data-lucide="info" aria-hidden="true"></i> Suggested from your own words by three independent methods. Hospital discovery support only, not a diagnosis or medical advice.</p>
-            </div>
-
-            <div class="sidebar-panel sidebar-panel-rank">
-              <div class="ranking-heading"><span class="ranking-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span><div><span class="section-kicker">RANKING</span><h2>How results are weighted</h2></div></div>
-              <div class="weight-grid compact-weight-grid">
-                <div class="weight-item"><span>Medical Fit</span><div class="weight-track"><span style="width:60%"></span></div><strong>60%</strong></div>
-                <div class="weight-item"><span>Location</span><div class="weight-track"><span style="width:20%"></span></div><strong>20%</strong></div>
-                <div class="weight-item"><span>Facilities</span><div class="weight-track"><span style="width:20%"></span></div><strong>20%</strong></div>
-              </div>
+        <!-- OUTPUT: what MediRoute recommends -->
+        <section class="results-output hospital-results-section" aria-labelledby="recommendations-heading">
+          <div class="recommendation-toolbar">
+            <div>
+              <span class="section-kicker">MEDIROUTE RESULTS</span>
+              <h1 id="recommendations-heading">Recommended hospitals <span class="result-count" id="result-count"></span></h1>
+              <p class="ranking-note"><i data-lucide="info" aria-hidden="true"></i> Ranked by how well each hospital's listed services match your request, then by: speciality confirmed on the hospital's own website, matching procedures, verified details, NABH / JCI accreditation and international patient services. Information only; not medical advice. Please confirm with the hospital.</p>
             </div>
           </div>
-
-          <div class="top-results-right">
-            <label class="sort-control" for="sort-select"><span>Sort by:</span><span class="sort-select-wrap"><select id="sort-select" name="sort"><option value="overallScore">Best Match</option><option value="medicalFit">Medical Fit</option><option value="locationScore">Location</option><option value="facilitiesScore">Facilities</option></select><i data-lucide="chevron-down" aria-hidden="true"></i></span></label>
-          </div>
-        </div>
-
-        <section class="results-layout" aria-label="Hospital recommendation layout">
-          <aside class="results-side results-side-left" aria-label="Patient request summary">
-            <div class="sidebar-panel">
-              <div class="results-section-heading"><div><span class="section-kicker">YOUR REQUEST</span><h2 id="request-summary-heading">Patient request summary</h2></div><a class="text-action" href="patient.html"><i data-lucide="pencil" aria-hidden="true"></i> Edit</a></div>
-              <div class="request-summary-card compact-summary">
-                <div class="request-summary-item request-summary-requirement"><span class="summary-icon"><i data-lucide="message-square-text" aria-hidden="true"></i></span><div><span class="summary-label">Healthcare requirement</span><p id="summary-requirement"></p></div></div>
-                <div class="request-summary-item"><span class="summary-icon"><i data-lucide="map-pin" aria-hidden="true"></i></span><div><span class="summary-label">Preferred location</span><p id="summary-location"></p></div></div>
-                <div class="request-summary-item"><span class="summary-icon"><i data-lucide="languages" aria-hidden="true"></i></span><div><span class="summary-label">Preferred language</span><p id="summary-language"></p></div></div>
-                <div class="request-summary-item"><span class="summary-icon"><i data-lucide="file-text" aria-hidden="true"></i></span><div><span class="summary-label">Medical report</span><p id="summary-report"></p></div></div>
-                <div class="request-summary-item request-summary-preference"><span class="summary-icon"><i data-lucide="list-filter" aria-hidden="true"></i></span><div><span class="summary-label">Additional preference</span><p id="summary-preference"></p></div></div>
-              </div>
-            </div>
-          </aside>
-
-          <section class="results-center-panel" aria-labelledby="recommendations-heading">
-            <div class="results-section hospital-results-section">
-              <div class="recommendation-toolbar">
-                <div><span class="section-kicker">EXPLORE YOUR OPTIONS</span><h2 id="recommendations-heading">Hospital recommendations <span class="result-count" id="result-count">3 hospitals found</span></h2></div>
-              </div>
-              <p class="selection-message" id="selection-message" role="status" aria-live="polite"></p>
-              <div class="hospital-list" id="hospital-list" aria-live="polite"></div>
-            </div>
-          </section>
+          <p class="selection-message" id="selection-message" role="status" aria-live="polite"></p>
+          <div class="hospital-list" id="hospital-list" aria-live="polite"></div>
         </section>
-
-        <!-- RANKING EXPLANATION -->
-        <section class="ranking-explanation" aria-labelledby="ranking-heading">
-          <div class="ranking-heading"><span class="ranking-icon"><i data-lucide="chart-no-axes-combined" aria-hidden="true"></i></span><div><span class="section-kicker">A TRANSPARENT APPROACH</span><h2 id="ranking-heading">How were these recommendations ranked?</h2></div></div>
-          <p>For the current MediRoute project, ranking is designed around multiple factors including:</p>
-          <div class="weight-grid">
-            <div class="weight-item"><span>Medical Fit</span><div class="weight-track"><span style="width:60%"></span></div><strong>60%</strong></div>
-            <div class="weight-item"><span>Location</span><div class="weight-track"><span style="width:20%"></span></div><strong>20%</strong></div>
-            <div class="weight-item"><span>Facilities</span><div class="weight-track"><span style="width:20%"></span></div><strong>20%</strong></div>
-          </div>
-          <p class="weight-note"><i data-lucide="info" aria-hidden="true"></i> These weights are experimental and will be evaluated during the AI/ML evaluation stage. Demo overall scores shown above were not produced by this ranking formula.</p>
-        </section>
-
-        <!-- RESPONSIBLE AI NOTICE -->
-        <aside class="important-notice" aria-labelledby="important-heading">
-          <span class="important-icon"><i data-lucide="shield-alert" aria-hidden="true"></i></span>
-          <div><h2 id="important-heading">Important information</h2><p>MediRoute helps organize hospital information and identify potentially relevant options. Recommendations are informational and do not constitute medical advice, diagnosis, or treatment recommendations.</p><p>For this prototype, hospital names, match scores, facilities and cost information displayed on this page are illustrative demo data.</p></div>
-        </aside>
       </div>
 
       <!-- COMPARISON -->
@@ -147,7 +92,7 @@
   </main>
 
   <footer class="results-footer">
-    <div class="container"><a class="brand brand-footer" href="index.html" aria-label="MediRoute home"><span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span><span>Medi<span class="brand-accent">Route</span></span></a><p>MediRoute provides informational recommendations and does not constitute medical advice.</p></div>
+    <div class="container"><a class="brand brand-footer" href="index.html" aria-label="MediRoute home"><span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span><span>Medi<span class="brand-accent">Route</span></span></a><p>MediRoute provides informational recommendations and does not constitute medical advice.</p><p class="academic-notice">MediRoute is an independent academic capstone project. It is not a commercial service and is not affiliated with any company, website or product of the same or a similar name.</p></div>
   </footer>
 </body>
 </html>

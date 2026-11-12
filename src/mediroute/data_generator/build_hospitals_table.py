@@ -13,7 +13,10 @@ Inputs
 
 Rules
   * Identity, accreditation, verification level and verified_specialties come from the master
-    (checked against NABH, JCI and the hospital's own website).
+    (checked against NABH, JCI and the hospital's own website). verified_specialties is the FULL
+    website list (the master's specialties_all_found); the master's own verified_specialties keeps
+    only the top 6 for its Excel sheet, which hid real departments from Step 2 (checked against the
+    Step 2 website grades: recall 0.54 -> 0.78 with precision 0.94 -> 0.90).
   * The team sheet only adds detail columns, marked by detail_source = "team 150 sheet (not
     verified)". Its accreditation / "Verified" values are not used: they disagree with the
     master for 10-14 of 49 shared hospitals and say "Verified" for all 150.
@@ -92,6 +95,8 @@ def build(out_path=HOSPITALS_FILE) -> list[dict]:
     rows = []
     for _, m in master.iterrows():
         row = {c: clean(m.get(c)) for c in columns if c in master.columns}
+        if clean(m.get("specialties_all_found")):  # full website list, not the master's top 6
+            row["verified_specialties"] = clean(m.get("specialties_all_found"))
         tid = team_by_master.get(row["hospital_id"], "")
         t = team.loc[tid] if tid and tid in team.index else None
         row["team150_id"] = tid

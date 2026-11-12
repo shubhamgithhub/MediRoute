@@ -1,0 +1,56 @@
+/* Colour themes. Every page colours itself from the variables in style.css :root (teal tints are
+   color-mix() of var(--teal)), so a theme only sets these variables. Chosen with the selector in the
+   page footer (js/theme.js); "teal" is the original look. */
+
+html[data-theme="indigo"] {
+  --teal: #3b3f8f;        /* primary: buttons, links, highlights */
+  --teal-dark: #2c2f6e;
+  --navy: #1e2152;        /* headings */
+  --navy-deep: #161842;
+  --cyan: #e8a33d;        /* accent */
+  --ink: #1d1f3d;
+  --background: #f7f7fb;
+  --font-body: "Public Sans", sans-serif;
+  --font-display: "Fraunces", serif;
+}
+
+html[data-theme="forest"] {
+  --teal: #1f6b4a;
+  --teal-dark: #17533a;
+  --navy: #123d2b;
+  --navy-deep: #0d2e20;
+  --cyan: #e9765b;
+  --ink: #15291f;
+  --background: #f6f8f5;
+  --font-body: "Public Sans", sans-serif;
+  --font-display: "Fraunces", serif;
+}
+
+html[data-theme="navy"] {
+  --teal: #1f3a68;
+  --teal-dark: #172c50;
+  --navy: #0f1f3a;
+  --navy-deep: #0a1629;
+  --cyan: #b23a48;
+  --ink: #111c30;
+  --background: #f6f7fa;
+  --font-body: "Public Sans", sans-serif;
+  --font-display: "Fraunces", serif;
+}
+
+/* page backgrounds and the accent word in headings follow the theme */
+html[data-theme]:not([data-theme="teal"]) body,
+html[data-theme]:not([data-theme="teal"]) .patient-page,
+html[data-theme]:not([data-theme="teal"]) .results-page,
+html[data-theme]:not([data-theme="teal"]) .hospital-page,
+html[data-theme]:not([data-theme="teal"]) .admin-page { background-color: var(--background); }
+html[data-theme]:not([data-theme="teal"]) .text-highlight { color: var(--cyan); }
+html[data-theme]:not([data-theme="teal"]) h1,
+html[data-theme]:not([data-theme="teal"]) h2 { letter-spacing: -0.3px; }
+
+/* footer: theme selector + academic-project notice */
+.theme-picker { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; color: var(--muted); font-size: 11px; }
+.theme-picker select { padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; }
+.theme-picker-floating { position: fixed; right: 12px; bottom: 12px; z-index: 50; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: var(--soft-shadow); }
+.academic-notice { margin: 4px 0 0; color: var(--muted-light); font-size: 10.5px; line-height: 1.5; }
+.brand-tag { margin-left: 8px; padding: 2px 6px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); font-family: var(--font-body); font-size: 9px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; vertical-align: middle; }

@@ -6,5 +6,5 @@
   "similarity": "cosine_via_normalized_inner_product",
   "source_dataset": "hospital_embedding_dataset.csv",
   "metadata_file": "hospital_metadata.json",
-  "built_at_utc": "2026-11-11T06:09:38.581833+00:00"
+  "built_at_utc": "2026-11-12T04:13:48.786891+00:00"
 }

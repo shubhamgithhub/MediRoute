@@ -1,0 +1,35 @@
+{
+  "model": "google/gemini-4-carbon",
+  "extractor": "openai/gpt-6-luna",
+  "spend_usd": 0.4491,
+  "when": "2026-11-12T12:09:55",
+  "step1": {
+    "n": 100,
+    "correct": 0.82,
+    "confidently_wrong": 0.08,
+    "asked": 0.1,
+    "mediroute": {
+      "correct": 0.85,
+      "wrong": 0.03,
+      "asked": 0.12
+    }
+  },
+  "step2": {
+    "n": 45,
+    "hospitals_named": 223,
+    "share_in_our_verified_list": 0.6233183856502242,
+    "share_in_patient_area": 0.5515695067264574,
+    "share_in_list_wrong_area": 0.07174887892376682,
+    "capable_at3": 0.7777777777777778,
+    "bad_at3_count": 3,
+    "ndcg5_judged": 0.39691500288393955,
+    "ndcg5_queries": 43,
+    "specialty_ok": 0.8666666666666667,
+    "mediroute": {
+      "ndcg5_judged": 0.8069612345060074,
+      "capable_at3": 0.9333333333333333,
+      "offarea_at3": 0.05185185185185184,
+      "share_in_verified_list": 1.0
+    }
+  }
+}

@@ -60,6 +60,7 @@ ol, ul { margin:0; padding-left:20px; } li { margin-bottom:5px; }
   <button role="tab" id="t-better" aria-selected="false" data-tab="better">5 · Why better</button>
   <button role="tab" id="t-weights" aria-selected="false" data-tab="weights">6 · Weights</button>
   <button role="tab" id="t-plan" aria-selected="false" data-tab="plan">7 · Proof &amp; decisions</button>
+  <button role="tab" id="t-results" aria-selected="false" data-tab="results">8 · POC results</button>
 </nav>
 
 <!-- 1 TODAY -->
@@ -281,6 +282,37 @@ H063  {"level": "speciality_only", "field": "verified_specialties",
   </ol>
   <p class="muted" style="margin-top:12px">Sources: Şahin &amp; Cezlan (2022), OPUS Journal of Society Research 19(46), <code>docs/reference_paper_opusjsr_2326653.pdf</code> ·
   Zeng et al. (2025), explainable doctor ranking with LLMs (arXiv 2503.02298) · medigence.com · MediPulse, MediScore (GitHub) · TA feedback (docs/base).</p>
+</section>
+
+<!-- 8 RESULTS -->
+<section class="panel" data-panel="results" hidden>
+  <h2>POC results (overnight run, 12 Nov 2026)</h2>
+  <p class="muted">45 gold requests · 786 hospital × need pairs graded from the hospitals' own websites (LLM drafts, to be checked) · 12 systems · total LLM spend $0.14.
+  Full report: <code>docs/evaluation/step2_benchmark_report.html</code>.</p>
+  <div class="scroll"><table>
+    <tr><th>System</th><th>NDCG@5</th><th>Capable@3</th><th>Verdict</th></tr>
+    <tr class="win"><td>Today's engine (filter + semantic + bonuses)</td><td class="n">0.71</td><td class="n">91%</td><td>best overall</td></tr>
+    <tr><td>v2, capability by rules</td><td class="n">0.70</td><td class="n">91%</td><td>same as today (p = 0.39)</td></tr>
+    <tr><td>v2, capability by embeddings</td><td class="n">0.67</td><td class="n">89%</td><td>worse</td></tr>
+    <tr><td>v2, capability by LLM judge</td><td class="n">0.66</td><td class="n">87%</td><td><span class="tag t-bad">LLM does not earn its place here</span></td></tr>
+    <tr><td>v2, LLM + location tiers</td><td class="n">0.60</td><td class="n">93%</td><td>best suitability anywhere; lower in-area score</td></tr>
+  </table></div>
+  <h3>Capability test (301 pairs with a readable website)</h3>
+  <div class="scroll"><table>
+    <tr><th>Method</th><th>Precision</th><th>Recall</th><th>Unsafe claims</th></tr>
+    <tr><td>Rules</td><td class="n">63%</td><td class="n">50%</td><td class="n">9</td></tr>
+    <tr><td>Embeddings</td><td class="n">62%</td><td class="n">57%</td><td class="n">13</td></tr>
+    <tr><td>LLM judge</td><td class="n">58%</td><td class="n">47%</td><td class="n">16</td></tr>
+  </table></div>
+  <h3>What this changes in the design</h3>
+  <ul>
+    <li><b>Drop the runtime LLM capability judge</b> (step C): on our data it is the least accurate and least safe of the three. Keep rules (or embeddings) for matching.</li>
+    <li><b>The real limit is the data:</b> procedure lists come from an unverified team sheet with about 5 items per hospital, so every method stops near 50% recall.</li>
+    <li><b>Next AI experiment: offline website extraction</b> (step 1) to fill and verify procedure lists, measured with the same harness: does recall rise above 50%?</li>
+    <li><b>Keep today's engine as the default</b>; keep location tiers as an option when the area has fewer than 3 hospitals.</li>
+    <li>Same discipline as Step 1: AI stays only where a measured gain shows it; here the evidence says not at runtime.</li>
+  </ul>
+  <p class="muted">Caveats: grades are LLM drafts (48% low-confidence where sites block reading); 45 requests; human check of a sample pending.</p>
 </section>
 
 </main>

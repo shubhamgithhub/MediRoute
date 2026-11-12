@@ -7,9 +7,13 @@
     5 decide              code      both voters agree -> answer ("agreement");
                           LLM judge they disagree -> a guarded LLM judge picks one of the two ("judge");
                                     no LLM -> the lookup voter answers alone ("lookup_only");
+                                    the patient's body-area answer fits exactly one of the
+                                    disputed specialities -> that one ("patient_answer");
                                     otherwise ask (General Medicine asks once before it is accepted)
-    5b clarify            code      one short form; answers are added and stages 3-5 re-run;
-                                    after 2 rounds the user picks from the list
+    5b clarify            code      one short form (questions already answered are not asked again);
+                                    answers are added and stages 3-5 re-run; if it is still open
+                                    the user picks from a short list of the candidates (with
+                                    descriptions; "something else" opens the full list)
     6 output              "Suggested speciality to search: X" + evidence + disclaimer
 
 Every stage is logged with the request id (see trace.py).
@@ -22,7 +26,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import Any
 
-from mediroute.common.specialties import care_category, get_specialty, specialty_names
+from mediroute.common.specialties import body_area_specialties, care_category, get_specialty, specialty_names
 from mediroute.specialty_routing.step1.evidence import EVIDENCE_PROMPT_VERSION, EvidenceExtractor
 from mediroute.specialty_routing.step1.judge import JUDGE_PROMPT_VERSION, LLMJudge
 from mediroute.specialty_routing.step1.lookup import LookupIndex
@@ -36,7 +40,8 @@ from mediroute.utils.logging_config import get_logger
 MAX_CLARIFICATION_ROUNDS = 2
 CATCH_ALL = "General Medicine"  # an answer of General Medicine asks one clarification round first
 # decisions that mean "a speciality was suggested" (Step 2 can run); "majority" is the old name
-ROUTED_DECISIONS = {"agreement", "judge", "lookup_only", "user_selected", "majority"}
+ROUTED_DECISIONS = {"agreement", "judge", "lookup_only", "patient_answer", "user_selected", "majority"}
+SHORTLIST_SIZE = 4  # specialities offered when the user picks
 LLM_DOWN_NOTICE = ("The AI language model is not available on this server, so this suggestion comes from "
                    "the medical lookup only and may need an extra question.")
 _logger = get_logger()
@@ -220,6 +225,11 @@ class Step1Pipeline:
         if lookup and llm_pick and lookup == llm_pick:
             chosen, method, agreeing = lookup, "agreement", ["V1", "V2"]
             reason = "The medical lookup and the AI model agree, and the text contains supporting evidence."
+        elif lookup and llm_pick and self._answer_decides(inp, [lookup, llm_pick]):
+            chosen, method = self._answer_decides(inp, [lookup, llm_pick]), "patient_answer"
+            agreeing = [k for k, v in tops.items() if v == chosen]
+            reason = (f"The medical lookup suggested {lookup} and the AI model {llm_pick}; your answer "
+                      f"\u201c{inp.clarification.get('body_area')}\u201d fits {chosen}.")
         elif lookup and llm_pick:
             verdict = self.judge.judge(text, evidence.routing_phrases, lookup, llm_pick)
             for call, prompt in zip(verdict.calls, verdict.prompts):
@@ -235,6 +245,10 @@ class Step1Pipeline:
                     trace, inp, emergency, evidence.phrases, votes,
                     reason=f"The medical lookup suggested {lookup} and the AI model {llm_pick}; "
                            f"one more detail will decide between them.")
+        elif votes["V2"].ok and not llm_pick and lookup and self._answer_decides(inp, [lookup]):
+            chosen, method, agreeing = lookup, "patient_answer", ["V1"]
+            reason = (f"The medical lookup suggested {lookup}, and your answer "
+                      f"\u201c{inp.clarification.get('body_area')}\u201d fits it.")
         elif votes["V2"].ok and not llm_pick:
             # The AI read the message and judged it too vague ("Unclear"): that is real information,
             # so ask the patient rather than let the lookup guess (portal benchmark: "pain" -> Cardiology).
@@ -263,8 +277,24 @@ class Step1Pipeline:
                              reason=reason, agreeing=agreeing)
 
     # ------------------------------------------------------------------ helpers
+    @staticmethod
+    def _answer_decides(inp: Step1Input, candidates: list[str]) -> str | None:
+        """The one candidate that fits the patient's body-area answer, else None. Only ever picks
+        among specialities the voters already suggested; it never adds a new one."""
+        area = body_area_specialties((inp.clarification or {}).get("body_area", ""))
+        fitting = [c for c in dict.fromkeys(candidates) if c in area]
+        return fitting[0] if len(fitting) == 1 else None
+
+    @staticmethod
+    def _open_fields(inp: Step1Input) -> list[dict]:
+        answered = {k for k, v in (inp.clarification or {}).items() if str(v or "").strip()}
+        return [f for f in CLARIFICATION_FIELDS if f["name"] not in answered]
+
     def _ask_or_offer_choice(self, trace, inp, emergency, evidence, votes, reason):
-        if inp.clarification_round >= MAX_CLARIFICATION_ROUNDS:
+        # one form, then a short list: asking the same form again gives the voters nothing new
+        offer_list = (inp.clarification_round >= MAX_CLARIFICATION_ROUNDS or not self._open_fields(inp)
+                      or (inp.clarification_round >= 1 and self._candidates(votes)))
+        if offer_list:
             trace.log("decision", method="needs_user_choice", selected_specialty=None, reason=reason,
                       rounds_answered=inp.clarification_round)
             return self._respond(trace, inp, "needs_user_choice", None, emergency, evidence, votes, reason=reason)
@@ -273,12 +303,19 @@ class Step1Pipeline:
         return self._respond(trace, inp, "clarification_required", None, emergency, evidence, votes, reason=reason)
 
     def _candidates(self, votes: dict[str, Vote]) -> list[str]:
-        ordered: list[str] = []
+        """Each voter's first choice, then the rest of their top 3."""
+        ordered: list[str] = [v.top1 for v in votes.values() if v.top1]
         for vote in votes.values():
-            for name, _ in vote.top3:
-                if name not in ordered:
-                    ordered.append(name)
-        return ordered
+            ordered += [name for name, _ in vote.top3]
+        return list(dict.fromkeys(ordered))
+
+    def _shortlist(self, inp: Step1Input, votes: dict[str, Vote]) -> list[str]:
+        """What the user picks from: the voters' candidates that fit the body-area answer first,
+        then the other candidates, then the area's specialities (when the voters found nothing)."""
+        area = body_area_specialties((inp.clarification or {}).get("body_area", ""))
+        candidates = self._candidates(votes)
+        ordered = [c for c in candidates if c in area] + candidates + sorted(area)
+        return list(dict.fromkeys(ordered))[:SHORTLIST_SIZE]
 
     def _respond(self, trace: Step1Trace, inp: Step1Input, decision: str, specialty: str | None,
                  emergency: dict, evidence: list[str], votes: dict[str, Vote], reason: str,
@@ -286,7 +323,7 @@ class Step1Pipeline:
         spec = get_specialty(specialty) if specialty else None
         clarify = decision == "clarification_required"
         choose = decision == "needs_user_choice"
-        candidates = self._candidates(votes)
+        shortlist = self._shortlist(inp, votes) if decision == "needs_user_choice" else []
         llm_ok = self.llm_status()["available"]
         response: dict[str, Any] = {
             "request_id": trace.request_id,
@@ -307,12 +344,14 @@ class Step1Pipeline:
                 "round": inp.clarification_round + 1,
                 "max_rounds": MAX_CLARIFICATION_ROUNDS,
                 "message": "We need a little more information to suggest the right speciality.",
-                "fields": CLARIFICATION_FIELDS,
+                "fields": self._open_fields(inp),
             } if clarify else None,
             "user_choice": {
-                "message": "We could not match a speciality with confidence. Please choose the one closest to your need.",
-                "suggested_first": candidates,
-                "options": candidates + [n for n in specialty_names() if n not in candidates],
+                "message": "Which of these is closest to your need? If none fits, choose \u201csomething else\u201d.",
+                "shortlist": [{"name": n, "description": (get_specialty(n).description if get_specialty(n) else "")}
+                              for n in shortlist],
+                "suggested_first": shortlist,
+                "options": shortlist + [n for n in specialty_names() if n not in shortlist],
             } if choose else None,
             "disclaimer": DISCLAIMER,
             "llm_available": llm_ok,

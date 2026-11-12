@@ -1,0 +1,58 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Step 2 Benchmark</title><style>
+:root { --bg:#f7f8f6; --card:#fff; --fg:#1b2321; --muted:#5d6b68; --line:#d8e0de; --head:#e6f0ee; --good-bg:#e3f3e8; --warn-bg:#fbf1db; }
+@media (prefers-color-scheme: dark) { :root { --bg:#121716; --card:#1b2321; --fg:#e4ebe9; --muted:#9aaba7; --line:#2f3b39; --head:#1f3330; --good-bg:#17331f; --warn-bg:#3a2e14; color-scheme:dark; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 "Segoe UI",system-ui,Arial,sans-serif; padding:28px max(16px,3vw) 56px; }
+main { max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+h1 { margin:0; font-size:1.7rem; } h2 { margin:0 0 6px; font-size:1.15rem; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+.scroll { overflow-x:auto; } table { width:100%; border-collapse:collapse; font-size:.9rem; font-variant-numeric:tabular-nums; }
+th, td { padding:7px 9px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:var(--head); font-size:.82rem; } tr.win td { background:var(--good-bg); font-weight:600; }
+.m, .muted { color:var(--muted); font-size:.85rem; font-weight:400; } .verdict { background:var(--warn-bg); padding:10px 14px; border-radius:8px; }
+code { font-family:Consolas,monospace; font-size:.85em; }
+</style></head><body><main>
+<header><h1>Step 2 benchmark: today's engine vs design v2</h1>
+<p class="muted">Run 20261112_003122_step2 · 45 gold requests (5 strata) · oracle mode (the gold speciality and procedure go straight to Step 2) ·
+grades are <b>drafts</b> from the hospitals' own websites, awaiting a human check of a sample.</p></header>
+
+<section class="card"><h2>Verdict: does the LLM add value in Step 2?</h2><p class="verdict"><b>The LLM does not clearly earn its place here</b>: S6 vs best non-LLM -0.03 NDCG@5 (rule: ≥ +0.05). Use the cheaper method unless the capability test below shows a safety gain.</p></section>
+
+<section class="card"><h2>Findings (read this first)</h2><ol>
+<li><b>Today's engine ranks best</b> (NDCG@5 0.71). The v2 designs are not better: rules 0.70, embeddings 0.67, LLM 0.66. Only S6 vs today and S5 vs today are significant (p &lt; 0.05), and both in today's favour.</li>
+<li><b>The LLM does not earn its place for capability matching on our data.</b> On the 301 pairs with a readable website: rules precision 63% / recall 50% / 9 unsafe claims; embeddings 62% / 57% / 13; LLM 58% / 47% / 16. Same order with capability-focused weights (rules 0.69, embeddings 0.67, LLM 0.66 NDCG@5).</li>
+<li><b>Why: the bottleneck is the data, not the matching method.</b> Every method reads the team sheet's short, unverified procedure lists (about 5 per hospital). Recall stops near 50% for all three because hospitals' websites confirm many procedures that our lists do not contain; better synonym understanding cannot find what is not listed, and more matches on unverified items mean more unsafe claims (worst for the LLM).</li>
+<li><b>Location tiers help suitability:</b> S7 has the highest Capable@3 (93%: a capable hospital in the top 3 wherever it is) at the cost of strict-area metrics, the trade the TA asked for (suitability over location). Worth keeping as an option, not the default.</li>
+<li><b>Where AI can still add value:</b> reading hospital websites to fill the procedure lists (the offline extraction in the design). That is now the step to test, because data coverage, not matching, limits accuracy.</li>
+</ol><p class="muted">Caveats: grades are LLM drafts from website snippets (48% low-confidence where sites block reading); 45 requests; a person must check a sample before these numbers are final.</p></section>
+
+<section class="card"><h2>1. End-to-end ranking (all 45 requests)</h2><div class="scroll"><table>
+<tr><th>ID</th><th>System</th><th>AI used</th><th>NDCG@5 (95% CI)</th><th>P@5</th><th>R@5</th><th>Hit@3</th><th>Capable@3</th><th>Bad@3</th><th>p vs today</th></tr>
+<tr><td>B0</td><td>Random among eligible</td><td>none</td><td>0.61 <span class=m>[0.54–0.69]</span></td><td>53%</td><td>45%</td><td>88%</td><td>84%</td><td>8%</td><td>0.000</td></tr><tr><td>B1</td><td>Keyword search, no filters</td><td>none</td><td>0.50 <span class=m>[0.41–0.58]</span></td><td>44%</td><td>39%</td><td>79%</td><td>87%</td><td>51%</td><td>0.000</td></tr><tr><td>B2</td><td>Filter, alphabetical</td><td>none</td><td>0.60 <span class=m>[0.52–0.68]</span></td><td>56%</td><td>44%</td><td>91%</td><td>87%</td><td>4%</td><td>0.000</td></tr><tr><td>B3</td><td>Filter + rule bonuses</td><td>none</td><td>0.68 <span class=m>[0.61–0.76]</span></td><td>64%</td><td>48%</td><td>95%</td><td>91%</td><td>0%</td><td>0.129</td></tr><tr><td>B4</td><td>Filter + semantic search</td><td>embeddings</td><td>0.65 <span class=m>[0.57–0.73]</span></td><td>54%</td><td>44%</td><td>91%</td><td>87%</td><td>2%</td><td>0.000</td></tr><tr class=win><td>ours</td><td>Today&#x27;s engine (filter + semantic + bonuses)</td><td>embeddings</td><td>0.71 <span class=m>[0.63–0.79]</span></td><td>63%</td><td>48%</td><td>95%</td><td>91%</td><td>0%</td><td>–</td></tr><tr><td>A1</td><td>Today&#x27;s engine, website-confirmed only</td><td>embeddings</td><td>0.61 <span class=m>[0.52–0.71]</span></td><td>61%</td><td>42%</td><td>84%</td><td>80%</td><td>0%</td><td>0.002</td></tr><tr><td>A2</td><td>Today&#x27;s engine, no procedure match</td><td>embeddings</td><td>0.70 <span class=m>[0.62–0.78]</span></td><td>64%</td><td>49%</td><td>95%</td><td>91%</td><td>0%</td><td>0.068</td></tr><tr><td>S4</td><td>v2: criteria + TOPSIS, capability by rules</td><td>none</td><td>0.70 <span class=m>[0.62–0.77]</span></td><td>60%</td><td>48%</td><td>95%</td><td>91%</td><td>0%</td><td>0.392</td></tr><tr><td>S5</td><td>v2: criteria + TOPSIS, capability by embeddings</td><td>embeddings</td><td>0.67 <span class=m>[0.59–0.75]</span></td><td>59%</td><td>46%</td><td>93%</td><td>89%</td><td>2%</td><td>0.035</td></tr><tr><td>S6</td><td>v2: criteria + TOPSIS, capability by LLM judge</td><td>LLM</td><td>0.66 <span class=m>[0.58–0.75]</span></td><td>57%</td><td>46%</td><td>91%</td><td>87%</td><td>2%</td><td>0.022</td></tr><tr><td>S7</td><td>v2: S6 + location tiers</td><td>LLM</td><td>0.60 <span class=m>[0.51–0.70]</span></td><td>54%</td><td>41%</td><td>81%</td><td>93%</td><td>2%</td><td>0.001</td></tr></table></div>
+<p class="muted">NDCG@5 = ranking quality of the top 5 with graded relevance (headline). P@5 / R@5 = relevant (grade ≥ 2) among the top 5 / of all relevant.
+Hit@3 = a relevant hospital in the top 3. Capable@3 = a capable hospital in the top 3 <i>wherever it is</i> (shows location tiers). Bad@3 = a top-3 hospital that cannot treat the need (safety).
+Relevance counts a hospital outside the patient's area as 0, so S7's widened results score only in Capable@3. p = paired permutation test of NDCG@5 against today's engine.</p></section>
+
+<section class="card"><h2>2. NDCG@5 by stratum</h2><div class="scroll"><table>
+<tr><th>Stratum</th><th>B0</th><th>B1</th><th>B2</th><th>B3</th><th>B4</th><th>ours</th><th>A1</th><th>A2</th><th>S4</th><th>S5</th><th>S6</th><th>S7</th></tr><tr><td>S1</td><td>0.75</td><td>0.54</td><td>0.76</td><td>0.82</td><td>0.75</td><td>0.81</td><td>0.67</td><td>0.81</td><td>0.80</td><td>0.80</td><td>0.80</td><td>0.74</td></tr><tr><td>S2</td><td>0.62</td><td>0.28</td><td>0.51</td><td>0.67</td><td>0.60</td><td>0.72</td><td>0.69</td><td>0.71</td><td>0.71</td><td>0.66</td><td>0.64</td><td>0.64</td></tr><tr><td>S3</td><td>0.52</td><td>0.56</td><td>0.53</td><td>0.65</td><td>0.69</td><td>0.73</td><td>0.69</td><td>0.70</td><td>0.67</td><td>0.62</td><td>0.62</td><td>0.62</td></tr><tr><td>S4</td><td>0.84</td><td>0.76</td><td>0.88</td><td>0.88</td><td>0.90</td><td>0.91</td><td>0.68</td><td>0.91</td><td>0.88</td><td>0.88</td><td>0.88</td><td>0.65</td></tr><tr><td>S5</td><td>0.19</td><td>0.37</td><td>0.22</td><td>0.27</td><td>0.20</td><td>0.26</td><td>0.19</td><td>0.24</td><td>0.27</td><td>0.25</td><td>0.24</td><td>0.20</td></tr></table></div>
+<p class="muted">S1 big area, speciality only · S2 big area + procedure · S3 state / anywhere + procedure · S4 small city · S5 edge cases.</p></section>
+
+<section class="card"><h2>3. Capability test: can this hospital do the procedure the patient mentioned?</h2><div class="scroll"><table>
+<tr><th>Method</th><th>Precision</th><th>Recall</th><th>F1</th><th>Accuracy</th><th>Unsafe claims</th></tr><tr><td>Rules</td><td>35%</td><td>50%</td><td>0.41</td><td>66%</td><td>37</td></tr><tr><td>Embeddings</td><td>34%</td><td>57%</td><td>0.43</td><td>64%</td><td>45</td></tr><tr><td>LLM judge</td><td>29%</td><td>47%</td><td>0.36</td><td>61%</td><td>54</td></tr></table></div>
+<p class="muted">576 graded (hospital, procedure) pairs. Truth = the website confirms the procedure (grade 3). A method "claims" capability when it says exact or related.
+Unsafe = says exact although the website grade is 0–1. The methods read our hospital data; the grades come from the websites, so this also measures how far our data can be trusted.</p></section>
+
+<section class="card"><h2>4. Grades, cost and limits</h2><div class="scroll"><table>
+<tr><th>Item</th><th>Value</th></tr>
+<tr><td>Graded pairs</td><td>786 · grades 0: 168, 1: 165, 2: 318, 3: 135</td></tr>
+<tr><td>Grade confidence</td><td>high: 392, low: 381, medium: 13 (low = site not readable, graded from our website check)</td></tr>
+<tr><td>LLM capability judge (GPT-6 Luna)</td><td>688 calls · $0.036 · median 1.8 s per call</td></tr>
+<tr><td>LLM grader (GPT-5.6 Luna, different model)</td><td>412 calls · $0.090</td></tr>
+<tr><td>Total LLM spend</td><td>$0.126 (cap $1)</td></tr>
+</table></div>
+<ul class="muted"><li>Grades are LLM drafts from website snippets; a person must check a sample (design: 20% + all grade-3s, kappa ≥ 0.6) before the numbers are final.</li>
+<li>Some hospital sites block automated reading (robots.txt) or render with JavaScript; those pairs were graded from our earlier website check (confidence "low").</li>
+<li>About 45 requests: NDCG differences under ~0.05 may not be significant; see the confidence intervals and p-values.</li>
+<li>Embedding thresholds (0.70 / 0.50) and TOPSIS weights (paper's experts) were fixed before the run, not tuned on these grades.</li></ul></section>
+<p class="muted">Code: <code>src/mediroute/hospital_recommendation/v2/</code> · <code>scripts/eval_step2.py</code> (systems S4–S7) · <code>scripts/step2_draft_grades.py</code> · <code>scripts/step2_report.py</code> · design: <code>docs/design/step2_design_v2.html</code></p>
+</main></body></html>

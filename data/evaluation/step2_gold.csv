@@ -1,0 +1,46 @@
+query_id,patient_text,specialty,procedure,diagnoses,preferred_city,preferred_state,stratum,notes
+S1-01,My father has epilepsy and his fits are not controlled. We want a neurologist in Hyderabad.,Neurology,,epilepsy,Hyderabad,,S1,big area + speciality only
+S1-02,I have been diagnosed with breast cancer and need treatment in Mumbai.,Oncology,,breast cancer,Mumbai,,S1,big area + speciality only
+S1-03,Chronic back and knee pain; looking for an orthopaedic hospital in Delhi NCR.,Orthopaedics,,,Delhi NCR,,S1,big area + speciality only
+S1-04,Ulcerative colitis for 5 years; need a good gastroenterology department in Chennai.,Gastroenterology,,ulcerative colitis,Chennai,,S1,big area + speciality only
+S1-05,My mother has chronic kidney disease stage 4. Looking for a nephrologist in Kolkata.,Nephrology,,chronic kidney disease,Kolkata,,S1,big area + speciality only
+S1-06,Angina and high blood pressure; want a cardiology hospital in Bengaluru.,Cardiology,,angina; hypertension,Bengaluru,,S1,big area + speciality only
+S1-07,Slipped disc pressing on the spinal cord; need a neurosurgeon in Mumbai.,Neurosurgery,,spinal cord compression,Mumbai,,S1,big area + speciality only
+S1-08,Fibroids and heavy periods; looking for a gynaecology hospital in Delhi NCR.,Obstetrics & Gynaecology,,uterine fibroids,Delhi NCR,,S1,big area + speciality only
+S1-09,COPD with frequent breathlessness; need a lung specialist hospital in Chennai.,Pulmonology,,COPD,Chennai,,S1,big area + speciality only
+S1-10,Enlarged prostate with urine problems; need a urology hospital in Hyderabad.,Urology,,benign prostatic hyperplasia,Hyderabad,,S1,big area + speciality only
+S2-01,My father needs heart bypass surgery. We prefer Chennai.,Cardiothoracic Surgery,heart bypass surgery,coronary artery disease,Chennai,,S2,patient wording vs hospital wording CABG
+S2-02,Severe aortic stenosis; the cardiologist suggested valve replacement through a catheter. Mumbai please.,Cardiology,valve replacement through a catheter,aortic stenosis,Mumbai,,S2,patient wording vs TAVR
+S2-03,Kidney failure; my brother will donate a kidney. Looking for kidney transplant in Chennai.,Organ Transplant,kidney transplant,end stage kidney disease,Chennai,,S2,
+S2-04,My son has thalassaemia and needs a bone marrow transplant. Delhi NCR.,Hematology & Bone Marrow Transplant,bone marrow transplant,thalassaemia major,Delhi NCR,,S2,
+S2-05,Osteoarthritis of both knees; surgeon advised knee replacement. Kolkata.,Orthopaedics,knee replacement,osteoarthritis,Kolkata,,S2,patient wording vs Total Knee Arthroplasty
+S2-06,Blocked heart artery; doctor says I need a stent. Hyderabad.,Cardiology,stent,coronary artery disease,Hyderabad,,S2,patient wording vs angioplasty / PCI
+S2-07,Liver cirrhosis; looking for living donor liver transplant in Delhi NCR.,Organ Transplant,living donor liver transplant,liver cirrhosis,Delhi NCR,,S2,
+S2-08,Head and neck cancer; oncologist recommended radiation therapy. Bengaluru.,Oncology,radiation therapy,head and neck cancer,Bengaluru,,S2,patient wording vs radiotherapy
+S2-09,On kidney dialysis three times a week while visiting Mumbai; need a dialysis centre.,Nephrology,dialysis,end stage kidney disease,Mumbai,,S2,
+S2-10,MRI shows a brain tumour; neurosurgeon advised surgery. Delhi NCR.,Neurosurgery,brain tumour surgery,brain tumour,Delhi NCR,,S2,patient wording vs Brain Tumor Surgery
+S2-11,Prostate cancer; urologist recommends robotic surgery to remove the prostate. Mumbai.,Urology,robotic prostate removal,prostate cancer,Mumbai,,S2,patient wording vs Robotic Prostatectomy
+S2-12,Parkinson's disease; neurologist suggested deep brain stimulation. Hyderabad.,Neurosurgery,deep brain stimulation,Parkinson's disease,Hyderabad,,S2,
+S3-01,Knee replacement needed; anywhere in Maharashtra is fine.,Orthopaedics,knee replacement,osteoarthritis,,Maharashtra,S3,state-level
+S3-02,Heart bypass surgery for my father; any good hospital in Tamil Nadu.,Cardiothoracic Surgery,heart bypass surgery,coronary artery disease,,Tamil Nadu,S3,state-level
+S3-03,Kidney transplant; we can travel anywhere in Karnataka.,Organ Transplant,kidney transplant,end stage kidney disease,,Karnataka,S3,state-level
+S3-04,Chemotherapy for colon cancer; anywhere in Kerala.,Oncology,chemotherapy,colon cancer,,Kerala,S3,state-level
+S3-05,Liver transplant; no preference for the city.,Organ Transplant,liver transplant,liver failure,,,S3,no preference (pooled)
+S3-06,My husband needs a heart transplant; any city in India.,Cardiothoracic Surgery,heart transplant,end stage heart failure,,,S3,no preference (pooled)
+S3-07,Valve replacement through a catheter for my 80-year-old mother; any city.,Cardiology,valve replacement through a catheter,aortic stenosis,,,S3,no preference (pooled)
+S3-08,Bone marrow transplant for leukaemia; we can go anywhere.,Hematology & Bone Marrow Transplant,bone marrow transplant,leukaemia,,,S3,no preference (pooled)
+S4-01,Heart problem; looking for a cardiology hospital in Jaipur.,Cardiology,,,Jaipur,,S4,small city
+S4-02,Cancer treatment needed in Patna.,Oncology,,,Patna,,S4,small city
+S4-03,Hip fracture; orthopaedic hospital in Bhubaneswar.,Orthopaedics,,hip fracture,Bhubaneswar,,S4,small city
+S4-04,Stroke recovery; neurology hospital in Indore.,Neurology,,stroke,Indore,,S4,small city
+S4-05,Kidney disease; nephrology in Coimbatore.,Nephrology,,chronic kidney disease,Coimbatore,,S4,small city
+S4-06,Fatty liver and acidity; gastroenterology in Lucknow.,Gastroenterology,,fatty liver,Lucknow,,S4,small city
+S4-07,Chest pain on exertion; cardiology in Guwahati.,Cardiology,,angina,Guwahati,,S4,small city
+S4-08,Need knee replacement in Jaipur.,Orthopaedics,knee replacement,osteoarthritis,Jaipur,,S4,small city + procedure
+S5-01,Severe psoriasis; looking for a dermatology hospital in Kochi.,Dermatology,,psoriasis,Kochi,,S5,rare speciality in the data
+S5-02,We have been trying for a baby for 4 years and want IVF in Mumbai.,Reproductive Medicine,IVF,infertility,Mumbai,,S5,no hospital lists IVF as a procedure
+S5-03,Cataract in both eyes; need cataract surgery in Pune.,Ophthalmology,cataract surgery,cataract,Pune,,S5,rare speciality in the data
+S5-04,My baby has a hole in the heart and needs surgery; any city.,Pediatric Cardiology,hole in the heart repair,ventricular septal defect,,,S5,lay wording vs ASD/VSD repair
+S5-05,Morbid obesity; considering weight loss surgery in Ahmedabad.,Bariatric Surgery,weight loss surgery,morbid obesity,Ahmedabad,,S5,lay wording vs bariatric / gastric sleeve
+S5-06,My daughter is deaf and needs a cochlear implant. Delhi NCR.,ENT,cochlear implant,hearing loss,Delhi NCR,,S5,rare procedure
+S5-07,Small brain tumour; doctor mentioned CyberKnife radiosurgery. Any city.,Neurosurgery,CyberKnife,brain tumour,,,S5,technology-specific procedure

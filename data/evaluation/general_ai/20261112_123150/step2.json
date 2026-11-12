@@ -1,0 +1,2060 @@
+[
+ {
+  "id": "S1-01",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.3583878721927554,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "NIMS (Nizam's Institute of Medical Sciences)",
+    "city": "Punjagutta",
+    "hospital_id": "H014",
+    "how": "matched"
+   },
+   {
+    "name": "KIMS Hospitals",
+    "city": "Secunderabad",
+    "hospital_id": "H011",
+    "how": "matched"
+   },
+   {
+    "name": "Yashoda Hospitals",
+    "city": "Secunderabad / Somajiguda / Hitec City",
+    "hospital_id": "H009",
+    "how": "matched"
+   },
+   {
+    "name": "Apollo Hospitals",
+    "city": "Jubilee Hills",
+    "hospital_id": "H008",
+    "how": "matched"
+   },
+   {
+    "name": "Citi Neuro Centre",
+    "city": "Banjara Hills",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 2,
+  "judged_capable": 1
+ },
+ {
+  "id": "S1-02",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 5,
+  "in_area": 5,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.7227265726449518,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Tata Memorial Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H060",
+    "how": "matched"
+   },
+   {
+    "name": "Kokilaben Dhirubhai Ambani Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H050",
+    "how": "matched"
+   },
+   {
+    "name": "Sir H. N. Reliance Foundation Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H053",
+    "how": "matched"
+   },
+   {
+    "name": "P. D. Hinduja Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H052",
+    "how": "matched"
+   },
+   {
+    "name": "Nanavati Max Super Speciality Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H054",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 3,
+  "judged_capable": 3
+ },
+ {
+  "id": "S1-03",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.6366824387328316,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Indian Spinal Injuries Centre (ISIC)",
+    "city": "Vasant Kunj",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Max Super Speciality Hospital",
+    "city": "Saket",
+    "hospital_id": "H034",
+    "how": "matched"
+   },
+   {
+    "name": "Medanta - The Medicity",
+    "city": "Gurugram",
+    "hospital_id": "H040",
+    "how": "matched"
+   },
+   {
+    "name": "Indraprastha Apollo Hospital",
+    "city": "Sarita Vihar",
+    "hospital_id": "H033",
+    "how": "matched"
+   },
+   {
+    "name": "AIIMS",
+    "city": "New Delhi",
+    "hospital_id": "H039",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 2,
+  "judged_capable": 2
+ },
+ {
+  "id": "S1-04",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.6131471927654584,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Apollo Hospitals (Greams Road)",
+    "city": "Chennai",
+    "hospital_id": "H021",
+    "how": "matched"
+   },
+   {
+    "name": "GEM Hospital (Perungudi)",
+    "city": "Chennai",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Dr. Rela Institute & Medical Centre (Chromepet)",
+    "city": "Chennai",
+    "hospital_id": "H029",
+    "how": "matched"
+   },
+   {
+    "name": "MGM Healthcare (Aminjikarai)",
+    "city": "Chennai",
+    "hospital_id": "H023",
+    "how": "matched"
+   },
+   {
+    "name": "MIOT International (Manapakkam)",
+    "city": "Chennai",
+    "hospital_id": "H027",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S1-05",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.5531464700081438,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Manipal Hospitals",
+    "city": "Kolkata",
+    "hospital_id": "H079",
+    "how": "matched"
+   },
+   {
+    "name": "Apollo Multispecialty Hospitals",
+    "city": "Kolkata",
+    "hospital_id": "H076",
+    "how": "matched"
+   },
+   {
+    "name": "Fortis Hospital and Kidney Institute",
+    "city": "Kolkata",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Fortis Hospital",
+    "city": "Kolkata",
+    "hospital_id": "H083",
+    "how": "matched"
+   },
+   {
+    "name": "Rabindranath Tagore International Institute of Cardiac Sciences (RTIICS / Narayana Health)",
+    "city": "Kolkata",
+    "hospital_id": "H077",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 2,
+  "judged_capable": 2
+ },
+ {
+  "id": "S1-06",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 3,
+  "in_area": 3,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.3716702184910474,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Sri Jayadeva Institute of Cardiovascular Sciences and Research",
+    "city": "Bengaluru",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Narayana Institute of Cardiac Sciences",
+    "city": "Bengaluru",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Manipal Hospital",
+    "city": "Bengaluru",
+    "hospital_id": "H199",
+    "how": "matched"
+   },
+   {
+    "name": "Fortis Hospital",
+    "city": "Bengaluru",
+    "hospital_id": "H002",
+    "how": "matched"
+   },
+   {
+    "name": "Aster CMI Hospital",
+    "city": "Bengaluru",
+    "hospital_id": "H005",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S1-07",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 5,
+  "in_area": 5,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.7714160225925206,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Kokilaben Dhirubhai Ambani Hospital",
+    "city": "Andheri West",
+    "hospital_id": "H050",
+    "how": "matched"
+   },
+   {
+    "name": "Lilavati Hospital and Research Centre",
+    "city": "Bandra West",
+    "hospital_id": "H051",
+    "how": "matched"
+   },
+   {
+    "name": "P. D. Hinduja Hospital",
+    "city": "Mahim",
+    "hospital_id": "H052",
+    "how": "matched"
+   },
+   {
+    "name": "Jaslok Hospital",
+    "city": "Pedder Road",
+    "hospital_id": "H056",
+    "how": "matched"
+   },
+   {
+    "name": "Bombay Hospital",
+    "city": "Marine Lines",
+    "hospital_id": "H062",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 4,
+  "judged_capable": 3
+ },
+ {
+  "id": "S1-08",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 2,
+  "in_area": 2,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.4692787260227565,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Cloudnine Hospital",
+    "city": "Gurgaon, Noida, Kailash Colony, Punjabi Bagh",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Rosewalk Healthcare",
+    "city": "Panchsheel Park, South Delhi",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Apollo Cradle & Children’s Hospital",
+    "city": "Chirag Enclave, Moti Nagar, Gurgaon",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Sir Ganga Ram Hospital",
+    "city": "Rajinder Nagar, Delhi",
+    "hospital_id": "H036",
+    "how": "matched"
+   },
+   {
+    "name": "Max Super Speciality Hospital",
+    "city": "Saket, Delhi",
+    "hospital_id": "H034",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S1-09",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 0,
+  "ndcg5": 0.8262346571285599,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Apollo Hospitals (Greams Road)",
+    "city": "Chennai",
+    "hospital_id": "H021",
+    "how": "matched"
+   },
+   {
+    "name": "MGM Healthcare (Aminjikarai)",
+    "city": "Chennai",
+    "hospital_id": "H023",
+    "how": "matched"
+   },
+   {
+    "name": "Kauvery Hospital (Alwarpet)",
+    "city": "Chennai",
+    "hospital_id": "H025",
+    "how": "matched"
+   },
+   {
+    "name": "MIOT International (Manapakkam)",
+    "city": "Chennai",
+    "hospital_id": "H027",
+    "how": "matched"
+   },
+   {
+    "name": "Government Hospital of Thoracic Medicine (Tambaram Sanatorium)",
+    "city": "Chennai",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S1-10",
+  "stratum": "S1",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 0,
+  "ndcg5": 0.3903800499921017,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Asian Institute of Nephrology and Urology (AINU)",
+    "city": "Banjara Hills, Secunderabad, Hitec City",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Yashoda Hospitals",
+    "city": "Somajiguda, Secunderabad, Malakpet, Hitec City",
+    "hospital_id": "H009",
+    "how": "matched"
+   },
+   {
+    "name": "Apollo Hospitals",
+    "city": "Jubilee Hills",
+    "hospital_id": "H008",
+    "how": "matched"
+   },
+   {
+    "name": "AIG Hospitals",
+    "city": "Gachibowli",
+    "hospital_id": "H010",
+    "how": "matched"
+   },
+   {
+    "name": "KIMS Hospitals",
+    "city": "Secunderabad, Kondapur",
+    "hospital_id": "H011",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S2-01",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 1,
+  "in_area": 1,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 0,
+  "ndcg5": null,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Madras Medical Mission (MMM)",
+    "city": "Chennai",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Apollo Heart Centre",
+    "city": "Chennai",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Frontier Lifeline Hospital",
+    "city": "Chennai",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Fortis Malar Hospital",
+    "city": "Chennai",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "MIOT International",
+    "city": "Chennai",
+    "hospital_id": "H027",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 0
+ },
+ {
+  "id": "S2-02",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 5,
+  "in_area": 5,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.7878831830217166,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Asian Heart Institute",
+    "city": "Mumbai",
+    "hospital_id": "H057",
+    "how": "matched"
+   },
+   {
+    "name": "Kokilaben Dhirubhai Ambani Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H050",
+    "how": "matched"
+   },
+   {
+    "name": "Sir H. N. Reliance Foundation Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H053",
+    "how": "matched"
+   },
+   {
+    "name": "Jaslok Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H056",
+    "how": "matched"
+   },
+   {
+    "name": "Lilavati Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H051",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 4,
+  "judged_capable": 4
+ },
+ {
+  "id": "S2-03",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 5,
+  "in_area": 5,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.6131471927654584,
+  "spec_ok": false,
+  "named_list": [
+   {
+    "name": "Apollo Hospitals (Greams Road)",
+    "city": "Chennai",
+    "hospital_id": "H021",
+    "how": "matched"
+   },
+   {
+    "name": "MIOT International (Manapakkam)",
+    "city": "Chennai",
+    "hospital_id": "H027",
+    "how": "matched"
+   },
+   {
+    "name": "MGM Healthcare (Aminjikarai)",
+    "city": "Chennai",
+    "hospital_id": "H023",
+    "how": "matched"
+   },
+   {
+    "name": "Kauvery Hospital (Alwarpet)",
+    "city": "Chennai",
+    "hospital_id": "H025",
+    "how": "matched"
+   },
+   {
+    "name": "Rela Hospital (Chromepet)",
+    "city": "Chennai",
+    "hospital_id": "H029",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S2-04",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 5,
+  "in_area": 5,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.6474999918898471,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Fortis Memorial Research Institute (FMRI)",
+    "city": "Gurugram",
+    "hospital_id": "H042",
+    "how": "matched"
+   },
+   {
+    "name": "Medanta – The Medicity",
+    "city": "Gurugram",
+    "hospital_id": "H040",
+    "how": "matched"
+   },
+   {
+    "name": "Apollo Hospitals, Indraprastha",
+    "city": "Delhi",
+    "hospital_id": "H033",
+    "how": "matched"
+   },
+   {
+    "name": "BLK-Max Super Speciality Hospital",
+    "city": "Delhi",
+    "hospital_id": "H035",
+    "how": "matched"
+   },
+   {
+    "name": "Sir Ganga Ram Hospital",
+    "city": "Delhi",
+    "hospital_id": "H036",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 2,
+  "judged_capable": 2
+ },
+ {
+  "id": "S2-05",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.3666495063604039,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Apollo Multispeciality Hospitals",
+    "city": "Kolkata",
+    "hospital_id": "H076",
+    "how": "matched"
+   },
+   {
+    "name": "Fortis Hospital",
+    "city": "Kolkata",
+    "hospital_id": "H083",
+    "how": "matched"
+   },
+   {
+    "name": "Manipal Hospitals",
+    "city": "Kolkata",
+    "hospital_id": "H079",
+    "how": "matched"
+   },
+   {
+    "name": "Medica Superspecialty Hospital",
+    "city": "Kolkata",
+    "hospital_id": "H080",
+    "how": "matched"
+   },
+   {
+    "name": "CMRI - The Calcutta Medical Research Institute",
+    "city": "Kolkata",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S2-06",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.40301463303053875,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "AIG Hospitals",
+    "city": "Gachibowli",
+    "hospital_id": "H010",
+    "how": "matched"
+   },
+   {
+    "name": "Apollo Hospitals",
+    "city": "Jubilee Hills",
+    "hospital_id": "H008",
+    "how": "matched"
+   },
+   {
+    "name": "Yashoda Hospitals",
+    "city": "Somajiguda, Secunderabad, or Hitec City",
+    "hospital_id": "H009",
+    "how": "matched"
+   },
+   {
+    "name": "CARE Hospitals",
+    "city": "Banjara Hills",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "KIMS Hospitals",
+    "city": "Secunderabad",
+    "hospital_id": "H011",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S2-07",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.3666495063604039,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Medanta - The Medicity",
+    "city": "Gurugram",
+    "hospital_id": "H040",
+    "how": "matched"
+   },
+   {
+    "name": "Institute of Liver and Biliary Sciences - ILBS",
+    "city": "New Delhi",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Max Super Speciality Hospital",
+    "city": "New Delhi",
+    "hospital_id": "H034",
+    "how": "matched"
+   },
+   {
+    "name": "Indraprastha Apollo Hospitals",
+    "city": "New Delhi",
+    "hospital_id": "H033",
+    "how": "matched"
+   },
+   {
+    "name": "BLK-Max Super Speciality Hospital",
+    "city": "New Delhi",
+    "hospital_id": "H035",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S2-08",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 1,
+  "in_area": 1,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.4692787260227565,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "HCG Cancer Centre",
+    "city": "Bengaluru",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   },
+   {
+    "name": "Mazumdar Shaw Medical Center / Narayana Health",
+    "city": "Bengaluru",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Manipal Hospital",
+    "city": "Bengaluru",
+    "hospital_id": "H199",
+    "how": "matched"
+   },
+   {
+    "name": "Cytecare Cancer Hospitals",
+    "city": "Bengaluru",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Kidwai Memorial Institute of Oncology",
+    "city": "Bengaluru",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S2-09",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 5,
+  "in_area": 5,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.5459389898591889,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Kokilaben Dhirubhai Ambani Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H050",
+    "how": "matched"
+   },
+   {
+    "name": "Lilavati Hospital and Research Centre",
+    "city": "Mumbai",
+    "hospital_id": "H051",
+    "how": "matched"
+   },
+   {
+    "name": "P. D. Hinduja Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H052",
+    "how": "matched"
+   },
+   {
+    "name": "Jaslok Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H056",
+    "how": "matched"
+   },
+   {
+    "name": "Sir H. N. Reliance Foundation Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H053",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 4,
+  "judged_capable": 3
+ },
+ {
+  "id": "S2-10",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 5,
+  "in_area": 5,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 1,
+  "ndcg5": 0.497223749750845,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "AIIMS",
+    "city": "New Delhi",
+    "hospital_id": "H039",
+    "how": "matched"
+   },
+   {
+    "name": "Sir Ganga Ram Hospital",
+    "city": "Delhi",
+    "hospital_id": "H036",
+    "how": "matched"
+   },
+   {
+    "name": "Medanta - The Medicity",
+    "city": "Gurugram",
+    "hospital_id": "H040",
+    "how": "matched"
+   },
+   {
+    "name": "Indraprastha Apollo",
+    "city": "Delhi",
+    "hospital_id": "H033",
+    "how": "matched"
+   },
+   {
+    "name": "Max Super Speciality Hospital",
+    "city": "Saket, Delhi",
+    "hospital_id": "H034",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 3,
+  "judged_capable": 2
+ },
+ {
+  "id": "S2-11",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 5,
+  "in_area": 5,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.4780492395749012,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Tata Memorial Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H060",
+    "how": "matched"
+   },
+   {
+    "name": "Kokilaben Dhirubhai Ambani Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H050",
+    "how": "matched"
+   },
+   {
+    "name": "Sir H. N. Reliance Foundation Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H053",
+    "how": "matched"
+   },
+   {
+    "name": "Lilavati Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H051",
+    "how": "matched"
+   },
+   {
+    "name": "Jaslok Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H056",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 4,
+  "judged_capable": 2
+ },
+ {
+  "id": "S2-12",
+  "stratum": "S2",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.38846558542095355,
+  "spec_ok": false,
+  "named_list": [
+   {
+    "name": "NIMS (Nizam's Institute of Medical Sciences)",
+    "city": "Hyderabad",
+    "hospital_id": "H014",
+    "how": "matched"
+   },
+   {
+    "name": "KIMS Hospitals",
+    "city": "Hyderabad",
+    "hospital_id": "H011",
+    "how": "matched"
+   },
+   {
+    "name": "Yashoda Hospitals",
+    "city": "Hyderabad",
+    "hospital_id": "H009",
+    "how": "matched"
+   },
+   {
+    "name": "Citi Neuro Centre",
+    "city": "Hyderabad",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Apollo Hospitals",
+    "city": "Hyderabad",
+    "hospital_id": "H008",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 2,
+  "judged_capable": 2
+ },
+ {
+  "id": "S3-01",
+  "stratum": "S3",
+  "named": 5,
+  "in_list": 3,
+  "in_area": 3,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.3391602052736161,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Sancheti Hospital",
+    "city": "Pune",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Deenanath Mangeshkar Hospital",
+    "city": "Pune",
+    "hospital_id": "H071",
+    "how": "matched"
+   },
+   {
+    "name": "Kokilaben Dhirubhai Ambani Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H050",
+    "how": "matched"
+   },
+   {
+    "name": "Breach Candy Hospital",
+    "city": "Mumbai",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Lilavati Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H051",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S3-02",
+  "stratum": "S3",
+  "named": 5,
+  "in_list": 3,
+  "in_area": 3,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 0,
+  "ndcg5": 0.07492216617260401,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Madras Medical Mission (MMM)",
+    "city": "Chennai",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Apollo Hospitals",
+    "city": "Chennai",
+    "hospital_id": "H021",
+    "how": "matched"
+   },
+   {
+    "name": "Frontier Lifeline Hospital (Dr. K.M. Cherian Heart Foundation)",
+    "city": "Chennai",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "MIOT International",
+    "city": "Chennai",
+    "hospital_id": "H027",
+    "how": "matched"
+   },
+   {
+    "name": "Kauvery Hospital",
+    "city": "Chennai",
+    "hospital_id": "H025",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 0
+ },
+ {
+  "id": "S3-03",
+  "stratum": "S3",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 1,
+  "ndcg5": 0.3391602052736161,
+  "spec_ok": false,
+  "named_list": [
+   {
+    "name": "Manipal Hospital (Old Airport Road)",
+    "city": "Bengaluru",
+    "hospital_id": "H001",
+    "how": "matched"
+   },
+   {
+    "name": "Narayana Health City (Bommasandra)",
+    "city": "Bengaluru",
+    "hospital_id": "H004",
+    "how": "matched"
+   },
+   {
+    "name": "Apollo Hospitals (Bannerghatta Road)",
+    "city": "Bengaluru",
+    "hospital_id": "H003",
+    "how": "matched"
+   },
+   {
+    "name": "Aster CMI Hospital",
+    "city": "Bengaluru",
+    "hospital_id": "H005",
+    "how": "matched"
+   },
+   {
+    "name": "Institute of Nephro Urology at Victoria Hospital campus",
+    "city": "Bengaluru",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 2,
+  "judged_capable": 1
+ },
+ {
+  "id": "S3-04",
+  "stratum": "S3",
+  "named": 5,
+  "in_list": 3,
+  "in_area": 3,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.0,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Regional Cancer Centre (RCC)",
+    "city": "Thiruvananthapuram",
+    "hospital_id": "H167",
+    "how": "matched"
+   },
+   {
+    "name": "Malabar Cancer Centre (MCC)",
+    "city": "Thalassery, Kannur",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Cochin Cancer Research Centre (CCRC)",
+    "city": "Kochi",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Amrita Hospital (AIMS)",
+    "city": "Kochi",
+    "hospital_id": "H095",
+    "how": "matched"
+   },
+   {
+    "name": "Aster Medcity",
+    "city": "Kochi",
+    "hospital_id": "H093",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 0,
+  "judged_capable": 0
+ },
+ {
+  "id": "S3-05",
+  "stratum": "S3",
+  "named": 5,
+  "in_list": 0,
+  "in_area": 0,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 0,
+  "ndcg5": 0.0,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Mayo Clinic",
+    "city": "Rochester, MN; Phoenix, AZ; Jacksonville, FL",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Cleveland Clinic",
+    "city": "Cleveland, OH",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "UCLA Medical Center",
+    "city": "Los Angeles, CA",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Johns Hopkins Hospital",
+    "city": "Baltimore, MD",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "UCSF Medical Center",
+    "city": "San Francisco, CA",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 0,
+  "judged_capable": 0
+ },
+ {
+  "id": "S3-06",
+  "stratum": "S3",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.0,
+  "spec_ok": false,
+  "named_list": [
+   {
+    "name": "MGM Healthcare",
+    "city": "Chennai",
+    "hospital_id": "H023",
+    "how": "matched"
+   },
+   {
+    "name": "Apollo Hospitals, Greams Road",
+    "city": "Chennai",
+    "hospital_id": "H021",
+    "how": "matched"
+   },
+   {
+    "name": "Kauvery Hospital",
+    "city": "Chennai",
+    "hospital_id": "H025",
+    "how": "matched"
+   },
+   {
+    "name": "Narayana Institute of Cardiac Sciences",
+    "city": "Bengaluru",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Fortis Escorts Heart Institute",
+    "city": "New Delhi",
+    "hospital_id": "H037",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 0,
+  "judged_capable": 0
+ },
+ {
+  "id": "S3-07",
+  "stratum": "S3",
+  "named": 5,
+  "in_list": 0,
+  "in_area": 0,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 0,
+  "ndcg5": 0.0,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Cleveland Clinic",
+    "city": "Cleveland",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Mayo Clinic",
+    "city": "Rochester",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Cedars-Sinai Medical Center",
+    "city": "Los Angeles",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Mount Sinai Hospital",
+    "city": "New York",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "NYU Langone",
+    "city": "New York",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 0,
+  "judged_capable": 0
+ },
+ {
+  "id": "S3-08",
+  "stratum": "S3",
+  "named": 5,
+  "in_list": 0,
+  "in_area": 0,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 0,
+  "ndcg5": 0.0,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Fred Hutchinson Cancer Center",
+    "city": "Seattle",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "MD Anderson Cancer Center",
+    "city": "Houston",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Memorial Sloan Kettering Cancer Center",
+    "city": "New York",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Dana-Farber Cancer Institute",
+    "city": "Boston",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "St. Jude Children’s Research Hospital",
+    "city": "Memphis",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 0,
+  "judged_capable": 0
+ },
+ {
+  "id": "S4-01",
+  "stratum": "S4",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 1.0,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Eternal Hospital (EHCC)",
+    "city": "Jawahar Circle",
+    "hospital_id": "H145",
+    "how": "matched"
+   },
+   {
+    "name": "Narayana Multispeciality Hospital",
+    "city": "Pratap Nagar",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   },
+   {
+    "name": "Fortis Escorts Hospital",
+    "city": "Malviya Nagar",
+    "hospital_id": "H113",
+    "how": "matched"
+   },
+   {
+    "name": "Manipal Hospital",
+    "city": "Vidhyadhar Nagar",
+    "hospital_id": "H146",
+    "how": "matched"
+   },
+   {
+    "name": "SMS Hospital",
+    "city": "JLN Marg",
+    "hospital_id": "H144",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 3,
+  "judged_capable": 2
+ },
+ {
+  "id": "S4-02",
+  "stratum": "S4",
+  "named": 5,
+  "in_list": 3,
+  "in_area": 3,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.6131471927654584,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Mahavir Cancer Sansthan",
+    "city": "Phulwari Sharif",
+    "hospital_id": "H125",
+    "how": "matched"
+   },
+   {
+    "name": "AIIMS Patna",
+    "city": "Patna",
+    "hospital_id": "H122",
+    "how": "matched"
+   },
+   {
+    "name": "Paras HMRI Hospital",
+    "city": "Raja Bazar",
+    "hospital_id": "H123",
+    "how": "matched"
+   },
+   {
+    "name": "Mediversal / Jay Prabha Medanta",
+    "city": "Kankarbagh",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "IGIMS",
+    "city": "Sheikhpura",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S4-03",
+  "stratum": "S4",
+  "named": 5,
+  "in_list": 3,
+  "in_area": 3,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 1.0,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Apollo Hospitals",
+    "city": "Bhubaneswar",
+    "hospital_id": "H128",
+    "how": "matched"
+   },
+   {
+    "name": "AMRI Hospitals",
+    "city": "Bhubaneswar",
+    "hospital_id": "H129",
+    "how": "matched"
+   },
+   {
+    "name": "CARE Hospitals",
+    "city": "Bhubaneswar",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "SUM Ultimate Medicare",
+    "city": "Bhubaneswar",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "AIIMS Bhubaneswar",
+    "city": "Bhubaneswar",
+    "hospital_id": "H126",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S4-04",
+  "stratum": "S4",
+  "named": 4,
+  "in_list": 2,
+  "in_area": 2,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 1.0,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Kokilaben Dhirubhai Ambani Hospital",
+    "city": "Indore",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   },
+   {
+    "name": "Medanta Super Specialty Hospital",
+    "city": "Indore",
+    "hospital_id": "H117",
+    "how": "matched"
+   },
+   {
+    "name": "Bombay Hospital",
+    "city": "Indore",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   },
+   {
+    "name": "CHL Hospital (CARE CHL)",
+    "city": "Indore",
+    "hospital_id": "H118",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S4-05",
+  "stratum": "S4",
+  "named": 5,
+  "in_list": 3,
+  "in_area": 3,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 1.0,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Kovai Medical Center and Hospital (KMCH)",
+    "city": "Coimbatore",
+    "hospital_id": "H132",
+    "how": "matched"
+   },
+   {
+    "name": "PSG Hospitals",
+    "city": "Coimbatore",
+    "hospital_id": "H133",
+    "how": "matched"
+   },
+   {
+    "name": "G. Kuppuswamy Naidu Memorial Hospital (GKNM)",
+    "city": "Coimbatore",
+    "hospital_id": "H131",
+    "how": "matched"
+   },
+   {
+    "name": "Sri Ramakrishna Hospital",
+    "city": "Coimbatore",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Ganga Hospital",
+    "city": "Coimbatore",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   }
+  ],
+  "judged_in_area": 3,
+  "judged_capable": 3
+ },
+ {
+  "id": "S4-06",
+  "stratum": "S4",
+  "named": 5,
+  "in_list": 1,
+  "in_area": 1,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.6131471927654584,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "SGPGIMS (Sanjay Gandhi Postgraduate Institute of Medical Sciences)",
+    "city": "Lucknow",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Medanta Hospital (Shaheed Path)",
+    "city": "Lucknow",
+    "hospital_id": "H112",
+    "how": "matched"
+   },
+   {
+    "name": "Apollomedics Super Speciality Hospital (Kanpur Road)",
+    "city": "Lucknow",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Max Super Speciality Hospital (Gomti Nagar)",
+    "city": "Lucknow",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   },
+   {
+    "name": "KGMU (King George's Medical University)",
+    "city": "Lucknow",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S4-07",
+  "stratum": "S4",
+  "named": 5,
+  "in_list": 1,
+  "in_area": 1,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.6131471927654584,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Narayana Superspeciality Hospital",
+    "city": "Amingaon",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   },
+   {
+    "name": "Apollo Hospitals",
+    "city": "Guwahati",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   },
+   {
+    "name": "Health City Hospital",
+    "city": "Guwahati",
+    "hospital_id": "H157",
+    "how": "matched"
+   },
+   {
+    "name": "GNRC Hospitals",
+    "city": "Guwahati",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Gauhati Medical College and Hospital - GMCH",
+    "city": "Guwahati",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S4-08",
+  "stratum": "S4",
+  "named": 5,
+  "in_list": 1,
+  "in_area": 1,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.0,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Shalby Multi-Specialty Hospital",
+    "city": "Jaipur",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   },
+   {
+    "name": "CK Birla Hospital (RBH)",
+    "city": "Jaipur",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Fortis Escorts Hospital",
+    "city": "Jaipur",
+    "hospital_id": "H113",
+    "how": "matched"
+   },
+   {
+    "name": "Narayana Multispeciality Hospital",
+    "city": "Jaipur",
+    "hospital_id": null,
+    "how": "not in our list (we have a branch elsewhere)"
+   },
+   {
+    "name": "Santokba Durlabhji Memorial Hospital (SDMH)",
+    "city": "Jaipur",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 0,
+  "judged_capable": 0
+ },
+ {
+  "id": "S5-01",
+  "stratum": "S5",
+  "named": 4,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.5321239748243536,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Amrita Hospital (AIMS)",
+    "city": "Edappally",
+    "hospital_id": "H095",
+    "how": "matched"
+   },
+   {
+    "name": "Aster Medcity",
+    "city": "Cheranalloor",
+    "hospital_id": "H093",
+    "how": "matched"
+   },
+   {
+    "name": "Rajagiri Hospital",
+    "city": "Aluva",
+    "hospital_id": "H094",
+    "how": "matched"
+   },
+   {
+    "name": "Medical Trust Hospital",
+    "city": "Pallimukku",
+    "hospital_id": "H098",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 2,
+  "judged_capable": 1
+ },
+ {
+  "id": "S5-02",
+  "stratum": "S5",
+  "named": 5,
+  "in_list": 3,
+  "in_area": 3,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 1,
+  "ndcg5": 0.4554594382818066,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "Jaslok Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H056",
+    "how": "matched"
+   },
+   {
+    "name": "Kokilaben Dhirubhai Ambani Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H050",
+    "how": "matched"
+   },
+   {
+    "name": "Hinduja Hospital",
+    "city": "Mumbai",
+    "hospital_id": "H052",
+    "how": "matched"
+   },
+   {
+    "name": "Nova IVF Fertility",
+    "city": "Mumbai",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Bloom IVF",
+    "city": "Mumbai",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 2,
+  "judged_capable": 1
+ },
+ {
+  "id": "S5-03",
+  "stratum": "S5",
+  "named": 5,
+  "in_list": 2,
+  "in_area": 2,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.2335470509513427,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "H.V. Desai Eye Hospital",
+    "city": "Pune",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "National Institute of Ophthalmology (NIO)",
+    "city": "Pune",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Asian Eye Hospital",
+    "city": "Pune",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Deenanath Mangeshkar Hospital",
+    "city": "Pune",
+    "hospital_id": "H071",
+    "how": "matched"
+   },
+   {
+    "name": "Jehangir Hospital",
+    "city": "Pune",
+    "hospital_id": "H070",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 1,
+  "judged_capable": 1
+ },
+ {
+  "id": "S5-04",
+  "stratum": "S5",
+  "named": 5,
+  "in_list": 0,
+  "in_area": 0,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 0,
+  "ndcg5": 0.0,
+  "spec_ok": false,
+  "named_list": [
+   {
+    "name": "Boston Children’s Hospital",
+    "city": "Boston",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Texas Children’s Hospital",
+    "city": "Houston",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Children’s Hospital of Philadelphia / CHOP",
+    "city": "Philadelphia",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Great Ormond Street Hospital / GOSH",
+    "city": "London",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "The Hospital for Sick Children / SickKids",
+    "city": "Toronto",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 0,
+  "judged_capable": 0
+ },
+ {
+  "id": "S5-05",
+  "stratum": "S5",
+  "named": 5,
+  "in_list": 3,
+  "in_area": 3,
+  "wrong_area": 0,
+  "capable3": true,
+  "bad3": 0,
+  "ndcg5": 0.6180299280149257,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "NOBLE Gastro & Bariatric Hospital",
+    "city": "Ahmedabad",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Apollo Hospitals",
+    "city": "Ahmedabad",
+    "hospital_id": "H086",
+    "how": "matched"
+   },
+   {
+    "name": "KD Hospital",
+    "city": "Ahmedabad",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Zydus Hospitals",
+    "city": "Ahmedabad",
+    "hospital_id": "H087",
+    "how": "matched"
+   },
+   {
+    "name": "CIMS Hospital",
+    "city": "Ahmedabad",
+    "hospital_id": "H085",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 2,
+  "judged_capable": 1
+ },
+ {
+  "id": "S5-06",
+  "stratum": "S5",
+  "named": 5,
+  "in_list": 4,
+  "in_area": 4,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 1,
+  "ndcg5": null,
+  "spec_ok": true,
+  "named_list": [
+   {
+    "name": "AIIMS",
+    "city": "New Delhi",
+    "hospital_id": "H039",
+    "how": "matched"
+   },
+   {
+    "name": "Maulana Azad Medical College / Lok Nayak Hospital",
+    "city": "New Delhi",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Indraprastha Apollo Hospital",
+    "city": "Delhi",
+    "hospital_id": "H033",
+    "how": "matched"
+   },
+   {
+    "name": "Sir Ganga Ram Hospital",
+    "city": "Delhi",
+    "hospital_id": "H036",
+    "how": "matched"
+   },
+   {
+    "name": "Medanta - The Medicity",
+    "city": "Gurugram",
+    "hospital_id": "H040",
+    "how": "matched"
+   }
+  ],
+  "judged_in_area": 3,
+  "judged_capable": 0
+ },
+ {
+  "id": "S5-07",
+  "stratum": "S5",
+  "named": 5,
+  "in_list": 0,
+  "in_area": 0,
+  "wrong_area": 0,
+  "capable3": false,
+  "bad3": 0,
+  "ndcg5": 0.0,
+  "spec_ok": false,
+  "named_list": [
+   {
+    "name": "Stanford Health Care",
+    "city": "Palo Alto",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "UCSF Medical Center",
+    "city": "San Francisco",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "Barrow Neurological Institute",
+    "city": "Phoenix",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "MedStar Georgetown University Hospital",
+    "city": "Washington, D.C.",
+    "hospital_id": null,
+    "how": "not in our list"
+   },
+   {
+    "name": "The Royal Marsden",
+    "city": "London",
+    "hospital_id": null,
+    "how": "not in our list"
+   }
+  ],
+  "judged_in_area": 0,
+  "judged_capable": 0
+ }
+]

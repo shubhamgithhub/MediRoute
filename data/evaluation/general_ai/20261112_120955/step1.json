@@ -1,0 +1,702 @@
+[
+ {
+  "id": "core50:C001",
+  "spec": "Cardiology",
+  "ok": true,
+  "asked": false,
+  "expected": "Cardiology"
+ },
+ {
+  "id": "core50:C002",
+  "spec": "Cardiothoracic Surgery",
+  "ok": true,
+  "asked": false,
+  "expected": "Cardiothoracic Surgery"
+ },
+ {
+  "id": "core50:C003",
+  "spec": "Orthopaedics",
+  "ok": true,
+  "asked": false,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "core50:C004",
+  "spec": "Oncology",
+  "ok": true,
+  "asked": false,
+  "expected": "Oncology"
+ },
+ {
+  "id": "core50:C005",
+  "spec": "Neurosurgery",
+  "ok": true,
+  "asked": false,
+  "expected": "Neurosurgery"
+ },
+ {
+  "id": "core50:C006",
+  "spec": "Neurology",
+  "ok": true,
+  "asked": false,
+  "expected": "Neurology"
+ },
+ {
+  "id": "core50:C007",
+  "spec": "Plastic & Reconstructive Surgery",
+  "ok": true,
+  "asked": false,
+  "expected": "Plastic & Reconstructive Surgery"
+ },
+ {
+  "id": "core50:C008",
+  "spec": "Dermatology",
+  "ok": true,
+  "asked": false,
+  "expected": "Dermatology"
+ },
+ {
+  "id": "core50:C009",
+  "spec": "Endocrinology",
+  "ok": true,
+  "asked": false,
+  "expected": "Endocrinology"
+ },
+ {
+  "id": "core50:C010",
+  "spec": "Hematology & Bone Marrow Transplant",
+  "ok": true,
+  "asked": false,
+  "expected": "Hematology & Bone Marrow Transplant"
+ },
+ {
+  "id": "core50:C011",
+  "spec": "Pulmonology",
+  "ok": true,
+  "asked": false,
+  "expected": "Pulmonology"
+ },
+ {
+  "id": "core50:C012",
+  "spec": "Urology",
+  "ok": true,
+  "asked": false,
+  "expected": "Urology"
+ },
+ {
+  "id": "core50:C013",
+  "spec": "Cardiothoracic Surgery",
+  "ok": true,
+  "asked": false,
+  "expected": "Cardiothoracic Surgery"
+ },
+ {
+  "id": "core50:C014",
+  "spec": "Cardiology",
+  "ok": true,
+  "asked": false,
+  "expected": "Cardiology"
+ },
+ {
+  "id": "core50:C015",
+  "spec": "Orthopaedics",
+  "ok": true,
+  "asked": false,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "core50:C016",
+  "spec": "Ophthalmology",
+  "ok": true,
+  "asked": false,
+  "expected": "Ophthalmology"
+ },
+ {
+  "id": "core50:C017",
+  "spec": "Nephrology",
+  "ok": true,
+  "asked": false,
+  "expected": "Organ Transplant"
+ },
+ {
+  "id": "core50:C018",
+  "spec": "Obstetrics & Gynaecology",
+  "ok": true,
+  "asked": false,
+  "expected": "Obstetrics & Gynaecology"
+ },
+ {
+  "id": "core50:C019",
+  "spec": "Bariatric Surgery",
+  "ok": true,
+  "asked": false,
+  "expected": "Bariatric Surgery"
+ },
+ {
+  "id": "core50:C020",
+  "spec": "Orthopaedics",
+  "ok": true,
+  "asked": false,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "core50:C021",
+  "spec": "Cardiology",
+  "ok": true,
+  "asked": false,
+  "expected": "Cardiothoracic Surgery"
+ },
+ {
+  "id": "core50:C022",
+  "spec": "General Medicine",
+  "ok": false,
+  "asked": true,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "core50:C023",
+  "spec": null,
+  "ok": false,
+  "asked": true,
+  "expected": "Oncology"
+ },
+ {
+  "id": "core50:C024",
+  "spec": "Nephrology",
+  "ok": true,
+  "asked": false,
+  "expected": "Nephrology"
+ },
+ {
+  "id": "core50:C025",
+  "spec": null,
+  "ok": false,
+  "asked": true,
+  "expected": "Ophthalmology"
+ },
+ {
+  "id": "core50:C026",
+  "spec": "Pediatric Cardiology",
+  "ok": true,
+  "asked": false,
+  "expected": "Pediatric Cardiology"
+ },
+ {
+  "id": "core50:C027",
+  "spec": null,
+  "ok": false,
+  "asked": true,
+  "expected": "Gastroenterology"
+ },
+ {
+  "id": "core50:C028",
+  "spec": "Endocrinology",
+  "ok": true,
+  "asked": false,
+  "expected": "Oncology"
+ },
+ {
+  "id": "core50:C029",
+  "spec": "Reproductive Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Reproductive Medicine"
+ },
+ {
+  "id": "core50:C030",
+  "spec": "ENT",
+  "ok": true,
+  "asked": false,
+  "expected": "ENT"
+ },
+ {
+  "id": "core50:C031",
+  "spec": null,
+  "ok": false,
+  "asked": true,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "core50:C032",
+  "spec": "Cardiology",
+  "ok": true,
+  "asked": false,
+  "expected": "Cardiology"
+ },
+ {
+  "id": "core50:C033",
+  "spec": "Neurology",
+  "ok": false,
+  "asked": false,
+  "expected": "Neurosurgery"
+ },
+ {
+  "id": "core50:C034",
+  "spec": "Gastroenterology",
+  "ok": true,
+  "asked": false,
+  "expected": "Gastroenterology"
+ },
+ {
+  "id": "core50:C035",
+  "spec": null,
+  "ok": false,
+  "asked": true,
+  "expected": "Obstetrics & Gynaecology"
+ },
+ {
+  "id": "core50:C036",
+  "spec": "Organ Transplant",
+  "ok": true,
+  "asked": false,
+  "expected": "Organ Transplant"
+ },
+ {
+  "id": "core50:C037",
+  "spec": "Reproductive Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Reproductive Medicine"
+ },
+ {
+  "id": "core50:C038",
+  "spec": "ENT",
+  "ok": true,
+  "asked": false,
+  "expected": "ENT"
+ },
+ {
+  "id": "core50:C039",
+  "spec": "Oncology",
+  "ok": true,
+  "asked": false,
+  "expected": "Oncology"
+ },
+ {
+  "id": "core50:C040",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "General Medicine"
+ },
+ {
+  "id": "core50:C041",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "General Medicine"
+ },
+ {
+  "id": "core50:C042",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "General Medicine"
+ },
+ {
+  "id": "core50:C043",
+  "spec": null,
+  "ok": false,
+  "asked": true,
+  "expected": "General Medicine"
+ },
+ {
+  "id": "core50:C044",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Gastroenterology"
+ },
+ {
+  "id": "core50:C045",
+  "spec": "Emergency Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Emergency Medicine"
+ },
+ {
+  "id": "core50:C046",
+  "spec": "Emergency Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Emergency Medicine"
+ },
+ {
+  "id": "core50:C047",
+  "spec": "Emergency Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Psychiatry"
+ },
+ {
+  "id": "core50:C048",
+  "spec": "Pediatric Cardiology",
+  "ok": true,
+  "asked": false,
+  "expected": "Pediatric Cardiology"
+ },
+ {
+  "id": "core50:C049",
+  "spec": "Neurology",
+  "ok": true,
+  "asked": false,
+  "expected": "Neurology"
+ },
+ {
+  "id": "core50:C050",
+  "spec": "Paediatrics",
+  "ok": true,
+  "asked": false,
+  "expected": "Paediatrics"
+ },
+ {
+  "id": "mediroute:Q001",
+  "spec": "Cardiology",
+  "ok": true,
+  "asked": false,
+  "expected": "Cardiology"
+ },
+ {
+  "id": "mediroute:Q004",
+  "spec": "Cardiothoracic Surgery",
+  "ok": true,
+  "asked": false,
+  "expected": "Cardiothoracic Surgery"
+ },
+ {
+  "id": "mediroute:Q007",
+  "spec": "Pediatric Cardiology",
+  "ok": true,
+  "asked": false,
+  "expected": "Pediatric Cardiology"
+ },
+ {
+  "id": "mediroute:Q011",
+  "spec": "ENT",
+  "ok": true,
+  "asked": false,
+  "expected": "Oncology"
+ },
+ {
+  "id": "mediroute:Q014",
+  "spec": "Hematology & Bone Marrow Transplant",
+  "ok": true,
+  "asked": false,
+  "expected": "Hematology & Bone Marrow Transplant"
+ },
+ {
+  "id": "mediroute:Q017",
+  "spec": "Emergency Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "mediroute:Q021",
+  "spec": "Neurology",
+  "ok": true,
+  "asked": false,
+  "expected": "Neurology"
+ },
+ {
+  "id": "mediroute:Q024",
+  "spec": "Neurosurgery",
+  "ok": true,
+  "asked": false,
+  "expected": "Neurosurgery"
+ },
+ {
+  "id": "mediroute:Q027",
+  "spec": "Gastroenterology",
+  "ok": true,
+  "asked": false,
+  "expected": "Gastroenterology"
+ },
+ {
+  "id": "mediroute:Q031",
+  "spec": "Urology",
+  "ok": true,
+  "asked": false,
+  "expected": "Urology"
+ },
+ {
+  "id": "mediroute:Q034",
+  "spec": "Nephrology",
+  "ok": true,
+  "asked": false,
+  "expected": "Organ Transplant"
+ },
+ {
+  "id": "mediroute:Q037",
+  "spec": "Obstetrics & Gynaecology",
+  "ok": true,
+  "asked": false,
+  "expected": "Obstetrics & Gynaecology"
+ },
+ {
+  "id": "mediroute:Q041",
+  "spec": "Urology",
+  "ok": true,
+  "asked": false,
+  "expected": "Reproductive Medicine"
+ },
+ {
+  "id": "mediroute:Q044",
+  "spec": "Paediatrics",
+  "ok": true,
+  "asked": false,
+  "expected": "Paediatrics"
+ },
+ {
+  "id": "mediroute:Q048",
+  "spec": "Endocrinology",
+  "ok": true,
+  "asked": false,
+  "expected": "Endocrinology"
+ },
+ {
+  "id": "mediroute:Q051",
+  "spec": "Pulmonology",
+  "ok": true,
+  "asked": false,
+  "expected": "Pulmonology"
+ },
+ {
+  "id": "mediroute:Q054",
+  "spec": "Plastic & Reconstructive Surgery",
+  "ok": true,
+  "asked": false,
+  "expected": "Plastic & Reconstructive Surgery"
+ },
+ {
+  "id": "mediroute:Q058",
+  "spec": "Emergency Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Emergency Medicine"
+ },
+ {
+  "id": "mediroute:Q061",
+  "spec": "Critical Care",
+  "ok": true,
+  "asked": false,
+  "expected": "Critical Care"
+ },
+ {
+  "id": "mediroute:Q064",
+  "spec": "Ophthalmology",
+  "ok": true,
+  "asked": false,
+  "expected": "Ophthalmology"
+ },
+ {
+  "id": "mediroute:Q068",
+  "spec": "ENT",
+  "ok": true,
+  "asked": false,
+  "expected": "ENT"
+ },
+ {
+  "id": "mediroute:Q071",
+  "spec": "Dermatology",
+  "ok": true,
+  "asked": false,
+  "expected": "Dermatology"
+ },
+ {
+  "id": "mediroute:Q074",
+  "spec": "Psychiatry",
+  "ok": true,
+  "asked": false,
+  "expected": "Psychiatry"
+ },
+ {
+  "id": "mediroute:Q078",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "General Medicine"
+ },
+ {
+  "id": "mediroute:Q081",
+  "spec": "Ophthalmology",
+  "ok": true,
+  "asked": false,
+  "expected": "Ophthalmology"
+ },
+ {
+  "id": "gretel:G001",
+  "spec": "Gastroenterology",
+  "ok": true,
+  "asked": false,
+  "expected": "Gastroenterology"
+ },
+ {
+  "id": "gretel:G009",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "gretel:G017",
+  "spec": "Emergency Medicine",
+  "ok": false,
+  "asked": false,
+  "expected": "Neurology"
+ },
+ {
+  "id": "gretel:G026",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "gretel:G034",
+  "spec": "Emergency Medicine",
+  "ok": false,
+  "asked": false,
+  "expected": "Pulmonology"
+ },
+ {
+  "id": "gretel:G043",
+  "spec": null,
+  "ok": false,
+  "asked": true,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "gretel:G051",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "General Medicine"
+ },
+ {
+  "id": "gretel:G060",
+  "spec": "Emergency Medicine",
+  "ok": false,
+  "asked": false,
+  "expected": "Pulmonology"
+ },
+ {
+  "id": "gretel:G068",
+  "spec": "Gastroenterology",
+  "ok": true,
+  "asked": false,
+  "expected": "Gastroenterology"
+ },
+ {
+  "id": "gretel:G077",
+  "spec": "Dermatology",
+  "ok": true,
+  "asked": false,
+  "expected": "Dermatology"
+ },
+ {
+  "id": "gretel:G085",
+  "spec": "Dermatology",
+  "ok": true,
+  "asked": false,
+  "expected": "General Medicine"
+ },
+ {
+  "id": "gretel:G094",
+  "spec": "Emergency Medicine",
+  "ok": false,
+  "asked": false,
+  "expected": "General Medicine"
+ },
+ {
+  "id": "gretel:G102",
+  "spec": "Emergency Medicine",
+  "ok": false,
+  "asked": false,
+  "expected": "Cardiology"
+ },
+ {
+  "id": "gretel:G111",
+  "spec": "Dermatology",
+  "ok": true,
+  "asked": false,
+  "expected": "Dermatology"
+ },
+ {
+  "id": "gretel:G119",
+  "spec": "Dermatology",
+  "ok": true,
+  "asked": false,
+  "expected": "Dermatology"
+ },
+ {
+  "id": "gretel:G128",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Dermatology"
+ },
+ {
+  "id": "gretel:G136",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Endocrinology"
+ },
+ {
+  "id": "gretel:G145",
+  "spec": null,
+  "ok": false,
+  "asked": true,
+  "expected": "Cardiothoracic Surgery"
+ },
+ {
+  "id": "gretel:G153",
+  "spec": "Gastroenterology",
+  "ok": true,
+  "asked": false,
+  "expected": "Gastroenterology"
+ },
+ {
+  "id": "gretel:G162",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "Cardiology"
+ },
+ {
+  "id": "gretel:G170",
+  "spec": "General Medicine",
+  "ok": false,
+  "asked": false,
+  "expected": "Orthopaedics"
+ },
+ {
+  "id": "gretel:G179",
+  "spec": "Gastroenterology",
+  "ok": true,
+  "asked": false,
+  "expected": "Gastroenterology"
+ },
+ {
+  "id": "gretel:G187",
+  "spec": "Emergency Medicine",
+  "ok": false,
+  "asked": false,
+  "expected": "Cardiology"
+ },
+ {
+  "id": "gretel:G196",
+  "spec": "General Medicine",
+  "ok": true,
+  "asked": false,
+  "expected": "General Medicine"
+ },
+ {
+  "id": "gretel:G204",
+  "spec": null,
+  "ok": false,
+  "asked": true,
+  "expected": "General Medicine"
+ }
+]

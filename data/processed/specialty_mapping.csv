@@ -1362,3 +1362,21 @@ hospital,Complex BMT,,Hematology & Bone Marrow Transplant,,keyword rule: blood c
 hospital,Interventional Endoscopy,,Gastroenterology,,keyword rule: digestive / liver care,draft
 hospital,Microvascular Neurosurgery,,Neurosurgery,,keyword rule: brain / spine surgery,draft
 hospital,Stroke Interventions,,Neurology,,keyword rule: neurology,draft
+body_area,Heart and blood vessels,,Cardiology;Cardiothoracic Surgery;Pediatric Cardiology,answer,patient's answer to the body-area question,draft
+body_area,"Brain, nerves and spine",,Neurology;Neurosurgery;Orthopaedics,answer,patient's answer to the body-area question (spine is treated by orthopaedics too),draft
+body_area,"Bones, joints and muscles",,Orthopaedics,answer,patient's answer to the body-area question,draft
+body_area,"Stomach, liver and digestion",,Gastroenterology;Organ Transplant,answer,patient's answer to the body-area question,draft
+body_area,Kidneys and urinary system,,Nephrology;Urology;Organ Transplant,answer,patient's answer to the body-area question,draft
+body_area,Lungs and breathing,,Pulmonology;Cardiothoracic Surgery,answer,patient's answer to the body-area question,draft
+body_area,Eyes,,Ophthalmology,answer,patient's answer to the body-area question,draft
+body_area,"Ear, nose and throat",,ENT,answer,patient's answer to the body-area question,draft
+body_area,Skin and hair,,Dermatology;Plastic & Reconstructive Surgery,answer,patient's answer to the body-area question,draft
+body_area,Women's health and pregnancy,,Obstetrics & Gynaecology,answer,patient's answer to the body-area question,draft
+body_area,Fertility,,Reproductive Medicine,answer,patient's answer to the body-area question,draft
+body_area,Child health,,Paediatrics;Pediatric Cardiology,answer,patient's answer to the body-area question,draft
+body_area,Cancer,,Oncology;Hematology & Bone Marrow Transplant,answer,patient's answer to the body-area question,draft
+body_area,Blood disorders,,Hematology & Bone Marrow Transplant,answer,patient's answer to the body-area question,draft
+body_area,Hormones and diabetes,,Endocrinology,answer,patient's answer to the body-area question,draft
+body_area,Mental health,,Psychiatry,answer,patient's answer to the body-area question,draft
+body_area,Weight loss,,Bariatric Surgery;Endocrinology,answer,patient's answer to the body-area question,draft
+body_area,Other / not sure,,NONE,answer,not routing evidence,draft
