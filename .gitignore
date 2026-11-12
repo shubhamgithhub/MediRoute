@@ -41,3 +41,5 @@ data/evaluation/step2_site_cache/
 data/evaluation/step2_to_grade.csv
 # scraper run logs
 data/interim/master/*.log
+# synthetic report PDFs for the upload test: regenerate with scripts/make_synthetic_reports.py (manifest.csv is kept)
+data/evaluation/synthetic_reports/**/*.pdf

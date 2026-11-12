@@ -1,0 +1,27 @@
+{
+ "R02": {
+  "state": "success",
+  "field_errors": "",
+  "shot": "pdf_upload_screens/R02.png"
+ },
+ "L04": {
+  "state": "clarify",
+  "field_errors": "",
+  "shot": "pdf_upload_screens/L04.png"
+ },
+ "E02": {
+  "state": "clarify",
+  "field_errors": "",
+  "shot": "pdf_upload_screens/E02.png"
+ },
+ "E05": {
+  "state": "success",
+  "field_errors": "You can upload at most 5 PDF files. report_6.pdf was not added.",
+  "shot": "pdf_upload_screens/E05.png"
+ },
+ "E07": {
+  "state": "clarify",
+  "field_errors": "",
+  "shot": "pdf_upload_screens/E07.png"
+ }
+}

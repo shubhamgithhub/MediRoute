@@ -1,0 +1,32 @@
+case_id,category,typed_text,files,expected_specialty,acceptable_alternatives,expected_outcome,notes
+R01,core report,Please see my father's angiography report.,R01/C021_report.pdf,Cardiothoracic Surgery,Cardiology,route,core50 C021
+R02,core report,My scan report is attached. What kind of specialist should I look for?,R02/C022_report.pdf,Orthopaedics,,route,core50 C022
+R03,core report,Biopsy report attached.,R03/C023_report.pdf,Oncology,,route,core50 C023
+R04,core report,These are my kidney reports.,R04/C024_report.pdf,Nephrology,Organ Transplant,route,core50 C024
+R05,core report,The eye doctor's report is attached.,R05/C025_report.pdf,Ophthalmology,Endocrinology,route,core50 C025
+R06,core report,"Echo report of my daughter, 4 years old.",R06/C026_report.pdf,Pediatric Cardiology,Cardiothoracic Surgery,route,core50 C026
+R07,core report,CT scan of my father.,R07/C027_report.pdf,Gastroenterology,Organ Transplant,route,core50 C027
+R08,core report,Thyroid report attached.,R08/C028_report.pdf,Oncology,Endocrinology;ENT,route,core50 C028
+R09,core report,My wife's fertility test results.,R09/C029_report.pdf,Reproductive Medicine,Obstetrics & Gynaecology,route,core50 C029
+R10,core report,"Hearing test results of my son, 2 years old.",R10/C030_report.pdf,ENT,Paediatrics,route,core50 C030
+R11,core report,plz see reprot,R11/C031_report.pdf,Orthopaedics,,route,core50 C031
+R12,core report,my fathers heart report,R12/C032_report.pdf,Cardiology,,route,core50 C032
+R13,core report,brain scan resullt,R13/C033_report.pdf,Neurosurgery,Oncology,route,core50 C033
+R14,core report,"endoscopy report attached, which doctor?",R14/C034_report.pdf,Gastroenterology,,route,core50 C034
+R15,core report,report for my mom,R15/C035_report.pdf,Obstetrics & Gynaecology,,route,core50 C035
+L01,letterhead noise,Biopsy report attached.,L01/biopsy_hospital_letterhead.pdf,Oncology,,route,department list in the letterhead
+L02,lab table,These are my kidney reports.,L02/kidney_lab_panel.pdf,Nephrology,Organ Transplant,route,values in a table
+L03,two columns,My scan report is attached. What kind of specialist should I look for?,L03/knee_mri_two_column.pdf,Orthopaedics,,route,side column with centre details
+L04,long report,Discharge summary of my father is attached.,L04/long_discharge_summary.pdf,Cardiothoracic Surgery,Cardiology,route,"diagnosis only on page 4, after ~3 pages of daily notes"
+L05,typos,brain scan resullt,L05/brain_mri_typos.pdf,Neurosurgery,Oncology,route,"OCR-like typos, abbreviations"
+L06,privacy,my fathers heart report,L06/echo_with_contacts.pdf,Cardiology,,route,"phone, e-mail and Aadhaar-like ID must not reach the log"
+L07,"two reports, one relevant",Thyroid report attached.,L07/thyroid_fnac.pdf;L07/routine_cbc_normal.pdf,Oncology,Endocrinology;ENT,route,second report is a normal blood count
+L08,report only,,L08/fertility_tests.pdf,Reproductive Medicine,Obstetrics & Gynaecology,route,no typed text
+E01,empty file,Report attached.,E01/empty.pdf,,,api_error,0-byte file: expect a clear error
+E02,password-protected,My scan report is attached. What kind of specialist should I look for?,E02/knee_mri_password.pdf,,,unreadable_notice,password-protected: expect 'cannot read this file'
+E03,too large,Big scan attached.,E03/too_large.pdf,,,api_error,14.5 MB > 10 MB limit
+E04,renamed text file,My report.,E04/not_really_a.pdf,,,api_error,not a PDF inside
+E05,too many files,Six reports attached.,E05/report_1.pdf;E05/report_2.pdf;E05/report_3.pdf;E05/report_4.pdf;E05/report_5.pdf;E05/report_6.pdf,,,api_error,limit is 5 files
+E06,two conflicting reports,Reports of my son attached.,E06/child_echo_vsd.pdf;E06/child_hearing_bera.pdf,Pediatric Cardiology,ENT;Cardiothoracic Surgery,route_or_ask,heart defect + hearing loss: one answer or a question
+E07,scanned + typed text,Biopsy report attached.,E07/biopsy_scanned.pdf,,,unreadable_notice,scan (OCR out of scope): expect the patient to be told the file could not be read
+E08,scanned only,,E08/biopsy_scanned_only.pdf,,,unreadable_notice,scan and nothing typed: ask for a readable file

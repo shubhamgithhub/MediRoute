@@ -654,11 +654,31 @@ const toRoutingView = (result) => {
   };
 };
 
+// "We could not read X: reason." for every uploaded report that gave no text (scan, locked, damaged)
+const reportNoticeText = (parse) => {
+  const files = (parse && Array.isArray(parse.unreadable_files)) ? parse.unreadable_files : [];
+  if (!files.length) return "";
+  const lines = files.map((f) => `${f.filename}: ${f.reason}`);
+  const lead = files.length === 1 ? "We could not read one of your reports, so it was not used." :
+    `We could not read ${files.length} of your reports, so they were not used.`;
+  return `${lead} ${lines.join(" · ")}`;
+};
+
+const showReportNotice = (parse) => {
+  const box = document.querySelector("#report-notice");
+  if (!box) return;
+  const text = reportNoticeText(parse);
+  box.hidden = !text;
+  document.querySelector("#report-notice-message").textContent = text;
+  if (window.lucide) window.lucide.createIcons();
+};
+
 const handleRoutingResult = (result) => {
   const step1 = result.step1 || null;
   console.log("MediRoute routing response:", result);
   if (step1 && !search.parentRequestId) search.parentRequestId = step1.request_id;
   showEmergency(step1);
+  showReportNotice(result.parse_summary);
   if (step1 && step1.decision === "clarification_required") {
     renderClarification(step1);
     return;
@@ -805,6 +825,7 @@ document.querySelector("#choice-form")?.addEventListener("submit", async (event)
 
 const backToForm = () => {
   if (emergencyBanner) emergencyBanner.hidden = true;
+  showReportNotice(null);
   showStep1Panel(form);
   setProgress(1);
 };

@@ -140,7 +140,7 @@ async def run_patient_routing(
         "current_step": result.get("current_step"),
         "routing_ready": result.get("routing_ready", False),
         "parse_summary": {k: parse.get(k) for k in ("overall_status", "total_files", "successful_files",
-                                                     "needs_ocr_files", "error_files")},
+                                                     "needs_ocr_files", "error_files", "unreadable_files")},
         "step1": _step1_view(result.get("step1_result")),
         "patient_medical_context": result.get("patient_medical_context"),
         "clarification_required": result.get("clarification_required", False),
