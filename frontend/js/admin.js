@@ -322,6 +322,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     detail.append(section("Output served", "send", served));
 
+    if (s.workflow && s.workflow.step2_status) detail.append(section("Step 2: how hospitals were ranked", "list-ordered", step2Ranking(s.workflow)));
+
     if (wfEvents.length) {
       const table = el("table", "data-table");
       const head2 = el("tr");
@@ -351,6 +353,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
     detail.append(section("Raw trace events", "braces", collapsible(`${events.length + wfEvents.length} events (JSON)`, pre([...events, ...wfEvents]))));
     refreshIcons();
+  }
+
+  // ------------------------------------------------------------ Step 2 ranking (weights + per-hospital scores)
+  const BONUS_COLUMNS = [
+    ["website_specialty", "Website speciality"], ["procedures", "Treatments"], ["verified", "Verified"],
+    ["nabh", "NABH"], ["jci", "JCI"], ["international_patients", "Intl."], ["evidence", "Evidence"],
+  ];
+  const fmt = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(3));
+  function step2Ranking(wf) {
+    const w = wf.ranking_weights || {};
+    const box = el("div", "s2");
+    const steps = el("ol", "s2-criteria");
+    const add = (title, text) => { const li = el("li"); li.append(el("strong", "", title), el("span", "", text)); steps.append(li); };
+    add("1. Eligible hospitals",
+      `Hospitals that list ${wf.step2_specialty || "the speciality"} (the hospital's website list, or the team list when the website list is missing): `
+      + `${wf.specialty_candidates ?? "—"} hospitals; ${wf.location_candidates ?? "—"} of them in ${wf.city || "the chosen area"}.`);
+    add("2. Relevance score (0 to 1)",
+      `How close each hospital's profile is to the search text${wf.semantic_query ? ` “${wf.semantic_query}”` : ""} `
+      + "(MiniLM sentence embeddings, cosine similarity with FAISS).");
+    add("3. Bonus points (fixed weights, added to relevance)",
+      `website speciality +${w.website_specialty ?? 0.04}; each requested treatment in the hospital's list +${w.procedure_each ?? 0.04} (max +${w.procedure_max ?? 0.08}); `
+      + `verified details +${w.verified ?? 0.03} (partly +${w.partially_verified ?? 0.015}); NABH +${w.nabh ?? 0.02}; JCI +${w.jci ?? 0.02}; `
+      + `international patient services +${w.international_patients ?? 0.02}; evidence quality up to +${w.evidence_max ?? 0.03} (High 0.03, Medium 0.02, Low 0.01). `
+      + `All bonuses together are capped at +${w.bonus_cap ?? 0.2}.`);
+    add("4. Order",
+      "Final score = relevance + bonus, highest first. Hospitals in the chosen area come first; if fewer than 3 are in the area, "
+      + "the list is filled from the same state, then the rest of India (shown as separate groups).");
+    box.append(steps);
+
+    const rows = wf.ranking || [];
+    if (!rows.length) {
+      box.append(el("p", "muted", (wf.top_hospitals || []).length
+        ? "Score breakdown was not logged for this request (it is logged from 12 Nov 2026 onwards). Hospitals returned: " + wf.top_hospitals.join(", ")
+        : "No hospitals were returned."));
+      return box;
+    }
+    const table = el("table", "data-table s2-table");
+    const head = el("tr");
+    ["#", "Hospital", "Relevance", ...BONUS_COLUMNS.map(([, label]) => label), "Bonus", "Final score"].forEach((t) => head.append(el("th", "", t)));
+    table.append(head);
+    let lastGroup = null;
+    rows.forEach((r) => {
+      const group = r.outside_area ? (r.area_group || "Outside the area") : `In ${wf.city || "the chosen area"}`;
+      if (group !== lastGroup) {
+        const gr = el("tr", "s2-group");
+        const td = el("td", "", group);
+        td.colSpan = 4 + BONUS_COLUMNS.length + 1;
+        gr.append(td);
+        table.append(gr);
+        lastGroup = group;
+      }
+      const tr = el("tr");
+      tr.append(el("td", "", `#${r.position}`));
+      const name = el("td");
+      name.append(el("strong", "", r.name || "—"), el("div", "muted", [r.city, r.specialty_evidence ? `speciality from ${r.specialty_evidence}` : ""].filter(Boolean).join(" · ")));
+      if ((r.matched_procedures || []).length) name.append(el("div", "muted", "matched: " + r.matched_procedures.join(", ")));
+      tr.append(name, el("td", "num", fmt(r.semantic_score)));
+      BONUS_COLUMNS.forEach(([key]) => {
+        const v = (r.bonus_breakdown || {})[key];
+        tr.append(el("td", v ? "num s2-plus" : "num s2-zero", v ? `+${Number(v).toFixed(3)}` : "0"));
+      });
+      tr.append(el("td", "num", `+${fmt(r.business_bonus)}`), el("td", "num s2-final", fmt(r.final_score)));
+      table.append(tr);
+    });
+    const wrap = el("div", "table-wrap");
+    wrap.append(table);
+    box.append(wrap);
+    return box;
   }
 
   // ------------------------------------------------------------ wiring

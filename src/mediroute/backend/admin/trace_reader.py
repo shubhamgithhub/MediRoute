@@ -96,6 +96,13 @@ def _workflow_summary(wid: str, events: list[dict]) -> dict:
         "city": rec.get("city"),
         "hospital_count": rec.get("count"),
         "top_hospitals": rec.get("top") or [],
+        "ranking": rec.get("ranking") or [],
+        "ranking_weights": rec.get("weights") or {},
+        "semantic_query": rec.get("semantic_query"),
+        "specialty_candidates": rec.get("specialty_candidates"),
+        "location_candidates": rec.get("location_candidates"),
+        "in_area_count": rec.get("in_area_count"),
+        "step2_specialty": rec.get("specialty"),
         "outcome": outcome,
         "clarification_type": by_stage.get("workflow:clarification", {}).get("type"),
     }

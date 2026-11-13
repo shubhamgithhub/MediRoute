@@ -569,14 +569,81 @@ def s_limits():
     "<b>Hospital data:</b> 201 hospitals; procedure lists come from the team sheet and are unverified (~50% recall), which limits procedure matching.",
     "<b>Grades:</b> Step 2 grades are model-drafted from website snippets; 20% human spot-check pending; sites that block automated reading cannot be graded.",
     "<b>Scope:</b> English input only (no translation: Hinglish or regional-language messages often end in a question); text-based PDFs only (no OCR for scanned or photographed reports); no costs, doctor profiles, availability or booking.",
-    "<b>State of the code:</b> the 12 Nov work (fixes, screens, themes, comparison) is local and not yet committed.",
 ])}
 <h2>Next steps</h2>
 {bullets([
     "Doctor review of the drafts (docs/review/MediRoute_doctor_review.pdf) and the 20% grade spot-check.",
     "Offline website extraction to fill the procedure lists, measured with the same Step 2 harness.",
-    "Commit the 12 Nov work and update the README (setup section still lists the old free models).",
+    "Update the README (setup section still lists the old free models).",
     "Pick the final colour theme and remove the selector; replace the home-page demo card with real results.",
+    "Close the readiness gaps in section 13 (tracker rows 46–56).",
+])}
+"""
+
+
+def s_readiness():
+    ok, part, gap = "✅ Done", "⚠️ Partly", "❌ Not done"
+    return f"""
+<h1>13 · Readiness review (12 Nov 2026)</h1>
+<p class="subtitle">Where the project stands against the capstone grading areas, the final-submission checklist and the
+mid-sem TA feedback. Items are paraphrased in our own words (the guidelines document is for personal use and is not
+in the repository). Open items are tracked in <code>docs/PROJECT_TRACKER.md</code>, rows 46–56.</p>
+
+<h2>Estimated marks (our own estimate, not the TA rubric)</h2>
+{table(["Area (~25% each)", "Today", "After closing the gaps", "Why"], [
+    ["Scope and impact", "19–21", "21–22", "Real problem, narrow and achievable scope (two steps, English, text PDFs). Gap: no domain expert has reviewed the labels yet."],
+    ["Technical depth and execution", "17–19", "21–23", "Strong intelligence layer (rules + lookup + LLM voters + guarded judge; FAISS + transparent bonuses; LangGraph) and evaluation layer. Gap: no deployment or monitoring dashboard."],
+    ["Presentation", "~17–20", "20–22", "Material is strong; risk is fitting it into 20 minutes. Needs a tight deck, a limitations slide and a backup demo video."],
+    ["Viva (individual)", "~17–20", "20–22", "Each member must explain and defend their own part and redraw the architecture from memory."],
+    ["<b>Total</b>", "<b>~70–80</b>", "<b>~82–89</b>", "Presentation and viva are half the marks and depend on delivery, not code."],
+], widths=["22%", "10%", "15%", "53%"])}
+
+<h2>Final-submission checklist</h2>
+{table(["Item", "State", "What to do"], [
+    ["System runs end to end", ok, "Patient page → Step 1 → Step 2 → hospital page."],
+    ["Used by someone outside the team", gap, "3–5 outside users; note what confused them (one slide)."],
+    ["Evaluation with a baseline", ok, "Step 1 and Step 2 baselines (sections 7–8); general-AI comparison (section 9)."],
+    ["Deployed, with a dashboard of latency, cost and errors", gap, "Docker Compose, GitHub Actions (tests + eval gate), one cloud deployment, dashboard with p95 latency, cost per query, error rate."],
+    ["Contribution log", gap, "docs/CONTRIBUTIONS.md (tracker row 38)."],
+    ["Limitations, each with a named fix path", part, "Section 12 lists limitations; add the fix for each."],
+    ["Demo recording as backup", gap, "Record the full flow once the screens are final."],
+    ["Presentation rehearsed within time", gap, "20 minutes per group."],
+], widths=["34%", "13%", "53%"])}
+
+<h2>Good practice the graders look for</h2>
+{table(["Practice", "State", "Note"], [
+    ["One thing that works end to end", ok, "Translation, OCR, costs, hospital-side features dropped or deferred."],
+    ["Real intelligence layer, not a thin web app", ok, "Sections 2–4."],
+    ["Independent LLM judge", ok, "Judge and comparison models differ from the routed model."],
+    ["Negative results reported", ok, "F1/F2 and the stronger judge: no gain, reverted (sections 6 and 7b)."],
+    ["Cost and latency measured", part, "In evaluation runs (section 10); not tracked live per request."],
+    ["Named versions of prompts, rules, configs", part, "Git history only; no list such as “judge prompt v3, ranker v2”."],
+    ["Experiments log, one change per run", gap, "docs/EXPERIMENTS.md (tracker row 39); results already exist in data/evaluation/results."],
+    ["Domain expert involved", gap, "Doctor review pending (docs/review/MediRoute_doctor_review.pdf)."],
+    ["Demo not hardcoded", ok, "Live pipeline; the home-page card is labelled as illustrative."],
+], widths=["34%", "13%", "53%"])}
+
+<h2>Mid-sem TA feedback: follow-up</h2>
+{table(["TA asked for", "State", "Note"], [
+    ["Narrow the scope", ok, "Core = speciality routing + hospital ranking."],
+    ["Verified hospital-speciality data; real vs simulated kept apart", ok, "Website + NABH/JCI data; team sheet marked “not verified”."],
+    ["No costs or suitability shown as verified", ok, "Costs removed from screens; disclaimer box."],
+    ["Baselines and Precision/Recall/NDCG@K", ok, "Show a keyword baseline next to semantic retrieval in the deck."],
+    ["Extraction evaluated separately (accuracy, omissions)", part, "Step 1 is scored on the final speciality; no separate “critical details caught” metric for reports."],
+    ["Test alternative ranking weights, not arbitrary ones", gap, "Weight-sensitivity run on the Step 2 gold set (no LLM cost). The admin page now shows the exact weights."],
+    ["Robustness: incomplete queries, noisy reports", part, "Unseen set, 31 PDF tests, typo cases; not yet one robustness section."],
+    ["Medical suitability before location", part, "Area filter comes first (outside hospitals fill in when fewer than 3 are in the area). Prepare the answer or add a “best anywhere in India” option."],
+    ["Expert-reviewed mappings and graded labels", gap, "Doctor review and 20% grade spot-check pending."],
+    ["DPDP: consent, retention, access control", part, "Consent box, redaction, 100-request retention. Admin page has no login yet."],
+], widths=["34%", "13%", "53%"])}
+
+<h2>Priorities until 5 Dec</h2>
+{bullets([
+    "<b>1. Deployment and dashboard</b>: Docker, CI with an eval gate, cloud deployment, latency / cost / error dashboard.",
+    "<b>2. Ranking-weight sensitivity test</b>: asked for directly by the TA; cheap.",
+    "<b>3. Contribution and experiments logs</b>: mostly writing up what exists.",
+    "<b>4. Doctor review and a safety set</b>: 30–50 emergency cases with a target of zero missed escalations.",
+    "<b>5. Outside users, demo video, rehearsed deck</b> with limitations that name their fixes.",
 ])}
 """
 
@@ -619,7 +686,7 @@ def build_html() -> str:
               '<span style="color:#3f8a60">■</span> code · <span style="color:#8c867b">■</span> input / data · '
               '<span style="color:#c98b20">■</span> output</p>')
     sections = [s_summary(), s_use_case(), s_architecture() + legend, s_step1(), s_step2(), s_data(), s_evolution(),
-                s_bench1(), s_bench2(), s_general_ai(), s_latency(), s_setup(), s_limits()]
+                s_bench1(), s_bench2(), s_general_ai(), s_latency(), s_setup(), s_limits(), s_readiness()]
     body = "".join(f"<section>{s}</section>" for s in sections)
     return f'<!doctype html><html><head><meta charset="utf-8"><title>MediRoute team report</title><style>{CSS}</style></head><body>{body}</body></html>'
 
@@ -633,11 +700,12 @@ def main() -> None:
         browser = pw.chromium.launch()
         page = browser.new_page()
         page.goto(html_path.resolve().as_uri(), wait_until="load")
-        try:  # the PDF may be open in a viewer (Windows locks it): write next to it instead
+        try:  # one report only: if a viewer has it open (Windows locks it), stop instead of writing a copy
             with pdf_path.open("ab"):
                 pass
         except PermissionError:
-            pdf_path = pdf_path.with_name(pdf_path.stem + "_new.pdf")
+            browser.close()
+            raise SystemExit(f"{pdf_path.name} is open in another program; close it and run this again.")
         page.pdf(path=str(pdf_path), format="A4", print_background=True, display_header_footer=True,
                  header_template="<span></span>",
                  footer_template='<div style="font-size:7pt;color:#777;width:100%;text-align:center">'

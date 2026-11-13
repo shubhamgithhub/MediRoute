@@ -6,6 +6,19 @@ Priorities follow the TA mid-sem feedback and the capstone guidelines (see `docs
 narrow scope, a strong evaluation layer with baselines, and deployment with observability.
 Final review: **5 Dec 2026**. Owners are tentative.
 
+## Readiness review (12 Nov 2026): read this first
+
+Checked against the capstone guidelines (grading areas, final checklist) and the mid-sem TA feedback.
+Full findings: **section 13 of the team report**, [docs/report/MediRoute_team_report.pdf](report/MediRoute_team_report.pdf)
+(HTML: [MediRoute_team_report.html](report/MediRoute_team_report.html)).
+
+- **Estimate:** ~70–80 / 100 today, ~82–89 if the gaps below are closed (our estimate, not the TA rubric).
+- **Biggest gaps:** no deployment or monitoring dashboard; no outside users yet; no contribution or
+  experiments log; ranking weights not tested (the TA asked); doctor review pending; no safety set.
+- **New rows 46–56** below track them. Existing rows that cover the same work: 25 (robustness and
+  weights), 29–31 (Docker, CI, dashboard), 38 (contribution log), 39 (experiments log), 40 (presentation).
+- Note: several evaluation rows (19–27) predate the 11–12 Nov benchmarks and need their state updated.
+
 ## Progress (10 Nov 2026)
 
 - **Step 1 is complete end to end:** voting pipeline (2 search voters + local LLM, majority + evidence),
@@ -73,6 +86,18 @@ Final review: **5 Dec 2026**. Owners are tentative.
 | 38 | Contribution log | `docs/CONTRIBUTIONS.md`: who built and ran what, kept up weekly. Needed for the individual viva | All | Not started |
 | 39 | Experiments log | `docs/EXPERIMENTS.md`: version prompts, rules and configs, one change per run, results and negative findings | All | Not started |
 | 40 | Final presentation | Deck with architecture, evaluation results vs baselines, limitations slide (each with a fix path), backup demo video, rehearsal | All | Not started |
+| **Readiness gaps (12 Nov review, see team report section 13)** | | | | |
+| 46 | Cloud deployment | Deploy the API + frontend once (with Docker from row 29); keep the demo URL for the final | Aniket | Not started |
+| 47 | Monitoring dashboard | p50/p95 latency per step, cost per query, error rate, success rate, one alert rule (extends row 31) | Aniket | Not started |
+| 48 | CI eval gate | GitHub Actions: tests + a small Step 1 / Step 2 eval that fails if accuracy or NDCG drops (extends row 30) | Aniket | Not started |
+| 49 | Ranking-weight sensitivity | Re-run the Step 2 gold set with other bonus weights (e.g. 0, half, double, no location priority); report NDCG@5 / Capable@3. TA asked for it; no LLM cost | Shubham | Not started |
+| 50 | Medical suitability vs location | Decide and document: today in-area hospitals come first. Either defend it or add a "best anywhere in India" option | Shubham | Not started |
+| 51 | Safety / emergency test set | 30–50 emergency and red-flag cases; report missed escalations (target 0) | Anand, Ravi | Not started |
+| 52 | Report-extraction metric | For the PDF test reports: share of critical details caught (and missed) by Step 1 evidence (extends row 24) | Anand, Ravi | Not started |
+| 53 | Doctor review + 20% grade spot-check | Doctor reviews ~50 Step 1 gold items and the mapping drafts; human spot-check of 20% of Step 2 grades; report agreement | Anand, Ravi | Not started |
+| 54 | Outside users | 3–5 people outside the team use the portal; note what confused them (one slide) | All | Not started |
+| 55 | Named versions | List of named versions (judge prompt vN, ranker vN, data vN) with dates, used in the experiments log and viva | Pravin | Not started |
+| 56 | Limitations with fix paths + admin login | Each limitation in the report and deck names its fix; add the missing admin login to the list | Pravin | Not started |
 | **Deferred (TA: secondary / out of core scope)** | | | | |
 | 41 | CGHS cost display | Show the indicative CGHS rate per procedure. Display only, not used in ranking | TBD | Deferred |
 | 42 | Translation of results | LLM translation of the final results into the patient's language | TBD | Deferred |
