@@ -435,6 +435,101 @@ def s_bench2():
 """
 
 
+def s_ta_benchmarks():
+    return f"""
+<h1>8c · Benchmarks the TA asked for (mid-sem feedback)</h1>
+<p>The mid-sem feedback (verdict “Needs improvements”) said the evaluation plan “needs substantial strengthening” and asked for
+specific experiments. This section lists each request, the test we ran and where its result is. The two newest tests (13 Nov 2026)
+follow on the next pages, each with <b>why</b> it was done, <b>how</b> and the <b>outcome</b>.</p>
+{table(["The TA asked (feedback, quoted)", "Test we ran", "Result", "Where"], [
+    ["“Establish keyword-search and speciality-filtering baselines … evaluate ranking using Precision@K, Recall@K, and NDCG@K”",
+     "Step 2: 4 baselines + ablations on 45 graded requests; Step 1: keyword, meaning and LLM-only baselines",
+     "Step 2 NDCG@5 0.807 vs 0.750 random; keyword search puts an incapable hospital in the top 3 for 51% of requests (ours 0%). Step 1: 86% vs 76% LLM only", "8, 7"],
+    ["“Define relevance-labelled test cases”", "Graded hospital labels 0–3 from hospital websites; Step 1 gold sets (core50, mediroute, gretel, unseen)",
+     "45 Step 2 requests; 346 + 110 Step 1 messages", "7, 7b, 8"],
+    ["“Medical information extraction should be evaluated separately for accuracy and omission of critical details”",
+     "<b>Critical-detail metric on 23 PDF reports (85 details, 3 levels)</b>", "<b>93% of details kept, 94% of decisive ones; 0 invented; one loss point found (6,000-character cut)</b>", "<b>8c.1</b>"],
+    ["“Assess the effect of different ranking weights … test alternative ranking weights rather than relying on arbitrarily assigned values”",
+     "<b>13 weight variants on the Step 2 gold set</b>", "<b>Bonuses help (p = 0.02); exact values do not matter (×0.5 to ×4 within noise)</b>", "<b>8c.2</b>"],
+    ["“Incomplete patient queries”", "Vague messages in the unseen set; clarification flow", "Right outcome 94% (answer, or a question when the message is really vague)", "7b"],
+    ["“Noisy medical reports”", "8 layout cases: letterhead, lab table, two columns, long report, typos, personal details, two reports", "All read correctly except the long report (cut)", "8c.1"],
+    ["“Compare conventional retrieval with the AI-based approach … demonstrate measurable value beyond conventional hospital search”",
+     "Same requests through a general AI assistant", "See section 9", "9"],
+    ["“Prioritise medical suitability … over geographical convenience”", "Capable@3 with the outside-area group; all-India variant",
+     "Capable@3 93%; all-India comparison needs grades outside each area (open, tracker row 50)", "8, 8c.2"],
+    ["“Expert-reviewed diagnosis-to-specialisation mappings”", "Doctor review pack prepared", "Pending", "13"],
+], ["31%", "27%", "34%", "8%"], "small")}
+</section><section>
+<h1>8c.1 · Extraction accuracy and omission of critical details (13 Nov 2026)</h1>
+<div class="ta"><b>What the TA asked</b> (mid-sem feedback): “Medical information extraction should be evaluated separately for accuracy and omission of critical details.” and “Evaluate extraction errors, unsupported recommendations, and performance on ambiguous cases.” Also: “noisy medical reports”.</div>
+<h2>Why this test was done</h2>
+{bullets([
+    "Every other Step 1 test scores only the <b>final speciality</b>. A report can be routed correctly from one detail while others are missed, and when routing fails we could not say whether the PDF reader, the LLM or our code check lost the information.",
+    "The TA asked for extraction to be evaluated <b>separately</b> (accuracy and omissions). Missing a detail such as “CABG advised” or “carcinoma” is also the error that matters most for patients, and the procedures found here feed the Step 2 procedure bonus.",
+])}
+<h2>How it was done</h2>
+{bullets([
+    "<b>Data:</b> the 23 readable synthetic PDF reports (15 core reports + 8 layout cases: letterhead, lab table, two columns, long report, typos, personal details, two reports, report with no typed text). Unreadable files (empty, locked, scanned) are tested separately and correctly refused.",
+    "<b>Labels:</b> for each report 2–5 <b>critical details</b> (85 in all), tagged diagnosis / finding / procedure / body part; <b>decisive</b> = the details the speciality depends on (e.g. “triple vessel disease”, “CABG”). Drafted from the report texts by the team, <b>pending doctor review</b> (data/evaluation/report_critical_details.csv).",
+    "<b>Run:</b> each report goes through the real Step 1 pipeline with the app's model (GPT-6 Luna), as the patient page would send it (typed text + report text, cut at 6,000 characters).",
+    "<b>Three levels</b> per detail, so a loss can be located: <b>A</b> in the text read from the PDF (and after the cut) · <b>B</b> returned by the evidence LLM · <b>C</b> kept after the code check, i.e. used by the voters, shown to the patient and passed to Step 2.",
+    "<b>Match rule:</b> a detail counts as captured when one extracted phrase covers at least half of its words (abbreviations and close spellings count; text broken by line breaks such as “necro sis” is joined). Every miss was checked by hand.",
+])}
+<h2>Outcome</h2>
+{table(["Level", "All 85 details", "Decisive details"], [
+    ["A · in the PDF text", "100%", "100%"],
+    ["A · still there after the 6,000-character cut", "96%", "94%"],
+    ["B · returned by the evidence LLM", "93%", "94%"],
+    ["<b>C · kept and used</b>", "<b>93%</b>", "<b>94%</b>"],
+], ["50%", "25%", "25%"])}
+{table(["Type", "Details", "Kept"], [["Diagnosis", "28", "96%"], ["Finding", "41", "93%"], ["Procedure", "14", "86%"], ["Body part", "2", "100%"]],
+       ["50%", "25%", "25%"], "small")}
+{bullets([
+    "<b>Only 6 of 85 details were lost.</b> 3 were dropped by the LLM, none of them decisive: FNAC, Ficat stage IV, Bethesda category V. The other 3 were lost to the 6,000-character cut, all in L04.",
+    "<b>The one real failure is the long report (L04):</b> its diagnosis and the CABG plan sit at character ~6,560 of a 6,900-character discharge summary, after the cut, so Step 1 asked a question instead of answering. <b>Fix path:</b> keep the end of the report too, or the “impression / diagnosis / plan” sections, instead of only the first 6,000 characters.",
+    "<b>Nothing invented:</b> no unsupported phrase reached the voters (the code check dropped the 1 phrase that was not in the text). Layout noise did not hurt: letterhead, lab tables, two columns, typos and personal details were all read correctly.",
+    "<b>Extra phrases:</b> 39 kept phrases are not critical details, mostly harmless (test names such as “USG NECK”, lab names such as “Potassium”, body parts). One to watch: in L01 the letterhead's department list put “oncology” and “urology” into the evidence; the answer was still right.",
+    "<b>Speciality:</b> 22 of 23 correct (96%); the miss is L04.",
+    "<b>Note on the run:</b> a first attempt hit the provider's limit of 20 requests a minute and was discarded; the script now spaces requests and retries, so a rate limit can never be counted as a miss.",
+])}
+{where("scripts/eval_report_extraction.py", "data/evaluation/report_critical_details.csv, synthetic_reports/, results/20261113_162049_report_extraction",
+       "MEDIROUTE_OPENROUTER_MODEL=openai/gpt-6-luna python scripts/eval_report_extraction.py")}
+</section><section>
+<h1>8c.2 · Alternative ranking weights (13 Nov 2026)</h1>
+<div class="ta"><b>What the TA asked</b> (mid-sem feedback): “Experiments should also assess the effect of different ranking weights” and “Test alternative ranking weights rather than relying on arbitrarily assigned values.”</div>
+<h2>Why this test was done</h2>
+{bullets([
+    "Step 2 adds fixed bonuses to the similarity score (website-confirmed speciality +0.04, each matching procedure +0.04 up to 0.08, verified details +0.03, NABH +0.02, JCI +0.02, international services +0.02, evidence quality up to +0.03; total capped at 0.20). These values were set by hand.",
+    "The TA asked for <b>alternative ranking weights to be tested</b> rather than chosen arbitrarily. The question: do the bonuses help at all, and would a different choice of values give a better ranking?",
+])}
+<h2>How it was done</h2>
+{bullets([
+    "The real Step 2 engine was rerun on the <b>same 45 gold requests and grades</b> as section 8, once per weight variant; only the bonus weights changed. No LLM, no API cost; the app code was not changed.",
+    "<b>13 variants:</b> current weights · no bonuses (similarity only) · every bonus ×0.5, ×2, ×4 · each of the 7 bonuses removed on its own (leave-one-out) · current weights searched across all of India (no area filter).",
+    "<b>Scoring:</b> NDCG@5 and Capable@3 as in section 8, with a <b>paired permutation test</b> against the current weights. Run twice: on grades whose website was read (as reported in section 8) and on all grades, as a robustness check. The current weights reproduce the reported NDCG@5 of 0.807 exactly.",
+])}
+<h2>Outcome</h2>
+{table(["Variant", "NDCG@5 (website-read grades)", "NDCG@5 (all grades)", "Different from current?"], [
+    ["<b>Current weights</b>", "<b>0.807</b>", "<b>0.701</b>", "–"],
+    ["No bonuses (similarity only)", "0.776", "0.648", "<b>yes, worse</b> (p = 0.02 / 0.01)"],
+    ["All bonuses ×0.5", "0.796", "0.690", "no (p = 0.15 / 0.38)"],
+    ["All bonuses ×2", "0.812", "0.695", "no (p = 0.72 / 0.57)"],
+    ["All bonuses ×4", "0.821", "0.686", "no (p = 0.30 / 0.31)"],
+    ["Without website-confirmed speciality", "0.795", "0.674", "not significant / <b>yes, worse</b> (p = 0.10 / 0.004)"],
+    ["Without any one other bonus", "0.801–0.812", "0.694–0.711", "no (all p ≥ 0.06)"],
+], ["38%", "20%", "17%", "25%"], "small")}
+{bullets([
+    "<b>The bonuses matter:</b> similarity alone is significantly worse on both grade sets, and changes the top 5 for 30 of 45 requests.",
+    "<b>The exact values do not:</b> halving, doubling or quadrupling every bonus stays within noise. ×4 looked slightly better on one grade set and worse on the other, so it is not a real gain. The ranking is <b>robust to the choice of weights</b>, so we keep the current values rather than tune them on 45 requests (which would overfit).",
+    "<b>The bonus that carries most of the effect</b> is the website-confirmed speciality; no other single bonus makes a measurable difference on its own.",
+    "<b>All-India search</b> (no area filter) cannot settle “suitability before location” yet: the grades were collected mostly for hospitals inside each request's area, so hospitals elsewhere are largely ungraded. That question needs its own grading round (tracker row 50).",
+    "<b>Limits:</b> 45 requests, overlapping confidence intervals, grades drafted by a model with a 20% human check pending.",
+])}
+{where("scripts/eval_step2_weights.py", "data/evaluation/results/20261113_161008_step2_weights (and _allgrades)",
+       "python scripts/eval_step2_weights.py [--all-grades]")}
+"""
+
+
 def s_general_ai():
     runs = sorted(p for p in GENERAL_AI.glob("2*") if (p / "summary.json").exists()) if GENERAL_AI.exists() else []
     if not runs:
@@ -606,7 +701,8 @@ def s_limits():
 ])}
 <h2>Next steps</h2>
 {bullets([
-    "Doctor review of the drafts (docs/review/MediRoute_doctor_review.pdf) and the 20% grade spot-check.",
+    "Doctor review of the drafts (docs/review/MediRoute_doctor_review.pdf), the report critical-detail labels (section 8c.1) and the 20% grade spot-check.",
+    "Long reports: keep the end of the report (or its impression / diagnosis / plan sections) instead of only the first 6,000 characters; the one extraction failure in section 8c.1.",
     "Offline website extraction to fill the procedure lists, measured with the same Step 2 harness.",
     "Update the README (setup section still lists the old free models).",
     "Pick the final colour theme and remove the selector; replace the home-page demo card with real results.",
@@ -663,8 +759,8 @@ in the repository). Open items are tracked in <code>docs/PROJECT_TRACKER.md</cod
     ["Verified hospital-speciality data; real vs simulated kept apart", ok, "Website + NABH/JCI data; team sheet marked “not verified”."],
     ["No costs or suitability shown as verified", ok, "Costs removed from screens; disclaimer box."],
     ["Baselines and Precision/Recall/NDCG@K", ok, "Show a keyword baseline next to semantic retrieval in the deck."],
-    ["Extraction evaluated separately (accuracy, omissions)", part, "Step 1 is scored on the final speciality; no separate “critical details caught” metric for reports."],
-    ["Test alternative ranking weights, not arbitrary ones", gap, "Weight-sensitivity run on the Step 2 gold set (no LLM cost). The admin page now shows the exact weights."],
+    ["Extraction evaluated separately (accuracy, omissions)", ok, "Section 8c.1 (13 Nov): 93% of 85 critical details kept, 94% of decisive ones; losses located (LLM vs 6,000-character cut)."],
+    ["Test alternative ranking weights, not arbitrary ones", ok, "Section 8c.2 (13 Nov): bonuses help (p = 0.02), exact values do not matter (×0.5 to ×4 within noise)."],
     ["Robustness: incomplete queries, noisy reports", part, "Unseen set, 31 PDF tests, typo cases; not yet one robustness section."],
     ["Medical suitability before location", part, "Area filter comes first (outside hospitals fill in when fewer than 3 are in the area). Prepare the answer or add a “best anywhere in India” option."],
     ["Expert-reviewed mappings and graded labels", gap, "Doctor review and 20% grade spot-check pending."],
@@ -691,6 +787,7 @@ h1 { font-size: 19pt; margin: 0 0 8px; color: #1e2a5a; border-bottom: 3px solid 
 h2 { font-size: 12.5pt; margin: 14px 0 6px; color: #2c2f6e; }
 .subtitle { color: #5c6878; margin: 0 0 14px; }
 .muted { color: #6a7584; font-size: 9pt; }
+.ta { margin: 4px 0 10px; padding: 8px 12px; border-left: 4px solid #d9932f; background: #fff7e8; border-radius: 4px; font-size: 10pt; line-height: 1.45; }
 ul { margin: 4px 0 8px 18px; padding: 0; } li { margin: 3px 0; }
 table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.5pt; }
 table.small { font-size: 8.6pt; }
@@ -720,7 +817,7 @@ def build_html() -> str:
               '<span style="color:#3f8a60">■</span> code · <span style="color:#8c867b">■</span> input / data · '
               '<span style="color:#c98b20">■</span> output</p>')
     sections = [s_summary(), s_use_case(), s_architecture() + legend, s_step1(), s_step2(), s_data(), s_evolution(),
-                s_bench1(), s_bench2(), s_general_ai(), s_latency(), s_setup(), s_limits(), s_readiness()]
+                s_bench1(), s_bench2(), s_ta_benchmarks(), s_general_ai(), s_latency(), s_setup(), s_limits(), s_readiness()]
     body = "".join(f"<section>{s}</section>" for s in sections)
     return f'<!doctype html><html><head><meta charset="utf-8"><title>MediRoute team report</title><style>{CSS}</style></head><body>{body}</body></html>'
 

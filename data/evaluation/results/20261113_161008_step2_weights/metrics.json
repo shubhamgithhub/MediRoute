@@ -1,0 +1,730 @@
+{
+  "run_id": "20261113_161008_step2_weights",
+  "mode": "oracle \u00b7 judged-only (condensed lists)",
+  "queries": 45,
+  "git": {
+    "commit": "2a078d7",
+    "dirty": true
+  },
+  "base_weights": {
+    "website_specialty": 0.04,
+    "procedure_each": 0.04,
+    "procedure_max": 0.08,
+    "verified": 0.03,
+    "partially_verified": 0.015,
+    "nabh": 0.02,
+    "jci": 0.02,
+    "international_patients": 0.02,
+    "evidence_max": 0.03,
+    "bonus_cap": 0.2
+  },
+  "variants": {
+    "current": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.8069612345060074,
+          "ci95": [
+            0.7260150744935815,
+            0.8796559968047818
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.7977039433681751,
+          "ci95": [
+            0.7139648857874091,
+            0.8779015738721969
+          ]
+        },
+        "P@3": {
+          "mean": 0.7209302325581395,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": null,
+      "queries_top5_changed": 0,
+      "queries_top1_changed": 0,
+      "weights": {
+        "website_specialty": 0.04,
+        "procedure_each": 0.04,
+        "procedure_max": 0.08,
+        "verified": 0.03,
+        "partially_verified": 0.015,
+        "nabh": 0.02,
+        "jci": 0.02,
+        "international_patients": 0.02,
+        "evidence_max": 0.03,
+        "bonus_cap": 0.2
+      },
+      "all_india": false
+    },
+    "no bonuses (similarity only)": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.7760808928552559,
+          "ci95": [
+            0.6999016661318254,
+            0.850652990675323
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.7675419943759276,
+          "ci95": [
+            0.6842598372980314,
+            0.8468243646988661
+          ]
+        },
+        "P@3": {
+          "mean": 0.6821705426356589,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.17777777777777778,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.059259259259259255,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.020897910208979104,
+      "queries_top5_changed": 30,
+      "queries_top1_changed": 14,
+      "weights": {
+        "website_specialty": 0.0,
+        "procedure_each": 0.0,
+        "procedure_max": 0.0,
+        "verified": 0.0,
+        "partially_verified": 0.0,
+        "nabh": 0.0,
+        "jci": 0.0,
+        "international_patients": 0.0,
+        "evidence_max": 0.0,
+        "bonus_cap": 0.0
+      },
+      "all_india": false
+    },
+    "all bonuses x0.5": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.7961964199242442,
+          "ci95": [
+            0.7202134901775772,
+            0.8675775397392557
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.7920690219677755,
+          "ci95": [
+            0.7082093236661844,
+            0.8726633548339238
+          ]
+        },
+        "P@3": {
+          "mean": 0.7054263565891472,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.059259259259259255,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.15028497150284972,
+      "queries_top5_changed": 20,
+      "queries_top1_changed": 5,
+      "weights": {
+        "website_specialty": 0.02,
+        "procedure_each": 0.02,
+        "procedure_max": 0.04,
+        "verified": 0.015,
+        "partially_verified": 0.0075,
+        "nabh": 0.01,
+        "jci": 0.01,
+        "international_patients": 0.01,
+        "evidence_max": 0.015,
+        "bonus_cap": 0.1
+      },
+      "all_india": false
+    },
+    "all bonuses x2": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.8124990930080531,
+          "ci95": [
+            0.734607168606492,
+            0.8834489998730417
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.8176798498668622,
+          "ci95": [
+            0.73913012073821,
+            0.8899475494429794
+          ]
+        },
+        "P@3": {
+          "mean": 0.7364341085271318,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.7166283371662834,
+      "queries_top5_changed": 21,
+      "queries_top1_changed": 7,
+      "weights": {
+        "website_specialty": 0.08,
+        "procedure_each": 0.08,
+        "procedure_max": 0.16,
+        "verified": 0.06,
+        "partially_verified": 0.03,
+        "nabh": 0.04,
+        "jci": 0.04,
+        "international_patients": 0.04,
+        "evidence_max": 0.06,
+        "bonus_cap": 0.4
+      },
+      "all_india": false
+    },
+    "all bonuses x4": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.8210551755986637,
+          "ci95": [
+            0.7417473109952639,
+            0.8911315675394137
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.8176419730931239,
+          "ci95": [
+            0.7378764403800933,
+            0.8898608849751486
+          ]
+        },
+        "P@3": {
+          "mean": 0.7364341085271318,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.294970502949705,
+      "queries_top5_changed": 25,
+      "queries_top1_changed": 10,
+      "weights": {
+        "website_specialty": 0.16,
+        "procedure_each": 0.16,
+        "procedure_max": 0.32,
+        "verified": 0.12,
+        "partially_verified": 0.06,
+        "nabh": 0.08,
+        "jci": 0.08,
+        "international_patients": 0.08,
+        "evidence_max": 0.12,
+        "bonus_cap": 0.8
+      },
+      "all_india": false
+    },
+    "without website-confirmed speciality": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.795228414953014,
+          "ci95": [
+            0.7176962535537229,
+            0.8641668058642046
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.7849438662839145,
+          "ci95": [
+            0.7043791849575072,
+            0.8602896275661992
+          ]
+        },
+        "P@3": {
+          "mean": 0.7054263565891472,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.17777777777777778,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.10188981101889812,
+      "queries_top5_changed": 13,
+      "queries_top1_changed": 4,
+      "weights": {
+        "website_specialty": 0.0,
+        "procedure_each": 0.04,
+        "procedure_max": 0.08,
+        "verified": 0.03,
+        "partially_verified": 0.015,
+        "nabh": 0.02,
+        "jci": 0.02,
+        "international_patients": 0.02,
+        "evidence_max": 0.03,
+        "bonus_cap": 0.2
+      },
+      "all_india": false
+    },
+    "without procedure match": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.8016211159034424,
+          "ci95": [
+            0.7210104432866541,
+            0.875713570834577
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.7931007057586895,
+          "ci95": [
+            0.7087207484823302,
+            0.8730540736611708
+          ]
+        },
+        "P@3": {
+          "mean": 0.7209302325581395,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.25677432256774324,
+      "queries_top5_changed": 7,
+      "queries_top1_changed": 4,
+      "weights": {
+        "website_specialty": 0.04,
+        "procedure_each": 0.0,
+        "procedure_max": 0.0,
+        "verified": 0.03,
+        "partially_verified": 0.015,
+        "nabh": 0.02,
+        "jci": 0.02,
+        "international_patients": 0.02,
+        "evidence_max": 0.03,
+        "bonus_cap": 0.2
+      },
+      "all_india": false
+    },
+    "without verified details": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.807993642702842,
+          "ci95": [
+            0.730001263511238,
+            0.8784365170269118
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.8003619462290016,
+          "ci95": [
+            0.7173450266803602,
+            0.8785101044027049
+          ]
+        },
+        "P@3": {
+          "mean": 0.7209302325581395,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.8371162883711629,
+      "queries_top5_changed": 12,
+      "queries_top1_changed": 2,
+      "weights": {
+        "website_specialty": 0.04,
+        "procedure_each": 0.04,
+        "procedure_max": 0.08,
+        "verified": 0.0,
+        "partially_verified": 0.0,
+        "nabh": 0.02,
+        "jci": 0.02,
+        "international_patients": 0.02,
+        "evidence_max": 0.03,
+        "bonus_cap": 0.2
+      },
+      "all_india": false
+    },
+    "without NABH": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.8119995625525782,
+          "ci95": [
+            0.732931515539661,
+            0.8832044669831323
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.8003619462290016,
+          "ci95": [
+            0.7173450266803602,
+            0.8785101044027049
+          ]
+        },
+        "P@3": {
+          "mean": 0.7209302325581395,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.24867513248675133,
+      "queries_top5_changed": 8,
+      "queries_top1_changed": 2,
+      "weights": {
+        "website_specialty": 0.04,
+        "procedure_each": 0.04,
+        "procedure_max": 0.08,
+        "verified": 0.03,
+        "partially_verified": 0.015,
+        "nabh": 0.0,
+        "jci": 0.02,
+        "international_patients": 0.02,
+        "evidence_max": 0.03,
+        "bonus_cap": 0.2
+      },
+      "all_india": false
+    },
+    "without JCI": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.8076465871376285,
+          "ci95": [
+            0.7294597428149744,
+            0.8766661460986214
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.8046265487022868,
+          "ci95": [
+            0.7217668459779333,
+            0.880059005751328
+          ]
+        },
+        "P@3": {
+          "mean": 0.7209302325581395,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.9048095190480951,
+      "queries_top5_changed": 16,
+      "queries_top1_changed": 1,
+      "weights": {
+        "website_specialty": 0.04,
+        "procedure_each": 0.04,
+        "procedure_max": 0.08,
+        "verified": 0.03,
+        "partially_verified": 0.015,
+        "nabh": 0.02,
+        "jci": 0.0,
+        "international_patients": 0.02,
+        "evidence_max": 0.03,
+        "bonus_cap": 0.2
+      },
+      "all_india": false
+    },
+    "without international services": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.8026332788627293,
+          "ci95": [
+            0.7240835230062809,
+            0.8749819023978332
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.7991328398322328,
+          "ci95": [
+            0.715041525315647,
+            0.8783962284053592
+          ]
+        },
+        "P@3": {
+          "mean": 0.7209302325581395,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.5000499950005,
+      "queries_top5_changed": 12,
+      "queries_top1_changed": 4,
+      "weights": {
+        "website_specialty": 0.04,
+        "procedure_each": 0.04,
+        "procedure_max": 0.08,
+        "verified": 0.03,
+        "partially_verified": 0.015,
+        "nabh": 0.02,
+        "jci": 0.02,
+        "international_patients": 0.0,
+        "evidence_max": 0.03,
+        "bonus_cap": 0.2
+      },
+      "all_india": false
+    },
+    "without evidence quality": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.8012945700287303,
+          "ci95": [
+            0.7209400093695161,
+            0.8725312588675658
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.7977039433681751,
+          "ci95": [
+            0.7139648857874091,
+            0.8779015738721969
+          ]
+        },
+        "P@3": {
+          "mean": 0.7209302325581395,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.9534883720930233,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.9333333333333333,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.15555555555555556,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.05185185185185184,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 0.4981501849815019,
+      "queries_top5_changed": 5,
+      "queries_top1_changed": 2,
+      "weights": {
+        "website_specialty": 0.04,
+        "procedure_each": 0.04,
+        "procedure_max": 0.08,
+        "verified": 0.03,
+        "partially_verified": 0.015,
+        "nabh": 0.02,
+        "jci": 0.02,
+        "international_patients": 0.02,
+        "evidence_max": 0.0,
+        "bonus_cap": 0.2
+      },
+      "all_india": false
+    },
+    "no area filter (all India)": {
+      "metrics": {
+        "NDCG@5": {
+          "mean": 0.30680489751116213,
+          "ci95": [
+            0.2133521979153953,
+            0.40714523442001244
+          ]
+        },
+        "NDCG@3": {
+          "mean": 0.31760728142559647,
+          "ci95": [
+            0.21912630719720746,
+            0.4244240310793307
+          ]
+        },
+        "P@3": {
+          "mean": 0.3178294573643411,
+          "ci95": null
+        },
+        "Hit@3": {
+          "mean": 0.5581395348837209,
+          "ci95": null
+        },
+        "Capable@3": {
+          "mean": 0.8,
+          "ci95": null
+        },
+        "Bad@3": {
+          "mean": 0.022222222222222223,
+          "ci95": null
+        },
+        "OffArea@3": {
+          "mean": 0.35555555555555557,
+          "ci95": null
+        }
+      },
+      "p_vs_current_ndcg5": 9.999000099990002e-05,
+      "queries_top5_changed": 35,
+      "queries_top1_changed": 26,
+      "weights": {
+        "website_specialty": 0.04,
+        "procedure_each": 0.04,
+        "procedure_max": 0.08,
+        "verified": 0.03,
+        "partially_verified": 0.015,
+        "nabh": 0.02,
+        "jci": 0.02,
+        "international_patients": 0.02,
+        "evidence_max": 0.03,
+        "bonus_cap": 0.2
+      },
+      "all_india": true
+    }
+  },
+  "data_sha256": {
+    "hospitals.csv": "0bdec9088b086ecc",
+    "grades": "27771131641ff024",
+    "gold": "718c787c38ec6c59"
+  }
+}
