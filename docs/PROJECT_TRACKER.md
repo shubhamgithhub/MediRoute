@@ -90,10 +90,10 @@ Full findings: **section 13 of the team report**, [docs/report/MediRoute_team_re
 | 46 | Cloud deployment | Deploy the API + frontend once (with Docker from row 29); keep the demo URL for the final | Aniket | Not started |
 | 47 | Monitoring dashboard | p50/p95 latency per step, cost per query, error rate, success rate, one alert rule (extends row 31) | Aniket | Not started |
 | 48 | CI eval gate | GitHub Actions: tests + a small Step 1 / Step 2 eval that fails if accuracy or NDCG drops (extends row 30) | Aniket | Not started |
-| 49 | Ranking-weight sensitivity | Re-run the Step 2 gold set with other bonus weights (e.g. 0, half, double, no location priority); report NDCG@5 / Capable@3. TA asked for it; no LLM cost | Shubham | Not started |
+| 49 | Ranking-weight sensitivity | Re-run the Step 2 gold set with other bonus weights (e.g. 0, half, double, no location priority); report NDCG@5 / Capable@3. TA asked for it; no LLM cost | Shubham | Done 13 Nov: bonuses help (p = 0.02), exact values within noise; report section 8c.2, scripts/eval_step2_weights.py |
 | 50 | Medical suitability vs location | Decide and document: today in-area hospitals come first. Either defend it or add a "best anywhere in India" option | Shubham | Not started |
 | 51 | Safety / emergency test set | 30–50 emergency and red-flag cases; report missed escalations (target 0) | Anand, Ravi | Not started |
-| 52 | Report-extraction metric | For the PDF test reports: share of critical details caught (and missed) by Step 1 evidence (extends row 24) | Anand, Ravi | Not started |
+| 52 | Report-extraction metric | For the PDF test reports: share of critical details caught (and missed) by Step 1 evidence (extends row 24) | Anand, Ravi | Done 13 Nov: 93% of 85 critical details kept (94% decisive); only miss = long report cut at 6,000 chars; report section 8c.1, scripts/eval_report_extraction.py. Labels need doctor review |
 | 53 | Doctor review + 20% grade spot-check | Doctor reviews ~50 Step 1 gold items and the mapping drafts; human spot-check of 20% of Step 2 grades; report agreement | Anand, Ravi | Not started |
 | 54 | Outside users | 3–5 people outside the team use the portal; note what confused them (one slide) | All | Not started |
 | 55 | Named versions | List of named versions (judge prompt vN, ranker vN, data vN) with dates, used in the experiments log and viva | Pravin | Not started |
