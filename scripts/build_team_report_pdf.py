@@ -217,6 +217,40 @@ def s_step1():
 ])}
 {where("specialty_routing/step1/ (all files above)", "data/processed/specialties.csv, specialty_mapping.csv, step1_lookup.csv",
        "python scripts/api_smoke_step1.py")}
+</section><section>
+<h1>3 · Demo Q&amp;A: why stage 3 (evidence) uses an LLM</h1>
+<p><b>Say this:</b> “The evidence step turns a free-form message into checked medical phrases. It raises lookup
+accuracy from 87–88% to 93%, keeps the two voters independent, stops guessing on vague messages and shows the
+patient why, for about $0.00004 and no extra waiting time.”</p>
+{table(["#", "Reason", "Detail / proof"], [
+    ["1", "Measured accuracy gain", "Lookup on LLM-extracted phrases 93% vs raw text 87–88% (mediroute set, Step 1 benchmark, section 7)"],
+    ["2", "Patients write freely", "“blocked arteries”, “sugar problem”, “heart is weak”: a fixed keyword list only finds words it already has"],
+    ["3", "Removes noise before search", "“my mother”, “for months”, “Mumbai”, “my child” would pull wrong matches (“child” → Paediatrics)"],
+    ["4", "Keeps the voters independent", "Lookup searches the phrases + medical data; the LLM voter reads the whole text and never sees the lookup. Agreement can be trusted"],
+    ["5", "Checked by code, cannot invent", "Kept only if ≥ 60% of its words are in the text; generic words and hidden identifiers dropped; every check is logged"],
+    ["6", "Safety gate for vague messages", "No medical phrase (“a good hospital in Pune”) → ask the patient, never guess"],
+    ["7", "Explains the answer", "Kept phrases are the evidence chips, always in the patient's own words"],
+    ["8", "Helps Step 2", "Procedures (“endoscopy”, “knee replacement”) give the procedure bonus (+0.04 each, max 0.08)"],
+    ["9", "Almost free", "Runs at the same time as the LLM voter; ≈ 258 + 35 tokens, ≈ $0.00004; temperature 0, fixed seed"],
+    ["10", "Not a single point of failure", "LLM down → code-only keyword matches; the lookup still runs"],
+], ["5%", "27%", "68%"], "small")}
+<h2>Worked example (real request, 13 Nov 2026, GPT-6 Luna)</h2>
+{table(["", "Content"], [
+    ["Patient", "“I have acid reflux and stomach pain for months, doctor suggested endoscopy”"],
+    ["LLM input", "Fixed instruction (prompts/evidence_v1.txt: copy conditions, procedures, body parts word for word; do not diagnose) + the message"],
+    ["LLM output", '{"conditions":["acid reflux","stomach pain"], "procedures":["endoscopy"], "body_parts":["stomach"]}  (2.9 s)'],
+    ["Code check", "All 4 phrases found in the text (100%) → kept; keyword matches add “acid reflux”, “endoscopy”"],
+    ["To the lookup", "acid reflux · stomach pain · endoscopy → Gastroenterology 0.097 (Urology 0.006, ENT 0.003)"],
+    ["Result", "LLM voter also Gastroenterology → agreement; Step 2 gets “endoscopy” as a procedure"],
+], ["16%", "84%"], "small")}
+<h2>Likely follow-up questions</h2>
+{bullets([
+    "<b>“Why not keywords only?”</b> That is the no-LLM fallback. It misses wording not in the list, so more patients get a question instead of an answer. Not benchmarked on its own yet (replay test, no API cost).",
+    "<b>“The LLM voter already returns evidence_terms; why a second call?”</b> Those are the words the LLM picked to justify its own answer. Feeding them to the lookup would tie the two voters together, so a shared mistake would look like agreement.",
+    "<b>“Does it slow the patient down?”</b> No. It runs in parallel with the LLM voter; the whole of Step 1 takes ≈ 3 s.",
+    "<b>“Can it hallucinate?”</b> It can propose a phrase, but code drops any phrase that is not in the patient's text. The admin page shows every phrase as kept or dropped, with the reason.",
+    "<b>“Where can I see it?”</b> Admin page → any request → “Step 1: how the speciality was worked out”; diagram: docs/architecture/mediroute_algorithms.png.",
+])}
 """
 
 

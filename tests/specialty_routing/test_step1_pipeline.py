@@ -309,6 +309,18 @@ def test_llm_provider_switch(monkeypatch):
         make_llm_client()
 
 
+def test_default_provider_follows_openrouter_key(monkeypatch):
+    from mediroute.specialty_routing.step1.ollama_client import OllamaClient, OpenRouterClient, make_llm_client
+    monkeypatch.delenv("MEDIROUTE_LLM_PROVIDER", raising=False)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
+    assert isinstance(make_llm_client(), OpenRouterClient)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "")
+    assert isinstance(make_llm_client(), OllamaClient)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "test-key")
+    monkeypatch.setenv("MEDIROUTE_LLM_PROVIDER", "ollama")  # explicit choice still wins
+    assert isinstance(make_llm_client(), OllamaClient)
+
+
 # ---------------------------------------------------------------- OpenRouter (no network: _request is faked)
 def test_openrouter_without_key_is_skipped_with_a_clear_reason():
     from mediroute.specialty_routing.step1.ollama_client import OpenRouterClient

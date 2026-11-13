@@ -109,6 +109,8 @@ class Evidence:
     kept: dict[str, list[str]] = field(default_factory=lambda: {k: [] for k in ALL_KINDS})
     dropped: list[dict] = field(default_factory=list)
     llm_call: LLMCall | None = None
+    # every LLM phrase and what the code check did with it (admin page: share of words found, kept or why not)
+    checks: list[dict] = field(default_factory=list)
 
     @property
     def phrases(self) -> list[str]:
@@ -167,12 +169,18 @@ class EvidenceExtractor:
                 if re.search(r"\[(PHONE|EMAIL|ID)\]", phrase):  # redacted contact details are not evidence
                     evidence.dropped.append({"kind": kind, "phrase": phrase, "matched_share": None,
                                              "why": "contains redacted identifier"})
+                    evidence.checks.append({"kind": kind, "phrase": phrase, "share": None, "kept": False,
+                                            "why": "contains redacted identifier"})
                     continue
                 if is_generic(phrase):  # "treatment", "hospital", "Mumbai", "since last month"
                     evidence.dropped.append({"kind": kind, "phrase": phrase, "matched_share": None,
                                              "why": "generic word, not about a speciality"})
+                    evidence.checks.append({"kind": kind, "phrase": phrase, "share": None, "kept": False,
+                                            "why": "generic word, not about a speciality"})
                     continue
                 supported, share = verify_phrase(phrase, source)
+                evidence.checks.append({"kind": kind, "phrase": phrase, "share": share, "kept": supported,
+                                        "why": "" if supported else "under 60% of its words are in the text"})
                 if supported:
                     if phrase not in evidence.kept[kind]:
                         evidence.kept[kind].append(phrase)

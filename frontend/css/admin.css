@@ -95,6 +95,31 @@ details > summary { cursor: pointer; color: var(--teal-dark); font-size: 12.5px;
 }
 
 /* Step 2 ranking */
+/* Step 1 algorithms */
+.s1-algos { display: grid; gap: 14px; }
+.s1-stage { border: 1.5px solid #dfe8ec; border-left-width: 5px; border-radius: 10px; padding: 12px 14px; background: #fff; }
+.s1-llm { border-left-color: #7c6bd6; }
+.s1-ml { border-left-color: #3f86d4; }
+.s1-code { border-left-color: #3f9a65; }
+.s1-stage-head { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; font-size: 15px; color: var(--navy); }
+.s1-num { display: inline-grid; place-items: center; min-width: 30px; height: 24px; padding: 0 6px; border-radius: 6px; background: #eef3f6; font-weight: 800; font-size: 12.5px; }
+.s1-kind { margin-left: auto; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase; }
+.s1-kind-llm { background: #efeafe; color: #5a49b8; }
+.s1-kind-ml { background: #e6f1fd; color: #2c6aad; }
+.s1-kind-code { background: #e7f5ec; color: #2d7a4e; }
+.s1-io { margin: 8px 0; }
+.s1-io-label { margin: 10px 0 4px; font-size: 12.5px; font-weight: 700; color: #4f5d6b; }
+.s1-steps, .s1-rules { margin: 6px 0 10px; padding-left: 22px; font-size: 13px; line-height: 1.55; }
+.s1-rules li { padding: 3px 6px; border-radius: 6px; color: #6b7785; }
+.s1-rules li.taken { background: #e7f5ec; color: #1d5c39; font-weight: 700; }
+.s1-phrase-head { margin: 12px 0 4px; font-size: 13.5px; }
+.s1-table td, .s1-table th { font-size: 12.5px; }
+.s1-table td.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.s1-added { margin: 4px 0 2px; font-size: 12.5px; color: #1f7a50; font-weight: 600; }
+.s1-drop { color: #a8423c; }
+.s1-bar { width: 160px; height: 8px; border-radius: 4px; background: #eef3f6; overflow: hidden; }
+.s1-bar span { display: block; height: 100%; background: #3f86d4; }
+
 .s2-criteria { display: grid; gap: 8px; margin: 0 0 12px; padding: 0; list-style: none; }
 .s2-criteria li { display: grid; gap: 2px; padding: 8px 11px; border: 1px solid #e3edf1; border-radius: 9px; background: #fbfdfe; font-size: 13px; line-height: 1.5; }
 .s2-criteria strong { color: var(--navy); }

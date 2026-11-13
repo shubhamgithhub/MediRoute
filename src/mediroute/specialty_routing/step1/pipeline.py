@@ -197,7 +197,7 @@ class Step1Pipeline:
         trace.log("llm_call", stage_for="evidence_extraction",
                   **_llm_event(evidence.llm_call, self.extractor.build_prompt(text), EVIDENCE_PROMPT_VERSION))
         trace.log("evidence", method=evidence.method, kept=evidence.kept, dropped=evidence.dropped,
-                  routing_phrases=evidence.routing_phrases)
+                  routing_phrases=evidence.routing_phrases, checks=evidence.checks)
 
         if not evidence.routing_phrases:
             return self._ask_or_offer_choice(trace, inp, emergency, evidence.phrases, votes={},
@@ -207,7 +207,8 @@ class Step1Pipeline:
         votes: dict[str, Vote] = {}
         votes["V1"] = self.v1.vote(evidence.routing_phrases)
         trace.log("vote", voter=votes["V1"].voter, method="lookup_keyword_plus_meaning", top3=votes["V1"].top3,
-                  ms=votes["V1"].ms, note=votes["V1"].note, hits=votes["V1"].hits[:24])
+                  ms=votes["V1"].ms, note=votes["V1"].note, hits=votes["V1"].hits[:48],
+                  details=votes["V1"].details)
         votes["V2"] = v3_future.result() if v3_future else self.v3.vote(text)
         v2_event = _llm_event(votes["V2"].llm_call, self.v3._router.build_prompt(text), self.v3.prompt_version)
         if v3_future:

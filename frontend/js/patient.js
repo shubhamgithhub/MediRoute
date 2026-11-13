@@ -581,18 +581,30 @@ const buildRoutingForm = (extra) => {
   return formData;
 };
 
+// The patient waits at most this long; after that the page stops waiting and offers a retry.
+const ROUTING_TIMEOUT_MS = 20000;
+class RoutingTimeout extends Error {}
+
 const callRouting = async (extra) => {
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), ROUTING_TIMEOUT_MS);
   let response;
-  try {
-    response = await fetch(PATIENT_ROUTING_URL, { method: "POST", body: buildRoutingForm(extra) });
-  } catch (error) {
-    throw new Error("The MediRoute server could not be reached. Check that FastAPI is running at http://127.0.0.1:8000, then try again.");
-  }
   let result = null;
   try {
-    result = await response.json();
-  } catch (error) {
-    throw new Error("The backend returned an unreadable response. Please try again.");
+    try {
+      response = await fetch(PATIENT_ROUTING_URL, { method: "POST", body: buildRoutingForm(extra), signal: controller.signal });
+    } catch (error) {
+      if (controller.signal.aborted) throw new RoutingTimeout("Finding the speciality is taking longer than usual (over 20 seconds), so we stopped waiting. Please try again.");
+      throw new Error("The MediRoute server could not be reached. Check that FastAPI is running at http://127.0.0.1:8000, then try again.");
+    }
+    try {
+      result = await response.json();
+    } catch (error) {
+      if (controller.signal.aborted) throw new RoutingTimeout("Finding the speciality is taking longer than usual (over 20 seconds), so we stopped waiting. Please try again.");
+      throw new Error("The backend returned an unreadable response. Please try again.");
+    }
+  } finally {
+    window.clearTimeout(timer);
   }
   if (!response.ok) {
     const detail = typeof result?.detail === "string" ? result.detail : (result?.message || null);
@@ -737,6 +749,14 @@ const runRouting = async (extra = {}) => {
     if (errorSummary) {
       errorSummary.hidden = false;
       errorSummary.textContent = error instanceof Error ? error.message : "The routing request could not be completed.";
+      if (error instanceof RoutingTimeout) {  // same request again, same answers
+        const retry = document.createElement("button");
+        retry.type = "button";
+        retry.className = "retry-button";
+        retry.textContent = "Try again";
+        retry.addEventListener("click", () => { if (!isSubmitting) runRouting(extra); });
+        errorSummary.append(" ", retry);
+      }
     }
     setError(fileInput, "", "report-error");
   } finally {
