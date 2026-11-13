@@ -256,6 +256,8 @@ document.addEventListener("DOMContentLoaded", () => {
         el("p", "muted", (summary.agree !== undefined ? `Voters ${summary.agree ? "agree" : "disagree"}${one("judge").status ? ` · AI judge: ${one("judge").status}${one("judge").final ? " → " + one("judge").final : ""}` : ""}` : `Tally: ${tally || "—"} · best match: ${summary.best_match || "—"} (${summary.best_match_votes || 0} of 3)`))));
     }
 
+    if (ev.stage) detail.append(section("Step 1: how the speciality was worked out (algorithms, weights, scores)", "calculator", step1Algorithms(events)));
+
     // LLM calls
     const calls = byStage("llm_call");
     if (calls.length) {
@@ -322,6 +324,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     detail.append(section("Output served", "send", served));
 
+    if (s.workflow && s.workflow.step2_status) detail.append(section("Step 2: how hospitals were ranked", "list-ordered", step2Ranking(s.workflow)));
+
     if (wfEvents.length) {
       const table = el("table", "data-table");
       const head2 = el("tr");
@@ -351,6 +355,252 @@ document.addEventListener("DOMContentLoaded", () => {
 
     detail.append(section("Raw trace events", "braces", collapsible(`${events.length + wfEvents.length} events (JSON)`, pre([...events, ...wfEvents]))));
     refreshIcons();
+  }
+
+  // ------------------------------------------------------------ Step 1 algorithms (what each stage computed)
+  const V1_PARAMS_FALLBACK = {
+    keyword_search: "TF-IDF, 0.5 x word (1-2 words) + 0.5 x character (3-5 letters), cosine", keyword_min_score: 0.25,
+    meaning_search: "all-MiniLM-L6-v2 sentence embeddings, cosine", meaning_min_score: 0.45, results_per_search: 20,
+    rrf_k: 60, entries_kept_per_phrase: 8, runner_up_weight: 0.1, weak_evidence_weight: 0.5,
+  };
+  const table = (headers, rows, cls = "data-table s1-table") => {
+    const t = el("table", cls);
+    const hr = el("tr");
+    headers.forEach((h) => hr.append(el("th", "", h)));
+    t.append(hr);
+    rows.forEach((cells) => {
+      const tr = el("tr");
+      cells.forEach((c) => {
+        const td = el("td", c && c.cls ? c.cls : "");
+        const v = c && typeof c === "object" && !(c instanceof Node) ? c.v : c;
+        if (v instanceof Node) td.append(v); else td.textContent = v === undefined || v === null || v === "" ? "—" : String(v);
+        tr.append(td);
+      });
+      t.append(tr);
+    });
+    const wrap = el("div", "table-wrap");
+    wrap.append(t);
+    return wrap;
+  };
+  const stageBox = (n, title, kind, ...children) => {
+    const box = el("div", `s1-stage s1-${kind}`);
+    const h = el("div", "s1-stage-head");
+    h.append(el("span", "s1-num", n), el("strong", "", title), el("span", `s1-kind s1-kind-${kind}`, kind === "llm" ? "LLM" : kind === "ml" ? "ML search (code)" : "code"));
+    box.append(h, ...children);
+    return box;
+  };
+  const io = (label, value) => {
+    const d = el("div", "s1-io");
+    d.append(el("div", "s1-io-label", label), value instanceof Node ? value : pre(value));
+    return d;
+  };
+  const rankScore = (pair) => (pair ? `#${pair[0]} (${Number(pair[1]).toFixed(3)})` : "—");
+
+  function step1Algorithms(events) {
+    const one = (stage, pred = () => true) => events.find((e) => e.stage === stage && pred(e)) || {};
+    const input = one("input");
+    const ev = one("evidence");
+    const evCall = one("llm_call", (e) => e.stage_for === "evidence_extraction");
+    const v1 = one("vote", (e) => e.voter === "V1_lookup");
+    const v2 = one("vote", (e) => e.voter === "V2_llm");
+    const v2Call = one("llm_call", (e) => e.stage_for === "specialty_vote");
+    const judge = one("judge");
+    const judgeCalls = events.filter((e) => e.stage === "llm_call" && e.stage_for === "judge");
+    const dec = events.filter((e) => e.stage === "decision").slice(-1)[0] || {};
+    const out = el("div", "s1-algos");
+    const text = (input.patient_text && input.patient_text.text) || "(patient text hidden)";
+
+    // 3 · evidence ------------------------------------------------------------
+    const evParts = [el("p", "muted", "Why: pull the medical words out of free text so the lookup searches only those, not the noise around them.")];
+    if (evCall.stage) {
+      const inBox = el("div");
+      inBox.append(el("p", "patient-text", text), collapsible("Full prompt sent (fixed instruction + the message)", pre(evCall.prompt || "(not logged)")));
+      evParts.push(io(`Input to the LLM · prompt ${evCall.prompt_version} · ${evCall.model} · temperature ${evCall.options ? evCall.options.temperature : "—"} · ${evCall.prompt_tokens ?? "?"} tokens`, inBox));
+      evParts.push(io(`LLM output · ${ms(evCall.duration_ms)}`, evCall.raw_response || (evCall.ok ? "(empty)" : `failed: ${evCall.error}`)));
+    } else {
+      evParts.push(el("p", "muted", "No LLM call: evidence came from the keyword list only (LLM unavailable)."));
+    }
+    const checks = ev.checks;
+    if (checks && checks.length) {
+      evParts.push(el("div", "s1-io-label", "Code check: a phrase is kept only if at least 60% of its words are in the text (exact, abbreviation or close spelling ≥ 0.85)"),
+        table(["phrase", "type", "words found in text", "result"], checks.map((c) => [
+          c.phrase, c.kind.replace("_", " "), c.share === null || c.share === undefined ? "—" : `${Math.round(c.share * 100)}%`,
+          { v: c.kept ? "kept" : `dropped: ${c.why}`, cls: c.kept ? "s2-plus" : "s1-drop" }])));
+    } else {
+      const box = el("div");
+      box.append(el("div", "muted", "kept (per-phrase check details are recorded for requests from 13 Nov 2026)"));
+      Object.entries(ev.kept || {}).forEach(([k, p]) => { if (p.length) box.append(el("div", "", `${k.replace("_", " ")}: ${p.join(", ")}`)); });
+      evParts.push(box);
+    }
+    evParts.push(el("div", "s1-io-label", "Keyword matches added by code (everyday terms found word for word)"), chips((ev.kept || {}).keyword_matches));
+    evParts.push(el("div", "s1-io-label", "→ Phrases given to the lookup voter (body parts only if nothing else was found)"), chips(ev.routing_phrases));
+    out.append(stageBox("3", "Evidence: LLM call 1 + code check", "llm", ...evParts));
+
+    // 4a · V1 lookup ------------------------------------------------------------
+    if (v1.stage) {
+      const d = v1.details || {};
+      const p = d.params || V1_PARAMS_FALLBACK;
+      const parts = [el("p", "muted", "Why: an independent check against fixed medical data (ICD-10-CM via AHRQ CCSR, CGHS procedures, everyday terms). No LLM.")];
+      const steps = el("ol", "s1-steps");
+      [
+        `Clean the phrase: generic words removed ("problem in my stomach" → "stomach").`,
+        `Keyword search: ${p.keyword_search}; keep the top ${p.results_per_search} scoring ≥ ${p.keyword_min_score}.`,
+        `Meaning search: ${p.meaning_search}; keep the top ${p.results_per_search} scoring ≥ ${p.meaning_min_score}.`,
+        `Fuse the two lists by rank (Reciprocal Rank Fusion): score = Σ 1 / (${p.rrf_k} + rank). An entry found by both searches near the top scores highest (max ≈ ${(2 / (p.rrf_k + 1)).toFixed(4)}). Keep the top ${p.entries_kept_per_phrase}.`,
+        `Each phrase votes once: its best entry's speciality gets the full score; its other specialities count ×${p.runner_up_weight}. Symptom / weak terms count ×${p.weak_evidence_weight}.`,
+        "Add the votes over all phrases. General Medicine is dropped if any specialist matched. Highest total = V1's answer.",
+      ].forEach((t) => steps.append(el("li", "", t)));
+      parts.push(steps);
+      const hits = (v1.hits || []).filter((h) => h.entry_id);
+      const phrases = d.phrases && d.phrases.length ? d.phrases : [...new Set(hits.map((h) => h.phrase))].map((ph) => ({ phrase: ph }));
+      phrases.forEach((ph) => {
+        const rows = hits.filter((h) => h.phrase === ph.phrase).map((h) => [
+          `${h.entry_id}: ${h.text}`, h.specialty, h.evidence_type || "—", rankScore(h.kw), rankScore(h.emb),
+          { v: Number(h.score).toFixed(4), cls: "num" },
+          { v: h.weak ? `×${p.weak_evidence_weight}` : "×1", cls: "num" },
+        ]);
+        const head = el("div", "s1-phrase-head");
+        head.append(el("strong", "", `“${ph.phrase}”`));
+        if (ph.query && ph.query !== ph.phrase) head.append(el("span", "muted", ` searched as “${ph.query}”`));
+        if (ph.keyword_results !== undefined) head.append(el("span", "muted", ` · keyword search found ${ph.keyword_results}, meaning search found ${ph.meaning_results}`));
+        parts.push(head, table(["lookup entry", "→ speciality", "type", "keyword rank (score)", "meaning rank (score)", "RRF score", "weight"], rows));
+        if (ph.added) {
+          parts.push(el("div", "s1-added", `Vote of this phrase: ${(ph.added || []).map(([s, v], i) => `${s} +${v.toFixed(4)}${i === 0 ? " (best, full)" : ` (×${p.runner_up_weight})`}`).join(" · ")}${ph.general_only ? " · general symptom: only General Medicine counted" : ""}`));
+        }
+      });
+      const totals = d.totals || (v1.top3 || []);
+      if (totals.length) {
+        const max = Math.max(...totals.map(([, v]) => v), 1e-9);
+        const rows = totals.map(([s, v], i) => {
+          const bar = el("div", "s1-bar");
+          const fill = el("span");
+          fill.style.width = `${(v / max) * 100}%`;
+          bar.append(fill);
+          return [{ v: i === 0 ? `${s} ← V1 answer` : s, cls: i === 0 ? "s2-final" : "" }, { v: Number(v).toFixed(4), cls: "num" }, bar];
+        });
+        parts.push(el("div", "s1-io-label", `Totals (sum over phrases)${d.dropped_general_medicine ? " · General Medicine dropped because a specialist matched" : ""}`),
+          table(["speciality", "total", ""], rows));
+      }
+      if (!v1.details) parts.push(el("p", "muted", "Search ranks and per-phrase votes are recorded for requests from 13 Nov 2026; older requests show only the fused scores."));
+      out.append(stageBox("4a", "V1 lookup voter: keyword + meaning search, fused", "ml", ...parts));
+    }
+
+    // 4b · V2 LLM vote ----------------------------------------------------------
+    if (v2.stage) {
+      const parts = [el("p", "muted", "Why: an independent opinion. It reads the whole text and the speciality list (with route-here / not-here rules); it never sees the lookup or V1's answer.")];
+      if (v2Call.stage) {
+        const inBox = el("div");
+        inBox.append(el("p", "patient-text", text), collapsible(`Full prompt sent (${(v2Call.prompt || "").length.toLocaleString()} characters: rules + every speciality + the message)`, pre(v2Call.prompt || "(not logged)")));
+        parts.push(io(`Input to the LLM · prompt ${v2Call.prompt_version} · ${v2Call.model} · temperature ${v2Call.options ? v2Call.options.temperature : "—"} · ${v2Call.prompt_tokens ?? "?"} tokens${v2Call.parallel ? " · ran at the same time as LLM call 1" : ""}`, inBox));
+        parts.push(io(`LLM output · ${ms(v2Call.duration_ms)}`, v2Call.raw_response || (v2Call.ok ? "(empty)" : `failed: ${v2Call.error}`)));
+      }
+      const h = (v2.hits || [])[0] || {};
+      parts.push(el("div", "s1-io-label", "Code check: the answer must be a name on the list (or “Unclear” = abstain); alternatives not on the list are ignored"));
+      parts.push(table(["rank", "speciality", "score used"], (v2.top3 || []).map(([s, sc], i) => [i + 1, i === 0 ? `${s} ← V2 answer` : s, { v: sc, cls: "num" }])));
+      parts.push(el("p", "muted", `Scores are by rank (1st 1.0, 2nd 0.5, 3rd 0.33): the LLM returns a choice, not a probability (temperature 0). Words it cited: ${(h.evidence_terms || []).join(", ") || "—"}.${v2.note ? " Note: " + v2.note + "." : ""}`));
+      out.append(stageBox("4b", "V2 AI voter: LLM call 2", "llm", ...parts));
+    }
+
+    // 5 · judge (only on disagreement) -----------------------------------------
+    if (judge.stage) {
+      const parts = [el("p", "muted", "Runs only when V1 and V2 disagree. Asked twice with the two candidates in opposite order; both answers must match and pass the checks, else the patient is asked.")];
+      parts.push(kv([
+        ["Candidates", (judge.candidates || []).join(" vs ")],
+        ["Answers (order A, order B)", (judge.choices || []).join(" · ") || "—"],
+        ["Failed checks", (judge.failures || []).join("; ") || "none"],
+        ["Quote from patient", judge.patient_quote || "—"],
+        ["Result", judge.final ? `${judge.final} (${judge.status})` : judge.status],
+        ["Cost", judge.cost ? `$${Number(judge.cost).toFixed(5)}` : "—"],
+      ]));
+      if ((judge.evidence_lines || []).length) parts.push(collapsible(`Evidence lines given to the judge (${judge.evidence_lines.length})`, pre(judge.evidence_lines)));
+      judgeCalls.forEach((c, i) => parts.push(collapsible(`Judge call ${i + 1}: prompt and output`, pre(`${c.prompt || ""}\n\n--- output ---\n${c.raw_response || c.error || ""}`))));
+      out.append(stageBox("5b", "AI judge: LLM calls 3 + 4", "llm", ...parts));
+    }
+
+    // 5 · decision rules ----------------------------------------------------------
+    const RULES = [
+      ["agreement", "V1 = V2 → that speciality"],
+      ["patient_answer", "They differ, but the patient's body-area answer fits exactly one → that one"],
+      ["judge", "They differ otherwise → AI judge (must pass all checks)"],
+      ["lookup_only", "AI not available (error / no key) → V1 alone, with a notice"],
+      ["clarification_required", "V2 says “Unclear”, no phrases, judge unsure, or General Medicine on the first try → ask the patient"],
+      ["needs_user_choice", "Still unclear after the questions → offer a short list"],
+      ["user_selected", "Patient picked from the list"],
+    ];
+    const taken = dec.method || (events.find((e) => e.stage === "response") || {}).decision;
+    const rl = el("ol", "s1-rules");
+    RULES.forEach(([m, t]) => { const li = el("li", m === taken ? "taken" : "", t); rl.append(li); });
+    out.append(stageBox("5", "Decide: fixed rules, first match wins", "code", rl,
+      el("p", "muted", `This request: ${decisionLabel[taken] || taken || "—"}${dec.selected_specialty ? ` → ${dec.selected_specialty}` : ""}. ${dec.reason || ""}`)));
+    return out;
+  }
+
+  // ------------------------------------------------------------ Step 2 ranking (weights + per-hospital scores)
+  const BONUS_COLUMNS = [
+    ["website_specialty", "Website speciality"], ["procedures", "Treatments"], ["verified", "Verified"],
+    ["nabh", "NABH"], ["jci", "JCI"], ["international_patients", "Intl."], ["evidence", "Evidence"],
+  ];
+  const fmt = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(3));
+  function step2Ranking(wf) {
+    const w = wf.ranking_weights || {};
+    const box = el("div", "s2");
+    const steps = el("ol", "s2-criteria");
+    const add = (title, text) => { const li = el("li"); li.append(el("strong", "", title), el("span", "", text)); steps.append(li); };
+    add("1. Eligible hospitals",
+      `Hospitals that list ${wf.step2_specialty || "the speciality"} (the hospital's website list, or the team list when the website list is missing): `
+      + `${wf.specialty_candidates ?? "—"} hospitals; ${wf.location_candidates ?? "—"} of them in ${wf.city || "the chosen area"}.`);
+    add("2. Relevance score (0 to 1)",
+      `How close each hospital's profile is to the search text${wf.semantic_query ? ` “${wf.semantic_query}”` : ""} `
+      + "(MiniLM sentence embeddings, cosine similarity with FAISS).");
+    add("3. Bonus points (fixed weights, added to relevance)",
+      `website speciality +${w.website_specialty ?? 0.04}; each requested treatment in the hospital's list +${w.procedure_each ?? 0.04} (max +${w.procedure_max ?? 0.08}); `
+      + `verified details +${w.verified ?? 0.03} (partly +${w.partially_verified ?? 0.015}); NABH +${w.nabh ?? 0.02}; JCI +${w.jci ?? 0.02}; `
+      + `international patient services +${w.international_patients ?? 0.02}; evidence quality up to +${w.evidence_max ?? 0.03} (High 0.03, Medium 0.02, Low 0.01). `
+      + `All bonuses together are capped at +${w.bonus_cap ?? 0.2}.`);
+    add("4. Order",
+      "Final score = relevance + bonus, highest first. Hospitals in the chosen area come first; if fewer than 3 are in the area, "
+      + "the list is filled from the same state, then the rest of India (shown as separate groups).");
+    box.append(steps);
+
+    const rows = wf.ranking || [];
+    if (!rows.length) {
+      box.append(el("p", "muted", (wf.top_hospitals || []).length
+        ? "Score breakdown was not logged for this request (it is logged from 12 Nov 2026 onwards). Hospitals returned: " + wf.top_hospitals.join(", ")
+        : "No hospitals were returned."));
+      return box;
+    }
+    const table = el("table", "data-table s2-table");
+    const head = el("tr");
+    ["#", "Hospital", "Relevance", ...BONUS_COLUMNS.map(([, label]) => label), "Bonus", "Final score"].forEach((t) => head.append(el("th", "", t)));
+    table.append(head);
+    let lastGroup = null;
+    rows.forEach((r) => {
+      const group = r.outside_area ? (r.area_group || "Outside the area") : `In ${wf.city || "the chosen area"}`;
+      if (group !== lastGroup) {
+        const gr = el("tr", "s2-group");
+        const td = el("td", "", group);
+        td.colSpan = 4 + BONUS_COLUMNS.length + 1;
+        gr.append(td);
+        table.append(gr);
+        lastGroup = group;
+      }
+      const tr = el("tr");
+      tr.append(el("td", "", `#${r.position}`));
+      const name = el("td");
+      name.append(el("strong", "", r.name || "—"), el("div", "muted", [r.city, r.specialty_evidence ? `speciality from ${r.specialty_evidence}` : ""].filter(Boolean).join(" · ")));
+      if ((r.matched_procedures || []).length) name.append(el("div", "muted", "matched: " + r.matched_procedures.join(", ")));
+      tr.append(name, el("td", "num", fmt(r.semantic_score)));
+      BONUS_COLUMNS.forEach(([key]) => {
+        const v = (r.bonus_breakdown || {})[key];
+        tr.append(el("td", v ? "num s2-plus" : "num s2-zero", v ? `+${Number(v).toFixed(3)}` : "0"));
+      });
+      tr.append(el("td", "num", `+${fmt(r.business_bonus)}`), el("td", "num s2-final", fmt(r.final_score)));
+      table.append(tr);
+    });
+    const wrap = el("div", "table-wrap");
+    wrap.append(table);
+    box.append(wrap);
+    return box;
   }
 
   // ------------------------------------------------------------ wiring

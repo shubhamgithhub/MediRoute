@@ -3,7 +3,9 @@
 Step 1 must work without an LLM: teammates may not have Ollama installed. Choose the client with
 MEDIROUTE_LLM_PROVIDER:
 
-    ollama  (default) local Ollama at OLLAMA_API_BASE_URL. If it isn't running, or the model isn't
+Not set: openrouter when OPENROUTER_API_KEY is set, otherwise ollama.
+
+    ollama  local Ollama at OLLAMA_API_BASE_URL. If it isn't running, or the model isn't
             pulled, Step 1 logs a warning and carries on without it (evidence from keywords, V3
             abstains, V1 + V2 must agree). It re-checks every 60 s, so starting Ollama later works.
     openrouter  hosted models via OpenRouter (free tier works). Needs OPENROUTER_API_KEY (each
@@ -373,9 +375,18 @@ class DisabledLLMClient:
                        details={"purpose": purpose, "model": self.model, "skipped": True})
 
 
+def default_llm_provider() -> str:
+    """OpenRouter when an OPENROUTER_API_KEY is set (hosted, ~3 s per request), else local Ollama.
+
+    The local 3B model took 20-60 s per call on a laptop short of memory (13 Nov 2026), so a key,
+    when present, wins. MEDIROUTE_LLM_PROVIDER still overrides either way.
+    """
+    return "openrouter" if os.getenv("OPENROUTER_API_KEY", "").strip() else "ollama"
+
+
 def make_llm_client():
     """The Step 1 LLM client chosen by MEDIROUTE_LLM_PROVIDER (add hosted providers here)."""
-    provider = os.getenv("MEDIROUTE_LLM_PROVIDER", "ollama").strip().lower()
+    provider = (os.getenv("MEDIROUTE_LLM_PROVIDER") or default_llm_provider()).strip().lower()
     if provider == "ollama":
         return OllamaClient()
     if provider == "openrouter":

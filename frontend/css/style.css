@@ -464,3 +464,27 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
 footer .brand { flex-shrink: 0; }
 .floating-note-bottom { bottom: -22px; }
 .patient-footer .brand-footer, .results-footer .brand-footer, .hospital-footer .brand-footer, .admin-footer .brand-footer { color: var(--navy); }
+
+/* home: larger preview card (desktop) */
+@media (min-width: 1051px) {
+  .recommendation-card { width: 470px; padding: 26px; }
+  .orbit-one { width: 540px; height: 540px; }
+  .orbit-two { width: 625px; height: 625px; }
+  .hero-visual { min-height: 600px; }
+  .dashboard-title strong { font-size: 18px; }
+  .dashboard-title small { font-size: 13px; }
+  .field-label { font-size: 11px; }
+  .request-box p { font-size: 16.5px; }
+  .context-value { font-size: 14.5px; }
+  .hospital-info strong { font-size: 15px; }
+  .hospital-location { font-size: 13px; }
+  .specialty-tags span { font-size: 12px; }
+  .match-score strong { font-size: 32px; }
+  .why-list li { font-size: 15.5px; }
+  .button-card { min-height: 42px; font-size: 14px; }
+}
+/* home: keep the badge and caption attached to the larger card */
+@media (min-width: 1051px) {
+  .floating-note-bottom { bottom: -5px; }   /* straddles the card's bottom edge, just below "View Details" */
+  .demo-caption { right: calc((100% - 470px) / 2); bottom: 8px; }  /* right under the card, aligned to its right edge */
+}

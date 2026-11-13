@@ -21,6 +21,7 @@ from typing import Any
 
 from mediroute.backend.workflow.routing_state import PatientRoutingState
 from mediroute.common.medical_context import MedicalContext
+from mediroute.hospital_recommendation.ranking.hospital_reranker import WEIGHTS as RANKING_WEIGHTS
 from mediroute.specialty_routing.extraction.pdf_parser import PDFParser
 from mediroute.specialty_routing.step1.pipeline import ROUTED_DECISIONS
 from mediroute.specialty_routing.step1.trace import _trace_logger
@@ -28,6 +29,24 @@ from mediroute.utils.logging_config import get_logger
 
 logger = get_logger()
 MAX_REPORT_CHARS = 6000  # keeps the Step 1 LLM prompt small
+
+
+def _ranking_row(position: int, hospital: dict) -> dict:
+    """One ranked hospital for the admin page: how its score was made."""
+    return {
+        "position": position,
+        "hospital_id": hospital.get("hospital_id"),
+        "name": hospital.get("hospital_name") or hospital.get("name"),
+        "city": hospital.get("city"),
+        "area_group": hospital.get("area_group"),
+        "outside_area": bool(hospital.get("outside_area")),
+        "specialty_evidence": hospital.get("specialty_evidence"),
+        "semantic_score": round(float(hospital.get("semantic_score") or 0), 4),
+        "bonus_breakdown": hospital.get("bonus_breakdown") or {},
+        "business_bonus": round(float(hospital.get("business_bonus") or 0), 4),
+        "final_score": round(float(hospital.get("final_score") or 0), 4),
+        "matched_procedures": hospital.get("matched_procedures") or [],
+    }
 
 
 def _log(state: PatientRoutingState, node: str, **data: Any) -> None:
@@ -161,7 +180,10 @@ class RoutingNodes:
              specialty=result.get("primary_specialty"), city=state.get("preferred_city"),
              specialty_candidates=result.get("specialty_candidate_count"),
              location_candidates=result.get("location_candidate_count"), count=result.get("count"),
-             top=[(r.get("hospital_name") or r.get("name")) for r in (result.get("results") or [])[:5]])
+             top=[(r.get("hospital_name") or r.get("name")) for r in (result.get("results") or [])[:5]],
+             semantic_query=result.get("semantic_query"), in_area_count=result.get("in_area_count"),
+             retrieval_candidates=result.get("retrieval_candidate_count"), weights=RANKING_WEIGHTS,
+             ranking=[_ranking_row(position, r) for position, r in enumerate(result.get("results") or [], start=1)])
         return {"recommendation_result": result, "workflow_status": result.get("status", "failed"),
                 "current_step": "recommend_hospitals", "error_message": None}
 

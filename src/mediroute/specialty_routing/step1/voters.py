@@ -50,6 +50,7 @@ class Vote:
     hits: list[dict[str, Any]] = field(default_factory=list)  # what the voter matched, for the trace
     llm_call: LLMCall | None = None
     note: str = ""
+    details: dict[str, Any] = field(default_factory=dict)  # how the score was built (admin page)
 
     @property
     def top1(self) -> str | None:
@@ -57,34 +58,48 @@ class Vote:
 
 
 def _aggregate(per_phrase: list[tuple[str, list[tuple[Any, float]]]], min_score: float,
-               best_only: bool = False) -> tuple[list, list]:
+               best_only: bool = False, breakdown: list | None = None) -> tuple[list, list]:
     """best_only: each phrase votes for the speciality of its best match; its other specialities
-    count RUNNER_UP_WEIGHT, so weak hits on several phrases cannot outweigh one clear match."""
+    count RUNNER_UP_WEIGHT, so weak hits on several phrases cannot outweigh one clear match.
+    breakdown: if given, one row per phrase is appended with what it added to each speciality."""
     totals: dict[str, float] = {}
     hits: list[dict[str, Any]] = []
     for phrase, results in per_phrase:
         best: dict[str, float] = {}
         for entry, score in results:
-            hits.append({"phrase": phrase, "entry_id": entry.entry_id, "text": entry.text[:120],
-                         "specialty": entry.specialty, "score": round(score, 3)})
             # General Medicine is the catch-all with its own rules below, so it is not weakened twice
             weak = getattr(entry, "evidence_type", "") in WEAK_EVIDENCE and entry.specialty != CATCH_ALL
             weighted = score * (WEAK_EVIDENCE_WEIGHT if weak else 1.0)
+            hits.append({"phrase": phrase, "entry_id": entry.entry_id, "text": entry.text[:120],
+                         "specialty": entry.specialty, "score": round(score, 3),
+                         "evidence_type": getattr(entry, "evidence_type", ""), "weak": weak,
+                         "weighted": round(weighted, 4)})
             if score >= min_score and weighted > best.get(entry.specialty, 0):
                 best[entry.specialty] = weighted
+        general_only = False
         # A phrase whose best match is the catch-all ("weakness") is a general symptom: its weaker
         # partial hits ("weakness in arm" -> Neurology) must not turn it into a specialist vote.
         if best and max(best, key=best.get) == CATCH_ALL:
             best = {CATCH_ALL: best[CATCH_ALL]}
+            general_only = True
         if best_only and best:
             top = max(best.values())
             best = {s: (v if v >= top - 1e-12 else v * RUNNER_UP_WEIGHT) for s, v in best.items()}
         for specialty, score in best.items():
             totals[specialty] = totals.get(specialty, 0) + score
+        if breakdown is not None:
+            ordered = sorted(best.items(), key=lambda kv: -kv[1])
+            breakdown.append({"phrase": phrase, "best": ordered[0][0] if ordered else None,
+                              "general_only": general_only,
+                              "added": [[s, round(v, 4)] for s, v in ordered]})
     # General Medicine is the catch-all for general symptoms ("weakness", "fever"): it only wins
     # when no specialist matched, so "weakness + slipped disc" goes to Orthopaedics.
+    dropped_general = any(s != CATCH_ALL for s in totals) and CATCH_ALL in totals
     if any(s != CATCH_ALL for s in totals):
         totals.pop(CATCH_ALL, None)
+    if breakdown is not None:
+        breakdown.append({"totals": [[s, round(v, 4)] for s, v in sorted(totals.items(), key=lambda kv: -kv[1])],
+                          "dropped_general_medicine": dropped_general})
     ranked = sorted(totals.items(), key=lambda kv: -kv[1])[:3]
     return [(s, round(v, 3)) for s, v in ranked], hits
 
@@ -124,32 +139,63 @@ class HybridLookupVoter:
 
     name = "V1_lookup"
 
+    PARAMS = {
+        "keyword_search": "TF-IDF, 0.5 x word (1-2 words) + 0.5 x character (3-5 letters), cosine",
+        "keyword_min_score": KEYWORD_MIN_SCORE,
+        "meaning_search": "all-MiniLM-L6-v2 sentence embeddings, cosine",
+        "meaning_min_score": EMBEDDING_MIN_SCORE,
+        "results_per_search": FUSION_DEPTH,
+        "fusion": f"Reciprocal Rank Fusion: sum of 1 / ({RRF_K} + rank) over both searches",
+        "rrf_k": RRF_K,
+        "entries_kept_per_phrase": HITS_PER_PHRASE,
+        "runner_up_weight": RUNNER_UP_WEIGHT,
+        "weak_evidence_weight": WEAK_EVIDENCE_WEIGHT,
+    }
+
     def __init__(self, index: LookupIndex) -> None:
         self.index = index
 
-    def _fused(self, phrase: str) -> list[tuple[Any, float]]:
+    def _fused(self, phrase: str, seen: dict | None = None) -> list[tuple[Any, float]]:
+        """seen: filled with entry_id -> {keyword rank/score, meaning rank/score} for the trace."""
         query = search_text(phrase)  # generic words removed: "problem in my stomach" -> "stomach"
-        keyword = [e for e, s in self.index.keyword_search(query, k=FUSION_DEPTH) if s >= KEYWORD_MIN_SCORE]
+        keyword = [(e, s) for e, s in self.index.keyword_search(query, k=FUSION_DEPTH) if s >= KEYWORD_MIN_SCORE]
         try:
-            meaning = [e for e, s in self.index.embedding_search(query, k=FUSION_DEPTH) if s >= EMBEDDING_MIN_SCORE]
+            meaning = [(e, s) for e, s in self.index.embedding_search(query, k=FUSION_DEPTH) if s >= EMBEDDING_MIN_SCORE]
         except Exception:  # embedding model unavailable: keyword search alone
             meaning = []
         fused: dict[str, float] = {}
         entries: dict[str, Any] = {}
-        for results in (keyword, meaning):
-            for rank, entry in enumerate(results, 1):
+        for kind, results in (("kw", keyword), ("emb", meaning)):
+            for rank, (entry, score) in enumerate(results, 1):
                 fused[entry.entry_id] = fused.get(entry.entry_id, 0.0) + 1.0 / (RRF_K + rank)
                 entries[entry.entry_id] = entry
+                if seen is not None:
+                    seen.setdefault(entry.entry_id, {})[kind] = [rank, round(score, 3)]
+        if seen is not None:
+            seen["_query"] = query
+            seen["_counts"] = [len(keyword), len(meaning)]
         ranked = sorted(fused.items(), key=lambda kv: -kv[1])[:HITS_PER_PHRASE]
         return [(entries[i], score) for i, score in ranked]
 
     def vote(self, phrases: list[str]) -> Vote:
         import time
         start = time.perf_counter()
-        per_phrase = [(p, self._fused(p)) for p in phrases]
-        top3, hits = _aggregate(per_phrase, 0.0, best_only=True)
+        seen_by_phrase: dict[str, dict] = {}
+        per_phrase = [(p, self._fused(p, seen_by_phrase.setdefault(p, {}))) for p in phrases]
+        breakdown: list[dict] = []
+        top3, hits = _aggregate(per_phrase, 0.0, best_only=True, breakdown=breakdown)
+        for hit in hits:  # which search found each entry, at what rank and score
+            found = seen_by_phrase.get(hit["phrase"], {}).get(hit["entry_id"], {})
+            hit["kw"], hit["emb"] = found.get("kw"), found.get("emb")
+        phrases_detail = []
+        for row in breakdown[:-1]:
+            seen = seen_by_phrase.get(row["phrase"], {})
+            phrases_detail.append({**row, "query": seen.get("_query"),
+                                   "keyword_results": (seen.get("_counts") or [0, 0])[0],
+                                   "meaning_results": (seen.get("_counts") or [0, 0])[1]})
+        details = {"params": self.PARAMS, "phrases": phrases_detail, **(breakdown[-1] if breakdown else {})}
         return Vote(self.name, top3, True, int((time.perf_counter() - start) * 1000), hits,
-                    note="" if top3 else "no lookup match")
+                    note="" if top3 else "no lookup match", details=details)
 
 
 class LLMVoter:
