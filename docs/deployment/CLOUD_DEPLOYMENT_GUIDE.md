@@ -36,7 +36,8 @@ the frontend moves to static hosting (S3/CDN) or several backend copies run behi
    patient text. Minimum: HTTP basic auth (username/password from environment variables) on
    `/admin.html` and `/api/admin/*`. This is also tracker row 56.
 5. **Listen on all interfaces** in the container: `--host 0.0.0.0` (or `MEDIROUTE_HOST=0.0.0.0`).
-6. **Health check** already exists: `GET /api/health`.
+6. **Health check** exists (`GET /api/health`) but only says the server is up; section 8.1 makes it
+   check the indexes and the LLM, and adds one summary log line per request for monitoring.
 
 ## 3. Settings (environment variables)
 
@@ -118,12 +119,143 @@ Estimate: option A for 1 month ≈ ₹3,000 plus LLM calls (< ₹500 for the dem
 
 ## 8. Monitoring (row 47)
 
-The trace already records every request, each LLM call (model, time, tokens, cost) and errors.
-Minimum for the review: an admin-page panel (or a small
-`/api/admin/metrics` endpoint) showing, for the last 24 h: requests, p50 / p95 latency per step,
-error rate, LLM cost per search, and share of asks / emergency answers. Add one alert rule, e.g.
-an e-mail if the error rate is above 10% in an hour (uptime check on `/api/health` with a free
-service such as UptimeRobot).
+What we measure: uptime, health, queries per hour / day, failed queries, time per query, LLM cost
+per day / per query, error rate. AWS needs no "sidecar": the app writes **one JSON line per request**
+to its console log, Docker ships the console log to **CloudWatch Logs**, and CloudWatch turns those
+lines into metrics, a dashboard and alarms. Uptime comes from an outside check of `/api/health`.
+
+```
+patient --HTTPS--> Caddy --> MediRoute container --stdout--> Docker awslogs driver --> CloudWatch Logs
+                                   ^                                                      | metric filters
+   Route 53 health check ----------+ GET /api/health every 30 s                           v
+            |                                                               CloudWatch metrics --> Dashboard
+            +------------------------> HealthCheckStatus metric ---------------------------> Alarms --> SNS e-mail
+```
+
+### 8.1 API changes (two, small; about 1.5 h with tests)
+
+Both help on any host (AWS, GCP, a laptop); only the CloudWatch setup in 8.2 is AWS-specific.
+
+**Change 1: one summary line per request (`request_done`).** At the end of `/api/patient-routing`
+(patient page) and `/api/analyze` (Step 1 only), success or failure, the app logs one JSON line to
+the console and `mediroute.log`:
+
+```json
+{"event": "request_done", "ts": "2026-12-01T10:15:02Z", "endpoint": "/api/patient-routing",
+ "workflow_id": "b4bc004925e5", "status": "completed", "http_status": 200,
+ "step1_decision": "agreement", "specialty": "Reproductive Medicine", "emergency": false,
+ "asked": false, "hospitals": 5, "related_specialty": "Obstetrics & Gynaecology",
+ "reports": 0, "ms": 5450, "step1_ms": 5166, "step2_ms": 263,
+ "llm_calls": 2, "llm_failed": 0, "llm_cost_usd": 0.00041, "model": "openai/gpt-6-luna",
+ "error": null}
+```
+
+- `status`: `completed`, `clarification` (asked a question), `no_hospital`, `emergency`, `failed`.
+- `llm_cost_usd`: sum of the cost OpenRouter returns for each LLM call of the request (already in the trace).
+- **No patient text, city or report content** in this line, so the CloudWatch logs hold no health data.
+- Written in a `finally` block, so a crash still produces a line with `status: "failed"` and the error type.
+
+**Change 2: a real health check.** `GET /api/health` keeps today's fields (`status`, `service`) and
+adds checks:
+
+```json
+{"status": "healthy", "service": "MediRoute API", "version": "922d5a1", "uptime_s": 86400,
+ "checks": {"indexes": "ok", "llm": "ok", "log_dir": "ok"}}
+```
+
+| State | When | HTTP |
+|---|---|---|
+| `healthy` | indexes loaded, the last LLM call in the past 10 min worked (or none yet), log folder writable | 200 |
+| `degraded` | LLM unreachable or key missing: the app still answers with the lookup only | 200 |
+| `unhealthy` | indexes / data failed to load: the app cannot answer | 503 |
+
+- The health check **does not call the LLM** (a call every 30 s would cost money and use the
+  20 requests/minute limit); it reads the result of the most recent real LLM call.
+- `degraded` returns 200 on purpose, so a short OpenRouter outage is not counted as downtime; it shows
+  up in the LLM-failure metric instead.
+- `version` = git commit, set at image build (`--build-arg GIT_COMMIT=...` -> env `MEDIROUTE_VERSION`).
+
+**Effect on the admin page: none.** The admin history reads `logs/step1_trace.jsonl`; the summary line
+goes only to the console / app log, and nothing in the trace is renamed or removed. The frontend does
+not call `/api/health`; the two scripts that do (`portal_benchmark.py`, `verify_specialty_route.py`)
+only need `status` and HTTP 200, which stay. To verify: the full test suite plus new tests for the
+summary line and the three health states, and one live search checked on the admin page.
+
+### 8.2 CloudWatch setup on EC2
+
+1. **IAM role for the EC2 instance** with `logs:CreateLogGroup`, `logs:CreateLogStream`,
+   `logs:PutLogEvents` (or the managed policy `CloudWatchAgentServerPolicy`). No access keys on the VM.
+2. **Send the container log to CloudWatch** with Docker's built-in `awslogs` driver (add to the
+   `docker run` in section 6, step 5):
+   ```
+   --log-driver awslogs --log-opt awslogs-region=ap-south-1 \
+   --log-opt awslogs-group=/mediroute/app --log-opt awslogs-create-group=true
+   ```
+   Set the log group's retention to **30 days**.
+3. **Metric filters** on `/mediroute/app` (namespace `MediRoute`):
+
+   | Metric | Filter pattern | Value | Unit |
+   |---|---|---|---|
+   | `Requests` | `{ $.event = "request_done" }` | 1 | Count |
+   | `FailedRequests` | `{ $.event = "request_done" && $.status = "failed" }` | 1 | Count |
+   | `LatencyMs` | `{ $.event = "request_done" }` | `$.ms` | Milliseconds |
+   | `LlmCostUsd` | `{ $.event = "request_done" }` | `$.llm_cost_usd` | None |
+   | `LlmFailedCalls` | `{ $.event = "request_done" && $.llm_failed > 0 }` | `$.llm_failed` | Count |
+   | `EmergencyAnswers` | `{ $.event = "request_done" && $.emergency IS TRUE }` | 1 | Count |
+   | `Asked` | `{ $.event = "request_done" && $.status = "clarification" }` | 1 | Count |
+
+4. **Uptime / health**: a **Route 53 health check** on `https://<domain>/api/health` (HTTPS, every
+   30 s, from several regions; healthy = HTTP 2xx/3xx). Its `HealthCheckStatus` (1 = up) and
+   `HealthCheckPercentageHealthy` metrics are published in **us-east-1** only, so build the dashboard
+   there or add a cross-region widget. Also keep the EC2 `StatusCheckFailed` metric (machine down).
+   Memory and disk are not EC2 metrics by default: install the **CloudWatch agent** for
+   `mem_used_percent` and `disk_used_percent` (the app needs about 2.2 GB of 4 GB).
+5. **Dashboard `MediRoute`** (period 1 h for the day view, 1 day for the week view):
+
+   | Widget | What | Statistic / maths |
+   |---|---|---|
+   | Uptime | `HealthCheckPercentageHealthy` | Average, last 24 h and 7 days |
+   | Health now | `HealthCheckStatus` | Minimum, 1 min (number widget) |
+   | Queries per hour / per day | `Requests` | Sum, period 1 h / 1 d |
+   | Failed queries | `FailedRequests` | Sum, period 1 h / 1 d |
+   | Error rate % | `100 * FailedRequests / Requests` | metric maths on Sums |
+   | Time per query | `LatencyMs` | p50, p95, maximum |
+   | LLM cost per day | `LlmCostUsd` | Sum, period 1 d |
+   | LLM cost per query | `LlmCostUsd / Requests` | metric maths on Sums |
+   | LLM failures | `LlmFailedCalls` | Sum, 1 h |
+   | Asks / emergencies | `Asked`, `EmergencyAnswers` | Sum, 1 d |
+   | Machine | `CPUUtilization`, `mem_used_percent`, `disk_used_percent` | Average |
+   | Recent failures | Logs Insights query (below) | table |
+
+   Logs Insights query for the "Recent failures" widget:
+   ```
+   filter event = "request_done" and status = "failed"
+   | fields ts, workflow_id, endpoint, error
+   | sort ts desc
+   | limit 20
+   ```
+
+6. **Alarms -> SNS topic `mediroute-alerts` (e-mail to the team)**:
+
+   | Alarm | Condition |
+   |---|---|
+   | Site down | `HealthCheckStatus` < 1 for 2 of 2 minutes (in us-east-1) |
+   | Error rate high | error rate > 10% over 1 h with at least 5 requests |
+   | Slow | `LatencyMs` p95 > 20 000 ms over 15 min (the patient-page timeout) |
+   | LLM failing | `LlmFailedCalls` >= 5 in 15 min |
+   | Spend | `LlmCostUsd` Sum > US$1 per day (also keep the OpenRouter spend cap) |
+   | Machine | `StatusCheckFailed` >= 1, or `mem_used_percent` > 90% for 10 min |
+
+7. **Test the setup**: run `scripts/api_smoke_workflow.py` against the public URL; check the lines in
+   Logs Insights and the dashboard counts; stop the container for 2 minutes and check that the
+   "site down" e-mail arrives.
+
+**Cost** (demo traffic, a few hundred requests a day): logs well under 1 GB a month, 7 custom
+metrics, one dashboard, about 8 alarms and one health check: roughly **US$5 a month or less**
+(check current CloudWatch / Route 53 prices before setting up).
+
+**Not on AWS?** The same JSON line works with GCP Cloud Logging (log-based metrics) or any log tool;
+UptimeRobot (free) can check `/api/health` instead of Route 53.
 
 ## 9. Safety, privacy and wording (TA feedback)
 
@@ -142,5 +274,6 @@ service such as UptimeRobot).
 - [ ] VM (or Cloud Run) running with HTTPS and a persistent log disk
 - [ ] Smoke test from outside passes; URL in README and report
 - [ ] CI: tests on push, image on `main`
-- [ ] Monitoring panel + one alert rule
+- [ ] API changes 8.1 (summary line per request, health checks) merged with tests
+- [ ] CloudWatch: log group, metric filters, Route 53 health check, dashboard, alarms to e-mail (8.2)
 - [ ] Backup demo recording in case the network fails on 5 Dec
