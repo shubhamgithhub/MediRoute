@@ -1,0 +1,19 @@
+# Local test that mimics ECS awsvpc shared localhost between containers.
+# Compose config is not used for AWS deployment directly.
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.backend
+    environment:
+      MEDIROUTE_HOST: 0.0.0.0
+      MEDIROUTE_PORT: "8000"
+    ports:
+      - "127.0.0.1:8080:8080"
+  frontend:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.frontend
+    network_mode: "service:backend"
+    depends_on:
+      - backend

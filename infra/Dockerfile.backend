@@ -1,0 +1,24 @@
+# Template only: Python/model/data versions, licensing and cold-start behavior need developer signoff.
+FROM python:3.11-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
+    MEDIROUTE_HOST=0.0.0.0 MEDIROUTE_PORT=8000 \
+    MEDIROUTE_DATA_DIR=/srv/mediroute/data \
+    MEDIROUTE_LOG_DIR=/tmp/mediroute-logs \
+    HF_HOME=/tmp/huggingface
+WORKDIR /srv/mediroute
+RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+COPY pyproject.toml README.md requirements.txt ./
+COPY src/ ./src/
+COPY data/ ./data/
+# Local src layout: editable install makes Path(__file__).parents[3] align to repo root.
+# Replace >= dependencies with a developer-approved lock before reproducible release.
+RUN pip install --no-cache-dir torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -e . \
+    && python -c 'import torch; assert torch.version.cuda is None'
+RUN useradd --uid 10001 --create-home --shell /usr/sbin/nologin mediroute \
+    && mkdir -p /tmp/mediroute-logs /tmp/huggingface \
+    && chown -R 10001:10001 /tmp/mediroute-logs /tmp/huggingface
+USER 10001
+EXPOSE 8000
+CMD ["uvicorn", "mediroute.backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
