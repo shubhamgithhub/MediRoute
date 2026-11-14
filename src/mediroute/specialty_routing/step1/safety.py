@@ -1,7 +1,9 @@
 """Stage 2, emergency check: fixed rules, never an LLM.
 
-A match adds an emergency notice to the response. Routing still continues, so the patient also
-gets a speciality, but the notice is shown first.
+A match adds an emergency notice to the response, shown first. For the red-flag rules the suggested
+speciality is Emergency Medicine (pipeline.py, decision "emergency_rule"); for suicidal intent
+routing continues (Psychiatry) with the crisis message, because the hospital search should still
+find mental-health care.
 """
 
 from __future__ import annotations
@@ -18,10 +20,29 @@ CRISIS_MESSAGE = (
 )
 
 # (rule name, patterns that must ALL match somewhere in the text)
+_CHEST = (r"chest\s*(pains?|tightness|tight|pressure|hurts?|hurting|ache)|crushing\s+chest|severe\s+chest|"
+          r"chest\s+(is|has\s+been|feels?)\s+(hurting|tight|painful|heavy)")
+_BREATHLESS = (r"can'?t\s+(catch\s+my\s+)?breath|cannot\s+(catch\s+my\s+)?breath|short(ness)?\s+of\s+breath|"
+               r"breathless|trouble\s+breathing|hard\s+to\s+breathe|difficulty\s+(in\s+)?breathing|"
+               r"can'?t\s+breathe|cannot\s+breathe")
+_RACING = r"heart\s+(is\s+)?(racing|pounding)|racing\s+heart|pounding\s+heart|palpitation"
+
+# (rule name, patterns that must ALL match somewhere in the text)
 _RULES: list[tuple[str, list[str]]] = [
+    # 14 Nov: "my chest hurts" / "chest pains" and racing heart, dizziness or light-headedness added
+    # (portal test: G004, G010, G042, G091, G102, G124 were not caught). Chest pain alone, e.g. with
+    # heartburn when lying down, does not match.
     ("chest_pain_with_breathlessness_or_sweating",
-     [r"chest\s*(pain|tightness|pressure)|crushing\s+chest|severe\s+chest",
-      r"breath|breathless|sweat|sweating|arm\s+pain|jaw"]),
+     [_CHEST,
+      r"breath|breathless|sweat|sweating|arm\s+pain|jaw|" + _RACING + r"|dizz\w*|light-?\s?headed|faint"]),
+    ("breathless_with_racing_heart", [_BREATHLESS, _RACING]),
+    ("sudden_loss_of_sight",
+     [r"lost\s+(my\s+)?(sight|vision|eyesight)|sudden(ly)?\s+(loss\s+of\s+(sight|vision)|blind|can'?t\s+see|"
+      r"cannot\s+see)|went\s+blind|sudden\s+(blindness|vision\s+loss)"]),
+    ("new_confusion",
+     [r"\bdisorient(ed|ation)\b|\bsudden(ly)?\s+confus\w*|"
+      r"\b(feel|feels|feeling|felt|am|is|been|getting|become|became)\s+(\w+\s+){0,3}confused\b"
+      r"(?!\s+(about|which|whether|if|what|between|on|by|with))"]),
     ("stroke_signs",
      [r"face\s+(is\s+)?droop|drooping\s+face|droop\w*\s+on\s+one\s+side|slurred\s+speech|"
       r"(can'?t|cannot|unable\s+to)\s+speak|sudden\s+(weakness|numbness)|one\s+side\s+of\s+(the\s+)?body"]),
@@ -36,6 +57,14 @@ _RULES: list[tuple[str, list[str]]] = [
      [r"seizure\w*\s+(not|won'?t)\s+stop|continuous\s+(fits|seizures)|status\s+epilepticus"]),
 ]
 _COMPILED = [(name, [re.compile(p, re.I) for p in patterns]) for name, patterns in _RULES]
+
+
+NOT_ROUTED_TO_EMERGENCY = {"suicidal_intent"}  # keeps normal routing (Psychiatry) + the crisis message
+
+
+def routes_to_emergency(emergency: dict) -> bool:
+    """True when a red-flag rule (not only suicidal intent) matched."""
+    return any(rule not in NOT_ROUTED_TO_EMERGENCY for rule in emergency.get("matched_rules") or [])
 
 
 def check_emergency(text: str) -> dict:

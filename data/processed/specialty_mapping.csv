@@ -1379,4 +1379,5 @@ body_area,Blood disorders,,Hematology & Bone Marrow Transplant,answer,patient's 
 body_area,Hormones and diabetes,,Endocrinology,answer,patient's answer to the body-area question,draft
 body_area,Mental health,,Psychiatry,answer,patient's answer to the body-area question,draft
 body_area,Weight loss,,Bariatric Surgery;Endocrinology,answer,patient's answer to the body-area question,draft
+body_area,More than one / whole body,,General Medicine,answer,"symptoms in several body areas: a general physician examines first and refers if needed",draft
 body_area,Other / not sure,,NONE,answer,not routing evidence,draft

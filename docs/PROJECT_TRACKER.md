@@ -14,10 +14,12 @@ Full findings: **section 13 of the team report**, [docs/report/MediRoute_team_re
 
 - **Estimate:** ~70–80 / 100 today, ~82–89 if the gaps below are closed (our estimate, not the TA rubric).
 - **Biggest gaps:** no deployment or monitoring dashboard; no outside users yet; no contribution or
-  experiments log; ranking weights not tested (the TA asked); doctor review pending; no safety set.
+  experiments log; doctor review pending; no safety set. (Ranking weights and report extraction,
+  both asked by the TA, were tested on 13 Nov: rows 49 and 52.)
 - **New rows 46–56** below track them. Existing rows that cover the same work: 25 (robustness and
   weights), 29–31 (Docker, CI, dashboard), 38 (contribution log), 39 (experiments log), 40 (presentation).
-- Note: several evaluation rows (19–27) predate the 11–12 Nov benchmarks and need their state updated.
+- 13 Nov: evaluation rows 19–25 and 27 updated to Done from the 11–13 Nov benchmarks (report sections 7, 8, 8c);
+  row 26 waits for row 13.
 
 ## Progress (10 Nov 2026)
 
@@ -61,20 +63,20 @@ Full findings: **section 13 of the team report**, [docs/report/MediRoute_team_re
 | 17 | JCI / NABH accreditation scraping | Done for 201 hospitals in 60 cities: the 100 team-city hospitals plus the 101 from the team 150 sheet that were not in the master, verified with the same NABH / JCI / website pipeline | Anand, Ravi | Done |
 | 18 | Verified hospital-specialty data | Done: one table with per-field source (`detail_source`, `record_origin`, `team150_id`); team-sheet values marked not verified and never override accreditation. Still to do: doctor review of the 270 `draft_rule` rows in `specialty_normalization.csv`; recheck the 57 'Needs verification' hospitals (19 websites failed to load) | Anand, Ravi | In progress |
 | **Evaluation (TA: critical)** | | | | |
-| 19 | Gold query set | 50 core queries in `step1_gold_core50.csv` (diagnosis, report, procedure-only, noisy, vague, CGHS gap, emergency, paediatric; with critical details) + 84 MediRoute + 212 Gretel queries. **Doctor review pending** (`step1_gold_core50_REVIEW.md`) | Anand, Ravi | In progress |
-| 20 | Hospital-relevance labels | For each gold query, grade the candidate hospitals 0–3 for relevance. This is needed for NDCG | Anand, Ravi | Not started |
-| 21 | Baselines | Implement 3 baselines for comparison: keyword search, rule-based specialty mapping, and specialty filter only | Anand, Ravi | Not started |
-| 22 | Step 1 evaluation | `scripts/eval_step1.py` exists but evaluates the old rules / llm / hybrid routes. Update it for the voting pipeline: accuracy, top-3, clarification rate, per-voter accuracy, vs the rule baseline | Anand, Ravi | Not started |
-| 23 | Step 2 evaluation | Script reports Precision@K, Recall@K and NDCG@K (K = 3, 5) for our pipeline vs the baselines | Anand, Ravi | Not started |
-| 24 | Report-extraction evaluation | 20+ synthetic reports with expected fields. Measure extraction accuracy and how many critical details are missed | Anand, Ravi | Not started |
-| 25 | Robustness experiments | Re-run evaluation with different ranking weights, incomplete queries and noisy reports. Record results in the experiments log | Anand, Ravi | Not started |
-| 26 | LLM-as-judge | Use a different LLM to score explanation faithfulness and hallucination rate | Anand, Ravi | Not started |
-| 27 | Latency and cost | Per-request timings are already in `logs/step1_trace.jsonl` (each LLM call, each voter). Still to do: p50/p95 per step and cost per query in the evaluation report | Anand, Ravi | Not started |
+| 19 | Gold query set | Done: Step 1: 50 core queries in `step1_gold_core50.csv` + 84 MediRoute + 212 Gretel + 110 unseen portal messages; Step 2: 45 requests in `step2_gold.csv`. Doctor review of the labels is row 53 | Anand, Ravi | Done |
+| 20 | Hospital-relevance labels | Done: `step2_capability_grades.csv` grades candidate hospitals 0–3 for each of the 45 Step 2 requests (894 grades, from hospital websites); used for NDCG. 20% human spot-check is row 53 | Anand, Ravi | Done |
+| 21 | Baselines | Done: Step 1: keyword search (TF-IDF), semantic search, LLM only, most-common floor (`benchmark_step1.py`); Step 2: keyword search, specialty filter only, random and ablations (`eval_step2.py`). Report sections 7 and 8 | Anand, Ravi | Done |
+| 22 | Step 1 evaluation | Done: `scripts/benchmark_step1.py` evaluates the voting pipeline: accuracy with 95% CI, Recall@3, NDCG@3, macro-F1, confidently wrong, ask rate, McNemar vs each baseline; plus unseen and portal runs. Report section 7 | Anand, Ravi | Done |
+| 23 | Step 2 evaluation | Done: `scripts/eval_step2.py` reports P@K, R@K, NDCG@K (K = 3, 5), Capable@3, Bad@3 vs the baselines with bootstrap CI and permutation tests. NDCG@5 0.807 (judged-only). Report section 8 | Anand, Ravi | Done |
+| 24 | Report-extraction evaluation | Done 13 Nov: 23 PDF reports (15 clean + 8 layout cases), 85 critical details, accuracy and omissions at 3 levels (`scripts/eval_report_extraction.py`). Report section 8c.1; see row 52 | Anand, Ravi | Done |
+| 25 | Robustness experiments | Done: ranking weights (13 variants, section 8c.2), incomplete / vague queries (unseen set, right outcome 94%, section 7b), noisy reports (8 layout cases, section 8c.1). Writing them into the experiments log is row 39 | Anand, Ravi | Done |
+| 26 | LLM-as-judge | Not possible yet: needs the grounded explanations from row 13. (An LLM judge is already used for Step 1 disagreements and for Step 2 capability grading, but not for explanation faithfulness) | Anand, Ravi | Not started |
+| 27 | Latency and cost | Done: p50 / p95 per step from `logs/step1_trace.jsonl` (p95 6.5 s with GPT-6 Luna) and cost per query are in the team report (Cost section) | Anand, Ravi | Done |
 | **Deployment** | | | | |
-| 28 | Unit and pipeline tests | 59 tests pass (Step 1 pipeline, workflow graph, Step 2). Add tests for new modules | Aniket | In progress |
+| 28 | Unit and pipeline tests | 133 tests pass (13 Nov: Step 1 pipeline, provider default, workflow graph, Step 2). Keep adding tests for new modules | Aniket | In progress |
 | 29 | Docker | Dockerfile for the API and docker-compose (API + frontend + Ollama), with a one-command start | Aniket | Not started |
 | 30 | CI | GitHub Actions running ruff + pytest on push, with an optional eval gate (accuracy must not drop) | Aniket | Not started |
-| 31 | Observability dashboard | Partly: admin page (`frontend/admin.html`) shows each request's input, votes, LLM calls with timings, and the served output, from the trace log. Still to do: latency / error charts, auth | Aniket | In progress |
+| 31 | Observability dashboard | Partly: admin page (`frontend/admin.html`) shows each request's input, votes, LLM calls with timings, the Step 1 algorithms (weights, scores, decision rule) and how Step 2 ranked the hospitals, newest 100 requests. Still to do: latency / error charts, auth (rows 47, 56) | Aniket | In progress |
 | 32 | LangGraph orchestration | Done: Shubham's graph ported to `backend/workflow/`, medical step replaced by the Step 1 pipeline | Aniket | Done |
 | **Frontend** | | | | |
 | 33 | Patient input page | Done: query + report upload | Shubham | Done |
@@ -82,7 +84,7 @@ Full findings: **section 13 of the team report**, [docs/report/MediRoute_team_re
 | 35 | Clarifying-question UI | Done: patient page shows Step 1's form and speciality list and resends with the answers | Shubham | Done |
 | **Safety and process** | | | | |
 | 36 | Privacy note | One-page note: synthetic data only, DPDP Act points, uploaded reports not stored, retention policy | TBD | Not started |
-| 37 | Disclaimers | Show "hospital discovery, not medical advice" in the UI and API. Mark synthetic and indicative data | TBD | Not started |
+| 37 | Disclaimers | Done: "hospital discovery, not medical advice" shown on the patient, home and hospital pages and returned as `disclaimer` by the API. Costs are deferred (row 41), so no indicative-cost label is needed yet | TBD | Done |
 | 38 | Contribution log | `docs/CONTRIBUTIONS.md`: who built and ran what, kept up weekly. Needed for the individual viva | All | Not started |
 | 39 | Experiments log | `docs/EXPERIMENTS.md`: version prompts, rules and configs, one change per run, results and negative findings | All | Not started |
 | 40 | Final presentation | Deck with architecture, evaluation results vs baselines, limitations slide (each with a fix path), backup demo video, rehearsal | All | Not started |
@@ -92,9 +94,9 @@ Full findings: **section 13 of the team report**, [docs/report/MediRoute_team_re
 | 48 | CI eval gate | GitHub Actions: tests + a small Step 1 / Step 2 eval that fails if accuracy or NDCG drops (extends row 30) | Aniket | Not started |
 | 49 | Ranking-weight sensitivity | Re-run the Step 2 gold set with other bonus weights (e.g. 0, half, double, no location priority); report NDCG@5 / Capable@3. TA asked for it; no LLM cost | Shubham | Done 13 Nov: bonuses help (p = 0.02), exact values within noise; report section 8c.2, scripts/eval_step2_weights.py |
 | 50 | Medical suitability vs location | Decide and document: today in-area hospitals come first. Either defend it or add a "best anywhere in India" option | Shubham | Not started |
-| 51 | Safety / emergency test set | 30–50 emergency and red-flag cases; report missed escalations (target 0) | Anand, Ravi | Not started |
+| 51 | Safety / emergency test set | 30–50 emergency and red-flag cases; report missed escalations (target 0). Partly 14 Nov: red-flag rules extended (chest pain with breathlessness / racing heart / dizziness, loss of sight, confusion) → Emergency Medicine; all 10 gretel red-flag messages caught, no false alarm on core50 / mediroute / unseen (report 7c). Still to do: a dedicated set | Anand, Ravi | In progress |
 | 52 | Report-extraction metric | For the PDF test reports: share of critical details caught (and missed) by Step 1 evidence (extends row 24) | Anand, Ravi | Done 13 Nov: 93% of 85 critical details kept (94% decisive); only miss = long report cut at 6,000 chars; report section 8c.1, scripts/eval_report_extraction.py. Labels need doctor review |
-| 53 | Doctor review + 20% grade spot-check | Doctor reviews ~50 Step 1 gold items and the mapping drafts; human spot-check of 20% of Step 2 grades; report agreement | Anand, Ravi | Not started |
+| 53 | Doctor review + 20% grade spot-check | Doctor reviews ~50 Step 1 gold items and the mapping drafts; human spot-check of 20% of Step 2 grades; report agreement. Ready for the doctor (14 Nov): gretel labelling rule + 100 rows (`data/evaluation/step1_gold_gretel_rule_review.csv`), body-area files (`data/processed/body_area_tags.csv`, `body_area_neighbours.csv`), varicose-veins mapping conflict (Cardiology vs Cardiothoracic Surgery) | Anand, Ravi | Not started |
 | 54 | Outside users | 3–5 people outside the team use the portal; note what confused them (one slide) | All | Not started |
 | 55 | Named versions | List of named versions (judge prompt vN, ranker vN, data vN) with dates, used in the experiments log and viva | Pravin | Not started |
 | 56 | Limitations with fix paths + admin login | Each limitation in the report and deck names its fix; add the missing admin login to the list | Pravin | Not started |

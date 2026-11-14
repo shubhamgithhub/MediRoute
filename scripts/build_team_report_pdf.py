@@ -18,6 +18,21 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "docs" / "report"
 GENERAL_AI = ROOT / "data" / "evaluation" / "general_ai"
 CHART = ROOT / "docs" / "evaluation" / "step1_benchmark_chart.png"
+PORTAL_CHART = ROOT / "docs" / "evaluation" / "step1_portal_chart.png"
+PORTAL_RUN = ROOT / "data" / "evaluation" / "portal_runs" / "20261113_223410"  # 234 requests, 13 Nov
+
+
+def portal_counts() -> dict:
+    """Correct / asks / confidently wrong per gold set from the portal run (same rules as Graph 2)."""
+    import sys
+    sys.path.insert(0, str(ROOT / "docs" / "evaluation"))
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from make_portal_chart import counts
+    return counts(PORTAL_RUN)
+
+
+def share(c: dict, part: str) -> str:
+    return f"{c[part] / c['n']:.0%} ({c[part]})" if c["n"] else "–"
 
 
 def table(headers, rows, widths=None, cls=""):
@@ -59,8 +74,11 @@ def pct(x):
 
 # --------------------------------------------------------------------------------------------- sections
 def s_summary():
-    tiles = [("85%", "correct speciality", "100 real portal requests"),
-             ("3%", "confidently wrong", "otherwise it asks (12%)"),
+    pcs = portal_counts()
+    pa = pcs["all"]
+    tiles = [(f"{pa['correct'] / pa['n']:.0%}", "correct speciality", f"{pa['n']} portal requests, 100 symptoms-only"),
+             (f"{pa['wrong'] / pa['n']:.0%}", "confidently wrong",
+              f"core50 {pcs['core50']['wrong'] / pcs['core50']['n']:.0%} · mediroute {pcs['mediroute']['wrong'] / pcs['mediroute']['n']:.0%} · gretel {pcs['gretel']['wrong'] / pcs['gretel']['n']:.0%}"),
              ("2.6 s", "typical wait", "p95 6.5 s, GPT-6 Luna"),
              ("0.81", "hospital ranking NDCG@5", "website-checked grades"),
              ("$0.0004", "per request", "OpenRouter")]
@@ -151,14 +169,21 @@ def s_step1():
          "code", "Reports: text-based PDFs only (no OCR); English only (no translation)", S1 + "pipeline.py · compose_text()"],
         ["1 Protect", "Remove phone numbers, e-mails, ID numbers", "code", "Clinical numbers (L4-L5, eGFR 8) kept",
          S1 + "protect.py · redact()"],
-        ["2 Emergency check", "Fixed red-flag rules (crushing chest pain, stroke signs, suicidal words…)", "code",
-         "Notice shown first; routing continues", S1 + "safety.py · check_emergency()"],
-        ["3a Extract evidence", "LLM copies conditions, procedures, body parts from the text", "LLM",
-         "Prompt asks to copy, not interpret", S1 + "evidence.py · EvidenceExtractor.extract()"],
+        ["2 Emergency check", "Fixed red-flag rules: chest pain with breathlessness, racing heart or dizziness; "
+         "breathless with racing heart; stroke signs; sudden loss of sight; new confusion; heavy bleeding; suicidal words",
+         "code", "Red flag → Emergency Medicine at once, no LLM call (14 Nov); suicidal words keep routing (Psychiatry) "
+         "with the crisis message", S1 + "safety.py · check_emergency(), routes_to_emergency()"],
+        ["3a Extract evidence", "LLM copies conditions, procedures, body parts, named diagnoses, and tags each symptom "
+         "with a body area from a fixed list (prompt evidence_v3)", "LLM",
+         "Prompt asks to copy, not interpret; tags limited to body_area_tags.csv", S1 + "evidence.py · EvidenceExtractor.extract()"],
         ["3b Check evidence", "Keep a phrase only if it is really in the text (small typos allowed); drop generic words",
          "code", "Invented phrases are dropped; no evidence → ask", S1 + "evidence.py · verify_phrase(), is_generic()"],
         ["3c Keyword matches", "Add known patient wording from the lay-term list (e.g. “kidney stones”)", "code",
          "Works with no LLM too", S1 + "evidence.py · keyword_matches()"],
+        ["3d Body areas", "No named diagnosis or procedure, and symptoms in 2+ body areas (neighbour pairs such as "
+         "reflux, cold, migraine count as one) → ask which area; “More than one / whole body” or “Not sure” → "
+         "General Medicine with an explanation", "code", "Areas and pairs are data files the doctor reviews",
+         "common/specialties.py · count_body_areas() · body_area_tags.csv, body_area_neighbours.csv"],
         ["4a Lookup voter", "Search each phrase in 10,884 ICD-10 / CCSR / CGHS / lay-term entries by keyword (TF-IDF) and "
          "meaning (MiniLM); fuse the two rankings; best match per phrase; symptom-type matches count half", "ML search",
          "Only names from the 26-speciality list", S1 + "voters.py · HybridLookupVoter · lookup.py · LookupIndex"],
@@ -178,6 +203,8 @@ def s_step1():
          "Admin page reads the trace", S1 + "pipeline.py · _respond() · trace.py · Step1Trace"],
     ]
     rules = [
+        ["0", "A red-flag rule matched (stage 2)", "Emergency Medicine (“emergency rule”), before any LLM call"],
+        ["0b", "Symptoms only, in 2+ body areas (stage 3d)", "Ask which area; “More than one” or “Not sure” → General Medicine"],
         ["a", "Lookup and LLM give the same speciality", "Answer (“agreement”)"],
         ["b", "They disagree; the patient's body-area answer fits only one of the two", "Answer (“patient answer”)"],
         ["c", "They disagree otherwise", "LLM judge (stage 6): answer (“judge”) or ask"],
@@ -335,9 +362,13 @@ def s_bench1():
         ["7", "<b>5 +</b> clean data + guarded LLM judge", "82%", "0.80", "2%", "16%"],
         ["8", "<b>5 +</b> clean data + LLM judge + speciality boundaries in the prompt (adopted)", "<b>86%</b>", "0.81", "<b>2%</b>", "<b>12%</b>"],
     ]
-    portal = [["core50 (team-written)", "50", "88%", "0%", "12%"], ["mediroute (lay language)", "25", "92%", "0%", "8%"],
-              ["gretel (synthetic)", "25", "72%", "12%", "16%"], ["<b>All</b>", "100", "<b>85%</b>", "<b>3%</b>", "<b>12%</b>"]]
+    pc = portal_counts()
+    names = {"core50": "core50 (team-written)", "mediroute": "mediroute (lay language)", "gretel": "gretel (symptoms only)"}
+    portal = [[names[k], str(pc[k]["n"]), share(pc[k], "correct"), share(pc[k], "wrong"), share(pc[k], "asks")] for k in names]
+    portal.append([f"<b>{x}</b>" for x in ["All", str(pc["all"]["n"]), share(pc["all"], "correct"),
+                                           share(pc["all"], "wrong"), share(pc["all"], "asks")]])
     img = f'<img src="{CHART.as_uri()}" class="chart">' if CHART.exists() else ""
+    img2 = f'<img src="{PORTAL_CHART.as_uri()}" class="chart">' if PORTAL_CHART.exists() else ""
     return f"""
 <h1>7 · Benchmark: Step 1</h1>
 <h2>Test sets</h2>
@@ -354,17 +385,53 @@ def s_bench1():
 ], ["17%", "41%", "42%"], "small")}
 {bullets([
     "Each case has an expected speciality and optional accepted alternatives. All labels are <b>drafts awaiting doctor review</b> (data/evaluation/step1_gold_*.csv).",
-    "The design grid uses core50; the portal test uses all of core50 plus an even sample of 25 mediroute and 25 gretel cases (100 requests).",
+    f"The initial benchmark uses core50; the real portal test uses all of core50 and mediroute plus 100 gretel cases spread evenly over its 22 diagnoses ({pc['all']['n']} requests).",
     "<b>Correct</b> = the expected speciality or an accepted alternative; a question counts as not correct. <b>Confidently wrong</b> = answered and wrong (the costly error). <b>Asks</b> = asked the patient. <b>NDCG@3</b> = the right speciality near the top of the 3 candidates.",
 ])}
-<h2>Design grid (core50, one change per row)</h2>
-<p class="muted">Rows 1–3 are single-method baselines; row 4 is the old app. Row 5 restarts from a new base (hybrid lookup + LLM, ask on disagreement), and rows 6–8 are <b>5 +</b> the changes added one at a time.</p>
+<h2>Initial benchmarking of approaches (core50, one change per row)</h2>
+<p class="muted">Offline runs used to choose the design. Rows 1–3 are single-method baselines; row 4 is the old app. Row 5 restarts from a new base (hybrid lookup + LLM, ask on disagreement), and rows 6–8 are <b>5 +</b> the changes added one at a time. Correct + confidently wrong + asks = 100% in every row.</p>
 {table(["#", "Design", "Correct", "NDCG@3", "Confidently wrong", "Asks"], grid, ["5%", "47%", "12%", "12%", "13%", "11%"])}
-<h2>Real portal test (100 requests through the running app, GPT-6 Luna)</h2>
-{table(["Test set", "n", "Correct", "Confidently wrong", "Asks"], portal, ["40%", "10%", "17%", "18%", "15%"])}
+<h2>Graph 1 · Initial offline benchmark on all three gold sets</h2>
+<p class="muted">Run 20261111_144211 (11 Nov): voters on Llama 3.2 (Ollama), judge GPT-6 Luna; designs up to row 7 of the grid above (before the adopted row 8). Kept to show how the design was chosen; Graph 2 is the system as it runs today.</p>
 {img}
-{where("", "data/evaluation/results/, data/evaluation/portal_runs/20261111_230644",
-       "python scripts/portal_benchmark.py --n 100 --spacing 15")}
+<h2>Real portal test ({pc['all']['n']} requests through the running app, GPT-6 Luna, adopted design)</h2>
+{table(["Test set", "n", "Correct", "Confidently wrong", "Asks"], portal, ["40%", "10%", "17%", "18%", "15%"])}
+<p class="muted">Each row splits all its requests, so the three shares add up to 100% (a shown total of 99% or 101% is rounding). A question counts as “not correct”, because the patient has not answered yet.</p>
+<h2>Graph 2 · Real portal test, first message</h2>
+{img2}
+{where("scripts/portal_benchmark.py, docs/evaluation/make_portal_chart.py", f"data/evaluation/results/20261111_144211_step1_benchmark_ollama, data/evaluation/portal_runs/{PORTAL_RUN.name}",
+       "python scripts/portal_benchmark.py --sets core50=50,mediroute=84,gretel=100 --spacing 15")}
+</section><section>
+<h1>7a · Examples: confidently wrong vs asking</h1>
+{bullets([
+    "<b>Confidently wrong</b> = the method gives a speciality and it is wrong, with no question and no warning. The patient goes to the wrong kind of hospital without knowing. This is the costly error.",
+    "<b>Asks</b> = the method shows the clarification form instead of guessing. It counts as “not correct” in the tables (the patient has not answered yet), but it is safe.",
+    f"Our design trades “asks” for fewer confident errors: keyword search is confidently wrong on 14% of core50 (7 of 50); MediRoute on {share(pc['core50'], 'wrong')} of core50 and {share(pc['mediroute'], 'wrong')} of mediroute in the real portal test. The weak spot is symptom-only messages: {pc['gretel']['wrong']} of {pc['gretel']['n']} gretel messages, see below.",
+])}
+<h2>Same message, keyword search vs MediRoute</h2>
+{table(["Patient message", "Expected", "Keyword search (row 1)", "MediRoute (portal test, 13 Nov)"], [
+    ["“Her face is drooping on one side and she cannot speak properly since 30 minutes.” (C046)", "Emergency Medicine", "❌ <b>Psychiatry</b>", "✅ Emergency Medicine + emergency warning"],
+    ["“I have been thinking about ending my life.” (C047)", "Psychiatry", "❌ <b>Critical Care</b>", "✅ Psychiatry + emergency warning"],
+    ["“TAVI procedure for my mother, 81 years old.” (C014)", "Cardiology", "❌ <b>Paediatrics</b> (matched “mother”)", "✅ Cardiology"],
+    ["“I have a 12 mm stone in the right ureter. The urologist suggested laser removal.” (C012)", "Urology", "❌ <b>Oncology</b>", "✅ Urology"],
+    ["“I need surgery in India” (C042)", "a question", "❌ <b>Cardiothoracic Surgery</b>", "❓ Asks which body area / condition"],
+    ["“I fell and my hip hurts, can't put weight on the leg” (Q017)", "Orthopaedics (Emergency accepted)", "❌ <b>General Medicine</b>", "✅ Emergency Medicine (possible fracture)"],
+], ["40%", "16%", "20%", "24%"], "small")}
+<h2>MediRoute's own misses (real portal test, {pc['all']['n']} requests)</h2>
+{table(["Patient message", "Expected", "MediRoute said", "Type"], [
+    ["“diabetic foot ulcer not healing, risk of amputation” (Q082)", "Endocrinology (General Medicine, Plastic Surgery accepted)", "Dermatology", "Confidently wrong: the only miss outside gretel"],
+    ["“trouble with my vision, seeing things as distorted… also headaches” (G045)", "Neurology (from <i>migraine</i>)", "Ophthalmology", "Confidently wrong, but a reasonable first stop for vision symptoms"],
+    ["“headaches and chest pains… dizziness and lack of balance got a lot worse” (G091)", "Cardiology (from <i>hypertension</i>)", "Neurology", "Confidently wrong: head symptoms outweighed chest pain"],
+    ["“I have asthma and get wheezing and breathing issues… fevers, headaches” (G095)", "General Medicine (from <i>allergy</i>)", "Pulmonology", "Confidently wrong by the label; a doctor may accept it"],
+    ["“pain” (C041)", "a question", "Asks", "Asks: correct behaviour for a vague message"],
+    ["“PCOS and unable to conceive” (Q042)", "Reproductive Medicine (O&G, Endocrinology accepted)", "Asks", "Asks: three specialities fit; the patient picks"],
+], ["38%", "20%", "16%", "26%"], "small")}
+{bullets([
+    f"<b>{pc['gretel']['wrong']} of the {pc['all']['wrong']} confident errors are gretel messages</b>: symptoms only, no named condition, and the expected label comes from a diagnosis the patient never mentions (migraine, hypertension, allergy, diabetes). Many answers are defensible for the symptoms (asthma → Pulmonology, distorted vision → Ophthalmology); the doctor review of these labels (tracker row 53) will tell how many are real errors.",
+    "In 15 of these 19 the voters disagreed and the <b>LLM judge</b> picked the wrong side; in 4 both voters agreed on the same misleading symptom. Next design step (to be measured, not yet built): ask instead of answering when the evidence has only symptoms from more than one body system.",
+    f"Of the {pc['all']['asks']} asks, all 5 on core50 and 3 of 4 on mediroute are messages labelled vague (“pain”, “weakness”, “I want a full body health checkup”); the rest are cases where several specialities fit or symptoms alone do not decide.",
+])}
+{where("", "keyword: data/evaluation/results/20261111_144211_step1_benchmark_ollama/predictions.csv (column B2_lookup_keyword); MediRoute: data/evaluation/portal_runs/{PORTAL_RUN.name}/results.jsonl", "")}
 </section><section>
 <h1>7b · Step 1 on unseen data, and a stronger judge (tried and reverted)</h1>
 {bullets([
@@ -396,6 +463,75 @@ def s_bench1():
 ])}
 {where("scripts/benchmark_step1_unseen.py, scripts/make_step1_unseen_set.py", "data/evaluation/step1_gold_unseen.csv, data/evaluation/step1_unseen/",
        "python scripts/benchmark_step1_unseen.py --set new --configs base")}
+"""
+
+
+RUN_BEFORE = ROOT / "data" / "evaluation" / "portal_runs" / "20261113_223410"   # 13 Nov, before the change
+RUN_AFTER = ROOT / "data" / "evaluation" / "portal_runs" / "20261114_123430"    # 14 Nov, red flags + areas (prompt v2)
+RUN_GRETEL_V3 = ROOT / "data" / "evaluation" / "portal_runs" / "20261114_140410"  # 14 Nov, gretel only, prompt v3
+
+
+def s_red_flags_areas():
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from compare_portal_runs import labels, score
+
+    def cell(c, k):
+        return f"{c[k] / c['n']:.0%} ({c[k]})" if c["n"] else "–"
+
+    def rows_for(kind):
+        ok = labels(kind)
+        b, a = score(RUN_BEFORE, ok, kind), score(RUN_AFTER, ok, kind)
+        v3 = None
+        if (RUN_GRETEL_V3 / "results.jsonl").exists():
+            v3 = score(RUN_GRETEL_V3, ok, kind)
+            if v3["gretel"]["n"] < 100:
+                v3 = None
+        rows = []
+        for s, name in (("core50", "core50"), ("mediroute", "mediroute"), ("gretel", "gretel"), ("all", "<b>All</b>")):
+            rows.append([f"{name} ({b[s]['n']})", "before", cell(b[s], "correct"), cell(b[s], "wrong"), cell(b[s], "asks"), "not measured"])
+            rows.append(["", "<b>after</b>", cell(a[s], "correct"), f"<b>{cell(a[s], 'wrong')}</b>", cell(a[s], "asks"),
+                         f"<b>{cell(a[s], 'after_correct')}</b>"])
+            if s == "gretel" and v3:
+                g = v3["gretel"]
+                rows.append(["", "after, prompt v3", cell(g, "correct"), f"<b>{cell(g, 'wrong')}</b>", cell(g, "asks"),
+                             f"<b>{cell(g, 'after_correct')}</b>"])
+        return rows
+
+    head = ["Set (requests)", "Run", "Correct", "Confidently wrong", "Asks", "Correct after 1 answer"]
+    widths = ["20%", "16%", "16%", "18%", "14%", "16%"]
+    return f"""
+<h1>7c · Red flags and several body areas (14 Nov)</h1>
+<h2>Why this change was made</h2>
+{bullets([
+    "The 13 Nov portal test found 19 confidently wrong answers; 18 were symptom-only messages from the public gretel set. Read one by one, they were two patterns: symptoms from <b>several body areas</b> sent to one organ specialist (vomiting + dizziness → Gastroenterology), and <b>red flags</b> (chest pain with breathlessness or a racing heart, sudden loss of sight, confusion) sent to Pulmonology, Cardiology or Ophthalmology instead of emergency care.",
+    "Design priority agreed with the team: <b>ask rather than guess</b>. A question costs the patient one answer; a confident error sends them to the wrong hospital without warning.",
+])}
+<h2>What was changed</h2>
+{bullets([
+    "<b>Red flags (stage 2, code):</b> new and wider rules: chest pain (also “my chest hurts”) with breathlessness, a racing heart, dizziness or sweating; breathless with a racing heart; sudden loss of sight; new confusion. A match now answers <b>Emergency Medicine</b> at once, with no LLM call. Checked on every gold message: no false alarm in core50, mediroute or the 110 unseen messages.",
+    "<b>Several body areas (stage 3d):</b> the evidence LLM tags each symptom with a body area from a fixed list; code counts the areas. Neighbour pairs count as one (reflux: stomach + throat or mouth, not ear or nose; cold: nose or throat + lungs; migraine: headache + nausea). No named diagnosis or procedure and 2+ areas → ask which area troubles most; “More than one / whole body” or “Not sure” → <b>General Medicine</b>, with the explanation that a general physician examines first and refers.",
+    "Data the doctor reviews: <code>data/processed/body_area_tags.csv</code>, <code>body_area_neighbours.csv</code>, one new answer in <code>specialty_mapping.csv</code>. Prompt <code>evidence_v2</code> (then v3: every symptom tagged; “general” only for whole-body symptoms).",
+])}
+<h2>How it was tested</h2>
+{bullets([
+    "The same 234 requests as section 7 (core50 50, mediroute 84, gretel 100), sent through the running app. When the app asks, a <b>simulated patient answers the body-area question once</b> (the area of the expected speciality, or “More than one” for General Medicine), so the right column shows where the patient ends up. This is favourable by construction: a real patient may answer less clearly.",
+    "Scored against two label sets. <b>Current labels</b>: the gold set as it is (gretel's label is the speciality of a hidden diagnosis the patient never names). <b>Rule labels</b> (draft, awaiting the doctor): one rule for every gretel message: red flag → Emergency; named condition → its speciality; one body area → that specialist (General Medicine also accepted); several areas or only general symptoms → General Medicine (data/evaluation/step1_gold_gretel_rule_review.csv). For the rule labels the simulated patient answers from the rule label.",
+])}
+<h2>Outcome: current labels</h2>
+{table(head, rows_for("current"), widths, "small")}
+<h2>Outcome: gretel rule labels (draft)</h2>
+{table(head, rows_for("rule"), widths, "small")}
+{bullets([
+    "<b>Confident errors almost disappear</b> on consistent labels (gretel 21 → 2), and core50 and mediroute keep 0; after one answer nearly every request ends on the right speciality. The price is more questions on symptom-only messages (gretel asks about half), which the team accepts because the answer is right after the question.",
+    "<b>Under the current labels the gain looks small</b> because those labels count the new answers as wrong: all 10 gretel red-flag messages now go to Emergency Medicine (1 before), and one-area messages go to that area's specialist. Every “new” error under the current labels is a red flag sent to emergency care. The doctor's review of the labelling rule decides which view is right.",
+    "<b>Prompt v3</b> (every symptom tagged; “general” only for whole-body symptoms) was tried on gretel because two errors came from symptoms the LLM left untagged: it fixed one (G106) and changed another to ENT (G065, reflux symptoms all in the throat), so gretel stays at 2 confident errors on the rule labels (row “after, prompt v3”). The app uses v3.",
+    "<b>Unseen check</b> (110 new messages the rules were not built on, same simulated answer): correct 73% → 72%, confidently wrong 1% → 1%, asked 26% → 27%, correct after one answer 95% → 95%. No harm on new data; these messages rarely spread over several body areas, so there is little to gain there.",
+    "<b>Left:</b> G047 (the LLM still tags “flushed” and “yeast infections” as general); varicose veins end in a short list because the mapping sends them to Cardiology (ICD row) and to Cardiothoracic Surgery (patient-wording row): a mapping decision for the doctor.",
+])}
+{where("specialty_routing/step1/safety.py, pipeline.py, evidence.py, common/specialties.py",
+       f"data/evaluation/portal_runs/{RUN_BEFORE.name}, {RUN_AFTER.name}, {RUN_GRETEL_V3.name}",
+       "python scripts/portal_benchmark.py --sets core50=50,mediroute=84,gretel=100 --answer-once; python scripts/compare_portal_runs.py <before> <after>")}
 """
 
 
@@ -610,7 +746,7 @@ Symbols: {ok} verified and can treat · {q} cannot verify · {no} graded as cann
 {table(["", "General AI", "MediRoute"], cost_rows, ["50%", "20%", "30%"])}
 <h2>What it shows</h2>
 {bullets([
-    "<b>Speciality: level.</b> The general AI scores slightly higher on correct answers (89% vs 85%) and asks less (4% vs 12%); it is confidently wrong more often (7% vs 3%), but 6 of its 7 misses send the patient to emergency care for chest-pain or breathing symptoms (cautious, not careless). None of these gaps is statistically significant (Fisher p = 0.53 and 0.33). We do <b>not</b> claim better speciality accuracy than a strong general AI.",
+    "<b>Speciality: level.</b> On the same 100 requests (11 Nov portal test), the general AI scores slightly higher on correct answers (89% vs 85%) and asks less (4% vs 12%); it is confidently wrong more often (7% vs 3%), but 6 of its 7 misses send the patient to emergency care for chest-pain or breathing symptoms (cautious, not careless). None of these gaps is statistically significant (Fisher p = 0.53 and 0.33). We do <b>not</b> claim better speciality accuracy than a strong general AI.",
     "<b>Fair input:</b> both systems got the same text: the message plus the report text for the 15 core50 report cases (a first run without the reports made the AI ask for them and was discarded).",
     f"<b>Hospitals: the clear difference is verifiability.</b> {pct(1 - b['share_in_our_verified_list'])} of the hospitals it names cannot be checked against our NABH / JCI / website-verified list (often a local branch of a chain, or a hospital we never collected). It did keep to the patient's city. Every MediRoute result is from the verified list, with its reasons.",
     "<b>Quality of the hospitals it names</b> trends lower (confirmed capable 76% vs 86%; Capable@3 78% vs 93%), but the samples are small (p = 0.12 and 0.07): a direction, not proof.",
@@ -817,7 +953,7 @@ def build_html() -> str:
               '<span style="color:#3f8a60">■</span> code · <span style="color:#8c867b">■</span> input / data · '
               '<span style="color:#c98b20">■</span> output</p>')
     sections = [s_summary(), s_use_case(), s_architecture() + legend, s_step1(), s_step2(), s_data(), s_evolution(),
-                s_bench1(), s_bench2(), s_ta_benchmarks(), s_general_ai(), s_latency(), s_setup(), s_limits(), s_readiness()]
+                s_bench1(), s_red_flags_areas(), s_bench2(), s_ta_benchmarks(), s_general_ai(), s_latency(), s_setup(), s_limits(), s_readiness()]
     body = "".join(f"<section>{s}</section>" for s in sections)
     return f'<!doctype html><html><head><meta charset="utf-8"><title>MediRoute team report</title><style>{CSS}</style></head><body>{body}</body></html>'
 

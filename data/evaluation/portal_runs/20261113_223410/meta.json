@@ -1,0 +1,29 @@
+{
+  "started": "2026-11-13T22:34:10",
+  "n": 234,
+  "sets": "core50=50,mediroute=84,gretel=100",
+  "spacing": 15.0,
+  "llm": "openai/gpt-6-luna (OpenRouter), adopted design (grid row 8)",
+  "judge": "openai/gpt-6-luna (OpenRouter)",
+  "base": "http://127.0.0.1:8000",
+  "redone": [
+    {
+      "at": "2026-11-13T23:35:45",
+      "queries": [
+        "core50:C019",
+        "core50:C020",
+        "core50:C021",
+        "core50:C022",
+        "core50:C023",
+        "core50:C024",
+        "core50:C025",
+        "core50:C026",
+        "core50:C027",
+        "core50:C028",
+        "core50:C029",
+        "mediroute:Q071",
+        "mediroute:Q072"
+      ]
+    }
+  ]
+}

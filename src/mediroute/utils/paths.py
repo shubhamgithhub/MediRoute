@@ -36,6 +36,9 @@ SPECIALTIES_FILE = PROCESSED_DATA_DIR / "specialties.csv"
 SPECIALTY_MAPPING_FILE = PROCESSED_DATA_DIR / "specialty_mapping.csv"
 # Cities, their state and tier, and the search area they belong to (Delhi NCR, Mumbai...).
 CITIES_FILE = PROCESSED_DATA_DIR / "cities.csv"
+# Step 1 multi-area check: symptom tag -> body area, and neighbour tags that count as one area.
+BODY_AREA_TAGS_FILE = PROCESSED_DATA_DIR / "body_area_tags.csv"
+BODY_AREA_NEIGHBOURS_FILE = PROCESSED_DATA_DIR / "body_area_neighbours.csv"
 HOSPITAL_SCHEMA_FILE = PROCESSED_DATA_DIR / "hospital.schema.csv"
 
 # --- rebuilt (python -m mediroute.data_generator.rebuild) ---------------------------------------

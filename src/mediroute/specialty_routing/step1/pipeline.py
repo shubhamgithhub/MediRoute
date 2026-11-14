@@ -1,8 +1,16 @@
 """Step 1 pipeline: patient text -> suggested speciality to search.
 
     1 read & protect      code      redact phone numbers, e-mails, IDs
-    2 emergency check     code      fixed rules -> emergency notice (routing continues)
-    3 extract evidence    LLM+code  conditions / procedures / body parts, kept only if in the text
+    2 emergency check     code      fixed rules -> emergency notice; a red flag (chest pain with
+                                    breathlessness / racing heart / dizziness, stroke signs, loss of
+                                    sight, confusion, heavy bleeding...) -> Emergency Medicine
+                                    ("emergency_rule", no LLM call); suicidal intent keeps routing
+    3 extract evidence    LLM+code  conditions / procedures / body parts, named diagnoses, and a
+                                    body-area tag per symptom; kept only if in the text
+    3b body areas         code      no named diagnosis or procedure and symptoms in 2+ body areas
+                                    (body_area_tags.csv, neighbour pairs in body_area_neighbours.csv)
+                                    -> ask which area; "More than one / whole body" or "Other / not
+                                    sure" -> General Medicine ("multi_area_general_medicine")
     4 vote                V1 lookup (keyword + meaning search, fused) and V2 LLM (speciality list)
     5 decide              code      both voters agree -> answer ("agreement");
                           LLM judge they disagree -> a guarded LLM judge picks one of the two ("judge");
@@ -26,13 +34,14 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from typing import Any
 
-from mediroute.common.specialties import body_area_specialties, care_category, get_specialty, specialty_names
+from mediroute.common.specialties import (body_area_options, body_area_specialties, care_category,
+                                          count_body_areas, get_specialty, specialty_names)
 from mediroute.specialty_routing.step1.evidence import EVIDENCE_PROMPT_VERSION, EvidenceExtractor
 from mediroute.specialty_routing.step1.judge import JUDGE_PROMPT_VERSION, LLMJudge
 from mediroute.specialty_routing.step1.lookup import LookupIndex
 from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
 from mediroute.specialty_routing.step1.protect import redact
-from mediroute.specialty_routing.step1.safety import check_emergency
+from mediroute.specialty_routing.step1.safety import check_emergency, routes_to_emergency
 from mediroute.specialty_routing.step1.trace import Step1Trace, log_patient_text, text_for_log
 from mediroute.specialty_routing.step1.voters import HybridLookupVoter, LLMVoter, Vote
 from mediroute.utils.logging_config import get_logger
@@ -40,7 +49,12 @@ from mediroute.utils.logging_config import get_logger
 MAX_CLARIFICATION_ROUNDS = 2
 CATCH_ALL = "General Medicine"  # an answer of General Medicine asks one clarification round first
 # decisions that mean "a speciality was suggested" (Step 2 can run); "majority" is the old name
-ROUTED_DECISIONS = {"agreement", "judge", "lookup_only", "patient_answer", "user_selected", "majority"}
+ROUTED_DECISIONS = {"agreement", "judge", "lookup_only", "patient_answer", "user_selected", "majority",
+                    "emergency_rule", "multi_area_general_medicine"}
+EMERGENCY = "Emergency Medicine"
+MULTI_AREA_MIN = 2  # body areas (after neighbour pairs) that make a symptom-only message ask
+MULTI_AREA_ANSWER = "More than one / whole body"
+NOT_SURE = "Other / not sure"
 SHORTLIST_SIZE = 4  # specialities offered when the user picks
 LLM_DOWN_NOTICE = ("The AI language model is not available on this server, so this suggestion comes from "
                    "the medical lookup only and may need an extra question.")
@@ -48,13 +62,7 @@ _logger = get_logger()
 DISCLAIMER = ("Hospital discovery support only. This is a suggested speciality to search, "
               "not a diagnosis or medical advice. A doctor at the hospital confirms any treatment plan.")
 
-BODY_AREAS = [
-    "Heart and blood vessels", "Brain, nerves and spine", "Bones, joints and muscles",
-    "Stomach, liver and digestion", "Kidneys and urinary system", "Lungs and breathing", "Eyes",
-    "Ear, nose and throat", "Skin and hair", "Women's health and pregnancy", "Fertility",
-    "Child health", "Cancer", "Blood disorders", "Hormones and diabetes", "Mental health",
-    "Weight loss", "Other / not sure",
-]
+BODY_AREAS = body_area_options()  # the body_area rows of specialty_mapping.csv, in file order
 CLARIFICATION_FIELDS = [
     {"name": "body_area", "type": "select", "options": BODY_AREAS,
      "label": "Which part of the body is the problem in?"},
@@ -86,7 +94,7 @@ def compose_text(inp: Step1Input) -> str:
     labels = {"body_area": "Body area", "existing_diagnosis": "Existing diagnosis",
               "recommended_procedure": "Recommended procedure"}
     lines = [f"{labels[k]}: {str(answers[k]).strip()}" for k in labels
-             if str(answers.get(k) or "").strip() and str(answers.get(k)).strip() != "Other / not sure"]
+             if str(answers.get(k) or "").strip() and str(answers.get(k)).strip() not in (NOT_SURE, MULTI_AREA_ANSWER)]
     if lines:
         parts.append("\n".join(lines))
     return "\n\n".join(p for p in parts if p)
@@ -172,6 +180,13 @@ class Step1Pipeline:
             return self._respond(trace, inp, "clarification_required", None, emergency, [], {},
                                  reason="No patient text was provided.")
 
+        if routes_to_emergency(emergency) and not inp.selected_specialty:
+            reason = ("The message describes warning signs that need emergency care now ("
+                      + ", ".join(r.replace("_", " ") for r in emergency["matched_rules"]) + ").")
+            trace.log("decision", method="emergency_rule", selected_specialty=EMERGENCY,
+                      matched_rules=emergency["matched_rules"], reason=reason)
+            return self._respond(trace, inp, "emergency_rule", EMERGENCY, emergency, [], {}, reason=reason)
+
         # user picked from the list after the clarification rounds ------------
         if inp.selected_specialty:
             chosen = get_specialty(inp.selected_specialty)
@@ -198,6 +213,31 @@ class Step1Pipeline:
                   **_llm_event(evidence.llm_call, self.extractor.build_prompt(text), EVIDENCE_PROMPT_VERSION))
         trace.log("evidence", method=evidence.method, kept=evidence.kept, dropped=evidence.dropped,
                   routing_phrases=evidence.routing_phrases, checks=evidence.checks)
+
+        # 3b. body areas (code) -------------------------------------------------
+        answer = str((inp.clarification or {}).get("body_area") or "").strip()
+        named = evidence.named_diagnoses + evidence.kept["procedures"]
+        areas = count_body_areas({a["tag"] for a in evidence.symptom_areas})
+        multi = not named and areas["count"] >= MULTI_AREA_MIN
+        trace.log("area_check", tags=evidence.symptom_areas, named=named, areas=areas["areas"],
+                  count=areas["count"], merged=areas["merged"], threshold=MULTI_AREA_MIN, multi_area=multi,
+                  body_area_answer=answer)
+        if answer == MULTI_AREA_ANSWER or (multi and answer == NOT_SURE):
+            listed = ", ".join(areas["areas"]) or "more than one"
+            reason = (f"Your symptoms involve several parts of the body ({listed}). A general physician can "
+                      "examine you, find the cause and refer you to a specialist if needed.")
+            trace.log("decision", method="multi_area_general_medicine", selected_specialty=CATCH_ALL,
+                      evidence=evidence.phrases, reason=reason)
+            return self._respond(trace, inp, "multi_area_general_medicine", CATCH_ALL, emergency,
+                                 evidence.phrases, {}, reason=reason)
+        if multi and not answer:
+            reason = f"Your symptoms involve several parts of the body ({', '.join(areas['areas'])})."
+            question = (f"Which part troubles you most? Choose \u201c{MULTI_AREA_ANSWER}\u201d if it is really "
+                        "several; a general physician is then the right first stop.")
+            trace.log("decision", method="clarification_required", selected_specialty=None, reason=reason,
+                      next_round=inp.clarification_round + 1, why="multi_area")
+            return self._respond(trace, inp, "clarification_required", None, emergency, evidence.phrases, {},
+                                 reason=reason, clarification_message=question)
 
         if not evidence.routing_phrases:
             return self._ask_or_offer_choice(trace, inp, emergency, evidence.phrases, votes={},
@@ -320,7 +360,7 @@ class Step1Pipeline:
 
     def _respond(self, trace: Step1Trace, inp: Step1Input, decision: str, specialty: str | None,
                  emergency: dict, evidence: list[str], votes: dict[str, Vote], reason: str,
-                 agreeing: list[str] | None = None) -> dict[str, Any]:
+                 agreeing: list[str] | None = None, clarification_message: str | None = None) -> dict[str, Any]:
         spec = get_specialty(specialty) if specialty else None
         clarify = decision == "clarification_required"
         choose = decision == "needs_user_choice"
@@ -344,7 +384,7 @@ class Step1Pipeline:
             "clarification": {
                 "round": inp.clarification_round + 1,
                 "max_rounds": MAX_CLARIFICATION_ROUNDS,
-                "message": "We need a little more information to suggest the right speciality.",
+                "message": clarification_message or "We need a little more information to suggest the right speciality.",
                 "fields": self._open_fields(inp),
             } if clarify else None,
             "user_choice": {

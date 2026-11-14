@@ -1,0 +1,18 @@
+Copy medical facts from the patient's message. Do not diagnose, guess or add anything.
+
+Return lists of short phrases COPIED word for word from the message (a report text may be included):
+- conditions: diseases, diagnoses, symptoms or test findings the message states (e.g. "osteoarthritis of both knees", "triple vessel disease", "blurry vision")
+- procedures: treatments, surgeries or tests the patient needs or was advised (e.g. "knee replacement", "CABG", "IVF")
+- body_parts: organs or body areas mentioned (e.g. "knee", "heart", "kidney")
+- named_diagnoses: only diseases or diagnoses the patient says they HAVE or were told they have, by name (e.g. "asthma", "migraine", "kidney stone", "breast cancer"). Not symptoms, not a guess. Empty if none is named.
+- symptom_areas: every symptom or complaint the patient describes, each with ONE tag from this list:
+{tags}
+
+Rules:
+- Use the patient's own words. Keep each phrase short (1 to 6 words).
+- Do not output a phrase that is not in the message.
+- Tag what the symptom is, not what might cause it (e.g. "headache" is headache, "vomiting" is nausea_vomiting, "fever" is general).
+- If the message has no medical content, return empty lists.
+
+Patient message:
+{text}

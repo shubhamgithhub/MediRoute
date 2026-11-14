@@ -1,0 +1,19 @@
+tag,form_area,counted,examples,review_status
+heart_vessels,Heart and blood vessels,yes,"chest pain, palpitations, racing heart, swollen leg veins, varicose veins",draft
+headache,"Brain, nerves and spine",yes,"headache, migraine, head pain",draft
+brain_nerves,"Brain, nerves and spine",yes,"dizziness, lightheaded, poor balance, numbness, tingling, tremor, fits, weakness of one side, memory loss",draft
+bones_joints_muscles,"Bones, joints and muscles",yes,"joint pain, swollen joints, back pain, neck pain, stiffness, fracture, muscle weakness",draft
+digestion,"Stomach, liver and digestion",yes,"stomach pain, heartburn, indigestion, bloating, diarrhoea, constipation, yellow skin or eyes, blood in stool",draft
+nausea_vomiting,"Stomach, liver and digestion",yes,"nausea, vomiting, feeling like throwing up",draft
+kidneys_urinary,Kidneys and urinary system,yes,"frequent urination, burning urine, blood in urine, kidney stone, cannot pass urine",draft
+lungs_breathing,Lungs and breathing,yes,"cough, breathlessness, wheezing, phlegm, chest congestion",draft
+eyes,Eyes,yes,"blurred vision, loss of sight, red eye, eye pain, watery eyes",draft
+ear,"Ear, nose and throat",yes,"ear pain, hearing loss, ringing in the ear, ear discharge",draft
+nose_sinuses,"Ear, nose and throat",yes,"runny or blocked nose, sneezing, sinus pain, loss of smell, nosebleed",draft
+throat_mouth,"Ear, nose and throat",yes,"sore throat, trouble swallowing, hoarse voice, sour or metallic taste, bad breath, mouth ulcer",draft
+skin_hair,Skin and hair,yes,"rash, itching, spots, sores, peeling skin, hair loss",draft
+womens_health,Women's health and pregnancy,yes,"period problems, pregnancy, vaginal discharge, pelvic pain in women",draft
+fertility,Fertility,yes,"unable to conceive, trying for a baby",draft
+hormones,Hormones and diabetes,yes,"excessive thirst, weight gain, feeling hot or cold all the time, thyroid swelling",draft
+mental_health,Mental health,yes,"low mood, anxiety, poor sleep, no motivation, panic",draft
+general,(not a body area),no,"fever, chills, sweating, tiredness, weakness all over, body aches, weight loss, loss of appetite, feeling unwell",draft
