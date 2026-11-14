@@ -99,15 +99,74 @@ Estimate: option A for 1 month ≈ ₹3,000 plus LLM calls (< ₹500 for the dem
 
 1. Make the code changes in section 2; run tests; build and run the image locally
    (`docker compose up`), open `http://localhost:8000/patient.html`, run three test searches.
-2. Create the VM (Ubuntu 22.04, 2 vCPU, 4 GB RAM, 30 GB disk); open ports 80 and 443 only.
+2. Create the VM (Ubuntu 22.04, 2 vCPU, 4 GB RAM, 30 GB disk); attach an **Elastic IP**; security
+   group: 80 and 443 from anywhere, 22 (SSH) from your own IP only.
 3. Install Docker; copy the image (push to Docker Hub / GitHub Container Registry, then `docker pull`).
 4. Put secrets in `/opt/mediroute/.env` (readable by root only); create `/opt/mediroute/logs`.
 5. `docker run -d --restart unless-stopped --env-file /opt/mediroute/.env -v /opt/mediroute/logs:/data/logs -p 127.0.0.1:8000:8000 <image>`
-6. Point a domain (or a free subdomain, e.g. DuckDNS) at the VM; install Caddy with
-   `reverse_proxy 127.0.0.1:8000` → automatic HTTPS.
+6. Give the VM a name and HTTPS: DuckDNS subdomain + Caddy (section 6.1).
 7. Smoke test from outside: patient page, a report upload, the admin page asks for the password,
    `/api/health` returns healthy. Run `scripts/api_smoke_workflow.py` against the public URL.
 8. Write the URL, version (git commit) and date into the README and the report.
+
+### 6.1 Domain name (DuckDNS) and HTTPS (Caddy)
+
+Why: a certificate (HTTPS) can only be issued for a **name**, not a bare IP address, and patients
+type symptoms and upload reports, so the site must be HTTPS. The admin password (basic auth) also
+needs HTTPS.
+
+```
+browser --https://mediroute-demo.duckdns.org--> DuckDNS: "that name = 13.234.56.78"
+        --port 443--> EC2 VM (Elastic IP 13.234.56.78) --> Caddy --> MediRoute app on 127.0.0.1:8000
+```
+
+**DuckDNS** (duckdns.org) is a free DNS service: up to 5 subdomains per account, no card, sign in
+with a Google / GitHub account. It only stores "this name -> this IP"; AWS needs no setup for it.
+
+1. **Elastic IP first** (EC2 -> Elastic IPs -> Allocate -> Associate with the VM). Free while attached
+   to a running VM. Without it the public IP changes on every stop/start and the name breaks.
+2. On duckdns.org: create the subdomain (a neutral name, e.g. `mediroute-demo`; it is public) and
+   type the Elastic IP into it. Check from your laptop: `nslookup mediroute-demo.duckdns.org`
+   returns the Elastic IP (may take a few minutes).
+3. Keep the DuckDNS **token** private (it can change the record); never commit it. Only needed if
+   you use the update URL below.
+4. Install Caddy on the VM: `sudo apt install -y caddy` (Ubuntu package or Caddy's own apt repo).
+5. `/etc/caddy/Caddyfile`:
+   ```
+   mediroute-demo.duckdns.org {
+       encode gzip
+       reverse_proxy 127.0.0.1:8000 {
+           transport http {
+               read_timeout 60s
+           }
+       }
+       request_body {
+           max_size 30MB
+       }
+   }
+   ```
+   `reverse_proxy` = pass every request to the app and send its answer back. `max_size` allows the
+   PDF uploads (5 reports); `read_timeout` covers a slow LLM answer.
+6. `sudo systemctl reload caddy`. Caddy gets a free **Let's Encrypt** certificate on its own (it
+   needs port 80 open for the check), renews it automatically and redirects http to https.
+7. Open `https://mediroute-demo.duckdns.org/patient.html`: padlock shown, page works. If the
+   certificate fails: check the name resolves to the Elastic IP and ports 80/443 are open
+   (`sudo journalctl -u caddy -n 50`).
+
+**No Elastic IP?** Run DuckDNS's update URL every 5 minutes from cron on the VM so the name follows
+the IP: `*/5 * * * * curl -s "https://www.duckdns.org/update?domains=mediroute-demo&token=$DUCKDNS_TOKEN&ip="`
+(token in `/opt/mediroute/.env`, not in the crontab file in git). The Elastic IP is simpler.
+
+**DuckDNS vs a bought domain**
+
+| | DuckDNS | Bought domain (+ Route 53 or the registrar's DNS) |
+|---|---|---|
+| Cost | free | about Rs 100-1,000 / year; Route 53 DNS US$0.50 / month |
+| Address | `name.duckdns.org` | `name.in` / `name.xyz` |
+| Reliability | volunteer-run, occasional outages, no guarantee | paid service with support |
+| Setup | 2 minutes | 10-20 minutes (one A record to the Elastic IP) |
+
+Fine for the 5 Dec demo; switching later only changes the name in the Caddyfile and the health check.
 
 ## 7. CI and updates (rows 30, 48)
 
@@ -204,8 +263,12 @@ summary line and the three health states, and one live search checked on the adm
    | `EmergencyAnswers` | `{ $.event = "request_done" && $.emergency IS TRUE }` | 1 | Count |
    | `Asked` | `{ $.event = "request_done" && $.status = "clarification" }` | 1 | Count |
 
-4. **Uptime / health**: a **Route 53 health check** on `https://<domain>/api/health` (HTTPS, every
-   30 s, from several regions; healthy = HTTP 2xx/3xx). Its `HealthCheckStatus` (1 = up) and
+4. **Uptime / health**: a **Route 53 health check** on `https://mediroute-demo.duckdns.org/api/health`
+   (HTTPS, every 30 s, from several regions; healthy = HTTP 2xx/3xx). It works with **any** domain:
+   DuckDNS needs no Route 53 hosted zone (Route 53 -> Health checks -> Create: endpoint by domain
+   name, protocol HTTPS, port 443, path `/api/health`; optionally "search string" `healthy`).
+   It checks the whole chain (DuckDNS name -> Elastic IP -> Caddy certificate -> app), so a
+   DuckDNS outage or an expired certificate also shows as down. Its `HealthCheckStatus` (1 = up) and
    `HealthCheckPercentageHealthy` metrics are published in **us-east-1** only, so build the dashboard
    there or add a cross-region widget. Also keep the EC2 `StatusCheckFailed` metric (machine down).
    Memory and disk are not EC2 metrics by default: install the **CloudWatch agent** for
@@ -254,6 +317,14 @@ summary line and the three health states, and one live search checked on the adm
 metrics, one dashboard, about 8 alarms and one health check: roughly **US$5 a month or less**
 (check current CloudWatch / Route 53 prices before setting up).
 
+**DuckDNS-specific alarms (optional):** CloudWatch cannot see DuckDNS itself; the health check
+above covers it. To tell "DuckDNS name broken" apart from "app down", add a second Route 53
+health check of type **TCP** on the **Elastic IP**, port 443 (an HTTPS check on the bare IP
+would fail on the certificate name). Name check down + IP check up = DNS / DuckDNS problem;
+both down = VM or Caddy down; IP check up but /api/health unhealthy = app problem.
+Certificate expiry needs no alarm: Caddy renews 30 days before expiry, and the HTTPS health
+check fails if renewal ever stops working.
+
 **Not on AWS?** The same JSON line works with GCP Cloud Logging (log-based metrics) or any log tool;
 UptimeRobot (free) can check `/api/health` instead of Route 53.
 
@@ -272,6 +343,7 @@ UptimeRobot (free) can check `/api/health` instead of Route 53.
 - [ ] Dockerfile + `.dockerignore` + `docker-compose.yml`; tests pass inside the image
 - [ ] OpenRouter project key with a spend cap, stored as a secret
 - [ ] VM (or Cloud Run) running with HTTPS and a persistent log disk
+- [ ] Elastic IP attached; DuckDNS name resolves to it; Caddy certificate issued (6.1)
 - [ ] Smoke test from outside passes; URL in README and report
 - [ ] CI: tests on push, image on `main`
 - [ ] API changes 8.1 (summary line per request, health checks) merged with tests
