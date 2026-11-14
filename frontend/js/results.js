@@ -121,8 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   renderMedicalContext();
 
-  const hospitals = routingResult.recommendation_result?.status === "success"
-    ? (routingResult.recommendation_result.results || []).map((hospital, index) => ({
+  const toCard = (hospital, index) => ({
         id: String(hospital.hospital_id || `hospital-${index + 1}`),
         name: hospital.hospital_name || "Hospital name unavailable",
         city: hospital.city || "City unavailable",
@@ -145,9 +144,13 @@ document.addEventListener("DOMContentLoaded", () => {
         rank: Number.isInteger(hospital.final_rank) ? hospital.final_rank : index + 1,
         outsideArea: hospital.outside_area === true,
         matchedProcedures: Array.isArray(hospital.matched_procedures) ? hospital.matched_procedures : [],
-        areaGroup: hospital.area_group || ""
-      }))
-    : [];
+        areaGroup: hospital.area_group || "",
+        relatedSpecialty: hospital.related_specialty || ""
+      });
+  const recommendation = routingResult.recommendation_result || {};
+  const hospitals = recommendation.status === "success" ? (recommendation.results || []).map(toCard) : [];
+  // in the patient's area, a related speciality (only when no hospital there has the suggested one)
+  const relatedHospitals = recommendation.status === "success" ? (recommendation.related_results || []).map(toCard) : [];
 
   const MAX_CHIPS = 6;
   // treatments the patient named (Step 1 evidence); used to say when a hospital's list lacks them
@@ -197,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (hospital.specialties.length) {
       main.append(createElement("h4", "", "Specialities"));
       const specialties = createElement("div", "hospital-specialties");
-      const wanted = searchedSpecialty.toLowerCase();
+      const wanted = (hospital.relatedSpecialty || searchedSpecialty).toLowerCase();
       const ordered = [...hospital.specialties].sort((a, b) =>
         (b.toLowerCase() === wanted) - (a.toLowerCase() === wanted));
       ordered.slice(0, MAX_CHIPS).forEach((specialty) => specialties.append(
@@ -342,7 +345,22 @@ document.addEventListener("DOMContentLoaded", () => {
       ? `· ${inArea} in ${location}, ${hospitals.length - inArea} outside`
       : `· ${hospitals.length} found`);
     hospitalList.replaceChildren();
-    if (inArea === 0) {
+    if (inArea === 0 && relatedHospitals.length) {
+      const related = relatedHospitals[0].relatedSpecialty;
+      setText("#result-count", `· ${relatedHospitals.length} in ${location} (related speciality), ${hospitals.length} outside`);
+      hospitalList.append(createElement("p", "area-note",
+        `No hospital in ${location} lists ${searchedSpecialty || "this speciality"} in our data. First, hospitals in ${location} `
+        + `with ${related}, a related department (${recommendation.related_why || "it often gives the same care"}). `
+        + `Please confirm with the hospital that it offers your treatment. Below them: hospitals that list ${searchedSpecialty || "this speciality"}, outside your area.`));
+      const divider = createElement("div", "area-divider");
+      divider.append(createElement("h3", "", `In ${location} · related speciality: ${related}`));
+      hospitalList.append(divider);
+      relatedHospitals.forEach((hospital, index) => {
+        const card = createHospitalCard(hospital, index);
+        card.classList.add("is-related");
+        hospitalList.append(card);
+      });
+    } else if (inArea === 0) {
       hospitalList.append(createElement("p", "area-note",
         `No hospital in ${location} offers ${searchedSpecialty || "this speciality"} in our data. These are the closest options we have.`));
     }

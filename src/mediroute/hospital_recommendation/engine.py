@@ -1,4 +1,5 @@
 from mediroute.common.locations import load_cities, resolve_location
+from mediroute.common.specialties import load_specialty_fallbacks
 from mediroute.hospital_recommendation.retrieval.faiss_retriever import FaissHospitalRetriever
 from mediroute.hospital_recommendation.retrieval.filtered_faiss_retriever import FilteredFaissHospitalRetriever
 from mediroute.hospital_recommendation.specialty_filter import SpecialtyFilter
@@ -73,21 +74,7 @@ class HospitalRecommendationEngine:
 
         # a city or a search area ("Delhi NCR" = New Delhi + Gurugram + Noida), from data/processed/cities.csv
         allowed_cities = resolve_location(preferred_city) if preferred_city_value else None
-        location_positions = []
-        specialty_position_set = set(specialty_positions)
-        for hospital in self.faiss_retriever.metadata:
-            position = hospital.get("vector_position")
-            if position not in specialty_position_set:
-                continue
-
-            if allowed_cities is not None:
-                if str(hospital.get("city") or "").strip() not in allowed_cities:
-                    continue
-            elif preferred_state_value:
-                state = str(hospital.get("state") or "").strip().casefold()
-                if state != preferred_state_value:
-                    continue
-            location_positions.append(position)
+        location_positions = self._in_area(specialty_positions, allowed_cities, preferred_state_value)
 
         # fill-up candidates outside the area: same state first, then anywhere (known areas only)
         known_area = (allowed_cities is not None and self._known_cities(allowed_cities)) or (
@@ -96,6 +83,9 @@ class HospitalRecommendationEngine:
         if known_area and len(location_positions) < self.MIN_IN_AREA:
             outside_groups = self._outside_groups(specialty_positions, set(location_positions), allowed_cities,
                                                   preferred_state_value)
+
+        related = (self._related_in_area(context, primary_specialty, allowed_cities, preferred_state_value, top_k)
+                   if known_area and not location_positions else None)
 
         if not location_positions and not any(positions for _, positions in outside_groups):
             return {
@@ -132,7 +122,7 @@ class HospitalRecommendationEngine:
             hospital["final_rank"] = rank
             hospital.setdefault("outside_area", False)
 
-        return {
+        response = {
             "status": "success",
             "primary_specialty": primary_specialty,
             "preferred_city": preferred_city,
@@ -146,6 +136,49 @@ class HospitalRecommendationEngine:
             "count": len(final_results),
             "results": final_results,
         }
+        if related:
+            response.update(related)
+        return response
+
+    def _in_area(self, positions, allowed_cities, preferred_state_value):
+        """Positions (from the given ones) of hospitals in the chosen city / search area or state."""
+        wanted = set(positions)
+        out = []
+        for hospital in self.faiss_retriever.metadata:
+            position = hospital.get("vector_position")
+            if position not in wanted:
+                continue
+            if allowed_cities is not None:
+                if str(hospital.get("city") or "").strip() not in allowed_cities:
+                    continue
+            elif preferred_state_value:
+                if str(hospital.get("state") or "").strip().casefold() != preferred_state_value:
+                    continue
+            out.append(position)
+        return out
+
+    def _related_in_area(self, context, primary_specialty, allowed_cities, preferred_state_value, top_k):
+        """First related speciality (specialty_fallbacks.csv) with hospitals in the area, ranked; else None."""
+        fallback = load_specialty_fallbacks().get(primary_specialty)
+        if not fallback:
+            return None
+        semantic_query = self.semantic_query_builder.build(context)
+        for related in fallback.related:
+            positions = self._in_area(self.specialty_filter.filter_positions(self.faiss_retriever.metadata, related),
+                                      allowed_cities, preferred_state_value)
+            if not positions:
+                continue
+            ranked, _ = self._rank_group(context, semantic_query, positions, related, top_k)
+            for rank, hospital in enumerate(ranked, start=1):
+                hospital["final_rank"] = rank
+                hospital["outside_area"] = False
+                hospital["related_specialty"] = related
+                hospital["ranking_reasons"] = [
+                    f"Related speciality in your area: {related}. It does not list {primary_specialty}; "
+                    "please ask the hospital whether it offers your treatment."] + hospital.get("ranking_reasons", [])
+            return {"related_specialty": related, "related_why": fallback.why,
+                    "related_count": len(ranked), "related_results": ranked}
+        return None
 
     def _rank_group(self, context, semantic_query, positions, primary_specialty, top_k):
         """Filter -> FAISS (3 x top_k) -> rerank within one group of hospitals."""

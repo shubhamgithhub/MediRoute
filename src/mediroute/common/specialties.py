@@ -30,7 +30,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from mediroute.utils.paths import (BODY_AREA_NEIGHBOURS_FILE, BODY_AREA_TAGS_FILE, HOSPITALS_FILE,
-                                   SPECIALTIES_FILE, SPECIALTY_MAPPING_FILE)
+                                   SPECIALTIES_FILE, SPECIALTY_FALLBACKS_FILE, SPECIALTY_MAPPING_FILE)
 
 MAPPING_SOURCES = ("ccsr", "cghs_label", "cghs_name", "lay_term", "hospital", "body_area")
 EVIDENCE_TYPES = {"ccsr": {"diagnosis", "symptom", "status"}, "cghs_label": {"procedure"},
@@ -164,6 +164,29 @@ def load_area_neighbours(path: Path = BODY_AREA_NEIGHBOURS_FILE) -> tuple[tuple[
                  for row in _read(path) if (row.get("tags_a") or "").strip())
 
 
+# specialty_fallbacks.csv: for a speciality, related ones (in order) whose department often gives the
+# same care. Step 2 shows hospitals in the patient's area with a related speciality only when no hospital
+# there has the suggested one, as a separate, labelled group; the suggested speciality never changes.
+@dataclass(frozen=True)
+class SpecialtyFallback:
+    specialty: str
+    related: tuple[str, ...]
+    why: str
+
+
+@lru_cache(maxsize=2)
+def load_specialty_fallbacks(path: Path = SPECIALTY_FALLBACKS_FILE) -> dict[str, SpecialtyFallback]:
+    if not Path(path).exists():
+        return {}
+    out = {}
+    for row in _read(path):
+        name = (row.get("specialty") or "").strip()
+        if name:
+            related = tuple(s.strip() for s in (row.get("related_specialties") or "").split(";") if s.strip())
+            out[name] = SpecialtyFallback(name, related, (row.get("why_related") or "").strip())
+    return out
+
+
 def area_tag_names() -> list[str]:
     return [t.tag for t in load_area_tags()]
 
@@ -218,6 +241,12 @@ def validate_mapping() -> list[str]:
             if t not in tag_names:
                 problems.append(f"body_area_neighbours: unknown tag '{t}'")
     valid = set(specialty_names())
+    for fallback in load_specialty_fallbacks().values():
+        for name in (fallback.specialty, *fallback.related):
+            if name not in valid:
+                problems.append(f"specialty_fallbacks: '{name}' is not in specialties.csv")
+        if fallback.specialty in fallback.related:
+            problems.append(f"specialty_fallbacks: '{fallback.specialty}' lists itself")
     for rule in load_mapping():
         key = (rule.source, rule.value.casefold())
         if rule.source not in MAPPING_SOURCES:

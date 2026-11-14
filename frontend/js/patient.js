@@ -616,6 +616,36 @@ const callRouting = async (extra) => {
   return result;
 };
 
+// one hospital card's fields (main list and the related-speciality group)
+const toHospitalView = (hospital) => ({
+  hospital_id: hospital.hospital_id,
+  hospital_name: hospital.hospital_name,
+  city: hospital.city,
+  state: hospital.state,
+  verified_specialties: hospital.verified_specialties,
+  team_claimed_specialties: hospital.team_claimed_specialties,
+  specialty_evidence: hospital.specialty_evidence,
+  procedures: hospital.procedures,
+  facilities: hospital.facilities,
+  detail_source: hospital.detail_source,
+  international_patient_service: hospital.international_patient_service,
+  cost_band_inr: hospital.cost_band_inr,
+  nabh_status: hospital.nabh_status,
+  jci_status: hospital.jci_status,
+  official_source_url: hospital.official_source_url,
+  semantic_score: hospital.semantic_score,
+  final_score: hospital.final_score,
+  final_rank: hospital.final_rank,
+  ranking_reasons: hospital.ranking_reasons,
+  matched_procedures: hospital.matched_procedures || [],
+  verification_status: hospital.verification_status || "",
+  url_Internantional_patients: hospital.url_Internantional_patients || "",
+  subspecialties: hospital.subspecialties || "",
+  outside_area: hospital.outside_area === true,
+  area_group: hospital.area_group || "",
+  related_specialty: hospital.related_specialty || ""
+});
+
 // Keep only what results.html needs; never store raw report data.
 const toRoutingView = (result) => {
   const recommendation = result.recommendation_result || {};
@@ -638,33 +668,13 @@ const toRoutingView = (result) => {
           count: recommendation.count,
           primary_specialty: recommendation.primary_specialty,
           in_area_count: recommendation.in_area_count,
-          results: recommendation.results.map((hospital) => ({
-            hospital_id: hospital.hospital_id,
-            hospital_name: hospital.hospital_name,
-            city: hospital.city,
-            state: hospital.state,
-            verified_specialties: hospital.verified_specialties,
-            team_claimed_specialties: hospital.team_claimed_specialties,
-            specialty_evidence: hospital.specialty_evidence,
-            procedures: hospital.procedures,
-            facilities: hospital.facilities,
-            detail_source: hospital.detail_source,
-            international_patient_service: hospital.international_patient_service,
-            cost_band_inr: hospital.cost_band_inr,
-            nabh_status: hospital.nabh_status,
-            jci_status: hospital.jci_status,
-            official_source_url: hospital.official_source_url,
-            semantic_score: hospital.semantic_score,
-            final_score: hospital.final_score,
-            final_rank: hospital.final_rank,
-            ranking_reasons: hospital.ranking_reasons,
-            matched_procedures: hospital.matched_procedures || [],
-            verification_status: hospital.verification_status || "",
-            url_Internantional_patients: hospital.url_Internantional_patients || "",
-            subspecialties: hospital.subspecialties || "",
-            outside_area: hospital.outside_area === true,
-            area_group: hospital.area_group || ""
-          }))
+          // the related group is shown first (it is in the patient's area), so the numbers run on from it
+          related_specialty: recommendation.related_specialty || "",
+          related_why: recommendation.related_why || "",
+          related_results: (recommendation.related_results || []).map(toHospitalView)
+            .map((h, i) => ({ ...h, final_rank: i + 1 })),
+          results: recommendation.results.map(toHospitalView)
+            .map((h, i) => ({ ...h, final_rank: (recommendation.related_results || []).length + i + 1 }))
         }
       : { status: recommendation.status || "clarification_required", results: [] }
   };

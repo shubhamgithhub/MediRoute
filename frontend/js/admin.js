@@ -571,7 +571,8 @@ document.addEventListener("DOMContentLoaded", () => {
       + `All bonuses together are capped at +${w.bonus_cap ?? 0.2}.`);
     add("4. Order",
       "Final score = relevance + bonus, highest first. Hospitals in the chosen area come first; if fewer than 3 are in the area, "
-      + "the list is filled from the same state, then the rest of India (shown as separate groups).");
+      + "the list is filled from the same state, then the rest of India (shown as separate groups). "
+      + "If the area has none at all, hospitals in the area with a related speciality (specialty_fallbacks.csv) are shown as an extra group; the suggested speciality does not change.");
     box.append(steps);
 
     const rows = wf.ranking || [];
@@ -587,7 +588,9 @@ document.addEventListener("DOMContentLoaded", () => {
     table.append(head);
     let lastGroup = null;
     rows.forEach((r) => {
-      const group = r.outside_area ? (r.area_group || "Outside the area") : `In ${wf.city || "the chosen area"}`;
+      const group = r.related_specialty
+        ? `Related speciality in ${wf.city || "the chosen area"}: ${r.related_specialty} (no hospital there lists ${wf.step2_specialty || "the suggested one"}; specialty_fallbacks.csv)`
+        : r.outside_area ? (r.area_group || "Outside the area") : `In ${wf.city || "the chosen area"}`;
       if (group !== lastGroup) {
         const gr = el("tr", "s2-group");
         const td = el("td", "", group);

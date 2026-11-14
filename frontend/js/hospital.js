@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const request = read("mediroute_patient_request") || {};
   let selectedId = null;
   try { selectedId = window.sessionStorage.getItem("mediroute_selected_hospital"); } catch (e) { selectedId = null; }
-  const records = routing?.recommendation_result?.status === "success" ? routing.recommendation_result.results || [] : [];
+  const records = routing?.recommendation_result?.status === "success"
+    ? [...(routing.recommendation_result.related_results || []), ...(routing.recommendation_result.results || [])] : [];
   const h = records.find((r) => String(r.hospital_id) === String(selectedId)) || null;
 
   if (!h) {
@@ -37,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#hospital-content").hidden = false;
   document.title = `${h.hospital_name} | MediRoute`;
 
-  const wanted = String(routing.recommendation_result.primary_specialty || routing.step1?.suggested_specialty || "").trim();
+  const wanted = String(h.related_specialty || routing.recommendation_result.primary_specialty || routing.step1?.suggested_specialty || "").trim();
   const website = split(h.verified_specialties);
   const team = split(h.team_claimed_specialties);
   const evidence = h.specialty_evidence || (website.includes(wanted) ? "website" : team.includes(wanted) ? "team list" : "");
@@ -48,7 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#hospital-rank").textContent = `#${h.final_rank || 1}`;
   $("#hospital-name").textContent = h.hospital_name;
   $("#hospital-location").textContent = [h.city, h.state].filter(Boolean).join(", ");
-  if (h.outside_area) {
+  if (h.related_specialty) {
+    $("#hospital-outside").hidden = false;
+    $("#hospital-outside").textContent = `Related speciality · ${h.related_specialty} (please confirm your treatment with the hospital)`;
+  } else if (h.outside_area) {
     $("#hospital-outside").hidden = false;
     $("#hospital-outside").textContent = `Outside your area · ${h.area_group || ""}`;
   }

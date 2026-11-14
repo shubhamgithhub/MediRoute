@@ -39,6 +39,8 @@ CITIES_FILE = PROCESSED_DATA_DIR / "cities.csv"
 # Step 1 multi-area check: symptom tag -> body area, and neighbour tags that count as one area.
 BODY_AREA_TAGS_FILE = PROCESSED_DATA_DIR / "body_area_tags.csv"
 BODY_AREA_NEIGHBOURS_FILE = PROCESSED_DATA_DIR / "body_area_neighbours.csv"
+# Step 2: related speciality to show in the patient's area when no hospital there has the suggested one.
+SPECIALTY_FALLBACKS_FILE = PROCESSED_DATA_DIR / "specialty_fallbacks.csv"
 HOSPITAL_SCHEMA_FILE = PROCESSED_DATA_DIR / "hospital.schema.csv"
 
 # --- rebuilt (python -m mediroute.data_generator.rebuild) ---------------------------------------
