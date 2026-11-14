@@ -1,0 +1,4 @@
+tags_a,tags_b,counts_as_one_because,example,review_status
+digestion;nausea_vomiting,throat_mouth,reflux reaches the throat and mouth (not the ear or nose),"heartburn + sour taste + burning throat",draft
+nose_sinuses;throat_mouth,lungs_breathing,a cold or flu affects the nose or throat and the chest together,"runny nose + sore throat + cough",draft
+headache,nausea_vomiting,a migraine often comes with nausea or vomiting,"one-sided headache + nausea",draft

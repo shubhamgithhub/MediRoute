@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Benchmark</title>
+<style>
+:root { --bg:#f7f8f6; --card:#fff; --fg:#1b2321; --muted:#5d6b68; --line:#d8e0de; --head:#e6f0ee; --good-bg:#e3f3e8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#121716; --card:#1b2321; --fg:#e4ebe9; --muted:#9aaba7; --line:#2f3b39; --head:#1f3330; --good-bg:#17331f; color-scheme:dark; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 "Segoe UI",system-ui,Arial,sans-serif; padding:28px max(16px,3vw) 56px; }
+main { max-width:980px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+h1 { margin:0; font-size:1.7rem; } h2 { margin:0 0 6px; font-size:1.15rem; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+.scroll { overflow-x:auto; } table { width:100%; border-collapse:collapse; font-size:.92rem; font-variant-numeric:tabular-nums; }
+th, td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:var(--head); font-size:.85rem; } tr.win td { background:var(--good-bg); font-weight:600; }
+.m, .muted { color:var(--muted); font-size:.85rem; font-weight:400; } code { font-family:Consolas,monospace; font-size:.85em; }
+</style></head><body><main>
+<header><h1>Portal benchmark: 234 real requests</h1>
+<p class="muted">2026-11-13T22:34:10 · each gold message sent to the running portal (<code>POST /api/patient-routing</code>: Step 1 → Step 2),
+one request every 15 s. "Correct" = expected speciality or an accepted alternative; a clarification question counts as not correct.</p></header>
+
+<section class="card"><h2>Setup</h2><div class="scroll"><table>
+<tr><th>Part</th><th>Model / setting</th></tr>
+<tr><td>Evidence + LLM voter</td><td>openai/gpt-6-luna (OpenRouter), adopted design (grid row 8)</td></tr>
+<tr><td>LLM judge (only on disagreements)</td><td>openai/gpt-6-luna (OpenRouter)</td></tr>
+<tr><td>Lookup voter</td><td>TF-IDF + all-MiniLM-L6-v2 embeddings, local</td></tr>
+<tr><td>Models seen in the LLM calls</td><td>openai/gpt-6-luna (640)</td></tr>
+</table></div></section>
+
+<section class="card"><h2>Accuracy (Step 1)</h2><div class="scroll"><table>
+<tr><th>Gold set</th><th>Queries</th><th>Correct (95% CI)</th><th>NDCG@3</th><th>Confidently wrong</th><th>Asks a question</th></tr>
+<tr class='win'><td>All 234 queries</td><td>234</td><td>77% <span class='m'>(71%–82%)</span></td><td>0.73</td><td>8%</td><td>15%</td></tr><tr><td>core50</td><td>50</td><td>90% <span class='m'>(79%–96%)</span></td><td>0.87</td><td>0%</td><td>10%</td></tr><tr><td>mediroute</td><td>84</td><td>94% <span class='m'>(87%–97%)</span></td><td>0.89</td><td>1%</td><td>5%</td></tr><tr><td>gretel</td><td>100</td><td>56% <span class='m'>(46%–65%)</span></td><td>0.52</td><td>18%</td><td>26%</td></tr></table></div>
+<p class="muted">Decisions: agreement 139, judge 60, clarification_required 35.
+LLM judge used on 87 requests: accepted 78, order-swap flip 9; its accepted answers were right 45 of 78.</p></section>
+
+<section class="card"><h2>Latency</h2><div class="scroll"><table>
+<tr><th>What</th><th>Typical (p50)</th><th>Slow (p95)</th><th>Slowest</th></tr>
+<tr><td>Patient waits (portal request, Step 1 + Step 2)</td><td>3.3 s</td><td>7.9 s</td><td>16.0 s</td></tr><tr><td>Step 1 only</td><td>3.2 s</td><td>7.9 s</td><td>15.9 s</td></tr><tr><td>LLM call: evidence <span class='m'>(234 calls)</span></td><td>2.2 s</td><td>5.3 s</td><td>13.5 s</td></tr><tr><td>LLM call: judge (each of 2) <span class='m'>(174 calls)</span></td><td>2.2 s</td><td>3.2 s</td><td>5.6 s</td></tr><tr><td>LLM call: LLM voter <span class='m'>(232 calls)</span></td><td>2.2 s</td><td>5.3 s</td><td>15.9 s</td></tr></table></div>
+<p class="muted">The evidence call and the LLM voter run in parallel for hosted models, so the patient waits about one call, plus the judge on disagreements.</p></section>
+
+<section class="card"><h2>Cost and reliability</h2><div class="scroll"><table>
+<tr><th>Item</th><th>Result</th></tr>
+<tr><td>LLM calls</td><td>640 (726,559 input + 31,151 output tokens)</td></tr>
+<tr><td>Total cost</td><td>$0.1026 (≈ $0.00044 per request)</td></tr>
+<tr><td>Failed LLM calls</td><td>0</td></tr>
+<tr><td>Failed portal requests (HTTP ≠ 200)</td><td>0</td></tr>
+<tr><td>Step 2 outcome</td><td>success 199, None 35</td></tr>
+</table></div></section>
+
+<section class="card"><h2>Answered with a wrong speciality (19)</h2><div class="scroll"><table>
+<tr><th>Set</th><th>ID</th><th>Message</th><th>Expected</th><th>Answered</th><th>How</th></tr><tr><td>mediroute</td><td>Q082</td><td>diabetic foot ulcer not healing, risk of amputation</td><td>Endocrinology</td><td>Dermatology</td><td>judge</td></tr><tr><td>gretel</td><td>G050</td><td>I&#x27;ve been vomiting for a few days now and I&#x27;ve been feeling really sick. I have stomach pa</td><td>General Medicine</td><td>Gastroenterology</td><td>judge</td></tr><tr><td>gretel</td><td>G003</td><td>I&#x27;ve been having headaches and migraines, and I can&#x27;t sleep. My whole body shakes and twit</td><td>General Medicine</td><td>Neurology</td><td>agreement</td></tr><tr><td>gretel</td><td>G004</td><td>I&#x27;m sweating a lot and can&#x27;t catch my breath. My throat is full of phlegm and I feel awful</td><td>Pulmonology</td><td>Emergency Medicine</td><td>judge</td></tr><tr><td>gretel</td><td>G012</td><td>I&#x27;ve been coughing up phlegm and my back hurts. I also feel weak and disoriented, and my n</td><td>Orthopaedics</td><td>Pulmonology</td><td>judge</td></tr><tr><td>gretel</td><td>G028</td><td>I&#x27;ve been feeling really tired lately. I can barely keep my eyes open during the day, and </td><td>General Medicine</td><td>Psychiatry</td><td>judge</td></tr><tr><td>gretel</td><td>G058</td><td>I&#x27;ve been coughing a lot and having trouble breathing. My throat hurts and I feel like I h</td><td>General Medicine</td><td>Pulmonology</td><td>judge</td></tr><tr><td>gretel</td><td>G047</td><td>I&#x27;m having trouble breathing, especially when I exercise. I&#x27;m sweating and flushed a lot, </td><td>Endocrinology</td><td>Pulmonology</td><td>judge</td></tr><tr><td>gretel</td><td>G046</td><td>I&#x27;ve gained a lot of weight and am now quite fat. My appetite varies, and I have cravings </td><td>General Medicine</td><td>Endocrinology</td><td>judge</td></tr><tr><td>gretel</td><td>G100</td><td>I have been having cramps in my calves when I walk or stand for a long time. I also have s</td><td>Cardiothoracic Surgery</td><td>Cardiology</td><td>agreement</td></tr><tr><td>gretel</td><td>G091</td><td>I&#x27;ve been having headaches and chest pains for a few days, but today the dizziness and lac</td><td>Cardiology</td><td>Neurology</td><td>judge</td></tr><tr><td>gretel</td><td>G045</td><td>I have been having trouble with my vision, seeing things as distorted and experiencing vis</td><td>Neurology</td><td>Ophthalmology</td><td>agreement</td></tr><tr><td>gretel</td><td>G095</td><td>I have asthma and get wheezing and breathing issues. I also have fevers, headaches, and I&#x27;</td><td>General Medicine</td><td>Pulmonology</td><td>judge</td></tr><tr><td>gretel</td><td>G069</td><td>I often feel the need to urinate and have intense urges to do so. I also feel dizzy and co</td><td>Endocrinology</td><td>Ophthalmology</td><td>judge</td></tr><tr><td>gretel</td><td>G134</td><td>I have a metallic taste in my mouth and my sense of taste and smell has changed. I also ge</td><td>General Medicine</td><td>ENT</td><td>judge</td></tr><tr><td>gretel</td><td>G078</td><td>I&#x27;ve been having a lot of trouble breathing, and I feel like I&#x27;m constantly nauseous. I al</td><td>General Medicine</td><td>Pulmonology</td><td>judge</td></tr><tr><td>gretel</td><td>G067</td><td>I&#x27;ve been having neck pain, and I&#x27;ve been feeling lightheaded and shaky. I also have a dry</td><td>Orthopaedics</td><td>Pulmonology</td><td>judge</td></tr><tr><td>gretel</td><td>G112</td><td>I have a rash all over my body and it&#x27;s really itchy. I&#x27;m also vomiting and my joints hurt</td><td>General Medicine</td><td>Dermatology</td><td>agreement</td></tr><tr><td>gretel</td><td>G070</td><td>I&#x27;ve been having trouble seeing things clearly, and it seems to be getting worse. I&#x27;m also</td><td>Endocrinology</td><td>Ophthalmology</td><td>judge</td></tr></table></div>
+<p class="muted">Gold labels are team-written drafts awaiting doctor review; some "wrong" answers may be acceptable.</p></section>
+<p class="muted">Raw results: <code>data\evaluation\portal_runs\20261113_223410/results.jsonl</code> · script: <code>scripts/portal_benchmark.py</code></p>
+</main></body></html>

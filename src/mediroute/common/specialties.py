@@ -29,7 +29,8 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
-from mediroute.utils.paths import HOSPITALS_FILE, SPECIALTIES_FILE, SPECIALTY_MAPPING_FILE
+from mediroute.utils.paths import (BODY_AREA_NEIGHBOURS_FILE, BODY_AREA_TAGS_FILE, HOSPITALS_FILE,
+                                   SPECIALTIES_FILE, SPECIALTY_FALLBACKS_FILE, SPECIALTY_MAPPING_FILE)
 
 MAPPING_SOURCES = ("ccsr", "cghs_label", "cghs_name", "lay_term", "hospital", "body_area")
 EVIDENCE_TYPES = {"ccsr": {"diagnosis", "symptom", "status"}, "cghs_label": {"procedure"},
@@ -129,10 +130,123 @@ def body_area_specialties(answer: str) -> set[str]:
     return set()
 
 
+def body_area_options() -> list[str]:
+    """The answers to "which part of the body?" in the order of specialty_mapping.csv."""
+    return [r.value for r in mapping_rules("body_area")]
+
+
+# --------------------------------------------------------------------------- multi-area check (Step 1)
+# body_area_tags.csv: each symptom is tagged (by the evidence LLM, from this fixed list) with a fine
+# tag such as "throat_mouth"; the tag belongs to one form area ("Ear, nose and throat"). General
+# symptoms (fever, tiredness, aches) are not counted. body_area_neighbours.csv: pairs of tags that one
+# common illness crosses (reflux, cold, migraine); their two areas count as one when the message has
+# no other tag in those areas (so heartburn + sore throat is one area, heartburn + ear pain is two).
+@dataclass(frozen=True)
+class AreaTag:
+    tag: str
+    form_area: str
+    counted: bool
+    examples: str
+
+
+@lru_cache(maxsize=2)
+def load_area_tags(path: Path = BODY_AREA_TAGS_FILE) -> tuple[AreaTag, ...]:
+    return tuple(AreaTag(row["tag"].strip(), row["form_area"].strip(), row["counted"].strip().lower() == "yes",
+                         (row.get("examples") or "").strip())
+                 for row in _read(path) if (row.get("tag") or "").strip())
+
+
+@lru_cache(maxsize=2)
+def load_area_neighbours(path: Path = BODY_AREA_NEIGHBOURS_FILE) -> tuple[tuple[frozenset, frozenset, str], ...]:
+    def tags(cell: str) -> frozenset:
+        return frozenset(t.strip() for t in (cell or "").split(";") if t.strip())
+    return tuple((tags(row["tags_a"]), tags(row["tags_b"]), (row.get("counts_as_one_because") or "").strip())
+                 for row in _read(path) if (row.get("tags_a") or "").strip())
+
+
+# specialty_fallbacks.csv: for a speciality, related ones (in order) whose department often gives the
+# same care. Step 2 shows hospitals in the patient's area with a related speciality only when no hospital
+# there has the suggested one, as a separate, labelled group; the suggested speciality never changes.
+@dataclass(frozen=True)
+class SpecialtyFallback:
+    specialty: str
+    related: tuple[str, ...]
+    why: str
+
+
+@lru_cache(maxsize=2)
+def load_specialty_fallbacks(path: Path = SPECIALTY_FALLBACKS_FILE) -> dict[str, SpecialtyFallback]:
+    if not Path(path).exists():
+        return {}
+    out = {}
+    for row in _read(path):
+        name = (row.get("specialty") or "").strip()
+        if name:
+            related = tuple(s.strip() for s in (row.get("related_specialties") or "").split(";") if s.strip())
+            out[name] = SpecialtyFallback(name, related, (row.get("why_related") or "").strip())
+    return out
+
+
+def area_tag_names() -> list[str]:
+    return [t.tag for t in load_area_tags()]
+
+
+def count_body_areas(tags: list[str] | set[str]) -> dict:
+    """Body areas covered by the symptom tags of one message, after the neighbour pairs.
+
+    Returns {"areas": [...form areas...], "count": n, "merged": [reasons]}; unknown and general tags
+    are ignored."""
+    by_tag = {t.tag: t for t in load_area_tags()}
+    present = {t for t in tags if t in by_tag and by_tag[t].counted}
+    areas = sorted({by_tag[t].form_area for t in present})
+    parent = {a: a for a in areas}
+
+    def find(a: str) -> str:
+        while parent[a] != a:
+            a = parent[a]
+        return a
+
+    merged = []
+    for tags_a, tags_b, because in load_area_neighbours():
+        in_a, in_b = present & tags_a, present & tags_b
+        if not in_a or not in_b:
+            continue
+        area_a, area_b = by_tag[next(iter(in_a))].form_area, by_tag[next(iter(in_b))].form_area
+        # every tag present in each of the two areas must belong to the pair (heartburn + ear pain: no)
+        if any(by_tag[t].form_area == area_a and t not in tags_a for t in present):
+            continue
+        if any(by_tag[t].form_area == area_b and t not in tags_b for t in present):
+            continue
+        ra, rb = find(area_a), find(area_b)
+        if ra != rb:
+            parent[rb] = ra
+            merged.append(because)
+    groups = sorted({find(a) for a in areas})
+    return {"areas": areas, "count": len(groups), "merged": merged}
+
+
 def validate_mapping() -> list[str]:
     """Problems in specialty_mapping.csv (empty list = valid). Used by tests and the rebuild."""
     problems, seen = [], set()
+    form_areas = {r.value for r in mapping_rules("body_area")}
+    tag_names = set()
+    for tag in load_area_tags():
+        if tag.tag in tag_names:
+            problems.append(f"body_area_tags: duplicate tag '{tag.tag}'")
+        tag_names.add(tag.tag)
+        if tag.counted and tag.form_area not in form_areas:
+            problems.append(f"body_area_tags '{tag.tag}': form area '{tag.form_area}' is not a body_area answer")
+    for tags_a, tags_b, _ in load_area_neighbours():
+        for t in tags_a | tags_b:
+            if t not in tag_names:
+                problems.append(f"body_area_neighbours: unknown tag '{t}'")
     valid = set(specialty_names())
+    for fallback in load_specialty_fallbacks().values():
+        for name in (fallback.specialty, *fallback.related):
+            if name not in valid:
+                problems.append(f"specialty_fallbacks: '{name}' is not in specialties.csv")
+        if fallback.specialty in fallback.related:
+            problems.append(f"specialty_fallbacks: '{fallback.specialty}' lists itself")
     for rule in load_mapping():
         key = (rule.source, rule.value.casefold())
         if rule.source not in MAPPING_SOURCES:

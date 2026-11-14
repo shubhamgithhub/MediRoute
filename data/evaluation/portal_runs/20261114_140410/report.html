@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Benchmark</title>
+<style>
+:root { --bg:#f7f8f6; --card:#fff; --fg:#1b2321; --muted:#5d6b68; --line:#d8e0de; --head:#e6f0ee; --good-bg:#e3f3e8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#121716; --card:#1b2321; --fg:#e4ebe9; --muted:#9aaba7; --line:#2f3b39; --head:#1f3330; --good-bg:#17331f; color-scheme:dark; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 "Segoe UI",system-ui,Arial,sans-serif; padding:28px max(16px,3vw) 56px; }
+main { max-width:980px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+h1 { margin:0; font-size:1.7rem; } h2 { margin:0 0 6px; font-size:1.15rem; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+.scroll { overflow-x:auto; } table { width:100%; border-collapse:collapse; font-size:.92rem; font-variant-numeric:tabular-nums; }
+th, td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:var(--head); font-size:.85rem; } tr.win td { background:var(--good-bg); font-weight:600; }
+.m, .muted { color:var(--muted); font-size:.85rem; font-weight:400; } code { font-family:Consolas,monospace; font-size:.85em; }
+</style></head><body><main>
+<header><h1>Portal benchmark: 100 real requests</h1>
+<p class="muted">2026-11-14T14:04:10 · each gold message sent to the running portal (<code>POST /api/patient-routing</code>: Step 1 → Step 2),
+one request every 15 s. "Correct" = expected speciality or an accepted alternative; a clarification question counts as not correct.</p></header>
+
+<section class="card"><h2>Setup</h2><div class="scroll"><table>
+<tr><th>Part</th><th>Model / setting</th></tr>
+<tr><td>Evidence + LLM voter</td><td>openai/gpt-6-luna (OpenRouter), red flags + multi-area check (evidence_v3)</td></tr>
+<tr><td>LLM judge (only on disagreements)</td><td>openai/gpt-6-luna (OpenRouter)</td></tr>
+<tr><td>Lookup voter</td><td>TF-IDF + all-MiniLM-L6-v2 embeddings, local</td></tr>
+<tr><td>Models seen in the LLM calls</td><td>openai/gpt-6-luna (164)</td></tr>
+</table></div></section>
+
+<section class="card"><h2>Accuracy (Step 1)</h2><div class="scroll"><table>
+<tr><th>Gold set</th><th>Queries</th><th>Correct (95% CI)</th><th>NDCG@3</th><th>Confidently wrong</th><th>Asks a question</th></tr>
+<tr class='win'><td>All 100 queries</td><td>100</td><td>29% <span class='m'>(21%–38%)</span></td><td>0.28</td><td>15%</td><td>56%</td></tr><tr><td>gretel</td><td>100</td><td>29% <span class='m'>(21%–38%)</span></td><td>0.28</td><td>15%</td><td>56%</td></tr></table></div>
+<p class="muted">Decisions: clarification_required 56, agreement 24, judge 10, emergency_rule 10.
+LLM judge used on 16 requests: accepted 14, order-swap flip 2; its accepted answers were right 6 of 14.</p></section>
+
+<section class="card"><h2>Latency</h2><div class="scroll"><table>
+<tr><th>What</th><th>Typical (p50)</th><th>Slow (p95)</th><th>Slowest</th></tr>
+<tr><td>Patient waits (portal request, Step 1 + Step 2)</td><td>2.5 s</td><td>5.6 s</td><td>6.3 s</td></tr><tr><td>Step 1 only</td><td>2.6 s</td><td>5.6 s</td><td>6.3 s</td></tr><tr><td>LLM call: evidence <span class='m'>(90 calls)</span></td><td>2.5 s</td><td>2.9 s</td><td>3.3 s</td></tr><tr><td>LLM call: judge (each of 2) <span class='m'>(32 calls)</span></td><td>2.2 s</td><td>2.7 s</td><td>3.0 s</td></tr><tr><td>LLM call: LLM voter <span class='m'>(42 calls)</span></td><td>2.1 s</td><td>3.0 s</td><td>6.3 s</td></tr></table></div>
+<p class="muted">The evidence call and the LLM voter run in parallel for hosted models, so the patient waits about one call, plus the judge on disagreements.</p></section>
+
+<section class="card"><h2>Cost and reliability</h2><div class="scroll"><table>
+<tr><th>Item</th><th>Result</th></tr>
+<tr><td>LLM calls</td><td>164 (211,867 input + 14,225 output tokens)</td></tr>
+<tr><td>Total cost</td><td>$0.0310 (≈ $0.00031 per request)</td></tr>
+<tr><td>Failed LLM calls</td><td>0</td></tr>
+<tr><td>Failed portal requests (HTTP ≠ 200)</td><td>0</td></tr>
+<tr><td>Step 2 outcome</td><td>None 56, success 44</td></tr>
+</table></div></section>
+
+<section class="card"><h2>Answered with a wrong speciality (15)</h2><div class="scroll"><table>
+<tr><th>Set</th><th>ID</th><th>Message</th><th>Expected</th><th>Answered</th><th>How</th></tr><tr><td>gretel</td><td>G004</td><td>I&#x27;m sweating a lot and can&#x27;t catch my breath. My throat is full of phlegm and I feel awful</td><td>Pulmonology</td><td>Emergency Medicine</td><td>emergency_rule</td></tr><tr><td>gretel</td><td>G012</td><td>I&#x27;ve been coughing up phlegm and my back hurts. I also feel weak and disoriented, and my n</td><td>Orthopaedics</td><td>Emergency Medicine</td><td>emergency_rule</td></tr><tr><td>gretel</td><td>G058</td><td>I&#x27;ve been coughing a lot and having trouble breathing. My throat hurts and I feel like I h</td><td>General Medicine</td><td>Pulmonology</td><td>judge</td></tr><tr><td>gretel</td><td>G047</td><td>I&#x27;m having trouble breathing, especially when I exercise. I&#x27;m sweating and flushed a lot, </td><td>Endocrinology</td><td>Pulmonology</td><td>judge</td></tr><tr><td>gretel</td><td>G046</td><td>I&#x27;ve gained a lot of weight and am now quite fat. My appetite varies, and I have cravings </td><td>General Medicine</td><td>Endocrinology</td><td>judge</td></tr><tr><td>gretel</td><td>G042</td><td>I have been having a headache for the past few days. It feels like a sharp pain in my temp</td><td>Cardiology</td><td>Emergency Medicine</td><td>emergency_rule</td></tr><tr><td>gretel</td><td>G010</td><td>I&#x27;m having trouble breathing. I&#x27;m sweating a lot and I don&#x27;t feel well. My chest hurts and</td><td>Pulmonology</td><td>Emergency Medicine</td><td>emergency_rule</td></tr><tr><td>gretel</td><td>G091</td><td>I&#x27;ve been having headaches and chest pains for a few days, but today the dizziness and lac</td><td>Cardiology</td><td>Emergency Medicine</td><td>emergency_rule</td></tr><tr><td>gretel</td><td>G033</td><td>I&#x27;m sweating and can&#x27;t catch my breath. My throat is full of phlegm and I feel terrible. M</td><td>Pulmonology</td><td>Emergency Medicine</td><td>emergency_rule</td></tr><tr><td>gretel</td><td>G095</td><td>I have asthma and get wheezing and breathing issues. I also have fevers, headaches, and I&#x27;</td><td>General Medicine</td><td>Pulmonology</td><td>judge</td></tr><tr><td>gretel</td><td>G069</td><td>I often feel the need to urinate and have intense urges to do so. I also feel dizzy and co</td><td>Endocrinology</td><td>Emergency Medicine</td><td>emergency_rule</td></tr><tr><td>gretel</td><td>G102</td><td>I&#x27;ve been having a headache all day, and it&#x27;s been getting worse. I also have chest pain a</td><td>Cardiology</td><td>Emergency Medicine</td><td>emergency_rule</td></tr><tr><td>gretel</td><td>G048</td><td>I&#x27;ve been feeling very sick. I have a high fever, shortness of breath, and I&#x27;m sweating an</td><td>Pulmonology</td><td>Emergency Medicine</td><td>emergency_rule</td></tr><tr><td>gretel</td><td>G065</td><td>I have a chronic bad breath and a sour taste in my mouth, It sometimes gets difficult to s</td><td>Gastroenterology</td><td>ENT</td><td>agreement</td></tr><tr><td>gretel</td><td>G124</td><td>I&#x27;ve been feeling really dizzy and lightheaded lately. I also have a headache and my chest</td><td>Cardiology</td><td>Emergency Medicine</td><td>emergency_rule</td></tr></table></div>
+<p class="muted">Gold labels are team-written drafts awaiting doctor review; some "wrong" answers may be acceptable.</p></section>
+<p class="muted">Raw results: <code>data\evaluation\portal_runs\20261114_140410/results.jsonl</code> · script: <code>scripts/portal_benchmark.py</code></p>
+</main></body></html>

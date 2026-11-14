@@ -13,11 +13,11 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from mediroute.common.specialties import lay_terms
+from mediroute.common.specialties import area_tag_names, lay_terms, load_area_tags
 from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
 
 PROMPT_DIR = Path(__file__).resolve().parents[1] / "prompts"
-EVIDENCE_PROMPT_VERSION = "evidence_v1"
+EVIDENCE_PROMPT_VERSION = "evidence_v3"  # v2 (14 Nov): + named_diagnoses, a body-area tag per symptom; v3: every symptom tagged, "general" only for whole-body symptoms
 KINDS = ("conditions", "procedures", "body_parts")
 # keyword_matches: strong lay terms (specialty_mapping.csv) found word-for-word in the text. They are
 # always added, because the small local LLM sometimes misses obvious phrases ("vision is blurry").
@@ -70,11 +70,15 @@ def is_generic(phrase: str) -> bool:
     return bool(words) and all(w in GENERIC_WORDS or w.isdigit() for w in words)
 
 
-EVIDENCE_SCHEMA = {
-    "type": "object",
-    "properties": {kind: {"type": "array", "items": {"type": "string"}, "maxItems": 6} for kind in KINDS},
-    "required": list(KINDS),
-}
+def evidence_schema() -> dict:
+    """v2: the three phrase lists, named diagnoses, and each symptom with a tag from body_area_tags.csv."""
+    lists = {kind: {"type": "array", "items": {"type": "string"}, "maxItems": 6}
+             for kind in KINDS + ("named_diagnoses",)}
+    lists["symptom_areas"] = {"type": "array", "maxItems": 10, "items": {
+        "type": "object",
+        "properties": {"phrase": {"type": "string"}, "tag": {"type": "string", "enum": area_tag_names()}},
+        "required": ["phrase", "tag"]}}
+    return {"type": "object", "properties": lists, "required": list(lists)}
 
 
 def _tokens(text: str) -> list[str]:
@@ -109,6 +113,9 @@ class Evidence:
     kept: dict[str, list[str]] = field(default_factory=lambda: {k: [] for k in ALL_KINDS})
     dropped: list[dict] = field(default_factory=list)
     llm_call: LLMCall | None = None
+    # v2: diagnoses the patient names (checked against the text), and each symptom with its body-area tag
+    named_diagnoses: list[str] = field(default_factory=list)
+    symptom_areas: list[dict] = field(default_factory=list)
     # every LLM phrase and what the code check did with it (admin page: share of words found, kept or why not)
     checks: list[dict] = field(default_factory=list)
 
@@ -144,16 +151,17 @@ class EvidenceExtractor:
     def __init__(self, client: OllamaClient | None = None) -> None:
         self.client = client or make_llm_client()
         self.template = (PROMPT_DIR / f"{EVIDENCE_PROMPT_VERSION}.txt").read_text(encoding="utf-8")
+        self._tags = "\n".join(f"  {t.tag}: {t.examples}" for t in load_area_tags())
         # strong lay terms are evidence; weak ones ("baby", "eye", "vision") only when no strong one is found
         self._keywords = [(rule.value.lower(), name) for rule in lay_terms("strong") for name in rule.specialties]
         self._weak_keywords = [(rule.value.lower(), name) for rule in lay_terms("weak") for name in rule.specialties]
 
     def build_prompt(self, text: str) -> str:
-        return self.template.format(text=text.strip())
+        return self.template.format(text=text.strip(), tags=self._tags)
 
     def extract(self, text: str) -> Evidence:
         keywords = self.keyword_matches(text)
-        call = self.client.generate_json(self.build_prompt(text), EVIDENCE_SCHEMA, purpose="evidence_extraction")
+        call = self.client.generate_json(self.build_prompt(text), evidence_schema(), purpose="evidence_extraction")
         if not call.ok:
             evidence = Evidence(method="keywords_only", llm_call=call)
             evidence.kept["keyword_matches"] = keywords
@@ -186,7 +194,32 @@ class EvidenceExtractor:
                         evidence.kept[kind].append(phrase)
                 else:
                     evidence.dropped.append({"kind": kind, "phrase": phrase, "matched_share": share})
+        self._areas(call.parsed, source, evidence)
         return evidence
+
+    @staticmethod
+    def _areas(parsed: dict, source: set[str], evidence: Evidence) -> None:
+        """Named diagnoses and symptom tags, kept only if the phrase is in the text and the tag is
+        in body_area_tags.csv (the same check as the other phrases)."""
+        valid = set(area_tag_names())
+        for phrase in parsed.get("named_diagnoses") or []:
+            phrase = str(phrase).strip()
+            if phrase and not is_generic(phrase) and verify_phrase(phrase, source)[0]:
+                evidence.named_diagnoses.append(phrase)
+            elif phrase:
+                evidence.checks.append({"kind": "named_diagnoses", "phrase": phrase, "share": None, "kept": False,
+                                        "why": "not found in the text or generic"})
+        for item in parsed.get("symptom_areas") or []:
+            phrase, tag = str((item or {}).get("phrase") or "").strip(), str((item or {}).get("tag") or "").strip()
+            if not phrase:
+                continue
+            ok = tag in valid and verify_phrase(phrase, source)[0]
+            if ok:
+                evidence.symptom_areas.append({"phrase": phrase, "tag": tag})
+            else:
+                evidence.checks.append({"kind": "symptom_areas", "phrase": f"{phrase} ({tag})", "share": None,
+                                        "kept": False, "why": "tag not in the list" if tag not in valid
+                                        else "not found in the text"})
 
     def keyword_matches(self, text: str) -> list[str]:
         """Lay terms that appear word-for-word in the text (deterministic): the strong ones, or the

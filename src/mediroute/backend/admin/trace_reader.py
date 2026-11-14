@@ -97,6 +97,7 @@ def _workflow_summary(wid: str, events: list[dict]) -> dict:
         "hospital_count": rec.get("count"),
         "top_hospitals": rec.get("top") or [],
         "ranking": rec.get("ranking") or [],
+        "related_specialty": rec.get("related_specialty"),
         "ranking_weights": rec.get("weights") or {},
         "semantic_query": rec.get("semantic_query"),
         "specialty_candidates": rec.get("specialty_candidates"),

@@ -46,6 +46,7 @@ def _ranking_row(position: int, hospital: dict) -> dict:
         "business_bonus": round(float(hospital.get("business_bonus") or 0), 4),
         "final_score": round(float(hospital.get("final_score") or 0), 4),
         "matched_procedures": hospital.get("matched_procedures") or [],
+        "related_specialty": hospital.get("related_specialty"),
     }
 
 
@@ -183,7 +184,9 @@ class RoutingNodes:
              top=[(r.get("hospital_name") or r.get("name")) for r in (result.get("results") or [])[:5]],
              semantic_query=result.get("semantic_query"), in_area_count=result.get("in_area_count"),
              retrieval_candidates=result.get("retrieval_candidate_count"), weights=RANKING_WEIGHTS,
-             ranking=[_ranking_row(position, r) for position, r in enumerate(result.get("results") or [], start=1)])
+             ranking=[_ranking_row(position, r) for position, r in enumerate(result.get("results") or [], start=1)]
+             + [_ranking_row(position, r) for position, r in enumerate(result.get("related_results") or [], start=1)],
+             related_specialty=result.get("related_specialty"))
         return {"recommendation_result": result, "workflow_status": result.get("status", "failed"),
                 "current_step": "recommend_hospitals", "error_message": None}
 

@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   const decisionLabel = {
     majority: "Majority (old)", agreement: "Voters agree", judge: "AI judge decided", lookup_only: "Lookup only", patient_answer: "Patient answer decided", clarification_required: "Asked a question", needs_user_choice: "List offered",
-    user_selected: "User selected", none: "No Step 1"
+    user_selected: "User selected", emergency_rule: "Red flag → Emergency", multi_area_general_medicine: "Several body areas → General Medicine", none: "No Step 1"
   };
   const kv = (pairs) => {
     const dl = el("dl", "kv");
@@ -436,6 +436,16 @@ document.addEventListener("DOMContentLoaded", () => {
     evParts.push(el("div", "s1-io-label", "→ Phrases given to the lookup voter (body parts only if nothing else was found)"), chips(ev.routing_phrases));
     out.append(stageBox("3", "Evidence: LLM call 1 + code check", "llm", ...evParts));
 
+    // 3b · body areas (code) ------------------------------------------------------
+    const ac = one("area_check");
+    if (ac.stage) {
+      const acParts = [el("p", "muted", "Why: a message with only symptoms from several body areas (no named condition or procedure) is asked which area matters most; “More than one / whole body” or “Not sure” → General Medicine. Neighbour pairs (reflux, cold, migraine) count as one area.")];
+      acParts.push(table(["symptom", "tag"], (ac.tags || []).map((x) => [x.phrase, x.tag])));
+      acParts.push(el("p", "", `Named diagnosis or procedure: ${(ac.named || []).join(", ") || "none"} · areas: ${(ac.areas || []).join(", ") || "none"} · counted as ${ac.count} (threshold ${ac.threshold})${(ac.merged || []).length ? ` · merged: ${ac.merged.join("; ")}` : ""}`));
+      acParts.push(el("p", ac.multi_area ? "s1-drop" : "muted", ac.multi_area ? "→ several body areas: ask (or General Medicine after the answer)" : "→ one area or a named condition: normal voting"));
+      out.append(stageBox("3b", "Body areas: code", "code", ...acParts));
+    }
+
     // 4a · V1 lookup ------------------------------------------------------------
     if (v1.stage) {
       const d = v1.details || {};
@@ -519,6 +529,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 5 · decision rules ----------------------------------------------------------
     const RULES = [
+      ["emergency_rule", "Red flag (chest pain with breathlessness / racing heart / dizziness, loss of sight, confusion, stroke signs…) → Emergency Medicine, before any LLM call"],
+      ["multi_area_general_medicine", "Symptoms only, 2+ body areas, patient answered “More than one” or “Not sure” → General Medicine"],
       ["agreement", "V1 = V2 → that speciality"],
       ["patient_answer", "They differ, but the patient's body-area answer fits exactly one → that one"],
       ["judge", "They differ otherwise → AI judge (must pass all checks)"],
@@ -559,7 +571,8 @@ document.addEventListener("DOMContentLoaded", () => {
       + `All bonuses together are capped at +${w.bonus_cap ?? 0.2}.`);
     add("4. Order",
       "Final score = relevance + bonus, highest first. Hospitals in the chosen area come first; if fewer than 3 are in the area, "
-      + "the list is filled from the same state, then the rest of India (shown as separate groups).");
+      + "the list is filled from the same state, then the rest of India (shown as separate groups). "
+      + "If the area has none at all, hospitals in the area with a related speciality (specialty_fallbacks.csv) are shown as an extra group; the suggested speciality does not change.");
     box.append(steps);
 
     const rows = wf.ranking || [];
@@ -575,7 +588,9 @@ document.addEventListener("DOMContentLoaded", () => {
     table.append(head);
     let lastGroup = null;
     rows.forEach((r) => {
-      const group = r.outside_area ? (r.area_group || "Outside the area") : `In ${wf.city || "the chosen area"}`;
+      const group = r.related_specialty
+        ? `Related speciality in ${wf.city || "the chosen area"}: ${r.related_specialty} (no hospital there lists ${wf.step2_specialty || "the suggested one"}; specialty_fallbacks.csv)`
+        : r.outside_area ? (r.area_group || "Outside the area") : `In ${wf.city || "the chosen area"}`;
       if (group !== lastGroup) {
         const gr = el("tr", "s2-group");
         const td = el("td", "", group);

@@ -55,6 +55,8 @@ CONFIGS = {  # name -> (judge model, judge prompt, reasoning effort, label)
     "f1": ("openai/gpt-6-luna", "judge_v2", None, "F1: boundaries in the judge prompt"),
     "f1_gemini": ("google/gemini-4-carbon", "judge_v2", "low", "F1 + F2: Gemini 4 Carbon judge"),
     "f1_terra": ("openai/gpt-6.1-terra", "judge_v2", None, "F1 + F2: GPT-6.1 Terra judge"),
+    # 14 Nov: same judge as base, with the red-flag rules and the body-area question (evidence_v3)
+    "areas": ("openai/gpt-6-luna", "judge_v1", None, "14 Nov: red flags + body areas (evidence_v3)"),
 }
 GAP_S = 3.2  # OpenRouter new account: 20 requests/minute per model
 
