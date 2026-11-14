@@ -17,6 +17,8 @@ COPY data/ ./data/
 RUN pip install --no-cache-dir torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu \
     && pip install --no-cache-dir -e . \
     && python -c 'import torch; assert torch.version.cuda is None'
+RUN python -m pip install --no-cache-dir --timeout 120 --retries 8 "pip==26.3" "setuptools==84.2.1" \
+    && python -m pip check
 RUN useradd --uid 10001 --create-home --shell /usr/sbin/nologin mediroute \
     && mkdir -p /tmp/mediroute-logs /tmp/huggingface \
     && chown -R 10001:10001 /tmp/mediroute-logs /tmp/huggingface
