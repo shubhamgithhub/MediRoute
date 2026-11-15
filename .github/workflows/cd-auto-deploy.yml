@@ -77,6 +77,27 @@ jobs:
             exit 0
           fi
 
+          # A source commit may never opt in while main opts out, and a
+          # source commit that opts out must not deploy while main opts in.
+          # This matters when pushing the flag-off rollback to a feature branch.
+          gh api -H "Accept: application/vnd.github+json" \
+            "repos/$GITHUB_REPOSITORY/contents/infra/deployment-control.yaml?ref=$SOURCE_SHA" \
+            --jq '.content' | base64 --decode > /tmp/mediroute-source-policy.yaml
+
+          source_opt_in=$(python3 - <<'PY_SOURCE_POLICY'
+          import yaml
+          from pathlib import Path
+          policy = yaml.safe_load(Path('/tmp/mediroute-source-policy.yaml').read_text())
+          deployment = policy.get('deployment') if isinstance(policy, dict) else None
+          enabled = deployment.get('auto_deploy') if isinstance(deployment, dict) else None
+          print('true' if enabled is True else 'false')
+          PY_SOURCE_POLICY
+          )
+          if [[ "$source_opt_in" != true ]]; then
+            echo 'SKIP: Triggering commit does not explicitly enable auto_deploy'
+            exit 0
+          fi
+
           echo "source_sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
           echo "source_branch=$SOURCE_BRANCH" >> "$GITHUB_OUTPUT"
           echo 'deploy=true' >> "$GITHUB_OUTPUT"
