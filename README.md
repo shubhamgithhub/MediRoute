@@ -438,8 +438,21 @@ The frontend is static and calls the API at `http://127.0.0.1:8000`.
 | POST | `/api/hospitals/semantic-recommendations` | FAISS semantic hospital search |
 | GET | `/api/hospitals/search`, `/api/hospitals/keyword-search` | Location and keyword search |
 | GET | `/api/icd10/map`, `/api/icd10/code/{code}` | ICD-10 lookups |
+| POST | `/api/auth/signup`, `/api/auth/login`, `/api/auth/logout` | Patient account (optional); session in an HttpOnly cookie |
+| GET / DELETE | `/api/auth/me` | The logged-in user / delete the account and its saved searches |
+| POST / GET | `/api/history`, `/api/history/{id}` | Save a search with up to 3 hospitals / the user's saved searches |
 
 There are more request examples in [docs/API_TEST_PLAYGROUND.md](docs/API_TEST_PLAYGROUND.md).
+
+**Accounts and saved history (optional login)**
+
+Searching never needs an account. After selecting a hospital, the patient can **Save to my history**
+(log in or sign up in a dialog; required: email, password, country, consent). **My MediRoute → My
+history** (`history.html`, shown only when logged in) lists the saved searches: the request, each
+question and answer, the speciality and up to 3 chosen hospitals. Data: SQLite at
+`data/app/mediroute.db` (ignored by git; `MEDIROUTE_APP_DB` moves it, e.g. to the cloud server's
+persistent disk). No report text is stored; entries are deleted after 90 days. Design and decisions:
+[docs/design/user_history.md](docs/design/user_history.md).
 
 **Data pipelines** (run from the repo root)
 

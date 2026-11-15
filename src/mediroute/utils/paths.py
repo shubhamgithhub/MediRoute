@@ -26,6 +26,8 @@ RAW_DATA_DIR = DATA_DIR / "raw"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 INTERIM_DATA_DIR = DATA_DIR / "interim"
 EVALUATION_DIR = DATA_DIR / "evaluation"
+# user accounts and saved history (SQLite; never committed): docs/design/user_history.md
+APP_DB_FILE = Path(os.getenv("MEDIROUTE_APP_DB", DATA_DIR / "app" / "mediroute.db"))
 VECTOR_STORE_DIR = PROCESSED_DATA_DIR / "vector_store"
 GENERATOR_INPUT_DIR = RAW_DATA_DIR / "data_generator"
 

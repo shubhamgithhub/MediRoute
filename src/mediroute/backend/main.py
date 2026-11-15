@@ -18,6 +18,7 @@ from mediroute.utils.paths import LOG_DIR
 
 logger = configure_logger()
 
+from mediroute.backend.accounts.api import router as accounts_router  # noqa: E402
 from mediroute.backend.admin.api import router as admin_router  # noqa: E402
 from mediroute.backend.workflow.api import router as workflow_router  # noqa: E402
 from mediroute.hospital_recommendation.api import router as hospital_recommendation_router  # noqa: E402
@@ -130,6 +131,7 @@ app.include_router(specialty_routing_router)
 app.include_router(hospital_recommendation_router)
 app.include_router(workflow_router)
 app.include_router(admin_router)  # no auth yet: keep the API bound to 127.0.0.1
+app.include_router(accounts_router)  # patient accounts + saved history (docs/design/user_history.md)
 
 
 @app.get("/", tags=["Service"])

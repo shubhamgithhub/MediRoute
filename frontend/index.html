@@ -12,7 +12,9 @@
   <script src="js/theme.js?v=20261112u"></script>
   <link rel="stylesheet" href="css/style.css?v=20261112u">
   <link rel="stylesheet" href="css/theme.css?v=20261112u">
+  <link rel="stylesheet" href="css/account.css?v=20261115b">
   <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="js/account.js?v=20261115c" defer></script>
   <script src="js/app.js?v=20261112u" defer></script>
 </head>
 <body>
@@ -28,15 +30,19 @@
       </button>
       <div class="nav-menu" id="primary-navigation">
         <div class="nav-links">
-          <a href="#how-it-works">How It Works</a>
-          <a href="#features">Features</a>
-          <a href="#why-mediroute">Why MediRoute</a>
-          <a href="#for-hospitals">For Hospitals</a>
-          <a href="#about">About</a>
-          <a href="admin.html" title="Request history (local, no login yet)">Admin</a>
+          <a href="#how-it-works">How it works</a>
+          <details class="nav-dropdown">
+            <summary>Why MediRoute</summary>
+            <div class="nav-dropdown-panel">
+              <a href="#about">About the project</a>
+              <a href="#features">Features</a>
+              <a href="mailto:hello@mediroute.example">Contact us</a>
+            </div>
+          </details>
+          <a href="#for-hospitals">For hospitals</a>
+          <a href="admin.html" title="Request history for the team">Admin</a>
         </div>
         <div class="nav-actions">
-          <a class="nav-signin" href="#footer">Sign In</a>
           <a class="button button-small button-primary" href="patient.html">Find My Hospital <span aria-hidden="true">→</span></a>
         </div>
       </div>

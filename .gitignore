@@ -17,6 +17,10 @@ venv/
 # Runtime output
 logs/
 
+# Patient accounts and saved history (SQLite; never commit; DPDP)
+data/app/
+docker-data/
+
 # Patient uploads and private reports (never commit; DPDP)
 data/patient_uploads/
 data/private_reports/
