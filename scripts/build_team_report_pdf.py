@@ -786,14 +786,33 @@ def s_latency():
 
 def s_setup():
     return f"""
-<h1>11 · Setup and API keys (for each team member)</h1>
-<h2>Install once</h2>
+<h1>11 · Setup and start (for each team member)</h1>
+<h2>First time (once per laptop, Windows)</h2>
 <pre>git clone https://github.com/shubhamgithhub/MediRoute.git
-cd MediRoute
-python -m venv .venv
-.\\.venv\\Scripts\\Activate.ps1          # macOS/Linux: source .venv/bin/activate
-pip install -e ".[dev,scraping]"
-playwright install chromium            # only for scrapers and PDF reports</pre>
+cd MediRoute                                  # always go into the folder first
+powershell -ExecutionPolicy Bypass -File scripts\\setup_windows.ps1
+setx OPENROUTER_API_KEY "sk-or-v1-..."        # your own key, once; then open a NEW window</pre>
+{bullets([
+    "<b>Needs</b> Git and Python 3.12 (3.10–3.14 also work; tick “Add python.exe to PATH” when installing).",
+    "The setup script finds Python, creates <code>.venv</code>, installs the packages, checks the data files, the key (never printed), free memory and ports 8000 / 5500, and prints a green / yellow / red summary. Safe to run again; <code>-RunTests</code> also runs the tests, <code>-Rebuild</code> recreates a broken <code>.venv</code>.",
+    "<code>-ExecutionPolicy Bypass</code> applies to that run only: no Windows setting to change and no venv activation.",
+])}
+<h2>Start the app (every time)</h2>
+<pre>cd MediRoute
+# make sure the API key is set (setx above) before starting
+powershell -ExecutionPolicy Bypass -File scripts\\start_app.ps1        # stop: add -Stop</pre>
+<p>It stops any MediRoute already running, starts the backend (port 8000) and the frontend (port 5500) in two
+windows, waits until the backend is ready and opens the patient page. It uses GPT-6 Luna (the benchmark model)
+unless <code>MEDIROUTE_OPENROUTER_MODEL</code> is set.</p>
+{table(["Page", "URL"], [["Patient app", "http://127.0.0.1:5500/index.html"], ["Admin (request history, traces)", "http://127.0.0.1:5500/admin.html"],
+                          ["API docs", "http://127.0.0.1:8000/docs"], ["Health check", "http://127.0.0.1:8000/api/health"]], ["45%", "55%"])}
+<h2>Common setup problems</h2>
+{table(["You see", "Fix"], [
+    ["running scripts is disabled on this system", "use the commands exactly as above (with -ExecutionPolicy Bypass)"],
+    ["Python was not found / the Microsoft Store opens", "install Python 3.12 with “Add to PATH”, or turn off the “python” App execution aliases in Windows Settings"],
+    ["pyproject.toml not found", "not in the MediRoute folder: cd into it first"],
+    ["first search very slow or times out", "the backend needs about 2.5 GB free RAM: close Teams or browser tabs"],
+], ["42%", "58%"])}
 <h2>OpenRouter keys: one per person</h2>
 {bullets([
     "<b>Account owner</b> (one shared, paid account): openrouter.ai → <b>Settings → API Keys → Create key</b>, one key per member, named after the person (e.g. “mediroute-member-a”), each with a <b>credit limit</b> (e.g. $2). Usage is then visible per person and any key can be revoked alone.",
@@ -803,25 +822,12 @@ playwright install chromium            # only for scrapers and PDF reports</pre>
     "Check spend at openrouter.ai → Activity. A new account allows 20 requests per minute per model; the benchmark scripts pace themselves.",
     "No key? The app still runs: <code>$env:MEDIROUTE_LLM_PROVIDER = \"none\"</code> (search voters only) or install Ollama for a local model.",
 ])}
-<h2>Start the app (two terminals)</h2>
-<pre># Terminal 1: backend (port 8000)
-.\\.venv\\Scripts\\Activate.ps1
-$env:PYTHONPATH = "src"
-$env:MEDIROUTE_LLM_PROVIDER = "openrouter"
-$env:MEDIROUTE_OPENROUTER_MODEL = "openai/gpt-6-luna"   # the judge uses GPT-6 Luna by default
-python -m uvicorn mediroute.backend.main:app --host 127.0.0.1 --port 8000
-
-# Terminal 2: frontend (port 5500)
-.\\.venv\\Scripts\\Activate.ps1
-python scripts/serve_frontend.py      # no caching: every reload shows the latest files</pre>
-{table(["Page", "URL"], [["Patient app", "http://127.0.0.1:5500/index.html"], ["Admin (request history, traces)", "http://127.0.0.1:5500/admin.html"],
-                          ["API docs", "http://127.0.0.1:8000/docs"], ["Health check", "http://127.0.0.1:8000/api/health"]], ["45%", "55%"])}
 <h2>Rerun things</h2>
-<pre>python -m pytest -q                                   # 124 tests
-python -m mediroute.data_generator.rebuild            # all processed data
-python scripts/portal_benchmark.py --n 100 --spacing 15   # Step 1 through the running app
-python scripts/eval_step2.py run --judged-only        # Step 2 benchmark
-python scripts/build_team_report_pdf.py               # this report</pre>
+<pre>.\\.venv\\Scripts\\python.exe -m pytest -q                                  # 165 tests
+.\\.venv\\Scripts\\python.exe -m mediroute.data_generator.rebuild           # all processed data
+.\\.venv\\Scripts\\python.exe scripts\\portal_benchmark.py --sets core50=50,mediroute=84,gretel=100   # Step 1 through the running app
+.\\.venv\\Scripts\\python.exe scripts\\eval_step2.py run --judged-only       # Step 2 benchmark
+.\\.venv\\Scripts\\python.exe scripts\\build_team_report_pdf.py              # this report</pre>
 """
 
 
@@ -840,7 +846,6 @@ def s_limits():
     "Doctor review of the drafts (docs/review/MediRoute_doctor_review.pdf), the report critical-detail labels (section 8c.1) and the 20% grade spot-check.",
     "Long reports: keep the end of the report (or its impression / diagnosis / plan sections) instead of only the first 6,000 characters; the one extraction failure in section 8c.1.",
     "Offline website extraction to fill the procedure lists, measured with the same Step 2 harness.",
-    "Update the README (setup section still lists the old free models).",
     "Pick the final colour theme and remove the selector; replace the home-page demo card with real results.",
     "Close the readiness gaps in section 13 (tracker rows 46–56).",
 ])}
