@@ -1,0 +1,53 @@
+name: MediRoute OIDC Subject Check
+
+on:
+  push:
+    branches:
+      - feature/aws_deployment
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Inspect GitHub OIDC identity
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os
+          import json
+          import base64
+          import urllib.request
+
+          url = os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"]
+          separator = "&" if "?" in url else "?"
+
+          request = urllib.request.Request(
+              url + separator + "audience=sts.amazonaws.com",
+              headers={
+                  "Authorization": "Bearer " +
+                  os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]
+              },
+          )
+
+          with urllib.request.urlopen(request, timeout=20) as response:
+              token = json.load(response)["value"]
+
+          encoded = token.split(".")[1]
+          payload = json.loads(
+              base64.urlsafe_b64decode(
+                  encoded + "=" * (-len(encoded) % 4)
+              )
+          )
+
+          print("OIDC subject:", payload["sub"])
+          print("OIDC audience:", payload["aud"])
+          print("Repository:", payload.get("repository"))
+          PY
