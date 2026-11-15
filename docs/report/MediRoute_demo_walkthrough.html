@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MediRoute Demo Walkthrough</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column, a sticky tab bar, every example = pipeline table + call boxes + ranking table */
+:root {
+  --bg: #f6f9fb;
+  --surface: #ffffff;
+  --ink: #102a43;
+  --muted: #5b7084;
+  --line: #dfe8ee;
+  --navy: #0b3b60;
+  --teal: #0b8f8e;
+  --teal-soft: #e3f4f3;
+  --amber: #a15c07;
+  --amber-soft: #fdf1df;
+  --red: #b42318;
+  --red-soft: #fdecea;
+  --green: #1f7a4d;
+  --green-soft: #e6f4ec;
+  --code-bg: #0f2a40;
+  --code-fg: #d9ecf5;
+  --font-display: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1823; --surface: #12222f; --ink: #e3edf4; --muted: #93a9ba; --line: #22384a;
+    --navy: #9fd0f0; --teal: #4fd1c5; --teal-soft: #123a3a; --amber: #f2b45a; --amber-soft: #3a2a12;
+    --red: #f39a90; --red-soft: #3c1c1a; --green: #7fd4a6; --green-soft: #15342a;
+    --code-bg: #08131c; --code-fg: #cfe6f2; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1823; --surface: #12222f; --ink: #e3edf4; --muted: #93a9ba; --line: #22384a;
+  --navy: #9fd0f0; --teal: #4fd1c5; --teal-soft: #123a3a; --amber: #f2b45a; --amber-soft: #3a2a12;
+  --red: #f39a90; --red-soft: #3c1c1a; --green: #7fd4a6; --green-soft: #15342a;
+  --code-bg: #08131c; --code-fg: #cfe6f2; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 64rem; margin: 0 auto; padding-block: 1.5rem 4rem; }
+header.top { display: grid; gap: .25rem; margin-bottom: 1rem; }
+.eyebrow { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); font-weight: 700; }
+h1 { font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.1rem); margin: 0; color: var(--navy); text-wrap: balance; }
+.lead { margin: 0; color: var(--muted); max-width: 65ch; }
+h2 { font-family: var(--font-display); font-size: 1.25rem; margin: 2rem 0 .6rem; color: var(--navy); text-wrap: balance; }
+h3 { font-family: var(--font-display); font-size: 1rem; margin: 1.4rem 0 .5rem; }
+p { margin: .4rem 0; }
+
+nav.tabs {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  display: flex; gap: .25rem; overflow-x: auto; border-bottom: 1px solid var(--line); padding-top: .5rem; margin-bottom: 1rem;
+}
+nav.tabs button {
+  border: 0; background: none; font: inherit; font-weight: 600; color: var(--muted); padding: .6rem .85rem; cursor: pointer;
+  border-bottom: 3px solid transparent; white-space: nowrap;
+}
+nav.tabs button[aria-selected="true"] { color: var(--navy); border-bottom-color: var(--teal); }
+nav.tabs button:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
+
+.query {
+  display: grid; gap: .5rem; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+}
+.query q { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; quotes: "\201C" "\201D"; }
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chip { font-size: .8rem; font-weight: 600; padding: .15rem .55rem; border-radius: 999px; background: var(--teal-soft); color: var(--teal); font-variant-numeric: tabular-nums; }
+.chip.amber { background: var(--amber-soft); color: var(--amber); }
+.chip.red { background: var(--red-soft); color: var(--red); }
+.chip.green { background: var(--green-soft); color: var(--green); }
+.chip.plain { background: none; border: 1px solid var(--line); color: var(--muted); }
+
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); font-weight: 700; background: var(--bg); }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.win td { background: var(--green-soft); }
+tr.grp td { background: var(--bg); font-weight: 700; color: var(--navy); font-size: .82rem; }
+.stage { font-weight: 700; white-space: nowrap; }
+.muted { color: var(--muted); }
+.small { font-size: .82rem; }
+code, .mono { font-family: var(--font-mono); font-size: .82rem; }
+
+.calls { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: .75rem; }
+.call { min-width: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.call .lab { display: flex; justify-content: space-between; gap: .5rem; padding: .45rem .7rem; font-size: .78rem; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--line); }
+.call pre { margin: 0; padding: .7rem; background: var(--code-bg); color: var(--code-fg); font-family: var(--font-mono); font-size: .78rem; white-space: pre-wrap; word-break: break-word; }
+.say { margin-top: .75rem; padding: .7rem .9rem; border-left: 3px solid var(--teal); background: var(--teal-soft); border-radius: 0 8px 8px 0; font-size: .92rem; }
+.say b { color: var(--navy); }
+.formula { font-family: var(--font-mono); font-size: .85rem; padding: .5rem .7rem; background: var(--surface); border: 1px dashed var(--line); border-radius: 8px; overflow-x: auto; }
+.flow { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; font-size: .85rem; }
+.flow span { padding: .3rem .6rem; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); font-weight: 600; }
+.flow i { font-style: normal; color: var(--muted); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1rem; }
+.grid2 > * { min-width: 0; }
+footer.note { margin-top: 2.5rem; font-size: .8rem; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">MediRoute · demo walkthrough · real runs of 15 Nov 2026</span>
+    <h1>What happens to a patient's message, step by step</h1>
+    <p class="lead">Three real requests sent through the running app (GPT-6 Luna on OpenRouter). Every number below comes from the app's trace for that request, or from the benchmarks in the team report.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Examples">
+    <button role="tab" id="t-overview" aria-controls="overview" aria-selected="true">Overview</button>
+    <button role="tab" id="t-chest" aria-controls="chest" aria-selected="false" tabindex="-1">1 · Chest pain</button>
+    <button role="tab" id="t-areas" aria-controls="areas" aria-selected="false" tabindex="-1">2 · Several body areas</button>
+    <button role="tab" id="t-ivf" aria-controls="ivf" aria-selected="false" tabindex="-1">3 · IVF in Hyderabad</button>
+    <button role="tab" id="t-qa" aria-controls="qa" aria-selected="false" tabindex="-1">Prof Q&amp;A</button>
+  </nav>
+
+  <!-- ============================================================ OVERVIEW -->
+  <section id="overview" role="tabpanel" aria-labelledby="t-overview">
+    <div class="flow" aria-label="Pipeline">
+      <span>Patient text</span><i>→</i><span>1 Redact</span><i>→</i><span>2 Red flags</span><i>→</i><span>3 Evidence (LLM)</span><i>→</i><span>3b Body areas</span><i>→</i><span>4 Two voters</span><i>→</i><span>5 Decide / ask</span><i>→</i><span>Step 2 hospitals</span>
+    </div>
+
+    <h2>The pipeline in one table</h2>
+    <div class="tbl"><table>
+      <tr><th>Stage</th><th>What it does</th><th>LLM?</th><th class="num">Typical time</th></tr>
+      <tr><td class="stage">1 Redact</td><td>Removes e-mails, phone and ID numbers before anything else sees the text</td><td>No</td><td class="num">&lt;1 ms</td></tr>
+      <tr><td class="stage">2 Red flags</td><td>Fixed rules (chest pain + breathless / racing heart / dizzy / sweating, sudden loss of sight, new confusion) → Emergency Medicine at once</td><td>No</td><td class="num">&lt;10 ms</td></tr>
+      <tr><td class="stage">3 Evidence</td><td>LLM copies medical phrases word for word and tags each symptom with a body area; code keeps a phrase only if ≥ 60% of its words are in the text</td><td>Yes</td><td class="num">~2 s</td></tr>
+      <tr><td class="stage">3b Body areas</td><td>Code counts body areas; 2+ areas and no named diagnosis → ask which area</td><td>No</td><td class="num">&lt;1 ms</td></tr>
+      <tr><td class="stage">4a Lookup voter</td><td>Keyword + meaning search of each phrase over 10,884 medical entries (ICD-10 9,170 · CGHS procedures 1,270 · lay terms 444)</td><td>No</td><td class="num">0.1–2 s</td></tr>
+      <tr><td class="stage">4b LLM voter</td><td>Reads the whole message, picks one of 26 specialities (runs in parallel with 4a)</td><td>Yes</td><td class="num">~2 s</td></tr>
+      <tr><td class="stage">5 Decide</td><td>Both agree → answer · disagree → LLM judge or ask · nothing found → ask</td><td>Only if they disagree</td><td class="num">0–2 s</td></tr>
+      <tr><td class="stage">Step 2</td><td>Filter by speciality and city → FAISS meaning search → small quality bonuses → ranked list</td><td>No</td><td class="num">~35 ms</td></tr>
+    </table></div>
+
+    <h2>Before and after: Step 1 (speciality)</h2>
+    <div class="grid2">
+      <div class="tbl"><table>
+        <tr><th>Design (core50, offline)</th><th class="num">Correct</th><th class="num">Conf. wrong</th><th class="num">Asks</th></tr>
+        <tr><td>Keyword search only</td><td class="num">86%</td><td class="num">14%</td><td class="num">0%</td></tr>
+        <tr><td>Meaning search only</td><td class="num">92%</td><td class="num">8%</td><td class="num">0%</td></tr>
+        <tr><td>LLM only</td><td class="num">76%</td><td class="num">16%</td><td class="num">8%</td></tr>
+        <tr><td>Old app: 3 voters, 2-of-3 majority</td><td class="num">80%</td><td class="num">2%</td><td class="num">18%</td></tr>
+        <tr class="win"><td><b>Adopted:</b> lookup + LLM, judge, ask</td><td class="num">86%</td><td class="num">2%</td><td class="num">12%</td></tr>
+      </table></div>
+      <div class="tbl"><table>
+        <tr><th>Real portal test, 234 requests</th><th class="num">Conf. wrong</th><th class="num">Right after 1 answer</th></tr>
+        <tr><td>13 Nov (before body-area + red-flag rules)</td><td class="num">9% (22)</td><td class="num">not measured</td></tr>
+        <tr class="win"><td>14 Nov (after), draft rule labels</td><td class="num">1% (2)</td><td class="num">98% (230)</td></tr>
+        <tr><td>110 unseen messages (rules not built on them)</td><td class="num">1% → 1%</td><td class="num">95%</td></tr>
+      </table></div>
+    </div>
+    <p class="small muted">Correct + confidently wrong + asks = 100%. "Confidently wrong" = a speciality with no question and no warning, and it is wrong. That is the costly error; asking is safe.</p>
+
+    <h2>Before and after: Step 2 (hospitals, 45 graded requests)</h2>
+    <div class="tbl"><table>
+      <tr><th>System</th><th class="num">NDCG@5</th><th class="num">Capable in top 3</th><th class="num">Incapable in top 3</th></tr>
+      <tr><td>Keyword search, no filters (search-engine-like)</td><td class="num">0.50</td><td class="num">87%</td><td class="num">51%</td></tr>
+      <tr><td>Random among eligible hospitals</td><td class="num">0.61</td><td class="num">84%</td><td class="num">8%</td></tr>
+      <tr><td>Filter + bonuses, no meaning search</td><td class="num">0.68</td><td class="num">91%</td><td class="num">0%</td></tr>
+      <tr><td>Our engine, first run (filter + FAISS meaning search + bonuses)</td><td class="num">0.71</td><td class="num">91%</td><td class="num">0%</td></tr>
+      <tr class="win"><td><b>Today:</b> + full website speciality list + outside-area group</td><td class="num">0.807</td><td class="num">93%</td><td class="num">16%*</td></tr>
+    </table></div>
+    <p class="small muted">* Scored only on grades whose hospital website was read. The 7 "incapable" cases are all "not confirmed on the pages read", queued for the human check. NDCG gain p = 0.002.</p>
+    <p class="small muted">Cost per search ≈ $0.0004 (2 LLM calls); end to end p50 2.55 s, p95 6.5 s; Step 2 adds ~35 ms.</p>
+  </section>
+
+  <!-- ============================================================ EXAMPLE 1: CHEST PAIN -->
+  <section id="chest" role="tabpanel" aria-labelledby="t-chest" hidden>
+    <div class="query">
+      <q>Chest pain</q>
+      <div class="chips"><span class="chip plain">City: Chennai</span><span class="chip">Cardiology</span><span class="chip plain">decision: both voters agree</span><span class="chip plain">3.2 s · $0.00045</span></div>
+    </div>
+
+    <h2>Step 1: what each stage did</h2>
+    <div class="tbl"><table>
+      <tr><th>Stage</th><th>Result</th><th>Why it matters</th></tr>
+      <tr><td class="stage">2 Red flags</td><td>No match</td><td class="muted">Chest pain alone is not the emergency pattern; chest pain <i>with</i> breathlessness, racing heart, dizziness or sweating is</td></tr>
+      <tr><td class="stage">3 Evidence</td><td>conditions: <code>Chest pain</code> · body part: <code>Chest</code></td><td class="muted">Both found word for word (share 1.0), so both kept</td></tr>
+      <tr><td class="stage">3b Body areas</td><td><code>Chest pain</code> → heart_vessels · 1 area</td><td class="muted">One area: no question needed</td></tr>
+      <tr><td class="stage">4a Lookup</td><td>Cardiology 0.033 · Pulmonology 0.003 · ENT 0.002</td><td class="muted">0.4 s, no LLM</td></tr>
+      <tr><td class="stage">4b LLM voter</td><td>Cardiology (alternative: Emergency Medicine)</td><td class="muted">2.7 s</td></tr>
+      <tr class="win"><td class="stage">5 Decide</td><td><b>Agreement → Cardiology</b></td><td class="muted">Two independent methods agree and the text has evidence</td></tr>
+    </table></div>
+
+    <h3>The two LLM calls (input → output)</h3>
+    <div class="calls">
+      <div class="call"><div class="lab"><span>Evidence · prompt evidence_v3</span><span>978 → 52 tokens · 2.7 s</span></div>
+<pre>IN:  "Copy medical facts from the patient's message.
+      Do not diagnose, guess or add anything." + tag list
+      + message: "Chest pain"
+
+OUT: {"conditions":["Chest pain"], "procedures":[],
+      "body_parts":["Chest"], "named_diagnoses":[],
+      "symptom_areas":[{"phrase":"Chest pain",
+                        "tag":"heart_vessels"}]}</pre></div>
+      <div class="call"><div class="lab"><span>LLM voter · prompt specialty_v2</span><span>2,465 → 31 tokens · 2.7 s</span></div>
+<pre>IN:  26 specialities with "route here when" boundaries
+      + rules + message: "Chest pain"
+
+OUT: {"specialty":"Cardiology",
+      "alternatives":["Emergency Medicine"],
+      "evidence_terms":["Chest pain"]}</pre></div>
+    </div>
+
+    <h3>Why collect evidence, and why with an LLM</h3>
+    <div class="tbl"><table>
+      <tr><th>Option</th><th>Problem</th><th>Measured</th></tr>
+      <tr><td>Keyword list only</td><td>Finds only words it already has ("blocked arteries", "sugar problem" missed)</td><td class="num">86% correct · 14% conf. wrong</td></tr>
+      <tr><td>Search the raw text</td><td>Noise pulls wrong matches: "my child" → Paediatrics, "Chennai", "for months"</td><td class="num">lookup 87–88%</td></tr>
+      <tr><td>LLM decides alone</td><td>Can guess or invent; no checkable evidence</td><td class="num">76% · 16% conf. wrong</td></tr>
+      <tr class="win"><td><b>LLM copies phrases, code checks them, lookup searches them</b></td><td>Clean medical phrases in the patient's own words; nothing invented (≥ 60% of words must be in the text)</td><td class="num">lookup 93%</td></tr>
+    </table></div>
+
+    <h3>Lookup voter: what it found for "Chest pain"</h3>
+    <div class="formula">score = Σ 1 / (60 + rank) over keyword and meaning search (Reciprocal Rank Fusion) · × 0.5 if the entry is weak evidence (a symptom code)</div>
+    <div class="tbl" style="margin-top:.5rem"><table>
+      <tr><th>Lookup entry</th><th>Source</th><th>Speciality</th><th class="num">Keyword rank (sim)</th><th class="num">Meaning rank (sim)</th><th class="num">Weighted</th></tr>
+      <tr class="win"><td>chest pain</td><td>lay term</td><td>Cardiology</td><td class="num">1 (1.00)</td><td class="num">1 (1.00)</td><td class="num">0.0328</td></tr>
+      <tr><td>Chest pain, unspecified</td><td>ICD-10 R07.9</td><td>Cardiology</td><td class="num">2 (0.76)</td><td class="num">2 (0.91)</td><td class="num">0.0161 <span class="muted">weak</span></td></tr>
+      <tr><td>Chest pain on breathing</td><td>ICD-10 R07.1</td><td>Pulmonology / ENT</td><td class="num">3–4 (0.70)</td><td class="num">3–4 (0.81)</td><td class="num">0.0157 <span class="muted">weak</span></td></tr>
+      <tr><td>chest infection</td><td>lay term</td><td>Pulmonology</td><td class="num">5 (0.46)</td><td class="num">6 (0.74)</td><td class="num">0.0305</td></tr>
+      <tr><td>heart pain</td><td>lay term</td><td>Cardiology</td><td class="num">14 (0.32)</td><td class="num">5 (0.79)</td><td class="num">0.0289</td></tr>
+    </table></div>
+    <p class="small muted">Per phrase the best speciality counts fully and the others 10%: Cardiology 0.033 vs Pulmonology 0.003. The meaning search finds "heart pain" although no word matches well.</p>
+
+    <h2>Step 2: hospitals</h2>
+    <div class="tbl"><table>
+      <tr><th>Step</th><th>Result</th></tr>
+      <tr><td class="stage">Filter: speciality</td><td>183 of 201 hospitals list Cardiology</td></tr>
+      <tr><td class="stage">Filter: city</td><td>10 in Chennai (≥ 3, so no fill-up from outside)</td></tr>
+      <tr><td class="stage">Meaning search (FAISS)</td><td>Query: <code>Specialty: Cardiology. Diagnoses: Chest pain. Clinical findings: chest pain</code></td></tr>
+      <tr><td class="stage">Rank</td><td>final = relevance + bonuses (capped at 0.20)</td></tr>
+    </table></div>
+    <div class="tbl" style="margin-top:.5rem"><table>
+      <tr><th class="num">#</th><th>Hospital</th><th class="num">Relevance</th><th>Bonuses</th><th class="num">Final</th></tr>
+      <tr><td class="num">1</td><td>Gleneagles HealthCity, Perumbakkam</td><td class="num">0.304</td><td class="small">website +.04 · verified +.03 · NABH +.02 · intl +.02 · evidence +.03</td><td class="num">0.444</td></tr>
+      <tr><td class="num">2</td><td>MGM Healthcare, Aminjikarai</td><td class="num">0.251</td><td class="small">same + JCI +.02 = +0.16</td><td class="num">0.411</td></tr>
+      <tr><td class="num">3</td><td>Rela Hospital</td><td class="num">0.268</td><td class="small">+0.14</td><td class="num">0.408</td></tr>
+      <tr><td class="num">4</td><td>Kauvery Hospital, Alwarpet</td><td class="num">0.244</td><td class="small">+0.16 (incl. JCI)</td><td class="num">0.404</td></tr>
+      <tr><td class="num">5</td><td>MIOT International, Manapakkam</td><td class="num">0.262</td><td class="small">+0.14</td><td class="num">0.402</td></tr>
+    </table></div>
+    <div class="say"><b>Say:</b> MGM has a lower relevance than Rela but ranks higher because it is JCI-accredited (+0.02). Bonuses are small on purpose: relevance decides, quality signals break near-ties.</div>
+  </section>
+
+  <!-- ============================================================ EXAMPLE 2: SEVERAL AREAS -->
+  <section id="areas" role="tabpanel" aria-labelledby="t-areas" hidden>
+    <div class="query">
+      <q>I have been vomiting, I feel dizzy and both my knees hurt for a week</q>
+      <div class="chips"><span class="chip plain">City: Mumbai</span><span class="chip amber">Round 1: asks</span><span class="chip">Round 2: General Medicine</span><span class="chip plain">2.2 s + 2.9 s · $0.00029</span></div>
+    </div>
+
+    <h2>Round 1: the app asks instead of guessing</h2>
+    <div class="tbl"><table>
+      <tr><th>Stage</th><th>Result</th></tr>
+      <tr><td class="stage">2 Red flags</td><td>No match</td></tr>
+      <tr><td class="stage">3 Evidence</td><td><code>vomiting</code> · <code>dizzy</code> · <code>both my knees hurt</code> (all share 1.0, kept)</td></tr>
+      <tr><td class="stage">3b Body areas</td><td>vomiting → nausea_vomiting → <b>Stomach, liver and digestion</b><br>dizzy → brain_nerves → <b>Brain, nerves and spine</b><br>knees hurt → bones_joints_muscles → <b>Bones, joints and muscles</b><br>= <b>3 areas</b>, no named diagnosis, threshold 2 → ask</td></tr>
+      <tr class="grp"><td colspan="2">Voters are not run: one organ specialist would be a guess</td></tr>
+      <tr><td class="stage">Question shown</td><td>"Your symptoms involve several parts of the body … Which part troubles you most? Choose 'More than one / whole body' if it is really several."</td></tr>
+    </table></div>
+
+    <div class="calls" style="margin-top:.75rem">
+      <div class="call"><div class="lab"><span>Evidence LLM · evidence_v3</span><span>992 → 92 tokens · 2.2 s</span></div>
+<pre>OUT: {"conditions":["vomiting","dizzy","both my knees hurt"],
+      "body_parts":["knees"], "named_diagnoses":[],
+      "symptom_areas":[
+        {"phrase":"vomiting","tag":"nausea_vomiting"},
+        {"phrase":"dizzy","tag":"brain_nerves"},
+        {"phrase":"both my knees hurt",
+         "tag":"bones_joints_muscles"}]}</pre></div>
+      <div class="call"><div class="lab"><span>Code: count_body_areas()</span><span>no LLM</span></div>
+<pre>tags  → form areas (body_area_tags.csv)
+pairs → count as one area (body_area_neighbours.csv)
+        reflux: stomach + throat/mouth
+        cold:   nose/throat + lungs
+        migraine: headache + nausea
+here: no pair applies → 3 areas ≥ 2 → ASK</pre></div>
+    </div>
+
+    <h2>Round 2: patient answers "More than one / whole body"</h2>
+    <div class="tbl"><table>
+      <tr><th>Stage</th><th>Result</th></tr>
+      <tr><td class="stage">3b Body areas</td><td>Same 3 areas · answer = More than one / whole body</td></tr>
+      <tr class="win"><td class="stage">5 Decide</td><td><b>multi_area_general_medicine → General Medicine</b>: "A general physician can examine you, find the cause and refer you to a specialist if needed."</td></tr>
+    </table></div>
+
+    <h3>Before vs after this rule (14 Nov)</h3>
+    <div class="tbl"><table>
+      <tr><th></th><th>Before</th><th>After</th></tr>
+      <tr><td>This kind of message</td><td>Sent to one organ specialist (e.g. vomiting + dizziness → Gastroenterology)</td><td>Asks; several areas → General Medicine</td></tr>
+      <tr><td>gretel set (100 symptom-only), confidently wrong</td><td class="num">21%</td><td class="num">2%</td></tr>
+      <tr><td>gretel, right after one answer</td><td>not measured</td><td class="num">96%</td></tr>
+      <tr><td>Cost of the change</td><td colspan="2">Asks on gretel rose to about half; accepted by the team (ask rather than guess)</td></tr>
+    </table></div>
+    <p class="small muted">Labels for gretel follow a draft rule (red flag → Emergency; named condition → its speciality; one area → that specialist; several → General Medicine), awaiting the doctor review (22 Nov – 1 Dec).</p>
+
+    <h2>Step 2: hospitals</h2>
+    <div class="tbl"><table>
+      <tr><th>Step</th><th>Result</th></tr>
+      <tr><td class="stage">Filter</td><td>54 hospitals list General Medicine; only 2 in Mumbai</td></tr>
+      <tr><td class="stage">Fill-up rule</td><td>Fewer than 3 in the city → add from the same state, then the rest of India, as separate groups</td></tr>
+    </table></div>
+    <div class="tbl" style="margin-top:.5rem"><table>
+      <tr><th class="num">#</th><th>Hospital</th><th class="num">Relevance</th><th class="num">Bonus</th><th class="num">Final</th></tr>
+      <tr class="grp"><td colspan="5">In Mumbai</td></tr>
+      <tr><td class="num">1</td><td>S. L. Raheja Hospital (Fortis Associate)</td><td class="num">0.228</td><td class="num">+0.14</td><td class="num">0.368</td></tr>
+      <tr><td class="num">2</td><td>Bombay Hospital and Medical Research Centre</td><td class="num">0.199</td><td class="num">+0.16</td><td class="num">0.359</td></tr>
+      <tr class="grp"><td colspan="5">Outside your area · elsewhere in Maharashtra</td></tr>
+      <tr><td class="num">3</td><td>Wockhardt Super Speciality Hospital, Nagpur</td><td class="num">0.244</td><td class="num">+0.16</td><td class="num">0.404</td></tr>
+      <tr><td class="num">4</td><td>Aster Aadhar Hospital, Kolhapur</td><td class="num">0.203</td><td class="num">+0.16</td><td class="num">0.363</td></tr>
+      <tr><td class="num">5</td><td>Jupiter Hospital, Baner (Pune)</td><td class="num">0.192</td><td class="num">+0.14</td><td class="num">0.332</td></tr>
+    </table></div>
+    <div class="say"><b>Say:</b> Wockhardt Nagpur has the highest score (0.404) but is listed third: hospitals in the patient's city always come first; the score only orders hospitals within a group.</div>
+  </section>
+
+  <!-- ============================================================ EXAMPLE 3: IVF -->
+  <section id="ivf" role="tabpanel" aria-labelledby="t-ivf" hidden>
+    <div class="query">
+      <q>We have been trying for a baby for 4 years and our doctor suggested IVF.</q>
+      <div class="chips"><span class="chip plain">City: Hyderabad</span><span class="chip">Reproductive Medicine</span><span class="chip plain">decision: both voters agree</span><span class="chip amber">0 hospitals in Hyderabad → related speciality</span><span class="chip plain">2.1 s · $0.00046</span></div>
+    </div>
+
+    <h2>Step 1: what each stage did</h2>
+    <div class="tbl"><table>
+      <tr><th>Stage</th><th>Result</th></tr>
+      <tr><td class="stage">3 Evidence</td><td>procedure <code>IVF</code> + keyword match <code>trying for a baby</code></td></tr>
+      <tr><td class="stage">3b Body areas</td><td>trying for a baby → fertility · 1 area · named procedure IVF</td></tr>
+      <tr><td class="stage">4a Lookup</td><td>Reproductive Medicine 0.066 · Pediatric Cardiology 0.003 · O&amp;G 0.003</td></tr>
+      <tr><td class="stage">4b LLM voter</td><td>Reproductive Medicine (alternative: Obstetrics &amp; Gynaecology)</td></tr>
+      <tr class="win"><td class="stage">5 Decide</td><td><b>Agreement → Reproductive Medicine</b></td></tr>
+    </table></div>
+
+    <div class="calls" style="margin-top:.75rem">
+      <div class="call"><div class="lab"><span>Evidence LLM · evidence_v3</span><span>992 → 50 tokens · 2.0 s</span></div>
+<pre>OUT: {"conditions":[], "procedures":["IVF"],
+      "body_parts":[], "named_diagnoses":[],
+      "symptom_areas":[{"phrase":"trying for a baby",
+                        "tag":"fertility"}]}</pre></div>
+      <div class="call"><div class="lab"><span>LLM voter · specialty_v2</span><span>2,479 → 47 tokens · 2.1 s</span></div>
+<pre>OUT: {"specialty":"Reproductive Medicine",
+      "alternatives":["Obstetrics & Gynaecology"],
+      "evidence_terms":["trying for a baby for 4 years","IVF"]}</pre></div>
+    </div>
+
+    <h3>Lookup voter: "IVF" is three letters, the meaning search still finds the field</h3>
+    <div class="tbl"><table>
+      <tr><th>Lookup entry</th><th>Source</th><th>Speciality</th><th class="num">Keyword rank</th><th class="num">Meaning rank (sim)</th><th class="num">Weighted</th></tr>
+      <tr class="win"><td>ivf</td><td>lay term</td><td>Reproductive Medicine</td><td class="num">1</td><td class="num">1 (1.00)</td><td class="num">0.0328</td></tr>
+      <tr><td>iui</td><td>lay term</td><td>Reproductive Medicine</td><td class="num">–</td><td class="num">2 (0.55)</td><td class="num">0.0161</td></tr>
+      <tr><td>fertility</td><td>lay term</td><td>Reproductive Medicine</td><td class="num">–</td><td class="num">3 (0.52)</td><td class="num">0.0159</td></tr>
+      <tr><td>Female infertility</td><td>ICD-10 N97</td><td>Reproductive Medicine</td><td class="num">–</td><td class="num">5 (0.50)</td><td class="num">0.0154</td></tr>
+      <tr><td>pregnant</td><td>lay term</td><td>Obstetrics &amp; Gynaecology</td><td class="num">–</td><td class="num">6 (0.48)</td><td class="num">0.0152</td></tr>
+      <tr><td>Male infertility</td><td>ICD-10 N46</td><td>Urology</td><td class="num">–</td><td class="num">7 (0.48)</td><td class="num">0.0149</td></tr>
+    </table></div>
+    <p class="small muted">"–" = the keyword search did not find it; only the meaning search (all-MiniLM-L6-v2) did. Two phrases (IVF, trying for a baby) both point to Reproductive Medicine, so its total doubles to 0.066.</p>
+
+    <h2>Step 2: no hospital in Hyderabad lists Reproductive Medicine</h2>
+    <div class="tbl"><table>
+      <tr><th>Step</th><th>Result</th></tr>
+      <tr><td class="stage">Filter</td><td>23 of 201 hospitals list Reproductive Medicine · <b>0 in Hyderabad</b></td></tr>
+      <tr><td class="stage">Related speciality</td><td>Fixed table <code>specialty_fallbacks.csv</code>: Reproductive Medicine → Obstetrics &amp; Gynaecology (draft, doctor review)</td></tr>
+      <tr><td class="stage">Shown</td><td>First: Hyderabad hospitals with O&amp;G, labelled "please confirm your treatment". Then: Reproductive Medicine hospitals elsewhere in India</td></tr>
+    </table></div>
+    <div class="tbl" style="margin-top:.5rem"><table>
+      <tr><th class="num">#</th><th>Hospital</th><th class="num">Relevance</th><th class="num">Bonus</th><th class="num">Final</th></tr>
+      <tr class="grp"><td colspan="5">In Hyderabad · related speciality: Obstetrics &amp; Gynaecology</td></tr>
+      <tr><td class="num">1</td><td>Continental Hospitals, Gachibowli</td><td class="num">0.455</td><td class="num">+0.16</td><td class="num">0.615</td></tr>
+      <tr><td class="num">2</td><td>Yashoda Hospitals, Hitec City</td><td class="num">0.438</td><td class="num">+0.16</td><td class="num">0.598</td></tr>
+      <tr><td class="num">3</td><td>Yashoda Hospitals, Secunderabad</td><td class="num">0.414</td><td class="num">+0.16</td><td class="num">0.574</td></tr>
+      <tr><td class="num">4</td><td>Apollo Hospitals, Jubilee Hills</td><td class="num">0.428</td><td class="num">+0.125 <span class="muted">(partly verified)</span></td><td class="num">0.553</td></tr>
+      <tr><td class="num">5</td><td>KIMS Hospitals, Secunderabad</td><td class="num">0.399</td><td class="num">+0.14</td><td class="num">0.539</td></tr>
+      <tr class="grp"><td colspan="5">Reproductive Medicine · elsewhere in India</td></tr>
+      <tr><td class="num">6</td><td>Jaslok Hospital, Pedder Road (Mumbai)</td><td class="num">0.567</td><td class="num">+0.10 <span class="muted">(team list only)</span></td><td class="num">0.667</td></tr>
+      <tr><td class="num">7</td><td>Rela Hospital (Chennai)</td><td class="num">0.497</td><td class="num">+0.14</td><td class="num">0.637</td></tr>
+      <tr><td class="num">8</td><td>Sri Ramachandra Medical Centre (Chennai)</td><td class="num">0.481</td><td class="num">+0.14</td><td class="num">0.621</td></tr>
+    </table></div>
+    <div class="say"><b>Say:</b> we never switch the speciality silently. The suggested one stays Reproductive Medicine; local O&amp;G departments are offered as a clearly labelled option because fertility care is often run inside them. Surgery → medicine pairs are left out on purpose.</div>
+  </section>
+
+  <!-- ============================================================ PROF Q&A -->
+  <section id="qa" role="tabpanel" aria-labelledby="t-qa" hidden>
+    <h2>Likely questions, short answers</h2>
+    <div class="tbl"><table>
+      <tr><th>Question</th><th>Answer</th></tr>
+      <tr><td>Why not just ask the LLM for the speciality?</td><td>LLM only: 76% correct, 16% confidently wrong on core50. Two independent methods that must agree cut confident errors to 2%.</td></tr>
+      <tr><td>Why use an LLM at all?</td><td>Patients write freely ("blocked arteries", "sugar problem"). LLM-extracted phrases raise lookup accuracy from 87–88% to 93%. It only copies words; code checks each phrase.</td></tr>
+      <tr><td>Can the LLM invent a symptom?</td><td>A phrase is kept only if ≥ 60% of its words are in the message; every check is logged on the admin page.</td></tr>
+      <tr><td>What if the LLM is down?</td><td>Evidence falls back to code keywords and the lookup still votes; the patient sees a notice; more questions instead of guesses.</td></tr>
+      <tr><td>Why is "chest pain" not an emergency?</td><td>The red-flag rule needs chest pain <i>plus</i> breathlessness, racing heart, dizziness or sweating. No false alarm on core50, mediroute or 110 unseen messages.</td></tr>
+      <tr><td>Why ask so often on symptom-only messages?</td><td>Design choice: a question costs one answer; a confident error sends the patient to the wrong hospital. 98% are right after one answer.</td></tr>
+      <tr><td>What is Reciprocal Rank Fusion?</td><td>Keyword and meaning search give different score scales; RRF adds 1/(60 + rank) from each, so only ranks matter. Standard method (k = 60).</td></tr>
+      <tr><td>How are hospitals ranked?</td><td>Filter by speciality and city → FAISS cosine similarity (multi-qa-MiniLM) → bonuses for website-confirmed speciality, verification, NABH, JCI, international desk, evidence quality, matched procedures; capped at +0.20.</td></tr>
+      <tr><td>Is the ranking better than a search engine?</td><td>Keyword search without filters puts an incapable hospital in the top 3 in 51% of requests; ours 0% (first run), NDCG@5 0.807 vs 0.50.</td></tr>
+      <tr><td>Who checked the labels?</td><td>Team-written and public sets; a doctor review of the labelling rule and mapping is scheduled 22 Nov – 1 Dec. Results are shown under both label views.</td></tr>
+      <tr><td>Cost and speed?</td><td>≈ $0.0004 per search, p50 2.55 s end to end; Step 2 ~35 ms, no LLM.</td></tr>
+      <tr><td>Privacy?</td><td>Contact details redacted first; reports read in memory, never stored; saved history only with an account and consent, deleted after 90 days.</td></tr>
+    </table></div>
+  </section>
+
+  <footer class="note">Sources: app trace logs/step1_trace.jsonl (requests a89efd638ae6, 646fceb6679b → 0df503fd65b7, f797715f2386, 15 Nov 2026); team report sections 3, 4, 7, 7c, 8, 10. Academic capstone project; not medical advice.</footer>
+</div>
+
+<script>
+(function () {
+  const tabs = Array.from(document.querySelectorAll('nav.tabs [role="tab"]'));
+  const show = (id, focus) => {
+    tabs.forEach((t) => {
+      const on = t.getAttribute("aria-controls") === id;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+      if (on && focus) t.focus();
+    });
+  };
+  const ids = tabs.map((t) => t.getAttribute("aria-controls"));
+  const fromHash = () => { const h = location.hash.slice(1); show(ids.includes(h) ? h : "overview"); };
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => { const id = t.getAttribute("aria-controls"); history.replaceState(null, "", "#" + id); show(id); window.scrollTo({ top: 0 }); });
+    t.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      const next = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      const id = next.getAttribute("aria-controls");
+      history.replaceState(null, "", "#" + id); show(id, true);
+    });
+  });
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>
