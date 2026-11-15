@@ -510,7 +510,8 @@ const clarifyState = document.querySelector("#clarify-state");
 const choiceState = document.querySelector("#choice-state");
 const emergencyBanner = document.querySelector("#emergency-banner");
 // rounds of one search share the first Step 1 request id (parent_request_id in the logs)
-let search = { parentRequestId: null, round: 0, answers: {} };
+// thread: each question MediRoute asked and the patient's answer, saved with "Save to my history"
+let search = { parentRequestId: null, round: 0, answers: {}, thread: [], question: "" };
 
 // The location list comes from GET /api/cities (data/processed/cities.csv: only search areas that
 // have hospitals). The chosen value is sent as preferred_city; the API expands a search area
@@ -714,6 +715,7 @@ const handleRoutingResult = (result) => {
     return;
   }
   window.sessionStorage.setItem("mediroute_routing_result", JSON.stringify(toRoutingView(result)));
+  try { window.sessionStorage.setItem("mediroute_thread", JSON.stringify(search.thread)); } catch (e) { /* not kept */ }
   showSuccessState(step1 || {});
 };
 
@@ -780,6 +782,7 @@ const renderClarification = (step1) => {
   const info = step1.clarification || {};
   document.querySelector("#clarify-round").textContent = `A little more detail · question ${info.round || 1} of ${info.max_rounds || 2}`;
   document.querySelector("#clarify-reason").textContent = `${step1.reason || ""} ${info.message || ""}`.trim();
+  search.question = `${step1.reason || ""} ${info.message || ""}`.trim();
   const holder = document.querySelector("#clarify-fields");
   holder.innerHTML = "";
   (info.fields || []).forEach((field) => {
@@ -820,6 +823,7 @@ const renderClarification = (step1) => {
 const renderChoice = (step1) => {
   const info = step1.user_choice || {};
   document.querySelector("#choice-message").textContent = info.message || "";
+  search.question = info.message || "Which speciality fits best?";
   const shortlist = Array.isArray(info.shortlist) && info.shortlist.length
     ? info.shortlist
     : (info.suggested_first || []).map((name) => ({ name, description: "" }));
@@ -872,9 +876,14 @@ document.querySelector("#clarify-form")?.addEventListener("submit", async (event
   event.preventDefault();
   if (isSubmitting) return;
   // answers add up over the rounds: a question answered once is never asked or lost again
+  const given = [];
   new FormData(event.target).forEach((value, key) => {
-    if (String(value).trim()) search.answers[`clarification_${key}`] = String(value).trim();
+    if (String(value).trim()) {
+      search.answers[`clarification_${key}`] = String(value).trim();
+      given.push(String(value).trim());
+    }
   });
+  search.thread.push({ question: search.question, answer: given.join("; ") });
   search.round += 1;
   await runRouting({ ...search.answers });
 });
@@ -884,6 +893,7 @@ document.querySelector("#choice-form")?.addEventListener("submit", async (event)
   if (isSubmitting) return;
   const picked = document.querySelector("#choice-options input:checked")?.value;
   const specialty = picked === "__other__" || !picked ? document.querySelector("#choice-select").value : picked;
+  search.thread.push({ question: search.question, answer: specialty });
   await runRouting({ ...search.answers, selected_specialty: specialty });
 });
 
@@ -911,7 +921,8 @@ form.addEventListener("submit", async (event) => {
   if (errorSummary) errorSummary.hidden = true;
   window.sessionStorage.removeItem("mediroute_routing_result");
   window.sessionStorage.removeItem("mediroute_report_parse_result");
-  search = { parentRequestId: null, round: 0, answers: {} };
+  search = { parentRequestId: null, round: 0, answers: {}, thread: [], question: "" };
+  window.sessionStorage.removeItem("mediroute_thread");
   await runRouting();
 });
 
@@ -1039,7 +1050,7 @@ form.addEventListener("submit", async (event) => {
   } else {
     try {
       ["mediroute_patient_request", "mediroute_routing_result", "mediroute_report_parse_result",
-       "mediroute_selected_hospital"].forEach((key) => window.sessionStorage.removeItem(key));
+       "mediroute_selected_hospital", "mediroute_thread"].forEach((key) => window.sessionStorage.removeItem(key));
     } catch (error) { /* storage blocked: nothing to clear */ }
     withReportStore("readwrite", (store) => store.clear()).catch(() => {});
   }

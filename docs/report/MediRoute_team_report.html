@@ -31,7 +31,7 @@ pre { background: #f5f6fa; border: 1px solid #e1e3ee; border-radius: 6px; paddin
 .legend { font-size: 8.5pt; color: #6a7584; }
 </style></head><body><section>
 <h1>MediRoute</h1>
-<p class="subtitle">Use case, design and evaluation · team report · 14 Nov 2026</p>
+<p class="subtitle">Use case, design and evaluation · team report · 15 Nov 2026</p>
 <div class="tiles"><div class="tile"><b>77%</b><span>correct speciality</span><small>234 portal requests, 100 symptoms-only</small></div><div class="tile"><b>8%</b><span>confidently wrong</span><small>core50 0% · mediroute 1% · gretel 18%</small></div><div class="tile"><b>2.6 s</b><span>typical wait</span><small>p95 6.5 s, GPT-6 Luna</small></div><div class="tile"><b>0.81</b><span>hospital ranking NDCG@5</span><small>website-checked grades</small></div><div class="tile"><b>$0.0004</b><span>per request</span><small>OpenRouter</small></div></div>
 <h2>In one page</h2>
 <ul><li><b>What it does:</b> a patient describes the problem in their own words; MediRoute suggests <b>which speciality to search</b> (Step 1) and lists <b>verified hospitals</b> for it in the chosen area, with the reasons (Step 2).</li><li><b>What it does not do:</b> no diagnosis, no treatment advice, no booking. Procedures are used only when the patient wrote them.</li><li><b>How AI is used:</b> an LLM extracts the evidence and votes; a guarded LLM judge settles disagreements. Code checks every AI output (closed lists, quotes must be in the text) and asks the patient when unsure.</li><li><b>Measured:</b> every design change was benchmarked against baselines (keyword search, meaning search, LLM only, voting). Where AI did not beat simple rules (Step 2 capability matching), we did not use it.</li><li><b>Open:</b> test labels and mapping rules await doctor review; hospital procedure lists are unverified; 201 hospitals only. Work after 11 Nov is local and not yet committed.</li></ul>
@@ -211,40 +211,37 @@ Symbols: ✓ verified and can treat · ? cannot verify · ✗ graded as cannot t
 <table class=""><colgroup><col style="width:34%"><col style="width:20%"><col style="width:16%"><col style="width:30%"></colgroup><thead><tr><th>Option</th><th>Cost</th><th>Speed</th><th>Trade-off</th></tr></thead><tbody><tr><td>Hosted GPT-6 Luna (OpenRouter), current</td><td>≈ $0.0004 / request</td><td>2.6 s typical</td><td>needs a key; 20 requests/min on a new account</td></tr><tr><td>Local Ollama llama3.2 on a laptop CPU</td><td>free</td><td>p95 ≈ 67 s</td><td>private; memory-heavy</td></tr><tr><td>Free OpenRouter models (earlier)</td><td>free</td><td>2.5–15 s</td><td>50 requests/day limit</td></tr><tr><td>No LLM (search voters only)</td><td>free</td><td>< 1 s</td><td>lower accuracy, more questions</td></tr></tbody></table>
 <ul><li>Most of the wait is the LLM; Step 2 is negligible. Hidden “reasoning” is switched off (it was ~95% of the output and most of the wait).</li><li>Evaluation spend so far: Step 2 trial and grading $0.15; general-AI comparison ≈ $0.4 (cap $1).</li></ul>
 </section><section>
-<h1>11 · Setup and API keys (for each team member)</h1>
-<h2>Install once</h2>
+<h1>11 · Setup and start (for each team member)</h1>
+<h2>First time (once per laptop, Windows)</h2>
 <pre>git clone https://github.com/shubhamgithhub/MediRoute.git
-cd MediRoute
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1          # macOS/Linux: source .venv/bin/activate
-pip install -e ".[dev,scraping]"
-playwright install chromium            # only for scrapers and PDF reports</pre>
+cd MediRoute                                  # always go into the folder first
+powershell -ExecutionPolicy Bypass -File scripts\setup_windows.ps1
+setx OPENROUTER_API_KEY "sk-or-v1-..."        # your own key, once; then open a NEW window</pre>
+<ul><li><b>Needs</b> Git and Python 3.12 (3.10–3.14 also work; tick “Add python.exe to PATH” when installing).</li><li>The setup script finds Python, creates <code>.venv</code>, installs the packages, checks the data files, the key (never printed), free memory and ports 8000 / 5500, and prints a green / yellow / red summary. Safe to run again; <code>-RunTests</code> also runs the tests, <code>-Rebuild</code> recreates a broken <code>.venv</code>.</li><li><code>-ExecutionPolicy Bypass</code> applies to that run only: no Windows setting to change and no venv activation.</li></ul>
+<h2>Start the app (every time)</h2>
+<pre>cd MediRoute
+# make sure the API key is set (setx above) before starting
+powershell -ExecutionPolicy Bypass -File scripts\start_app.ps1        # stop: add -Stop</pre>
+<p>It stops any MediRoute already running, starts the backend (port 8000) and the frontend (port 5500) in two
+windows, waits until the backend is ready and opens the patient page. It uses GPT-6 Luna (the benchmark model)
+unless <code>MEDIROUTE_OPENROUTER_MODEL</code> is set.</p>
+<table class=""><colgroup><col style="width:45%"><col style="width:55%"></colgroup><thead><tr><th>Page</th><th>URL</th></tr></thead><tbody><tr><td>Patient app</td><td>http://127.0.0.1:5500/index.html</td></tr><tr><td>Admin (request history, traces)</td><td>http://127.0.0.1:5500/admin.html</td></tr><tr><td>API docs</td><td>http://127.0.0.1:8000/docs</td></tr><tr><td>Health check</td><td>http://127.0.0.1:8000/api/health</td></tr></tbody></table>
+<h2>Common setup problems</h2>
+<table class=""><colgroup><col style="width:42%"><col style="width:58%"></colgroup><thead><tr><th>You see</th><th>Fix</th></tr></thead><tbody><tr><td>running scripts is disabled on this system</td><td>use the commands exactly as above (with -ExecutionPolicy Bypass)</td></tr><tr><td>Python was not found / the Microsoft Store opens</td><td>install Python 3.12 with “Add to PATH”, or turn off the “python” App execution aliases in Windows Settings</td></tr><tr><td>pyproject.toml not found</td><td>not in the MediRoute folder: cd into it first</td></tr><tr><td>first search very slow or times out</td><td>the backend needs about 2.5 GB free RAM: close Teams or browser tabs</td></tr></tbody></table>
 <h2>OpenRouter keys: one per person</h2>
 <ul><li><b>Account owner</b> (one shared, paid account): openrouter.ai → <b>Settings → API Keys → Create key</b>, one key per member, named after the person (e.g. “mediroute-member-a”), each with a <b>credit limit</b> (e.g. $2). Usage is then visible per person and any key can be revoked alone.</li><li>Send each key <b>privately</b> (direct message, not the group, not e-mail threads). The key is shown only once at creation.</li><li><b>Each member</b> saves it once on their own machine and reopens VS Code / the terminal:<br><code>setx OPENROUTER_API_KEY "sk-or-v1-…"</code> (macOS/Linux: <code>export OPENROUTER_API_KEY=…</code> in ~/.zshrc or ~/.bashrc).</li><li><b>Never</b> commit a key, paste it into chat, a screenshot, a notebook or a log. If a key leaks: revoke it on the same page and create a new one.</li><li>Check spend at openrouter.ai → Activity. A new account allows 20 requests per minute per model; the benchmark scripts pace themselves.</li><li>No key? The app still runs: <code>$env:MEDIROUTE_LLM_PROVIDER = "none"</code> (search voters only) or install Ollama for a local model.</li></ul>
-<h2>Start the app (two terminals)</h2>
-<pre># Terminal 1: backend (port 8000)
-.\.venv\Scripts\Activate.ps1
-$env:PYTHONPATH = "src"
-$env:MEDIROUTE_LLM_PROVIDER = "openrouter"
-$env:MEDIROUTE_OPENROUTER_MODEL = "openai/gpt-6-luna"   # the judge uses GPT-6 Luna by default
-python -m uvicorn mediroute.backend.main:app --host 127.0.0.1 --port 8000
-
-# Terminal 2: frontend (port 5500)
-.\.venv\Scripts\Activate.ps1
-python scripts/serve_frontend.py      # no caching: every reload shows the latest files</pre>
-<table class=""><colgroup><col style="width:45%"><col style="width:55%"></colgroup><thead><tr><th>Page</th><th>URL</th></tr></thead><tbody><tr><td>Patient app</td><td>http://127.0.0.1:5500/index.html</td></tr><tr><td>Admin (request history, traces)</td><td>http://127.0.0.1:5500/admin.html</td></tr><tr><td>API docs</td><td>http://127.0.0.1:8000/docs</td></tr><tr><td>Health check</td><td>http://127.0.0.1:8000/api/health</td></tr></tbody></table>
 <h2>Rerun things</h2>
-<pre>python -m pytest -q                                   # 124 tests
-python -m mediroute.data_generator.rebuild            # all processed data
-python scripts/portal_benchmark.py --n 100 --spacing 15   # Step 1 through the running app
-python scripts/eval_step2.py run --judged-only        # Step 2 benchmark
-python scripts/build_team_report_pdf.py               # this report</pre>
+<pre>.\.venv\Scripts\python.exe -m pytest -q                                  # 165 tests
+.\.venv\Scripts\python.exe -m mediroute.data_generator.rebuild           # all processed data
+.\.venv\Scripts\python.exe scripts\portal_benchmark.py --sets core50=50,mediroute=84,gretel=100   # Step 1 through the running app
+.\.venv\Scripts\python.exe scripts\eval_step2.py run --judged-only       # Step 2 benchmark
+.\.venv\Scripts\python.exe scripts\build_team_report_pdf.py              # this report</pre>
 </section><section>
 <h1>12 · Limitations and next steps</h1>
 <h2>Limitations</h2>
 <ul><li><b>Labels and rules are drafts:</b> test labels, 1,381 mapping rules and body-area rules await the doctor review; four “wrong” portal cases have questionable labels.</li><li><b>Hospital data:</b> 201 hospitals; procedure lists come from the team sheet and are unverified (~50% recall), which limits procedure matching.</li><li><b>Grades:</b> Step 2 grades are model-drafted from website snippets; 20% human spot-check pending; sites that block automated reading cannot be graded.</li><li><b>Scope:</b> English input only (no translation: Hinglish or regional-language messages often end in a question); text-based PDFs only (no OCR for scanned or photographed reports); no costs, doctor profiles, availability or booking.</li></ul>
 <h2>Next steps</h2>
-<ul><li>Doctor review of the drafts (docs/review/MediRoute_doctor_review.pdf), the report critical-detail labels (section 8c.1) and the 20% grade spot-check.</li><li>Long reports: keep the end of the report (or its impression / diagnosis / plan sections) instead of only the first 6,000 characters; the one extraction failure in section 8c.1.</li><li>Offline website extraction to fill the procedure lists, measured with the same Step 2 harness.</li><li>Update the README (setup section still lists the old free models).</li><li>Pick the final colour theme and remove the selector; replace the home-page demo card with real results.</li><li>Close the readiness gaps in section 13 (tracker rows 46–56).</li></ul>
+<ul><li>Doctor review of the drafts (docs/review/MediRoute_doctor_review.pdf), the report critical-detail labels (section 8c.1) and the 20% grade spot-check.</li><li>Long reports: keep the end of the report (or its impression / diagnosis / plan sections) instead of only the first 6,000 characters; the one extraction failure in section 8c.1.</li><li>Offline website extraction to fill the procedure lists, measured with the same Step 2 harness.</li><li>Pick the final colour theme and remove the selector; replace the home-page demo card with real results.</li><li>Close the readiness gaps in section 13 (tracker rows 46–56).</li></ul>
 </section><section>
 <h1>13 · Readiness review (12 Nov 2026)</h1>
 <p class="subtitle">Where the project stands against the capstone grading areas, the final-submission checklist and the
