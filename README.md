@@ -261,111 +261,49 @@ MediRoute/
 
 ## 4. Setup
 
-Requirements: **Python 3.10+** (developed on 3.14), Windows/macOS/Linux, and
-[Ollama](https://ollama.com) with `llama3.2` (`ollama pull llama3.2`) for Step 1's evidence and
-LLM voter.
+Setup and start on **Windows** with two scripts. macOS/Linux: see "Without the scripts" below.
 
-**No Ollama? The app still runs.** If Ollama isn't installed or running, or the model isn't pulled,
-the API prints a warning banner at startup and carries on: evidence comes from speciality keywords,
-the LLM voter abstains, and the two search voters must agree. Each request logs
-`LLM unavailable`, and the patient and results pages show a short notice. Calls are skipped
-instantly (no waiting on a refused connection), and the server checks again every 60 s, so starting
-Ollama later works without a restart. To turn the LLM off on purpose:
+**You need:** Git and **Python 3.12** (3.10–3.14 also work). Install Python from
+[python.org](https://www.python.org/downloads/) and tick **"Add python.exe to PATH"**.
+
+### First time (once per laptop)
 
 ```powershell
-$env:MEDIROUTE_LLM_PROVIDER = "none"   # default "ollama"
-```
-
-**No Ollama, but want the LLM? Use OpenRouter's free models.** Each teammate makes their own free
-key (GitHub login, no card) at https://openrouter.ai/settings/keys, saves it once, and starts the
-API with the OpenRouter provider:
-
-```powershell
-setx OPENROUTER_API_KEY "sk-or-v1-..."      # once; reopen VS Code / the terminal afterwards
-# with the key set, Step 1 uses OpenRouter automatically ($env:MEDIROUTE_LLM_PROVIDER = "ollama" to force local)
-# optional: $env:MEDIROUTE_OPENROUTER_MODEL = "model-a:free,model-b:free"  (tried in order)
-```
-
-Default models, tried in order: `dots-studio/dots-3-note-preview:free` (fastest in our comparison;
-expires 31 Dec 2026), then `nvidia/nemotron-3.5-super-vl:free`. A model that is rate-limited
-upstream or refuses is skipped for 60 s and the next one answers. Free tier:
-**50 requests/day, 20/min**; each Step 1 request uses 2. Hidden "reasoning" is turned off (it was
-~95% of the output and most of the wait; `MEDIROUTE_OPENROUTER_REASONING=on` re-enables it), and the
-two calls run in parallel. Eye-infection query: 37.6 s (nemotron, reasoning on) → 14.8 s
-(reasoning off, parallel; nemotron's free queue holds each call ~13 s) → **2.5 s with dots-3-note**.
-Per call, the admin page shows "wait for first token" and which models were tried. If the limit runs out, Step 1 falls
-back to the two search voters like the no-LLM mode. Send only synthetic test data. Never commit the
-key.
-
-The Step 1 lookup list (`data/processed/step1_lookup.csv`) is in the repo. To rebuild it,
-download the CDC ICD-10-CM code descriptions (public domain) and run the rebuild (section 6.4):
-
-```powershell
-# ICD-10-CM 2026 order file -> data/raw/icd10cm_2026/extracted/ (not committed; ~23 MB)
-Invoke-WebRequest "https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/ICD10CM/2026/icd10cm-Code%20Descriptions-2026.zip" -OutFile icd10cm.zip
-Expand-Archive icd10cm.zip -DestinationPath data/raw/icd10cm_2026/extracted
-python -m mediroute.data_generator.rebuild --step lookup
-```
-
-The embedding cache for the lookup list (`data/processed/vector_store/step1_lookup_embeddings_*.npy`) is
-built on the first start (about 90 s) and reused afterwards.
-
-```powershell
+# 1. get the code
 git clone https://github.com/shubhamgithhub/MediRoute.git
+
+# 2. go into the folder (always do this first; use quotes if the path has spaces)
 cd MediRoute
 
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1          # macOS/Linux: source .venv/bin/activate
+# 3. one-click setup: venv, packages, checks (first time 5-10 min)
+powershell -ExecutionPolicy Bypass -File scripts\setup_windows.ps1
 
-pip install -e ".[dev,scraping]"      # Editable install of the package plus dev tools
-# or: pip install -r requirements-dev.txt; pip install -e . --no-deps
+# 4. save YOUR OpenRouter key (ask the account owner; sent privately), once per laptop
+setx OPENROUTER_API_KEY "sk-or-v1-..."
 
-playwright install chromium           # Only needed for the scrapers
+# 5. close this PowerShell window and open a NEW one (setx only applies to new windows)
 ```
 
-Optional environment variables:
+The setup script finds Python, creates `.venv`, installs everything, checks the data files, your
+LLM key (never printed), free memory and ports 8000 / 5500, points VS Code at `.venv`, and ends with
+a green / yellow / red summary. It is safe to run again. Options: `-RunTests` (also run the tests,
+about 1 min), `-Rebuild` (recreate a broken `.venv`), `-Scraping` (data scrapers).
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `MEDIROUTE_DATA_DIR` | `./data` | Use a data folder in another location |
-| `MEDIROUTE_LOG_DIR` | `./logs` | Where `mediroute.log` is written |
-| `MEDIROUTE_HOST` / `MEDIROUTE_PORT` | `127.0.0.1` / `8000` | Used by the `mediroute-api` command |
-| `OLLAMA_API_BASE_URL` | `http://127.0.0.1:11434` | Ollama server for Step 1 |
-| `MEDIROUTE_ROUTING_MODE` | `vote` | Step 1 mode: `vote`, or the baselines `rules`, `llm`, `hybrid` |
-| `MEDIROUTE_LLM_PROVIDER` | `openrouter` if `OPENROUTER_API_KEY` is set, else `ollama` | Step 1 LLM: `ollama`, `openrouter` (needs `OPENROUTER_API_KEY`) or `none` |
-| `MEDIROUTE_LLM_MODEL` | `llama3.2` | Ollama model used by Step 1 |
-| `MEDIROUTE_OPENROUTER_MODEL` | dots-3-note, then nemotron (free) | OpenRouter models, tried in order |
-| `MEDIROUTE_LOG_PATIENT_TEXT` | `1` | `0` logs only a hash of the patient text. Set to `0` before any real patient data |
+`-ExecutionPolicy Bypass` applies to that one run only: you do **not** need to change any Windows
+setting or activate the venv. Without a key the app still runs, on the lookup only. Never commit or
+share the key.
 
 ### Start the app (every time)
 
-Open **two terminals** in the repo folder (VS Code: *Terminal → New Terminal*, twice).
-
-**Terminal 1: backend API** (port 8000)
-
 ```powershell
-.\.venv\Scripts\Activate.ps1
-$env:PYTHONPATH = "src"
-
-# pick ONE LLM option (skip this line for the default, local Ollama):
-# $env:MEDIROUTE_LLM_PROVIDER = "openrouter"   # no Ollama: free hosted models, needs OPENROUTER_API_KEY
-# $env:MEDIROUTE_LLM_PROVIDER = "none"         # no LLM at all: two search voters only
-
-python -m uvicorn mediroute.backend.main:app --host 127.0.0.1 --port 8000
+cd MediRoute                                   # your MediRoute folder
+# make sure the API key is set (step 4) before starting; without it the app runs on the lookup only
+powershell -ExecutionPolicy Bypass -File scripts\start_app.ps1
 ```
 
-Wait until the log shows `Step 1 LLM warm-up done` (about 30 s; about 2 minutes on the very first
-start while the embedding cache is built). With no LLM you see a `WITHOUT an LLM` banner instead,
-and the app still works.
-
-**Terminal 2: frontend** (port 5500)
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-python scripts/serve_frontend.py   # no caching: every reload shows the latest files
-```
-
-**Open in the browser**
+It stops any MediRoute already running, opens two windows ("MediRoute backend :8000" and
+"MediRoute frontend :5500"), waits until the backend is ready (about 30 s; about 2-3 min on the very
+first start) and opens the patient page.
 
 | Page | URL |
 |------|-----|
@@ -374,18 +312,95 @@ python scripts/serve_frontend.py   # no caching: every reload shows the latest f
 | API docs | http://127.0.0.1:8000/docs |
 | Health check | http://127.0.0.1:8000/api/health |
 
-Stop either server with **Ctrl + C** in its terminal. Quick API check without the browser:
-`python scripts/api_smoke_step1.py` (Step 1) and `python scripts/api_smoke_workflow.py` (Step 1 + 2).
+**Stop:** `powershell -ExecutionPolicy Bypass -File scripts\start_app.ps1 -Stop`, or close both windows.
+
+**Get the latest code later:**
+
+```powershell
+cd MediRoute
+git pull
+powershell -ExecutionPolicy Bypass -File scripts\setup_windows.ps1    # picks up new packages
+```
+
+### Common problems
+
+| You see | Fix |
+|---|---|
+| `running scripts is disabled on this system` | use the commands exactly as above (with `-ExecutionPolicy Bypass`) |
+| `Python was not found`, or the Microsoft Store opens | install Python 3.12 (tick "Add to PATH"); or *Settings → Apps → Advanced app settings → App execution aliases* → turn off both "python" entries |
+| `pyproject.toml not found` | you are not in the MediRoute folder: `cd` into it first |
+| `.venv exists but its Python does not start` | run the setup again with `-Rebuild` |
+| port 8000 / 5500 "used by ..." | close that program (or an old MediRoute window), then start again |
+| first search very slow or times out | the backend needs about 2.5 GB free RAM; close Teams or browser tabs |
+| "LLM unavailable" notice | key not set: run `setx` (step 4) and open a **new** window |
+
+### Without the scripts (macOS/Linux, or by hand)
+
+```powershell
+py -3.12 -m venv .venv                                  # macOS/Linux: python3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"   # macOS/Linux: .venv/bin/python -m pip ...
+# key: setx OPENROUTER_API_KEY "..."                    # macOS/Linux: export OPENROUTER_API_KEY=... in ~/.zshrc
+
+# Terminal 1: backend (port 8000)
+$env:MEDIROUTE_OPENROUTER_MODEL = "openai/gpt-6-luna"   # the model used in the benchmarks
+.\.venv\Scripts\python.exe -m uvicorn mediroute.backend.main:app --host 127.0.0.1 --port 8000
+
+# Terminal 2: frontend (port 5500)
+.\.venv\Scripts\python.exe scripts\serve_frontend.py
+```
+
+Activating the venv is optional: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` (once, no
+admin), then `.\.venv\Scripts\Activate.ps1`, and plain `python` means the venv. Data scrapers only:
+`.\.venv\Scripts\python.exe -m pip install -e ".[scraping]"` and
+`.\.venv\Scripts\python.exe -m playwright install chromium`.
+
+### 4.1 Optional settings
+
+**LLM.** With `OPENROUTER_API_KEY` set, Step 1 uses OpenRouter automatically; `start_app.ps1` uses
+`openai/gpt-6-luna` (the benchmark model) unless `MEDIROUTE_OPENROUTER_MODEL` is set. Without a key,
+or with `$env:MEDIROUTE_LLM_PROVIDER = "none"`, the app runs on the lookup only and the patient and
+results pages show a short notice. A local model via [Ollama](https://ollama.com) also works
+(`ollama pull llama3.2`, `$env:MEDIROUTE_LLM_PROVIDER = "ollama"`). Send only synthetic test data.
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `OPENROUTER_API_KEY` | (none) | Your own OpenRouter key; never commit it |
+| `MEDIROUTE_LLM_PROVIDER` | `openrouter` if the key is set, else `ollama` | Step 1 LLM: `openrouter`, `ollama` or `none` |
+| `MEDIROUTE_OPENROUTER_MODEL` | free models (dots-3-note, then nemotron); `start_app.ps1` sets `openai/gpt-6-luna` | OpenRouter models, tried in order |
+| `MEDIROUTE_JUDGE_MODEL` | `openai/gpt-6-luna` | Judge used when the voters disagree |
+| `MEDIROUTE_LLM_MODEL` | `llama3.2` | Ollama model |
+| `OLLAMA_API_BASE_URL` | `http://127.0.0.1:11434` | Ollama server |
+| `MEDIROUTE_ROUTING_MODE` | `vote` | Step 1 mode: `vote`, or the baselines `rules`, `llm`, `hybrid` |
+| `MEDIROUTE_DATA_DIR` | `./data` | Use a data folder in another location |
+| `MEDIROUTE_LOG_DIR` | `./logs` | Where `mediroute.log` and the admin trace are written |
+| `MEDIROUTE_HOST` / `MEDIROUTE_PORT` | `127.0.0.1` / `8000` | Used by the `mediroute-api` command |
+| `MEDIROUTE_LOG_PATIENT_TEXT` | `1` | `0` logs only a hash of the patient text. Set to `0` before any real patient data |
+
+**Embedding cache.** The lookup embeddings (`data/processed/vector_store/step1_lookup_embeddings_*.npy`)
+are built on the first start (about 90 s) and reused afterwards.
+
+**Rebuilding the Step 1 lookup** (`data/processed/step1_lookup.csv` is in the repo; only needed to
+change it): download the CDC ICD-10-CM code descriptions (public domain) and run the rebuild (section 6.4):
+
+```powershell
+# ICD-10-CM 2026 order file -> data/raw/icd10cm_2026/extracted/ (not committed; ~23 MB)
+Invoke-WebRequest "https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/ICD10CM/2026/icd10cm-Code%20Descriptions-2026.zip" -OutFile icd10cm.zip
+Expand-Archive icd10cm.zip -DestinationPath data/raw/icd10cm_2026/extracted
+.\.venv\Scripts\python.exe -m mediroute.data_generator.rebuild --step lookup
+```
 
 ## 5. How to run
+
+Everyday use: `scripts\start_app.ps1` (section 4) starts and stops both servers. The details below
+are for running them by hand or working on the API.
 
 **Backend API**
 
 ```powershell
-mediroute-api
+.\.venv\Scripts\python.exe -m uvicorn mediroute.backend.main:app --reload --host 127.0.0.1 --port 8000
 # or
-python -m uvicorn mediroute.backend.main:app --reload --host 127.0.0.1 --port 8000
-# or, on Windows: also restarts Ollama and writes logs
+mediroute-api
+# or, with a local Ollama model: also restarts Ollama and writes logs
 .\scripts\restart_app.ps1
 ```
 
@@ -407,7 +422,7 @@ python -m uvicorn mediroute.backend.main:app --reload --host 127.0.0.1 --port 80
 The frontend is static and calls the API at `http://127.0.0.1:8000`.
 
 ```powershell
-python scripts/serve_frontend.py
+.\.venv\Scripts\python.exe scripts\serve_frontend.py
 # open http://127.0.0.1:5500/index.html
 ```
 
@@ -616,7 +631,7 @@ No real patient data is used anywhere.
 
 ### 6.5 How to regenerate
 
-Run from the repo root after the [Setup](#4-setup) steps (`pip install -e ".[dev,scraping]"` and
+Run from the repo root after the [Setup](#4-setup) steps (setup script with `-Scraping`, or `pip install -e ".[dev,scraping]"` and
 `playwright install chromium`). If the package isn't installed, run `$env:PYTHONPATH="src"` first.
 
 ```powershell
