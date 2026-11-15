@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   // Change this single value for a different FastAPI deployment.
-  const MEDIROUTE_API_BASE_URL = "http://127.0.0.1:8000";
+  const MEDIROUTE_API_BASE_URL = "";
   const PATIENT_ROUTING_URL = `${MEDIROUTE_API_BASE_URL}/api/patient-routing`;
   const form = document.querySelector("#patient-form");
   const requirementInput = document.querySelector("#requirement");
@@ -596,7 +596,7 @@ const callRouting = async (extra) => {
       response = await fetch(PATIENT_ROUTING_URL, { method: "POST", body: buildRoutingForm(extra), signal: controller.signal });
     } catch (error) {
       if (controller.signal.aborted) throw new RoutingTimeout("Finding the speciality is taking longer than usual (over 20 seconds), so we stopped waiting. Please try again.");
-      throw new Error("The MediRoute server could not be reached. Check that FastAPI is running at http://127.0.0.1:8000, then try again.");
+      throw new Error("The MediRoute server could not be reached. Please try again later.");
     }
     try {
       result = await response.json();

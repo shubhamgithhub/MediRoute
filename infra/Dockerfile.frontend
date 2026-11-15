@@ -1,0 +1,6 @@
+# Template only: pin reviewed base image by digest for final CI.
+FROM nginx:stable-alpine3.24
+RUN apk add --no-cache --upgrade 'zlib>=1.4-r0' 'libxslt>=1.1.43-r4'
+COPY infra/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY frontend/ /usr/share/nginx/html/
+EXPOSE 8080

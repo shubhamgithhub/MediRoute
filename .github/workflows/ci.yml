@@ -1,0 +1,68 @@
+name: MediRoute CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate Source and Configuration
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Check Python syntax
+        run: python -m compileall -q src
+
+      - name: Check frontend JavaScript syntax
+        run: |
+          for file in frontend/js/*.js; do
+            echo "Checking $file"
+            node --check "$file"
+          done
+
+      - name: Validate Docker Compose
+        run: docker compose -f infra/docker-compose.demo.yaml config --quiet
+
+      - name: Validate deployment policy and ECS template
+        run: |
+          set -euo pipefail
+          python -m pip install 'PyYAML==6.0.2'
+          python -m json.tool infra/ecs/task-definition.template.json > /dev/null
+          python scripts/check_deployment_policy.py infra/deployment-control.yaml feature/aws_deployment false false > /tmp/mediroute-policy.json
+          python -c 'import json; assert json.load(open("/tmp/mediroute-policy.json"))["deploy_requested"] is False'
+          python scripts/check_deployment_policy.py infra/deployment-control.yaml feature/aws_deployment true true > /tmp/mediroute-policy.json
+          python -c 'import json; assert json.load(open("/tmp/mediroute-policy.json"))["deploy_requested"] is False'
+
+  frontend-build:
+    name: Build Frontend Docker Image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Build Nginx frontend image
+        run: docker build -f infra/Dockerfile.frontend -t mediroute-frontend:ci .

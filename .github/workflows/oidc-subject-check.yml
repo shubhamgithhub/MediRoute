@@ -1,0 +1,39 @@
+name: MediRoute OIDC AWS Login Test
+
+on:
+  push:
+    branches:
+      - feature/aws_deployment
+
+permissions:
+  contents: read
+
+jobs:
+  test-aws-login:
+    name: Verify AWS OIDC Authentication
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::299952487175:role/mediroute-github-deployment
+          aws-region: ap-southeast-2
+          allowed-account-ids: "299952487175"
+          role-session-name: MediRouteOIDCTest
+
+      - name: Verify assumed AWS identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
+          test "$ACCOUNT" = "299952487175"
+          aws sts get-caller-identity \
+            --query '{Account:Account,Arn:Arn}' \
+            --output json
+          echo "PASS: GitHub Actions authenticated to AWS using OIDC"

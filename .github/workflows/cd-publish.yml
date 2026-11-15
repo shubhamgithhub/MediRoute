@@ -1,0 +1,179 @@
+name: MediRoute CD - Publish Images
+
+on:
+  push:
+    branches:
+      - main
+      - feature/aws_deployment
+  workflow_dispatch:
+    inputs:
+      publish_images:
+        description: "Publish backend and frontend to ECR (no ECS launch)"
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: mediroute-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Deployment Preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    outputs:
+      publish: ${{ steps.gate.outputs.publish }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Check authorization and CI
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TARGET_BRANCH: ${{ github.ref_name }}
+          MANUAL_PUBLISH: ${{ inputs.publish_images }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "publish=false" >> "$GITHUB_OUTPUT"
+
+          if [[ "$EVENT_NAME" != "workflow_dispatch" ||
+                "$MANUAL_PUBLISH" != "true" ]]; then
+            echo "PASS: No image publishing requested"
+            exit 0
+          fi
+
+          # Authoritative policy must come from default main.
+          git fetch --no-tags --depth=1 origin main
+
+          git show FETCH_HEAD:infra/deployment-control.yaml \
+            > /tmp/deployment-control.yaml || {
+            echo "STOP: Policy not yet present on main"
+            exit 1
+          }
+
+          git show FETCH_HEAD:scripts/check_deployment_policy.py \
+            > /tmp/check_deployment_policy.py || {
+            echo "STOP: Policy validator not on main"
+            exit 1
+          }
+
+          python3 -m pip install --quiet 'PyYAML==6.0.2'
+
+          # Validate policy structure through trusted main script.
+          python3 /tmp/check_deployment_policy.py \
+            /tmp/deployment-control.yaml \
+            "$TARGET_BRANCH" true false \
+            > /tmp/policy-result.json
+
+          # Manual publishing does not require auto_deploy=true.
+          # It still requires an approved branch and safety limits.
+          python3 - <<'PY'
+          import os
+          import yaml
+          import fnmatch
+
+          with open("/tmp/deployment-control.yaml") as f:
+              rule = yaml.safe_load(f)["deployment"]
+
+          branch = os.environ["TARGET_BRANCH"]
+
+          assert any(
+              fnmatch.fnmatchcase(branch, pattern)
+              for pattern in rule["allowed_branches"]
+          ), "Branch not approved by default-branch policy"
+
+          assert rule["max_running_tasks"] == 1
+          assert 1 <= rule["max_runtime_minutes"] <= 120
+          assert rule["on_existing_demo"] == "skip"
+
+          print("PASS: Trusted deployment policy validated")
+          PY
+
+          # Require successful CI for this exact commit.
+          gh api \
+            "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$GITHUB_SHA&per_page=50" \
+            > /tmp/ci-runs.json
+
+          CI_COUNT=$(jq --arg sha "$GITHUB_SHA" \
+            '[.workflow_runs[] |
+              select(.head_sha == $sha and .conclusion == "success")] |
+              length' /tmp/ci-runs.json)
+
+          if [[ "$CI_COUNT" -lt 1 ]]; then
+            echo "STOP: No successful CI run for $GITHUB_SHA"
+            exit 1
+          fi
+
+          echo "publish=true" >> "$GITHUB_OUTPUT"
+          echo "PASS: Manual ECR publication authorized"
+
+  publish:
+    name: Publish Immutable ECR Images
+    needs: preflight
+    if: needs.preflight.outputs.publish == 'true'
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v7
+
+      - name: Authenticate to AWS
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::299952487175:role/mediroute-github-deployment
+          aws-region: ap-southeast-2
+          allowed-account-ids: "299952487175"
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and publish Docker images
+        shell: bash
+        env:
+          REGISTRY: 299952487175.dkr.ecr.ap-southeast-2.amazonaws.com
+          IMAGE_TAG: sha-${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          for component in frontend backend; do
+            repository="mediroute-$component"
+            image="$REGISTRY/$repository:$IMAGE_TAG"
+
+            if aws ecr describe-images \
+              --repository-name "$repository" \
+              --image-ids "imageTag=$IMAGE_TAG" \
+              > /dev/null 2>/tmp/ecr-check.err; then
+
+              echo "Existing immutable image: $image"
+              continue
+            fi
+
+            if ! grep -q ImageNotFoundException /tmp/ecr-check.err; then
+              cat /tmp/ecr-check.err
+              exit 1
+            fi
+
+            docker build --platform linux/amd64 \
+              -f "infra/Dockerfile.$component" \
+              -t "$image" .
+
+            docker push "$image"
+
+            echo "PASS: Published $image"
+          done

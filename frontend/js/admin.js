@@ -2,7 +2,7 @@
 
 // Admin: request history from /api/admin/requests (reads logs/step1_trace.jsonl). No auth yet.
 document.addEventListener("DOMContentLoaded", () => {
-  const API = "http://127.0.0.1:8000/api/admin/requests";
+  const API = "/api/admin/requests";
   const list = document.querySelector("#request-list");
   const detail = document.querySelector("#request-detail");
   const statsBox = document.querySelector("#admin-stats");
