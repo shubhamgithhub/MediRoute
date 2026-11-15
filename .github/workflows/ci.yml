@@ -45,6 +45,16 @@ jobs:
       - name: Validate Docker Compose
         run: docker compose -f infra/docker-compose.demo.yaml config --quiet
 
+      - name: Validate deployment policy and ECS template
+        run: |
+          set -euo pipefail
+          python -m pip install 'PyYAML==6.0.2'
+          python -m json.tool infra/ecs/task-definition.template.json > /dev/null
+          python scripts/check_deployment_policy.py infra/deployment-control.yaml feature/aws_deployment false false > /tmp/mediroute-policy.json
+          python -c 'import json; assert json.load(open("/tmp/mediroute-policy.json"))["deploy_requested"] is False'
+          python scripts/check_deployment_policy.py infra/deployment-control.yaml feature/aws_deployment true true > /tmp/mediroute-policy.json
+          python -c 'import json; assert json.load(open("/tmp/mediroute-policy.json"))["deploy_requested"] is False'
+
   frontend-build:
     name: Build Frontend Docker Image
     runs-on: ubuntu-latest
