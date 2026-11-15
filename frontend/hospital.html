@@ -13,8 +13,10 @@
   <link rel="stylesheet" href="css/style.css?v=20261112u">
   <link rel="stylesheet" href="css/hospital.css?v=20261112u">
   <link rel="stylesheet" href="css/theme.css?v=20261112u">
+  <link rel="stylesheet" href="css/account.css?v=20261115b">
   <script src="https://unpkg.com/lucide@latest" defer></script>
-  <script src="js/hospital.js?v=20261114b" defer></script>
+  <script src="js/account.js?v=20261115c" defer></script>
+  <script src="js/hospital.js?v=20261115a" defer></script>
 </head>
 <body class="hospital-page">
   <!-- NAVBAR -->
@@ -67,6 +69,13 @@
         <section class="hp-next" id="hp-next" aria-labelledby="hp-next-heading" hidden>
           <div class="hp-next-head"><i data-lucide="party-popper" aria-hidden="true"></i>
             <h2 id="hp-next-heading">You selected <span id="hp-next-name"></span>. Next steps</h2></div>
+          <div class="hp-save" id="hp-save">
+            <div class="hp-save-row">
+              <button class="button button-primary hp-next-btn" id="hp-save-btn" type="button"><i data-lucide="bookmark-plus" aria-hidden="true"></i> <span>Save to my history</span></button>
+              <label class="hp-save-desc"><input type="checkbox" id="hp-save-desc" checked> Save my description too</label>
+            </div>
+            <p class="hp-save-status" id="hp-save-status" role="status">Optional: log in to keep this search, your answers and up to 3 hospitals, and see them next time. Reports are never stored.</p>
+          </div>
           <ol class="hp-next-steps">
             <li><strong>Contact the hospital</strong><span>Use their website<span id="hp-intl-wrap" hidden> or their <a id="hp-intl-link" href="#" target="_blank" rel="noopener noreferrer">international-patients page</a></span> to ask about your treatment, a doctor and an appointment.</span>
               <a class="button button-secondary hp-next-btn" id="hp-next-website" href="#" target="_blank" rel="noopener noreferrer"><i data-lucide="external-link" aria-hidden="true"></i> Open website</a></li>

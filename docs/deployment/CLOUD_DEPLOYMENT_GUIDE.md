@@ -16,6 +16,7 @@ the same code and data as the local app.
 | Embedding models | `all-MiniLM-L6-v2`, `multi-qa-MiniLM-L6-cos-v1` (Hugging Face, ~90 MB each) | Downloaded on first use: **bake into the image** so start-up needs no download |
 | Data | `data/processed/` (19 MB: hospitals.csv, specialties.csv, specialty_mapping.csv, body-area files, step1_lookup.csv, FAISS index + embedding caches) | Committed in git; copy into the image |
 | Trace / admin history | `logs/step1_trace.jsonl`, pruned to the newest 100 requests | Needs a **persistent disk** if the admin history should survive restarts |
+| Patient accounts + saved history | SQLite file `data/app/mediroute.db` (created on first start) | **Must** be on the persistent disk (`/data/app`), never in the image, or accounts are lost on every update |
 | Memory | Backend ≈ 2.2 GB (torch + two MiniLM models + FAISS) | Machine with **≥ 4 GB RAM** |
 
 **One Docker image, not two.** The frontend is static HTML/CSS/JS with no build step, so FastAPI serves
@@ -49,6 +50,7 @@ the frontend moves to static hosting (S3/CDN) or several backend copies run behi
 | `MEDIROUTE_JUDGE_MODEL` | `openai/gpt-6-luna` | Judge model |
 | `MEDIROUTE_LLM_TIMEOUT_S` | `20` | Matches the 20 s patient-page timeout |
 | `MEDIROUTE_LOG_DIR` | `/data/logs` (persistent disk) | Admin history survives restarts |
+| `MEDIROUTE_APP_DB` | `/data/app/mediroute.db` (persistent disk) | Patient accounts and saved history (SQLite, same code as locally; docs/design/user_history.md) |
 | `MEDIROUTE_TRACE_KEEP` | `100` | Retention: newest 100 requests only (DPDP) |
 | `MEDIROUTE_LOG_PATIENT_TEXT` | `1` for the demo, `0` for outside users if consent is not collected | Patient text in the trace |
 | `ADMIN_USER`, `ADMIN_PASSWORD` | secret | Admin login (change 4) |
@@ -72,6 +74,10 @@ RUN pip install --no-cache-dir .
 RUN python -c "from sentence_transformers import SentenceTransformer as S; S('sentence-transformers/all-MiniLM-L6-v2'); S('sentence-transformers/multi-qa-MiniLM-L6-cos-v1')"
 COPY data/processed ./data/processed
 COPY frontend ./frontend
+# logs and the accounts database live on the mounted persistent disk (docker run -v ..., below)
+ENV MEDIROUTE_LOG_DIR=/data/logs MEDIROUTE_APP_DB=/data/app/mediroute.db
+RUN mkdir -p /data/logs /data/app
+VOLUME ["/data/logs", "/data/app"]
 EXPOSE 8000
 HEALTHCHECK CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"
 CMD ["uvicorn", "mediroute.backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
@@ -80,16 +86,27 @@ CMD ["uvicorn", "mediroute.backend.main:app", "--host", "0.0.0.0", "--port", "80
 - Use **Python 3.12** in the image (local machines run 3.14; faiss-cpu and torch wheels are safest
   on 3.12). Run the test suite inside the image once: `docker run --rm <image> python -m pytest -q`.
 - `--workers 1`: each worker loads the models (~2 GB); one worker is enough for a demo.
-- Add a `.dockerignore`: `.venv`, `logs`, `data/evaluation`, `data/raw`, `archive`, `docs/report`,
+- Add a `.dockerignore`: `.venv`, `logs`, `data/app` (never bake the accounts database into the image), `data/evaluation`, `data/raw`, `archive`, `docs/report`,
   `.git`, `__pycache__`.
-- `docker-compose.yml` for local runs: one service, port 8000, an `.env` file, a volume for `/data/logs`.
+- `docker-compose.yml` for local runs (same paths as on the VM, so a local Docker test behaves like the cloud):
+  ```yaml
+  services:
+    mediroute:
+      build: .
+      ports: ["8000:8000"]
+      env_file: .env
+      volumes:
+        - ./docker-data/logs:/data/logs
+        - ./docker-data/app:/data/app      # accounts database (SQLite)
+  ```
+  Add `docker-data/` to `.gitignore`. The SQLite file is created on the first start.
 
 ## 5. Where to host (choose one)
 
 | Option | RAM / cost | Pros | Cons | Fit |
 |---|---|---|---|---|
 | **A. One small VM** (AWS EC2 t3.medium, GCP e2-medium, Azure B2s) + Docker + Caddy for HTTPS | 4 GB · about ₹2,500–3,500 / month | Always on, no cold start, persistent disk for logs, simple to explain | You patch the VM; set up HTTPS yourself (Caddy does it automatically with a domain) | **Recommended** |
-| B. Google Cloud Run (container service) | 4 GB, pay per request · near ₹0 idle | HTTPS + scaling built in, deploy from the image | Cold start loads models (~20–40 s first request); disk is not persistent (admin history lost) unless logs go to Cloud Storage | Good if cost matters more |
+| B. Google Cloud Run (container service) | 4 GB, pay per request · near ₹0 idle | HTTPS + scaling built in, deploy from the image | Cold start loads models (~20–40 s first request); disk is not persistent: admin history **and patient accounts are lost** on every restart (SQLite needs a real disk), so accounts would need Cloud SQL | Good if cost matters more |
 | C. Hugging Face Spaces (Docker) | 16 GB free CPU | Free, easy, HTTPS | Public by default, sleeps when idle, less "production-like" than a VM | Backup demo |
 | D. Render / Railway | 4 GB plans ~US$25+/month | Git push to deploy | Free tiers have too little RAM (512 MB–1 GB) | Possible |
 
@@ -102,8 +119,23 @@ Estimate: option A for 1 month ≈ ₹3,000 plus LLM calls (< ₹500 for the dem
 2. Create the VM (Ubuntu 22.04, 2 vCPU, 4 GB RAM, 30 GB disk); attach an **Elastic IP**; security
    group: 80 and 443 from anywhere, 22 (SSH) from your own IP only.
 3. Install Docker; copy the image (push to Docker Hub / GitHub Container Registry, then `docker pull`).
-4. Put secrets in `/opt/mediroute/.env` (readable by root only); create `/opt/mediroute/logs`.
-5. `docker run -d --restart unless-stopped --env-file /opt/mediroute/.env -v /opt/mediroute/logs:/data/logs -p 127.0.0.1:8000:8000 <image>`
+4. Put secrets in `/opt/mediroute/.env` (readable by root only); create `/opt/mediroute/logs` and `/opt/mediroute/app` (accounts database):
+   ```
+   sudo mkdir -p /opt/mediroute/logs /opt/mediroute/app
+   sudo tee /opt/mediroute/.env >/dev/null <<'EOF'
+   OPENROUTER_API_KEY=sk-or-v1-...
+   MEDIROUTE_OPENROUTER_MODEL=openai/gpt-6-luna
+   MEDIROUTE_LOG_DIR=/data/logs
+   MEDIROUTE_APP_DB=/data/app/mediroute.db
+   MEDIROUTE_TRACE_KEEP=100
+   ADMIN_USER=...
+   ADMIN_PASSWORD=...
+   EOF
+   sudo chmod 600 /opt/mediroute/.env
+   ```
+5. `docker run -d --restart unless-stopped --env-file /opt/mediroute/.env -v /opt/mediroute/logs:/data/logs -v /opt/mediroute/app:/data/app -p 127.0.0.1:8000:8000 <image>`
+   Back up the accounts database with an EBS snapshot, or `sqlite3 /opt/mediroute/app/mediroute.db ".backup /backup/mediroute.db"`.
+   SQLite is right for one container with one worker; several servers would need a database server (e.g. Postgres).
 6. Give the VM a name and HTTPS: DuckDNS subdomain + Caddy (section 6.1).
 7. Smoke test from outside: patient page, a report upload, the admin page asks for the password,
    `/api/health` returns healthy. Run `scripts/api_smoke_workflow.py` against the public URL.
@@ -174,7 +206,9 @@ Fine for the 5 Dec demo; switching later only changes the name in the Caddyfile 
   GitHub Container Registry tagged with the commit.
 - Optional eval gate (row 48): a small Step 1 set (e.g. core50 with cached LLM answers) that fails
   the build if confidently-wrong rises.
-- Update the VM: `docker pull` the new tag and restart; keep the previous tag to roll back.
+- Update the VM: `docker pull` the new tag and restart (same `docker run` with the same `-v` mounts, so
+  logs and the accounts database are kept); keep the previous tag to roll back. Back up
+  `/opt/mediroute/app/mediroute.db` before an update that changes the accounts code.
 
 ## 8. Monitoring (row 47)
 
@@ -342,7 +376,8 @@ UptimeRobot (free) can check `/api/health` instead of Route 53.
 - [ ] Admin page and admin API protected by a password
 - [ ] Dockerfile + `.dockerignore` + `docker-compose.yml`; tests pass inside the image
 - [ ] OpenRouter project key with a spend cap, stored as a secret
-- [ ] VM (or Cloud Run) running with HTTPS and a persistent log disk
+- [ ] VM (or Cloud Run) running with HTTPS and a persistent disk for `/data/logs` and `/data/app` (accounts database)
+- [ ] Accounts survive a container restart: sign up, restart the container, log in again, My history still there
 - [ ] Elastic IP attached; DuckDNS name resolves to it; Caddy certificate issued (6.1)
 - [ ] Smoke test from outside passes; URL in README and report
 - [ ] CI: tests on push, image on `main`

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7fafc">
+  <title>My History | MediRoute</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Public+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <script src="js/theme.js?v=20261112u"></script>
+  <link rel="stylesheet" href="css/style.css?v=20261112u">
+  <link rel="stylesheet" href="css/results.css?v=20261112u">
+  <link rel="stylesheet" href="css/theme.css?v=20261112u">
+  <link rel="stylesheet" href="css/account.css?v=20261115b">
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="js/account.js?v=20261115c" defer></script>
+  <script src="js/history.js?v=20261115a" defer></script>
+</head>
+<body class="results-page">
+  <header class="site-header results-header">
+    <nav class="navbar container" aria-label="Main navigation">
+      <a class="brand" href="index.html" aria-label="MediRoute home">
+        <span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span>
+        <span>Medi<span class="brand-accent">Route</span></span><small class="brand-tag">Academic project</small>
+      </a>
+      <div class="results-nav-actions">
+        <a class="button button-small button-primary" href="patient.html">New search</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="history-main">
+    <div class="history-container">
+      <h1>My history</h1>
+      <p class="history-lead">Your saved searches, newest first: what you asked, the questions MediRoute asked you, and the hospitals you chose. Entries are deleted after 90 days.</p>
+
+      <section class="history-login" id="history-login" hidden>
+        <p>Please log in to see your saved searches.</p>
+        <button class="button button-primary" id="history-login-btn" type="button">Log in</button>
+      </section>
+
+      <section class="history-empty" id="history-empty" hidden>
+        <p>No saved searches yet. Search for a hospital, open one you like, select it and choose “Save to my history”.</p>
+        <a class="button button-primary" href="patient.html">Find my hospital</a>
+      </section>
+
+      <p class="history-meta" id="history-status" role="status">Loading…</p>
+      <ul class="history-list" id="history-list"></ul>
+
+      <section class="history-account" id="history-account" hidden>
+        <p>Signed in as <strong id="history-email"></strong> · <span id="history-country"></span>.
+          <button class="account-link history-danger" id="history-delete-account" type="button">Delete my account and all saved searches</button></p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="results-footer">
+    <div class="container"><a class="brand brand-footer" href="index.html" aria-label="MediRoute home"><span class="brand-mark" aria-hidden="true"><i data-lucide="route"></i></span><span>Medi<span class="brand-accent">Route</span></span></a><p>MediRoute provides informational recommendations and does not constitute medical advice.</p><p class="academic-notice">MediRoute is an independent academic capstone project. It is not a commercial service and is not affiliated with any company, website or product of the same or a similar name.</p></div>
+  </footer>
+</body>
+</html>

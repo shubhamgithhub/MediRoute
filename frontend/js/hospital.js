@@ -174,6 +174,44 @@ document.addEventListener("DOMContentLoaded", () => {
     next.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
   $("#hp-unselect").addEventListener("click", () => setSelected(false));
+
+  // ---------------------------------------------------------------- save to my history (optional login)
+  const saveBtn = $("#hp-save-btn");
+  const saveStatus = $("#hp-save-status");
+  const showSave = (text, kind) => {
+    saveStatus.textContent = text;
+    saveStatus.classList.toggle("is-ok", kind === "ok");
+    saveStatus.classList.toggle("is-error", kind === "error");
+  };
+  if (saveBtn && window.MediRouteAccount) {
+    saveBtn.addEventListener("click", async () => {
+      const account = window.MediRouteAccount;
+      const user = await account.ensureLoggedIn("Log in or create an account to save this search. You can also skip: saving is optional.");
+      if (!user) { showSave("Not saved. You can save it any time from this page.", ""); return; }
+      saveBtn.disabled = true;
+      try {
+        const thread = read("mediroute_thread") || [];
+        await account.api("/api/history", { method: "POST", body: {
+          hospital_id: String(h.hospital_id),
+          related_specialty: h.related_specialty || null,
+          workflow_id: routing.workflow_id || null,
+          trace_request_id: routing.step1?.request_id || null,
+          save_description: $("#hp-save-desc").checked,
+          request_text: request.requirement || null,
+          city: request.location || null,
+          language: request.language || null,
+          specialty: routing.step1?.suggested_specialty || wanted || null,
+          specialty_reason: routing.step1?.reason || null,
+          thread: Array.isArray(thread) ? thread : [],
+        } });
+        showSave("Saved to My history.", "ok");
+        saveBtn.querySelector("span").textContent = "Saved";
+      } catch (e) {
+        showSave(e.message, "error");
+        saveBtn.disabled = false;
+      }
+    });
+  }
   $("#hp-copy").addEventListener("click", async () => {
     const summary = [
       `Hospital: ${h.hospital_name}, ${[h.city, h.state].filter(Boolean).join(", ")}`,
