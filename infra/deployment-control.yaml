@@ -1,7 +1,7 @@
 # Authoritative copy must live in the PROTECTED DEFAULT BRANCH.
 # This starter is disabled until tests, scheduled stop, and safety gates pass.
 deployment:
-  auto_deploy: false
+  auto_deploy: true
   allowed_branches:
     - main
     - pravin
