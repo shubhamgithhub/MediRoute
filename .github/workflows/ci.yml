@@ -1,0 +1,58 @@
+name: MediRoute CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate Source and Configuration
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Check Python syntax
+        run: python -m compileall -q src
+
+      - name: Check frontend JavaScript syntax
+        run: |
+          for file in frontend/js/*.js; do
+            echo "Checking $file"
+            node --check "$file"
+          done
+
+      - name: Validate Docker Compose
+        run: docker compose -f infra/docker-compose.demo.yaml config --quiet
+
+  frontend-build:
+    name: Build Frontend Docker Image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      - name: Build Nginx frontend image
+        run: docker build -f infra/Dockerfile.frontend -t mediroute-frontend:ci .
