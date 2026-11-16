@@ -1,8 +1,9 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Change this single value for a different FastAPI deployment.
-  const MEDIROUTE_API_BASE_URL = "";
+  // local pages (scripts/serve_frontend.py, port 5500) call the API on 8000; on AWS the same server
+  const MEDIROUTE_API_BASE_URL = window.location.port === "5500" || window.location.protocol === "file:"
+    ? "http://127.0.0.1:8000" : "";
   const PATIENT_ROUTING_URL = `${MEDIROUTE_API_BASE_URL}/api/patient-routing`;
   const form = document.querySelector("#patient-form");
   const requirementInput = document.querySelector("#requirement");
