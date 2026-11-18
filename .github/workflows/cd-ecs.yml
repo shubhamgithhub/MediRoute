@@ -188,3 +188,23 @@ jobs:
               fi
               ;;
           esac
+
+      - name: Report Cloudflare HTTPS URL in deployment summary
+        if: ${{ inputs.operation == 'deploy' }}
+        id: deployment_report
+        continue-on-error: true
+        timeout-minutes: 4
+        shell: bash
+        env:
+          DEPLOYED_TASK_ARN: ${{ steps.ecs_operation.outputs.task_arn }}
+          STOP_SCHEDULE: ${{ steps.ecs_operation.outputs.schedule_name }}
+          STOP_AT_UTC: ${{ steps.ecs_operation.outputs.stop_time_utc }}
+          DEPLOYED_BRANCH: ${{ github.ref_name }}
+          DEPLOYED_COMMIT: ${{ github.sha }}
+        run: |
+          python3 scripts/report_cloudflare_url.py \
+            --task-arn "$DEPLOYED_TASK_ARN" \
+            --schedule-name "$STOP_SCHEDULE" \
+            --stop-time-utc "$STOP_AT_UTC" \
+            --branch "$DEPLOYED_BRANCH" \
+            --commit "$DEPLOYED_COMMIT"
