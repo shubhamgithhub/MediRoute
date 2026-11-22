@@ -42,6 +42,9 @@ jobs:
             node --check "$file"
           done
 
+      - name: Test deployment summary reporting (no AWS)
+        run: python scripts/test_report_cloudflare_url.py
+
       - name: Validate Docker Compose
         run: docker compose -f infra/docker-compose.demo.yaml config --quiet
 

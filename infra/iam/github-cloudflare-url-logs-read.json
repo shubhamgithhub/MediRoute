@@ -1,0 +1,11 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadMediRouteTunnelUrlLogs",
+      "Effect": "Allow",
+      "Action": "logs:FilterLogEvents",
+      "Resource": "arn:aws:logs:ap-southeast-2:299952487175:log-group:/ecs/mediroute-demo:*"
+    }
+  ]
+}

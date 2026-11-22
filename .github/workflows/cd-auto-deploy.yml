@@ -244,7 +244,27 @@ jobs:
           done
 
       - name: Guarded launch and verified scheduled shutdown
+        id: ecs_launch
         shell: bash
         run: |
           set -euo pipefail
           MEDIROUTE_CONFIRM_BILLABLE_RUN=YES bash scripts/deploy_ecs.sh deploy
+
+      - name: Report Cloudflare HTTPS URL in deployment summary
+        id: deployment_report
+        continue-on-error: true
+        timeout-minutes: 4
+        shell: bash
+        env:
+          DEPLOYED_TASK_ARN: ${{ steps.ecs_launch.outputs.task_arn }}
+          STOP_SCHEDULE: ${{ steps.ecs_launch.outputs.schedule_name }}
+          STOP_AT_UTC: ${{ steps.ecs_launch.outputs.stop_time_utc }}
+          DEPLOYED_BRANCH: ${{ env.SOURCE_BRANCH }}
+          DEPLOYED_COMMIT: ${{ env.SOURCE_SHA }}
+        run: |
+          python3 scripts/report_cloudflare_url.py \
+            --task-arn "$DEPLOYED_TASK_ARN" \
+            --schedule-name "$STOP_SCHEDULE" \
+            --stop-time-utc "$STOP_AT_UTC" \
+            --branch "$DEPLOYED_BRANCH" \
+            --commit "$DEPLOYED_COMMIT"
