@@ -49,7 +49,7 @@ def total_tiles(y, tiles):
     """Selected-range summaries. Daily trends use separate 24-hour buckets."""
     return [
         widget(title, [row], x=4 * index, y=y, width=4, height=4, period=300,
-               view="singleValue", settings={"setPeriodToTimeRange": True, "fullPrecision": True})
+               view="singleValue", settings={"setPeriodToTimeRange": True})
         for index, (title, row) in enumerate(tiles)
     ]
 
