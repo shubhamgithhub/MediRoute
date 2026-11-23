@@ -47,3 +47,6 @@ data/evaluation/step2_to_grade.csv
 data/interim/master/*.log
 # synthetic report PDFs for the upload test: regenerate with scripts/make_synthetic_reports.py (manifest.csv is kept)
 data/evaluation/synthetic_reports/**/*.pdf
+
+# NABH scope PDFs (re-downloadable; text extracts in data/evaluation/nabh_scope/text are kept)
+data/evaluation/nabh_scope/pdf/

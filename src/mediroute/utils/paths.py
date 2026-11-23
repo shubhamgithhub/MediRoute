@@ -56,6 +56,9 @@ STEP1_LOOKUP_FILE = PROCESSED_DATA_DIR / "step1_lookup.csv"
 # links to the team sheet: inputs of hospitals.csv.
 HOSPITAL_MASTER_FILE = INTERIM_DATA_DIR / "master-hospital-data.csv"
 HOSPITAL_LINKS_FILE = INTERIM_DATA_DIR / "hospital_id_links.csv"
+# NABH status checked by a person (directory record or the hospital's own statement); replaces the
+# master's automatic NABH match for the listed hospitals. Applied by build_hospitals_table.py.
+NABH_MANUAL_FILE = INTERIM_DATA_DIR / "nabh_manual_verification.csv"
 # Team 150-hospital sheet: input only (procedures, facilities, sub-specialities, cost band).
 TEAM_150_SHEET_FILE = RAW_DATA_DIR / "NewMediRoute_Hospital_Dataset_150.xlsx"
 HOSPITAL_DATASET_FILE = TEAM_150_SHEET_FILE  # old name, kept for existing imports

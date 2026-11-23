@@ -1,10 +1,10 @@
 {
   "embedding_model": "sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
-  "vector_count": 201,
+  "vector_count": 200,
   "vector_dimension": 384,
   "faiss_index_type": "IndexFlatIP",
   "similarity": "cosine_via_normalized_inner_product",
   "source_dataset": "hospital_embedding_dataset.csv",
   "metadata_file": "hospital_metadata.json",
-  "built_at_utc": "2026-11-12T04:13:48.786891+00:00"
+  "built_at_utc": "2026-11-22T15:27:39.368115+00:00"
 }

@@ -5,6 +5,8 @@ Build data/processed/hospitals.csv: the one hospital table Step 1 and Step 2 bot
 Inputs
   data/interim/master-hospital-data.csv     verified rows (NABH / JCI / website), from merge_master
   data/interim/hospital_id_links.csv        master id <-> team 150 sheet id (reviewed matches)
+  data/interim/nabh_manual_verification.csv NABH status checked by a person; replaces the master's
+                                            automatic NABH match (nabh_match = "manual")
   data/raw/NewMediRoute_Hospital_Dataset_150.xlsx (sheet Hospitals_150)
                                             sub-specialities, procedures, facilities, languages,
                                             cost band and claimed specialities, NOT verified
@@ -41,8 +43,33 @@ from mediroute.utils.paths import (
     HOSPITAL_MASTER_FILE,
     HOSPITALS_FILE,
     HOSPITAL_SCHEMA_FILE,
+    NABH_MANUAL_FILE,
     TEAM_150_SHEET_FILE,
 )
+
+NABH_STATUSES = {"Accredited", "Needs verification", "Not found in NABH directory"}
+
+
+def load_nabh_manual(path=NABH_MANUAL_FILE) -> dict[str, dict]:
+    """hospital_id -> a person's NABH check (data/interim/nabh_manual_verification.csv)."""
+    if not path.exists():
+        return {}
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        return {r["hospital_id"].strip(): r for r in csv.DictReader(f) if r.get("hospital_id", "").strip()}
+
+
+def apply_nabh_manual(row: dict, check: dict) -> None:
+    """A person's NABH check replaces the master's automatic NABH match for this hospital.
+    Team rule (2026-11-22): NABH Entry Level counts as Accredited; nabh_level keeps the difference."""
+    row["nabh_status"] = check["nabh_status"].strip()
+    row["nabh_certificate_no"] = check.get("nabh_certificate_no", "").strip()
+    row["nabh_listed_name"] = check.get("nabh_listed_name", "").strip()
+    row["nabh_certificate_url"] = check.get("evidence_url", "").strip()
+    row["nabh_match"] = "manual"
+    note = (f"NABH checked by {check.get('checked_by', '').strip() or 'team'} on {check.get('checked_on', '').strip()}"
+            f" ({check.get('nabh_level', '').strip() or 'level not recorded'}): {check.get('note', '').strip()}")
+    kept = [n for n in row.get("notes", "").split(" | ") if n and not n.startswith("NABH")]
+    row["notes"] = " | ".join(kept + [note])
 
 SCHEMA_FILE = HOSPITAL_SCHEMA_FILE
 TEAM_SHEET = "Hospitals_150"
@@ -90,11 +117,14 @@ def build(out_path=HOSPITALS_FILE) -> list[dict]:
     team_by_master = {r["hospital_id"]: r["team150_id"] for r in links}
     added_from_team = {r["hospital_id"] for r in links if r["link_method"].startswith("added from")}
     mapping = load_normalization()
+    nabh_manual = load_nabh_manual()
     unmapped: Counter = Counter()
 
     rows = []
     for _, m in master.iterrows():
         row = {c: clean(m.get(c)) for c in columns if c in master.columns}
+        if row["hospital_id"] in nabh_manual:
+            apply_nabh_manual(row, nabh_manual[row["hospital_id"]])
         if clean(m.get("specialties_all_found")):  # full website list, not the master's top 6
             row["verified_specialties"] = clean(m.get("specialties_all_found"))
         tid = team_by_master.get(row["hospital_id"], "")
@@ -128,6 +158,13 @@ def build(out_path=HOSPITALS_FILE) -> list[dict]:
                 problems.append(f"{r['hospital_id']}: {col} not in Step 1 list: {bad}")
         if r["city"] not in cities:
             problems.append(f"{r['hospital_id']}: city '{r['city']}' not in data/processed/cities.csv")
+    known = {r["hospital_id"] for r in rows}
+    for hid, check in nabh_manual.items():
+        if hid not in known:
+            problems.append(f"{NABH_MANUAL_FILE.name}: {hid} is not in the master")
+        if check.get("nabh_status", "").strip() not in NABH_STATUSES:
+            problems.append(f"{NABH_MANUAL_FILE.name}: {hid} nabh_status {check.get('nabh_status')!r} "
+                            f"not in {sorted(NABH_STATUSES)}")
     ids = Counter(r["hospital_id"] for r in rows)
     problems += [f"duplicate hospital_id {i}" for i, n in ids.items() if n > 1]
     if unmapped:
