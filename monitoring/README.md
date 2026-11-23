@@ -104,7 +104,9 @@ ingestion and metric discovery (new metrics may take up to 15 minutes to appear
 in ListMetrics). Use a range containing the demo and select UTC for daily buckets.
 In the **Live HTTPS status** widget, select **Allow always** on your first
 visit. The app and individual API routes show green **UP** and red **DOWN**
-when the widget refreshes. Protected reads can pass at the expected HTTP 401
+when the widget refreshes. Five routes are visible by default. Select
+**Show 17 more API checks** for the rest. The summary counts every route.
+Protected reads can pass at the expected HTTP 401
 and validation checks can pass at HTTP 422. **Path check (OPTIONS)** confirms
 routing to the path without running write handlers or paid inference. The
 separate health history chart receives one-minute in-task observations.

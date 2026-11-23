@@ -405,6 +405,18 @@ class StatusWidgetTests(unittest.TestCase):
         self.assertIn('background-color:#991b1b', html)
         self.assertEqual(html.count(">DOWN</span>"), 1)
 
+    def test_five_api_rows_at_a_glance_and_remaining_rows_in_popup(self):
+        app, routes = status_widget.snapshot(self.fake_fetch)
+        html = status_widget.render(app, routes, "2026-11-23 09:00:00 UTC")
+        glance, popup = html.split('<cwdb-action action="html" event="click" display="popup">', 1)
+        self.assertEqual(glance.count("<tr>"), 5)
+        self.assertEqual(popup.count("<tr>"), 17)
+        self.assertIn("Show 17 more API checks", glance)
+        for method, path in status_widget.AT_A_GLANCE:
+            self.assertIn(f"<code>{method} {path}</code>", glance)
+            self.assertNotIn(f"<code>{method} {path}</code>", popup)
+        self.assertIn("<code>GET /api/cities</code>", popup)
+
     def test_unreachable_app_and_api_are_down(self):
         app, routes = status_widget.snapshot(lambda *_: (0, b""))
         self.assertFalse(app)

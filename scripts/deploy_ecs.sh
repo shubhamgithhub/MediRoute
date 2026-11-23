@@ -16,17 +16,25 @@ case "$MODE" in validate|register|deploy) ;; *) usage ;; esac
 ROOT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$ROOT_DIR"
 python3 scripts/render_ecs_task.py validate
-python3 - <<'PY'
-import yaml
-with open('infra/deployment-control.yaml', encoding='utf-8') as f:
-    policy = yaml.safe_load(f)['deployment']
-assert policy['max_running_tasks'] == 1
-assert policy['on_existing_demo'] == 'skip'
-assert type(policy['max_runtime_minutes']) is int
-assert 1 <= policy['max_runtime_minutes'] <= 120
-assert policy['allowed_branches']
-print('PASS: Local deployment safety policy valid')
-PY
+TTL_MINUTES=$(
+  python3 scripts/check_deployment_policy.py infra/deployment-control.yaml local false true |
+    python3 -c '
+import json, os, sys
+local_limit = json.load(sys.stdin)["max_runtime_minutes"]
+trusted = os.environ.get("MEDIROUTE_TRUSTED_MAX_RUNTIME_MINUTES")
+if trusted is None:
+    print(local_limit)
+else:
+    try:
+        trusted_limit = int(trusted)
+    except ValueError:
+        raise SystemExit("STOP: Invalid trusted runtime limit") from None
+    if trusted_limit < 1:
+        raise SystemExit("STOP: Invalid trusted runtime limit")
+    print(min(local_limit, trusted_limit))
+'
+)
+echo "PASS: Deployment safety policy valid (scheduled stop after ${TTL_MINUTES} minutes)"
 if [[ "$MODE" == validate ]]; then
   echo 'PASS: Validation only; no AWS calls or charges'
   exit 0
@@ -155,13 +163,6 @@ if [[ "$MODE" == register ]]; then
   exit 0
 fi
 
-# Leave five minutes of margin for scheduler's minute-level invocation precision and retries.
-TTL_MINUTES=$(python3 - <<'PY'
-import yaml
-x = yaml.safe_load(open('infra/deployment-control.yaml'))['deployment']
-print(max(1, min(115, x['max_runtime_minutes'] - 5)))
-PY
-)
 STARTED_BY="mediroute-$(date -u +%Y%m%d%H%M%S)-$(python3 - <<'PY'
 import uuid
 print(uuid.uuid4().hex[:8])

@@ -118,7 +118,10 @@ the AWS operator review the exact new security group for the deployment role.
    images for the exact passing commit.
 3. Confirm the current demo task has stopped. In **MediRoute CD - ECS
    Control**, select the branch with these changes, choose `deploy`, and
-   set **public_endpoint** to **duckdns**. Keep `auto_deploy: false`.
+   set **public_endpoint** to **duckdns**. Keep `auto_deploy: false`. The
+workflow reads the runtime limit from `main` and schedules the stop for 24
+hours after launch. It uses the shorter limit if the selected commit specifies
+one. The one-time stop schedule remains enabled throughout the testing window.
 4. Open the job summary and check for the URL and health result. For a
    direct check, request `https://<label>.duckdns.org/api/health` over HTTPS,
    open `/patient.html` and `/admin.html`, and confirm `/api/admin/requests`

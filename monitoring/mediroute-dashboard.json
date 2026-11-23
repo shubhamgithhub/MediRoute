@@ -27,7 +27,7 @@
       "x": 0,
       "y": 6,
       "width": 24,
-      "height": 18,
+      "height": 10,
       "properties": {
         "title": "Live HTTPS status",
         "endpoint": "arn:aws:lambda:ap-southeast-2:299952487175:function:customWidgetMediRouteStatus",
@@ -42,7 +42,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 24,
+      "y": 16,
       "width": 24,
       "height": 6,
       "properties": {
@@ -92,7 +92,7 @@
     {
       "type": "text",
       "x": 0,
-      "y": 30,
+      "y": 22,
       "width": 24,
       "height": 3,
       "properties": {
@@ -102,7 +102,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 33,
+      "y": 25,
       "width": 4,
       "height": 4,
       "properties": {
@@ -132,7 +132,7 @@
     {
       "type": "metric",
       "x": 4,
-      "y": 33,
+      "y": 25,
       "width": 4,
       "height": 4,
       "properties": {
@@ -162,7 +162,7 @@
     {
       "type": "metric",
       "x": 8,
-      "y": 33,
+      "y": 25,
       "width": 4,
       "height": 4,
       "properties": {
@@ -192,7 +192,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 33,
+      "y": 25,
       "width": 4,
       "height": 4,
       "properties": {
@@ -222,7 +222,7 @@
     {
       "type": "metric",
       "x": 16,
-      "y": 33,
+      "y": 25,
       "width": 4,
       "height": 4,
       "properties": {
@@ -252,7 +252,7 @@
     {
       "type": "metric",
       "x": 20,
-      "y": 33,
+      "y": 25,
       "width": 4,
       "height": 4,
       "properties": {
@@ -282,7 +282,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 37,
+      "y": 29,
       "width": 12,
       "height": 6,
       "properties": {
@@ -366,7 +366,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 37,
+      "y": 29,
       "width": 12,
       "height": 6,
       "properties": {
@@ -421,7 +421,7 @@
     {
       "type": "text",
       "x": 0,
-      "y": 43,
+      "y": 35,
       "width": 24,
       "height": 3,
       "properties": {
@@ -431,7 +431,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 46,
+      "y": 38,
       "width": 4,
       "height": 4,
       "properties": {
@@ -461,7 +461,7 @@
     {
       "type": "metric",
       "x": 4,
-      "y": 46,
+      "y": 38,
       "width": 4,
       "height": 4,
       "properties": {
@@ -491,7 +491,7 @@
     {
       "type": "metric",
       "x": 8,
-      "y": 46,
+      "y": 38,
       "width": 4,
       "height": 4,
       "properties": {
@@ -521,7 +521,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 46,
+      "y": 38,
       "width": 4,
       "height": 4,
       "properties": {
@@ -551,7 +551,7 @@
     {
       "type": "metric",
       "x": 16,
-      "y": 46,
+      "y": 38,
       "width": 4,
       "height": 4,
       "properties": {
@@ -581,7 +581,7 @@
     {
       "type": "metric",
       "x": 20,
-      "y": 46,
+      "y": 38,
       "width": 4,
       "height": 4,
       "properties": {
@@ -611,7 +611,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 50,
+      "y": 42,
       "width": 12,
       "height": 6,
       "properties": {
@@ -695,7 +695,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 50,
+      "y": 42,
       "width": 12,
       "height": 6,
       "properties": {
@@ -737,7 +737,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 56,
+      "y": 48,
       "width": 12,
       "height": 6,
       "properties": {
@@ -779,7 +779,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 56,
+      "y": 48,
       "width": 12,
       "height": 6,
       "properties": {

@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import tempfile
 import sys
 import unittest
 
@@ -75,6 +76,31 @@ class DuckDNSDeploymentTests(unittest.TestCase):
                 result = render(mode, label)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual(result.stdout, "")
+
+
+class DeploymentRuntimeTests(unittest.TestCase):
+    def test_manual_validation_respects_the_trusted_runtime(self):
+        for trusted, scheduled in (("1440", "1440"), ("120", "120")):
+            with self.subTest(trusted=trusted):
+                result = subprocess.run(
+                    ["bash", "scripts/deploy_ecs.sh", "validate"], cwd=ROOT,
+                    capture_output=True, text=True, check=True,
+                    env={**os.environ, "MEDIROUTE_TRUSTED_MAX_RUNTIME_MINUTES": trusted},
+                )
+                self.assertIn(f"scheduled stop after {scheduled} minutes", result.stdout)
+
+    def test_policy_rejects_runtime_over_24_hours(self):
+        source = (ROOT / "infra/deployment-control.yaml").read_text()
+        with tempfile.TemporaryDirectory() as temp:
+            policy = Path(temp) / "policy.yaml"
+            policy.write_text(source.replace("max_runtime_minutes: 1440", "max_runtime_minutes: 1441"))
+            result = subprocess.run(
+                [sys.executable, "scripts/check_deployment_policy.py", str(policy),
+                 "feature/aws_deployment", "true", "false"],
+                cwd=ROOT, capture_output=True, text=True,
+            )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("max_runtime_minutes must be between 1 and 1440", result.stderr)
 
 
 if __name__ == "__main__":

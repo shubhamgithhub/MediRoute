@@ -42,6 +42,14 @@ API_ROUTES = {
     ),
 }
 
+AT_A_GLANCE = (
+    ("GET", "/api/health"),
+    ("POST", "/api/patient-routing"),
+    ("POST", "/api/reports/parse"),
+    ("POST", "/api/auth/signup"),
+    ("GET", "/api/admin/requests"),
+)
+
 # These checks neither run paid inference nor read any admin request history.
 # An expected 401/422 confirms the endpoint reached its auth/validation guard.
 DIRECT = {
@@ -123,19 +131,28 @@ def badge(up):
             f'padding:3px 8px;border-radius:6px;white-space:nowrap">{label}</span>')
 
 
+def route_table(entries, rows):
+    cards = []
+    for method, path in entries:
+        up, description = rows[(method, path)]
+        cards.append(
+            '<tr><td style="width:1%;padding:2px 7px 2px 0">' + badge(up) + '</td>'
+            f'<td style="padding:2px 0;overflow-wrap:anywhere"><code>{escape(method + " " + path)}</code>'
+            f'<div style="font-size:11px;opacity:.85">{escape(description)}</div></td></tr>'
+        )
+    return '<table style="width:100%;border-collapse:collapse">' + "".join(cards) + '</table>'
+
+
 def render(app_up, rows, timestamp):
     groups = []
     for group, entries in API_ROUTES.items():
-        cards = []
-        for method, path in entries:
-            up, description = rows[(method, path)]
-            cards.append(
-                '<tr><td style="padding:2px 7px 2px 0">' + badge(up) + '</td>'
-                f'<td style="padding:2px 0;overflow-wrap:anywhere"><code>{escape(method + " " + path)}</code>'
-                f'<div style="font-size:11px;opacity:.85">{escape(description)}</div></td></tr>'
-            )
-        groups.append(f'<div><h4 style="margin:4px 0 2px">{escape(group)}</h4>'
-                      '<table style="width:100%;border-collapse:collapse">' + "".join(cards) + '</table></div>')
+        extra = [route for route in entries if route not in AT_A_GLANCE]
+        if extra:
+            groups.append(f'<h4>{escape(group)}</h4>' + route_table(extra, rows))
+
+    other_count = len(rows) - len(AT_A_GLANCE)
+    other_down = sum(not up for route, (up, _) in rows.items() if route not in AT_A_GLANCE)
+    failures = f' · {other_down} DOWN' if other_down else ''
     healthy = sum(up for up, _ in rows.values())
     return (
         '<div style="font-family:system-ui,sans-serif;padding:8px;line-height:1.3">'
@@ -143,10 +160,12 @@ def render(app_up, rows, timestamp):
         f'<strong>App · latest check</strong> {badge(app_up)} <span>Public patient page and API</span>'
         f'<small>{escape(timestamp)}</small></div>'
         f'<div style="margin:9px 0 4px"><strong>API · latest check</strong> · {healthy}/{len(rows)} UP</div>'
-        '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:4px 18px">'
-        + "".join(groups) +
-        '</div><p style="font-size:11px;margin:6px 0 0">OPTIONS checks confirm the URL responds as a registered route. '
-        'They check path reachability without running inference or writing data. The public app shows DOWN while its demo task is stopped.</p></div>'
+        + route_table(AT_A_GLANCE, rows)
+        + f'<a class="btn" style="margin-top:6px">Show {other_count} more API checks{failures}</a>'
+        + '<cwdb-action action="html" event="click" display="popup">'
+        + '<h3>More API checks</h3>' + "".join(groups)
+        + '<p>OPTIONS checks confirm path reachability without running inference or writing data.</p>'
+        + '</cwdb-action></div>'
     )
 
 

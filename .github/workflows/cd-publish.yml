@@ -93,7 +93,6 @@ jobs:
           ), "Branch not approved by default-branch policy"
 
           assert rule["max_running_tasks"] == 1
-          assert 1 <= rule["max_runtime_minutes"] <= 120
           assert rule["on_existing_demo"] == "skip"
 
           print("PASS: Trusted deployment policy validated")

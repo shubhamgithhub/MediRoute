@@ -17,6 +17,9 @@ except ImportError as exc:
     raise SystemExit("Install reviewed PyYAML in CI before running this gate") from exc
 
 
+MAX_RUNTIME_MINUTES = 24 * 60
+
+
 def main():
     if len(sys.argv) != 5:
         raise SystemExit("usage: check_deployment_policy.py <yaml> <branch> <ci_ok> <emergency_disabled>")
@@ -41,13 +44,14 @@ def main():
     if type(rule.get("max_running_tasks")) is not int or rule["max_running_tasks"] != 1:
         raise SystemExit("Exactly one task is supported")
     minutes = rule.get("max_runtime_minutes")
-    if type(minutes) is not int or not 1 <= minutes <= 120:
-        raise SystemExit("max_runtime_minutes must be between 1 and 120")
+    if type(minutes) is not int or not 1 <= minutes <= MAX_RUNTIME_MINUTES:
+        raise SystemExit(f"max_runtime_minutes must be between 1 and {MAX_RUNTIME_MINUTES}")
     approved = bool(rule["auto_deploy"] and ci == "true" and emergency == "false"
                     and any(fnmatch.fnmatchcase(branch, pattern) for pattern in branches))
     # fnmatch '*' can span '/': treat feature/** as an explicit exception to mimic expected prefix matching.
     print(json.dumps({"deploy_requested": approved, "branch": branch, "ci_ok": ci == "true",
-                      "emergency_disabled": emergency == "true", "policy_enabled": rule["auto_deploy"]}))
+                      "emergency_disabled": emergency == "true", "policy_enabled": rule["auto_deploy"],
+                      "max_runtime_minutes": minutes}))
     # Exit 0 for both allowed/skipped; use JSON output to decide next job. Invalid policy exits nonzero.
 
 
