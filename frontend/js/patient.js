@@ -587,14 +587,19 @@ const buildRoutingForm = (extra) => {
 const ROUTING_TIMEOUT_MS = 20000;
 class RoutingTimeout extends Error {}
 
-const callRouting = async (extra) => {
+const callRouting = async (extra, isRetry) => {
   const controller = new AbortController();
   const timer = window.setTimeout(() => controller.abort(), ROUTING_TIMEOUT_MS);
   let response;
   let result = null;
   try {
     try {
-      response = await fetch(PATIENT_ROUTING_URL, { method: "POST", body: buildRoutingForm(extra), signal: controller.signal });
+      response = await fetch(PATIENT_ROUTING_URL, {
+        method: "POST",
+        body: buildRoutingForm(extra),
+        signal: controller.signal,
+        headers: isRetry ? { "X-MediRoute-Retry": "1" } : undefined,
+      });
     } catch (error) {
       if (controller.signal.aborted) throw new RoutingTimeout("Finding the speciality is taking longer than usual (over 20 seconds), so we stopped waiting. Please try again.");
       throw new Error("The MediRoute server could not be reached. Please try again later.");
@@ -748,14 +753,14 @@ function stopLoadingSteps() {
   loadingTimers = [];
 }
 
-const runRouting = async (extra = {}) => {
+const runRouting = async (extra = {}, { isRetry = false } = {}) => {
   isSubmitting = true;
   analyzeButton.disabled = true;
   setProgress(2);
   showStep1Panel(loadingState);
   startLoadingSteps();
   try {
-    handleRoutingResult(await callRouting(extra));
+    handleRoutingResult(await callRouting(extra, isRetry));
   } catch (error) {
     showStep1Panel(form);
     setProgress(1);
@@ -767,7 +772,7 @@ const runRouting = async (extra = {}) => {
         retry.type = "button";
         retry.className = "retry-button";
         retry.textContent = "Try again";
-        retry.addEventListener("click", () => { if (!isSubmitting) runRouting(extra); });
+        retry.addEventListener("click", () => { if (!isSubmitting) runRouting(extra, { isRetry: true }); });
         errorSummary.append(" ", retry);
       }
     }
