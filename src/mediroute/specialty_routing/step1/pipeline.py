@@ -388,7 +388,9 @@ class Step1Pipeline:
                 "fields": self._open_fields(inp),
             } if clarify else None,
             "user_choice": {
-                "message": "Which of these is closest to your need? If none fits, choose \u201csomething else\u201d.",
+                "message": ("We could not match your description to one speciality with confidence. "
+                            "Please choose the speciality you are looking for. These are the closest matches; "
+                            "if none fits, choose \u201csomething else\u201d to see all specialities."),
                 "shortlist": [{"name": n, "description": (get_specialty(n).description if get_specialty(n) else "")}
                               for n in shortlist],
                 "suggested_first": shortlist,
