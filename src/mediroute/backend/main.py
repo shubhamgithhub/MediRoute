@@ -15,6 +15,7 @@ from fastapi.openapi.utils import get_openapi
 
 from mediroute.utils.logging_config import configure_logger
 from mediroute.utils.paths import LOG_DIR
+from mediroute.utils.cloudwatch_metrics import QueryMetricsMiddleware
 
 logger = configure_logger()
 
@@ -126,6 +127,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Pure ASGI instrumentation: no body buffering or extra AWS requests.
+app.add_middleware(QueryMetricsMiddleware)
 
 app.include_router(specialty_routing_router)
 app.include_router(hospital_recommendation_router)
