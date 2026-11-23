@@ -80,7 +80,7 @@ def s_summary():
              (f"{pa['wrong'] / pa['n']:.0%}", "confidently wrong",
               f"core50 {pcs['core50']['wrong'] / pcs['core50']['n']:.0%} · mediroute {pcs['mediroute']['wrong'] / pcs['mediroute']['n']:.0%} · gretel {pcs['gretel']['wrong'] / pcs['gretel']['n']:.0%}"),
              ("2.6 s", "typical wait", "p95 6.5 s, GPT-6 Luna"),
-             ("0.81", "hospital ranking NDCG@5", "website-checked grades"),
+             ("0.67", "of top 5 hospitals good", "P@5, NABH-checked, end to end"),
              ("$0.0004", "per request", "OpenRouter")]
     t = "".join(f'<div class="tile"><b>{a}</b><span>{b}</span><small>{c}</small></div>' for a, b, c in tiles)
     return f"""
@@ -93,7 +93,7 @@ def s_summary():
     "<b>What it does not do:</b> no diagnosis, no treatment advice, no booking. Procedures are used only when the patient wrote them.",
     "<b>How AI is used:</b> an LLM extracts the evidence and votes; a guarded LLM judge settles disagreements. Code checks every AI output (closed lists, quotes must be in the text) and asks the patient when unsure.",
     "<b>Measured:</b> every design change was benchmarked against baselines (keyword search, meaning search, LLM only, voting). Where AI did not beat simple rules (Step 2 capability matching), we did not use it.",
-    "<b>Open:</b> test labels and mapping rules await doctor review; hospital procedure lists are unverified; 201 hospitals only. Work after 11 Nov is local and not yet committed.",
+    "<b>Open:</b> test labels and mapping rules await doctor review; hospital procedure lists are unverified and speciality lists miss departments that NABH confirms; 200 hospitals only.",
 ])}
 """
 
@@ -571,6 +571,51 @@ def s_bench2():
 """
 
 
+def s_bench2_portal():
+    systems = [
+        ["<b>Portal end to end</b> (patient text → Step 1 → Step 2)", "<b>0.67</b> [0.60–0.74]", "<b>0.68</b> [0.60–0.76]", "<b>0.77</b>", "0.24"],
+        ["Engine given the correct speciality (no Step 1)", "0.66 [0.59–0.73]", "0.66 [0.59–0.74]", "0.77", "0.31"],
+        ["B0 random among eligible hospitals (20 seeds)", "0.54 [0.47–0.60]", "0.54 [0.47–0.61]", "0.59", "0.16"],
+    ]
+    groups = [
+        ["Big cities and states (S1–S3)", "30", "0.78", "0.71", "0.77", "0.17"],
+        ["Small cities (S4)", "8", "0.46", "0.87", "0.86", "0.12"],
+        ["Rare specialities (S5)", "7", "0.43", "0.35", "0.71", "<b>0.71</b>"],
+    ]
+    return f"""
+<h1>8d · End-to-end portal benchmark with NABH-checked grades (22 Nov 2026)</h1>
+<h2>Why this test was done</h2>
+{bullets([
+    "Section 8 scored the Step 2 engine on its own, with grades drafted from hospital websites. Reviewing those grades showed weaknesses: about half were fallbacks built from our own hospital data (so the engine was partly graded against its own input), “not confirmed” was scored as “cannot treat”, and no grade had been checked by a person.",
+    "The team therefore <b>redefined a good hospital</b>, <b>regraded from an independent official source</b>, and ran the test <b>through the real portal</b>, as a patient uses it.",
+])}
+<h2>How it was done</h2>
+{bullets([
+    "<b>Good hospital</b> (team definition, 22 Nov): (1) it provides the treatment asked for, (2) it is in the patient's city / search area, or the same state (state counts slightly lower in NDCG), (3) it is <b>NABH accredited</b> and the certificate is valid today. NABH is mandatory; JCI is a bonus, not a substitute; NABH Entry Level counts as accredited.",
+    "<b>Treatment grades from the NABH “Scope of Accreditation”</b>: the official list of services each hospital is accredited for (public PDFs on the NABH portal), downloaded for the 136 hospitals that have one. An LLM (GPT-5.6 Luna, not the portal's model) only <b>quotes</b> the matching department or service; <b>code</b> checks that the quote is really in the document and sets the grade: 3 = the service is named, 2 = the department, 1 = a related department, 0 = nothing. A hospital with no scope document has <b>unknown</b> treatment, which counts as not good.",
+    "<b>Data corrections first</b> (at the source, no per-case overrides): 5 hospitals confirmed NABH by a person (entry-level certificate or the hospital's own statement), recorded in <code>data/interim/nabh_manual_verification.csv</code>; one duplicate hospital (Apollo Navi Mumbai) removed, leaving 200 hospitals.",
+    "<b>Run:</b> the 45 Step 2 requests sent to the running portal (<code>/api/patient-routing</code>) as a patient would type them; a simulated patient answers follow-up questions. The top 5 hospitals shown are scored.",
+    "<b>Metrics</b> (the patient sees 5): <b>P@5</b> share of the 5 that are good · <b>NDCG@5</b> good ones near the top · <b>Hit@1</b> the first one is good · <b>Bad@5</b> a hospital whose NABH scope does not cover the treatment is shown. Bootstrap 95% CI, paired permutation test. Recall is not reported: in big cities more than 5 hospitals are good, so recall@5 is capped by design.",
+])}
+<h2>Outcome</h2>
+{table(["System", "P@5", "NDCG@5", "Hit@1", "Bad@5"], systems, ["40%", "17%", "17%", "11%", "15%"])}
+{table(["Group", "Requests", "P@5", "NDCG@5", "Hit@1", "Bad@5"], groups, ["40%", "12%", "12%", "12%", "12%", "12%"], "small")}
+{bullets([
+    "<b>The portal beats random</b> on the main metrics (P@5 and NDCG@5, p &lt; 0.001) and is <b>as good as the engine given the correct speciality</b> (p = 0.56): Step 1 chose the expected speciality for 42 of 45 requests with no follow-up question; its 3 differences (catheter valve → Cardiothoracic Surgery, heart transplant → Organ Transplant) are defensible and queued for the doctor review.",
+    "<b>Big cities and states work well:</b> about 4 of 5 shown hospitals are NABH-verified for the treatment.",
+    "<b>Small cities:</b> P@5 is low because few good hospitals exist (Bhubaneswar 1, Patna 2; Guwahati none, left out of P@5), but those that exist are ranked first (NDCG@5 0.87).",
+    "<b>Rare specialities are the weak spot</b> (dermatology in Kochi P@5 0, IVF in Mumbai 0.20). The cause is our data, not too few hospitals: the NABH scopes list dermatology at 113 hospitals but our hospital table at only 25 (ENT 110 vs 25, ophthalmology 104 vs 22), because website reading missed departments. Kochi has 7 NABH-confirmed dermatology hospitals the portal could not see. <b>Fix path:</b> fill the speciality lists from the NABH scopes, with a separate human check so the test does not grade the portal against its own input.",
+    "<b>Why shown hospitals were not good:</b> treatment unknown (no scope document) 39, NABH “needs verification” 22, scope does not cover the treatment 13, not in the NABH directory 11, outside the city and state 11, certificate expired 5.",
+    "<b>Bad@5 is higher than random</b> (0.24 vs 0.16) because the ranking favours large multi-speciality hospitals, whose scopes are graded, while random picks more hospitals with no scope document (unknown, not bad). Rare specialities drive it (0.71).",
+    "<b>Cost and speed:</b> about $0.02 of LLM calls for the 45 requests; median 1.6 s, p95 3.4 s per request. Grading the 136 NABH scopes cost $0.15.",
+    "<b>Limits of the test:</b> 45 requests; grades are LLM quotes checked by code, not yet by a person; an expired date on a scope document may hide a renewal; 13 NABH documents may belong to a different unit of the same group and are with the team for review.",
+])}
+{where("scripts/portal_hospital_benchmark.py (run), scripts/nabh_scope_grades.py (fetch, grade), scripts/portal_top5_metrics.py (score)",
+       "data/evaluation/step2_scope_grades.csv, nabh_scope/, portal_runs/20261122_221042_hospitals",
+       "python scripts/portal_hospital_benchmark.py run, then python scripts/portal_top5_metrics.py on the run folder")}
+"""
+
+
 def s_ta_benchmarks():
     return f"""
 <h1>8c · Benchmarks the TA asked for (mid-sem feedback)</h1>
@@ -580,7 +625,7 @@ follow on the next pages, each with <b>why</b> it was done, <b>how</b> and the <
 {table(["The TA asked (feedback, quoted)", "Test we ran", "Result", "Where"], [
     ["“Establish keyword-search and speciality-filtering baselines … evaluate ranking using Precision@K, Recall@K, and NDCG@K”",
      "Step 2: 4 baselines + ablations on 45 graded requests; Step 1: keyword, meaning and LLM-only baselines",
-     "Step 2 NDCG@5 0.807 vs 0.750 random; keyword search puts an incapable hospital in the top 3 for 51% of requests (ours 0%). Step 1: 86% vs 76% LLM only", "8, 7"],
+     "Step 2 NDCG@5 0.807 vs 0.750 random; keyword search puts an incapable hospital in the top 3 for 51% of requests (ours 0%). <b>End to end with NABH-checked grades (22 Nov): P@5 0.67 vs 0.54 random, NDCG@5 0.68 vs 0.54 (p &lt; 0.001)</b>. Step 1: 86% vs 76% LLM only", "8, 8d, 7"],
     ["“Define relevance-labelled test cases”", "Graded hospital labels 0–3 from hospital websites; Step 1 gold sets (core50, mediroute, gretel, unseen)",
      "45 Step 2 requests; 346 + 110 Step 1 messages", "7, 7b, 8"],
     ["“Medical information extraction should be evaluated separately for accuracy and omission of critical details”",
@@ -837,8 +882,9 @@ def s_limits():
 <h2>Limitations</h2>
 {bullets([
     "<b>Labels and rules are drafts:</b> test labels, 1,381 mapping rules and body-area rules await the doctor review; four “wrong” portal cases have questionable labels.",
-    "<b>Hospital data:</b> 201 hospitals; procedure lists come from the team sheet and are unverified (~50% recall), which limits procedure matching.",
-    "<b>Grades:</b> Step 2 grades are model-drafted from website snippets; 20% human spot-check pending; sites that block automated reading cannot be graded.",
+    "<b>Hospital data:</b> 200 hospitals; procedure lists come from the team sheet and are unverified (~50% recall), which limits procedure matching.",
+    "<b>Grades:</b> section 8 grades are model-drafted from website snippets. Section 8d grades come from the official NABH scope (LLM quotes checked by code), but hospitals without a scope document are unknown, and no person has checked the grades yet (20% spot-check pending).",
+    "<b>Rare specialities:</b> P@5 0.43 and Bad@5 0.71 (section 8d) because our speciality lists miss departments the NABH scope confirms (dermatology 25 vs 113 hospitals). Fix: fill them from the NABH scopes, checked by a person.",
     "<b>Scope:</b> English input only (no translation: Hinglish or regional-language messages often end in a question); text-based PDFs only (no OCR for scanned or photographed reports); no costs, doctor profiles, availability or booking.",
 ])}
 <h2>Next steps</h2>
@@ -958,7 +1004,7 @@ def build_html() -> str:
               '<span style="color:#3f8a60">■</span> code · <span style="color:#8c867b">■</span> input / data · '
               '<span style="color:#c98b20">■</span> output</p>')
     sections = [s_summary(), s_use_case(), s_architecture() + legend, s_step1(), s_step2(), s_data(), s_evolution(),
-                s_bench1(), s_red_flags_areas(), s_bench2(), s_ta_benchmarks(), s_general_ai(), s_latency(), s_setup(), s_limits(), s_readiness()]
+                s_bench1(), s_red_flags_areas(), s_bench2(), s_bench2_portal(), s_ta_benchmarks(), s_general_ai(), s_latency(), s_setup(), s_limits(), s_readiness()]
     body = "".join(f"<section>{s}</section>" for s in sections)
     return f'<!doctype html><html><head><meta charset="utf-8"><title>MediRoute team report</title><style>{CSS}</style></head><body>{body}</body></html>'
 
