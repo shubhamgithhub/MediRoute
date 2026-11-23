@@ -19,6 +19,13 @@ UNITS = {
     "Queries": "Count", "QueriesFailed": "Count", "QueriesRejected": "Count",
     "QueryTimeMs": "Milliseconds", "LLMCalls": "Count", "LLMCostMissing": "Count",
     "LLMCostUSD": "None",
+    "QueriesRetried": "Count",
+    "LLMCallTimeMs": "Milliseconds",
+    "LLMCallsFailed": "Count",
+    "LLMInputTokens": "Count",
+    "LLMOutputTokens": "Count",
+    "ApiProbeSuccess": "Count",
+    "AppProbeSuccess": "Count",
 }
 _OUTPUT_LOCK = threading.Lock()
 
@@ -63,11 +70,22 @@ def emit(values):
         pass
 
 
-def record_llm_cost(cost):
+def record_llm_attempt(usage, elapsed_ms, failed):
+    cost = usage.get("cost")
     known = type(cost) in (int, float) and math.isfinite(cost) and cost >= 0
-    values = {"LLMCalls": 1, "LLMCostMissing": 0 if known else 1}
+    values = {
+        "LLMCalls": 1,
+        "LLMCallTimeMs": elapsed_ms,
+        "LLMCallsFailed": int(failed),
+        "LLMCostMissing": int(not known),
+    }
     if known:
         values["LLMCostUSD"] = cost
+    for metric, field in (("LLMInputTokens", "prompt_tokens"),
+                          ("LLMOutputTokens", "completion_tokens")):
+        count = usage.get(field)
+        if type(count) is int and count >= 0:
+            values[metric] = count
     emit(values)
 
 
@@ -81,16 +99,19 @@ def observe_llm_call(function):
     def observed(*args, **kwargs):
         if not enabled():
             return function(*args, **kwargs)
-        cost = None
+        start = time.perf_counter()
+        failed = True
+        usage = {}
         try:
             result = function(*args, **kwargs)
+            failed = False
             if isinstance(result, dict) and isinstance(result.get("usage"), dict):
-                cost = result["usage"].get("cost")
+                usage = result["usage"]
             return result
         finally:
             # Even a telemetry programming/output error must preserve provider behavior.
             try:
-                record_llm_cost(cost)
+                record_llm_attempt(usage, (time.perf_counter() - start) * 1000, failed)
             except Exception:
                 pass
     return observed
@@ -114,6 +135,10 @@ class QueryMetricsMiddleware:
         start = time.perf_counter()
         status = 500
         recorded = False
+        retried = scope.get("path") == "/api/patient-routing" and any(
+            name.lower() == b"x-mediroute-retry" and value == b"1"
+            for name, value in scope.get("headers", ())
+        )
 
         def finish(failed=False):
             nonlocal recorded
@@ -125,6 +150,7 @@ class QueryMetricsMiddleware:
                     "Queries": 1,
                     "QueriesFailed": int(failed or status >= 500),
                     "QueriesRejected": int(not failed and 400 <= status < 500),
+                    "QueriesRetried": int(retried),
                     "QueryTimeMs": max(0.0, (time.perf_counter() - start) * 1000),
                 })
             except Exception:

@@ -1,6 +1,6 @@
 # Low-cost CloudWatch dashboard: manual setup
 
-The code produces seven application metric series and a dashboard named
+The code produces 14 metric series and a three-panel dashboard named
 **MediRoute**. Container Insights stays disabled and auto_deploy stays false.
 These files do not apply AWS changes automatically. No new application IAM
 permissions are needed: EMF uses the existing awslogs log-delivery path.
@@ -84,11 +84,14 @@ aws ecs describe-clusters --clusters mediroute-demo --include SETTINGS \
 Open AWS Console > CloudWatch > Dashboards > MediRoute. Allow time for log
 ingestion and metric discovery (new metrics may take up to 15 minutes to appear
 in ListMetrics). Use a range containing the demo and select UTC for daily buckets.
-After one normal query, Queries increases and QueryTimeMs has a sample; a valid
-response normally has QueriesFailed=0 and QueriesRejected=0. A validation rejection
-increments QueriesRejected, not QueriesFailed. LLMCalls includes actual retries.
-LLMCostUSD can be absent while LLMCostMissing rises: do not interpret this as zero
-spending. Rule-only queries need not produce any LLM metrics.
+The Application status panel should show direct API and combined application checks
+within a few minutes. Check that the tiles read 1 once the task is healthy.
+In API performance, a normal recommendation increments Queries. A validation
+rejection increments QueriesRejected, and the browser's Try again button after
+a timeout increments QueriesRetried. A clarification is a separate request.
+In LLM statistics, provider calls produce duration and input/output tokens when
+supplied. A missing cost sample can increment LLMCostMissing. Rule-only requests
+may leave the LLM metrics blank.
 
 No metric filters need to be created. If all charts stay blank, verify the
 deployed api environment flag, actual image SHA, plain JSON _aws events in
@@ -98,9 +101,9 @@ the three-day source-log retention period.
 
 ## Cost and rollback
 
-There are seven fixed metric series, one dashboard and small per-request logs.
-Metric math and percentiles reuse those series. No Container Insights, public
-dashboard sharing, periodic log queries or new compute is enabled. Free
+There are 14 fixed metric series, one dashboard and small per-request and probe logs.
+Metric math and percentiles reuse those series. The probes run inside the existing task. Container Insights, public dashboard
+sharing, periodic log queries, and external canaries stay disabled. Free
 allowances are shared with the rest of the AWS account. Review actual billing;
 the dashboard is not a $10 spending cap. OpenRouter costs are billed separately.
 

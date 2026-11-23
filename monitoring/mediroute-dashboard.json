@@ -1,5 +1,5 @@
 {
-  "start": "-P7D",
+  "start": "-PT24H",
   "periodOverride": "inherit",
   "widgets": [
     {
@@ -7,49 +7,150 @@
       "x": 0,
       "y": 0,
       "width": 24,
-      "height": 4,
+      "height": 3,
       "properties": {
-        "markdown": "# MediRoute — on-demand demo\nManaged by `monitoring/build_dashboard.py`. Region: Sydney. Seven custom metric series, fixed `Environment=dev`. No Container Insights, alarms, paid probes, or log-query widgets.\n\nGraphs appear only after the instrumented backend is deployed and used. Blank means no observations, not zero traffic or zero spending. Stop the task after the demonstration."
+        "markdown": "# MediRoute operations\n\nSydney · Demo environment · **Last 24 hours** by default. Daily trends use UTC. A dash indicates missing observations."
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 3,
+      "width": 24,
+      "height": 3,
+      "properties": {
+        "markdown": "## Application status\n\n**1** healthy · **0** failed · **—** no recent check. In-task probes run about once a minute. App health checks the patient page and proxied API. The deployment workflow checks public HTTPS separately. This panel does not measure public uptime."
       }
     },
     {
       "type": "metric",
       "x": 0,
-      "y": 4,
-      "width": 12,
+      "y": 6,
+      "width": 6,
       "height": 6,
       "properties": {
-        "title": "Recommendation requests / hour",
+        "title": "App · latest check",
         "region": "ap-southeast-2",
-        "view": "timeSeries",
-        "period": 3600,
         "metrics": [
           [
             "MediRoute/Demo",
-            "Queries",
+            "AppProbeSuccess",
             "Environment",
             "dev",
             {
-              "id": "q",
-              "stat": "Sum",
+              "id": "app",
+              "stat": "Minimum",
+              "label": "App",
+              "color": "#007c78",
               "visible": true
             }
           ]
         ],
-        "stacked": false
+        "period": 60,
+        "view": "singleValue",
+        "stacked": false,
+        "start": "-PT5M"
+      }
+    },
+    {
+      "type": "metric",
+      "x": 6,
+      "y": 6,
+      "width": 6,
+      "height": 6,
+      "properties": {
+        "title": "API · latest check",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "ApiProbeSuccess",
+            "Environment",
+            "dev",
+            {
+              "id": "api",
+              "stat": "Minimum",
+              "label": "API",
+              "color": "#1769e0",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 60,
+        "view": "singleValue",
+        "stacked": false,
+        "start": "-PT5M"
       }
     },
     {
       "type": "metric",
       "x": 12,
-      "y": 4,
+      "y": 6,
       "width": 12,
       "height": 6,
       "properties": {
-        "title": "Recommendation requests / day (UTC)",
+        "title": "Health check history · last 3 hours",
         "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "AppProbeSuccess",
+            "Environment",
+            "dev",
+            {
+              "id": "app",
+              "stat": "Minimum",
+              "label": "App",
+              "color": "#007c78",
+              "visible": true
+            }
+          ],
+          [
+            "MediRoute/Demo",
+            "ApiProbeSuccess",
+            "Environment",
+            "dev",
+            {
+              "id": "api",
+              "stat": "Minimum",
+              "label": "API",
+              "color": "#1769e0",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 60,
         "view": "timeSeries",
-        "period": 86400,
+        "stacked": false,
+        "start": "-PT3H",
+        "yAxis": {
+          "left": {
+            "min": 0,
+            "max": 1,
+            "showUnits": false
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 12,
+      "width": 24,
+      "height": 3,
+      "properties": {
+        "markdown": "## API performance\n\nNumber cards cover the selected range. A query is a recommendation HTTP attempt. **Retried** counts the browser's Try again action. **Failed** counts server-side failures and **Rejected** counts HTTP 4xx. Latency includes measured attempts."
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 15,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "Queries",
+        "region": "ap-southeast-2",
         "metrics": [
           [
             "MediRoute/Demo",
@@ -59,24 +160,90 @@
             {
               "id": "q",
               "stat": "Sum",
+              "label": "Attempts",
+              "color": "#1769e0",
               "visible": true
             }
           ]
         ],
-        "stacked": false
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
       }
     },
     {
       "type": "metric",
-      "x": 0,
-      "y": 10,
-      "width": 12,
-      "height": 6,
+      "x": 4,
+      "y": 15,
+      "width": 4,
+      "height": 4,
       "properties": {
-        "title": "Server failures and rejected requests / hour",
+        "title": "Average latency (ms)",
         "region": "ap-southeast-2",
-        "view": "timeSeries",
-        "period": 3600,
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "QueryTimeMs",
+            "Environment",
+            "dev",
+            {
+              "id": "avg",
+              "stat": "Average",
+              "label": "Mean",
+              "color": "#007c78",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 15,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "p95 latency (ms)",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "QueryTimeMs",
+            "Environment",
+            "dev",
+            {
+              "id": "p95",
+              "stat": "p95",
+              "label": "p95",
+              "color": "#7052be",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 15,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "Failed",
+        "region": "ap-southeast-2",
         "metrics": [
           [
             "MediRoute/Demo",
@@ -86,6 +253,127 @@
             {
               "id": "f",
               "stat": "Sum",
+              "label": "Server failures",
+              "color": "#b62337",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 15,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "Retried",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "QueriesRetried",
+            "Environment",
+            "dev",
+            {
+              "id": "r",
+              "stat": "Sum",
+              "label": "Browser retries",
+              "color": "#a84f00",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 20,
+      "y": 15,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "Rejected",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "QueriesRejected",
+            "Environment",
+            "dev",
+            {
+              "id": "rejected",
+              "stat": "Sum",
+              "label": "HTTP 4xx",
+              "color": "#5f6b7a",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 19,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Daily queries, failures, retries and rejections",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "Queries",
+            "Environment",
+            "dev",
+            {
+              "id": "q",
+              "stat": "Sum",
+              "label": "Queries",
+              "color": "#1769e0",
+              "visible": true
+            }
+          ],
+          [
+            "MediRoute/Demo",
+            "QueriesFailed",
+            "Environment",
+            "dev",
+            {
+              "id": "f",
+              "stat": "Sum",
+              "label": "Failed",
+              "color": "#b62337",
+              "visible": true
+            }
+          ],
+          [
+            "MediRoute/Demo",
+            "QueriesRetried",
+            "Environment",
+            "dev",
+            {
+              "id": "r",
+              "stat": "Sum",
+              "label": "Retried",
+              "color": "#a84f00",
               "visible": true
             }
           ],
@@ -95,252 +383,109 @@
             "Environment",
             "dev",
             {
-              "id": "r",
+              "id": "rejected",
               "stat": "Sum",
+              "label": "Rejected",
+              "color": "#5f6b7a",
               "visible": true
-            }
-          ]
-        ],
-        "stacked": false
-      }
-    },
-    {
-      "type": "metric",
-      "x": 12,
-      "y": 10,
-      "width": 12,
-      "height": 6,
-      "properties": {
-        "title": "Server error rate (%) — excludes 4xx rejections",
-        "region": "ap-southeast-2",
-        "view": "timeSeries",
-        "period": 3600,
-        "metrics": [
-          [
-            "MediRoute/Demo",
-            "Queries",
-            "Environment",
-            "dev",
-            {
-              "id": "q",
-              "stat": "Sum",
-              "visible": false
-            }
-          ],
-          [
-            "MediRoute/Demo",
-            "QueriesFailed",
-            "Environment",
-            "dev",
-            {
-              "id": "f",
-              "stat": "Sum",
-              "visible": false
             }
           ],
           [
             {
               "expression": "IF(q>0,100*f/q)",
-              "id": "rate",
-              "label": "Server failure rate (%)"
+              "id": "error_rate",
+              "label": "Server error rate (%)",
+              "color": "#7052be",
+              "yAxis": "right"
             }
           ]
         ],
-        "stacked": false
-      }
-    },
-    {
-      "type": "metric",
-      "x": 0,
-      "y": 16,
-      "width": 12,
-      "height": 6,
-      "properties": {
-        "title": "Response time — p50 and p95 (ms)",
-        "region": "ap-southeast-2",
-        "view": "timeSeries",
-        "period": 3600,
-        "metrics": [
-          [
-            "MediRoute/Demo",
-            "QueryTimeMs",
-            "Environment",
-            "dev",
-            {
-              "id": "median",
-              "stat": "p50",
-              "visible": true
-            }
-          ],
-          [
-            "MediRoute/Demo",
-            "QueryTimeMs",
-            "Environment",
-            "dev",
-            {
-              "id": "tail",
-              "stat": "p95",
-              "visible": true
-            }
-          ]
-        ],
-        "stacked": false
-      }
-    },
-    {
-      "type": "metric",
-      "x": 12,
-      "y": 16,
-      "width": 12,
-      "height": 6,
-      "properties": {
-        "title": "Known OpenRouter cost / day (USD; may be partial)",
-        "region": "ap-southeast-2",
-        "view": "timeSeries",
         "period": 86400,
-        "metrics": [
-          [
-            "MediRoute/Demo",
-            "LLMCostUSD",
-            "Environment",
-            "dev",
-            {
-              "id": "cost",
-              "stat": "Sum",
-              "visible": true
-            }
-          ]
-        ],
-        "stacked": false
-      }
-    },
-    {
-      "type": "metric",
-      "x": 0,
-      "y": 22,
-      "width": 12,
-      "height": 6,
-      "properties": {
-        "title": "Observed LLM USD / query — complete-cost windows only",
-        "region": "ap-southeast-2",
         "view": "timeSeries",
-        "period": 3600,
-        "metrics": [
-          [
-            "MediRoute/Demo",
-            "Queries",
-            "Environment",
-            "dev",
-            {
-              "id": "q",
-              "stat": "Sum",
-              "visible": false
-            }
-          ],
-          [
-            "MediRoute/Demo",
-            "LLMCalls",
-            "Environment",
-            "dev",
-            {
-              "id": "calls",
-              "stat": "Sum",
-              "visible": false
-            }
-          ],
-          [
-            "MediRoute/Demo",
-            "LLMCostMissing",
-            "Environment",
-            "dev",
-            {
-              "id": "missing",
-              "stat": "Sum",
-              "visible": false
-            }
-          ],
-          [
-            "MediRoute/Demo",
-            "LLMCostUSD",
-            "Environment",
-            "dev",
-            {
-              "id": "cost",
-              "stat": "Sum",
-              "visible": false
-            }
-          ],
-          [
-            "MediRoute/Demo",
-            "LLMCostUSD",
-            "Environment",
-            "dev",
-            {
-              "id": "samples",
-              "stat": "SampleCount",
-              "visible": false
-            }
-          ],
-          [
-            {
-              "expression": "IF((q>0) AND (calls>0) AND (missing==0) AND (samples==calls),cost/q)",
-              "id": "cost_per_query",
-              "label": "Observed USD/query"
-            }
-          ]
-        ],
-        "stacked": false
+        "stacked": false,
+        "yAxis": {
+          "right": {
+            "min": 0,
+            "max": 100,
+            "showUnits": false
+          }
+        }
       }
     },
     {
       "type": "metric",
       "x": 12,
-      "y": 22,
+      "y": 19,
       "width": 12,
       "height": 6,
       "properties": {
-        "title": "LLM calls and calls with unknown cost / hour",
+        "title": "Daily query latency · average, p50, p95 (ms)",
         "region": "ap-southeast-2",
-        "view": "timeSeries",
-        "period": 3600,
         "metrics": [
           [
             "MediRoute/Demo",
-            "LLMCalls",
+            "QueryTimeMs",
             "Environment",
             "dev",
             {
-              "id": "calls",
-              "stat": "Sum",
+              "id": "avg",
+              "stat": "Average",
+              "label": "Average",
+              "color": "#007c78",
               "visible": true
             }
           ],
           [
             "MediRoute/Demo",
-            "LLMCostMissing",
+            "QueryTimeMs",
             "Environment",
             "dev",
             {
-              "id": "missing",
-              "stat": "Sum",
+              "id": "p50",
+              "stat": "p50",
+              "label": "p50",
+              "color": "#1769e0",
+              "visible": true
+            }
+          ],
+          [
+            "MediRoute/Demo",
+            "QueryTimeMs",
+            "Environment",
+            "dev",
+            {
+              "id": "p95",
+              "stat": "p95",
+              "label": "p95",
+              "color": "#7052be",
               "visible": true
             }
           ]
         ],
+        "period": 86400,
+        "view": "timeSeries",
         "stacked": false
+      }
+    },
+    {
+      "type": "text",
+      "x": 0,
+      "y": 25,
+      "width": 24,
+      "height": 3,
+      "properties": {
+        "markdown": "## LLM statistics\n\nOne call means one OpenRouter network attempt, including retries and fallbacks. Latency is provider-call wall time. Token totals use reported input and output values. Cost is recorded provider usage and can be partial."
       }
     },
     {
       "type": "metric",
       "x": 0,
       "y": 28,
-      "width": 12,
-      "height": 6,
+      "width": 4,
+      "height": 4,
       "properties": {
-        "title": "Provider cost coverage (%)",
+        "title": "LLM calls",
         "region": "ap-southeast-2",
-        "view": "timeSeries",
-        "period": 3600,
         "metrics": [
           [
             "MediRoute/Demo",
@@ -350,7 +495,221 @@
             {
               "id": "calls",
               "stat": "Sum",
-              "visible": false
+              "label": "Attempts",
+              "color": "#1769e0",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 4,
+      "y": 28,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "Average call time (ms)",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "LLMCallTimeMs",
+            "Environment",
+            "dev",
+            {
+              "id": "avg",
+              "stat": "Average",
+              "label": "Mean",
+              "color": "#007c78",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 8,
+      "y": 28,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "p95 call time (ms)",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "LLMCallTimeMs",
+            "Environment",
+            "dev",
+            {
+              "id": "p95",
+              "stat": "p95",
+              "label": "p95",
+              "color": "#7052be",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 28,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "Input tokens",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "LLMInputTokens",
+            "Environment",
+            "dev",
+            {
+              "id": "input",
+              "stat": "Sum",
+              "label": "Input",
+              "color": "#1769e0",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 16,
+      "y": 28,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "Output tokens",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "LLMOutputTokens",
+            "Environment",
+            "dev",
+            {
+              "id": "output",
+              "stat": "Sum",
+              "label": "Output",
+              "color": "#7052be",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 20,
+      "y": 28,
+      "width": 4,
+      "height": 4,
+      "properties": {
+        "title": "Recorded cost (USD)",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "LLMCostUSD",
+            "Environment",
+            "dev",
+            {
+              "id": "cost",
+              "stat": "Sum",
+              "label": "Known cost",
+              "color": "#007c78",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 300,
+        "view": "singleValue",
+        "stacked": false,
+        "setPeriodToTimeRange": true,
+        "fullPrecision": true
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 32,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Daily LLM calls and failed attempts",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "LLMCalls",
+            "Environment",
+            "dev",
+            {
+              "id": "calls",
+              "stat": "Sum",
+              "label": "Calls",
+              "color": "#1769e0",
+              "visible": true
+            }
+          ],
+          [
+            "MediRoute/Demo",
+            "LLMCallsFailed",
+            "Environment",
+            "dev",
+            {
+              "id": "failed",
+              "stat": "Sum",
+              "label": "Failed calls",
+              "color": "#b62337",
+              "visible": true
+            }
+          ],
+          [
+            "MediRoute/Demo",
+            "LLMCostMissing",
+            "Environment",
+            "dev",
+            {
+              "id": "unknown_cost",
+              "stat": "Sum",
+              "label": "Calls with unknown cost",
+              "color": "#a84f00",
+              "visible": true
             }
           ],
           [
@@ -361,6 +720,8 @@
             {
               "id": "samples",
               "stat": "SampleCount",
+              "label": "Costs reported",
+              "color": "#1769e0",
               "visible": false
             }
           ],
@@ -368,25 +729,131 @@
             {
               "expression": "IF(calls>0,100*samples/calls)",
               "id": "coverage",
-              "label": "Calls with reported cost (%)"
+              "label": "Cost reporting (%)",
+              "color": "#007c78",
+              "yAxis": "right"
             }
           ]
         ],
+        "period": 86400,
+        "view": "timeSeries",
+        "stacked": false,
+        "yAxis": {
+          "right": {
+            "min": 0,
+            "max": 100,
+            "showUnits": false
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 32,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Daily LLM tokens · provider-reported",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "LLMInputTokens",
+            "Environment",
+            "dev",
+            {
+              "id": "input",
+              "stat": "Sum",
+              "label": "Input",
+              "color": "#1769e0",
+              "visible": true
+            }
+          ],
+          [
+            "MediRoute/Demo",
+            "LLMOutputTokens",
+            "Environment",
+            "dev",
+            {
+              "id": "output",
+              "stat": "Sum",
+              "label": "Output",
+              "color": "#7052be",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 86400,
+        "view": "timeSeries",
+        "stacked": false
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 38,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "title": "Daily LLM response time (ms)",
+        "region": "ap-southeast-2",
+        "metrics": [
+          [
+            "MediRoute/Demo",
+            "LLMCallTimeMs",
+            "Environment",
+            "dev",
+            {
+              "id": "avg",
+              "stat": "Average",
+              "label": "Average",
+              "color": "#007c78",
+              "visible": true
+            }
+          ],
+          [
+            "MediRoute/Demo",
+            "LLMCallTimeMs",
+            "Environment",
+            "dev",
+            {
+              "id": "p95",
+              "stat": "p95",
+              "label": "p95",
+              "color": "#7052be",
+              "visible": true
+            }
+          ]
+        ],
+        "period": 86400,
+        "view": "timeSeries",
         "stacked": false
       }
     },
     {
       "type": "metric",
       "x": 12,
-      "y": 28,
+      "y": 38,
       "width": 12,
       "height": 6,
       "properties": {
-        "title": "Requests in selected range",
+        "title": "Daily LLM cost (USD)",
         "region": "ap-southeast-2",
-        "view": "singleValue",
-        "period": 3600,
         "metrics": [
+          [
+            "MediRoute/Demo",
+            "LLMCostUSD",
+            "Environment",
+            "dev",
+            {
+              "id": "cost",
+              "stat": "Sum",
+              "label": "Known daily cost",
+              "color": "#1769e0",
+              "visible": true
+            }
+          ],
           [
             "MediRoute/Demo",
             "Queries",
@@ -395,44 +862,63 @@
             {
               "id": "q",
               "stat": "Sum",
-              "visible": true
+              "label": "Queries",
+              "color": "#1769e0",
+              "visible": false
             }
           ],
           [
             "MediRoute/Demo",
-            "QueriesFailed",
+            "LLMCalls",
             "Environment",
             "dev",
             {
-              "id": "f",
+              "id": "calls",
               "stat": "Sum",
-              "visible": true
+              "label": "Calls",
+              "color": "#1769e0",
+              "visible": false
             }
           ],
           [
             "MediRoute/Demo",
-            "QueriesRejected",
+            "LLMCostMissing",
             "Environment",
             "dev",
             {
-              "id": "r",
+              "id": "missing",
               "stat": "Sum",
-              "visible": true
+              "label": "Calls missing cost",
+              "color": "#1769e0",
+              "visible": false
+            }
+          ],
+          [
+            "MediRoute/Demo",
+            "LLMCostUSD",
+            "Environment",
+            "dev",
+            {
+              "id": "samples",
+              "stat": "SampleCount",
+              "label": "Costs reported",
+              "color": "#1769e0",
+              "visible": false
+            }
+          ],
+          [
+            {
+              "expression": "IF((q>0) AND (calls>0) AND (missing==0) AND (samples==calls),cost/q)",
+              "id": "cost_per_query",
+              "label": "USD/query when cost is complete",
+              "color": "#007c78",
+              "yAxis": "right"
             }
           ]
         ],
-        "stacked": false,
-        "setPeriodToTimeRange": true
-      }
-    },
-    {
-      "type": "text",
-      "x": 0,
-      "y": 34,
-      "width": 24,
-      "height": 6,
-      "properties": {
-        "markdown": "## Interpretation and intentionally disabled collection\n- A query is one POST to patient-routing, analyze, hospitals/recommend, or hospitals/semantic-recommendations. Follow-up submissions count separately.\n- Cost is provider-confirmed usage from each OpenRouter network attempt, including retries. Missing cost is unknown. Known daily cost may understate actual charges. USD/query compares totals in the same hourly window; it is not per-request billing.\n- **CPU/memory: not collected. Container Insights remains disabled.**\n- **Uptime: not measured.** Planned demo shutdowns are not outages. A future independent probe must run only during agreed demo windows. Request success is not uptime.\n- OpenRouter spending is separate from your AWS bill. No patient data is included in these metric events."
+        "period": 86400,
+        "view": "timeSeries",
+        "stacked": false
       }
     }
   ]

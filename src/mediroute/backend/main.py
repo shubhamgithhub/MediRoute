@@ -15,7 +15,8 @@ from fastapi.openapi.utils import get_openapi
 
 from mediroute.utils.logging_config import configure_logger
 from mediroute.utils.paths import LOG_DIR
-from mediroute.utils.cloudwatch_metrics import QueryMetricsMiddleware
+from mediroute.utils.cloudwatch_metrics import QueryMetricsMiddleware, enabled as metrics_enabled
+from mediroute.backend.health_monitor import monitor_health
 
 logger = configure_logger()
 
@@ -36,8 +37,12 @@ async def lifespan(_app: FastAPI):
     threading.Thread(target=get_service().warm_up, daemon=True).start()
     stop = threading.Event()
     threading.Thread(target=_prune_trace_loop, args=(stop,), daemon=True).start()
-    yield
-    stop.set()
+    if metrics_enabled():
+        threading.Thread(target=monitor_health, args=(stop,), name="mediroute-health", daemon=True).start()
+    try:
+        yield
+    finally:
+        stop.set()
 
 
 TRACE_PRUNE_EVERY_S = 600

@@ -7,12 +7,14 @@ import io
 import json
 from pathlib import Path
 import sys
+import threading
 import unittest
 from unittest.mock import patch
 import urllib.error
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
+from mediroute.backend import health_monitor
 from mediroute.utils import cloudwatch_metrics as metrics
 from mediroute.specialty_routing.step1.ollama_client import OpenRouterClient
 
@@ -61,28 +63,28 @@ class MetricsTests(unittest.TestCase):
     def test_parallel_output_is_valid_json_per_line(self):
         with contextlib.redirect_stdout(io.StringIO()) as output:
             with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
-                list(pool.map(lambda _: metrics.record_llm_cost(0.01), range(40)))
+                list(pool.map(lambda _: metrics.record_llm_attempt({"cost": 0.01}, 10, False), range(40)))
         self.assertEqual(len(events(output)), 40)
         self.assertAlmostEqual(sum(e["LLMCostUSD"] for e in events(output)), 0.4)
 
     def test_unknown_cost_is_absent_not_zero(self):
         for value in (None, "unknown", -1, float("nan"), True):
             with contextlib.redirect_stdout(io.StringIO()) as output:
-                metrics.record_llm_cost(value)
+                metrics.record_llm_attempt({"cost": value}, 10, False)
             event = events(output)[0]
             self.assertEqual(event["LLMCostMissing"], 1)
             self.assertNotIn("LLMCostUSD", event)
 
     def test_reported_zero_is_known(self):
         with contextlib.redirect_stdout(io.StringIO()) as output:
-            metrics.record_llm_cost(0)
+            metrics.record_llm_attempt({"cost": 0}, 10, False)
         self.assertEqual(events(output)[0]["LLMCostUSD"], 0)
         self.assertEqual(events(output)[0]["LLMCostMissing"], 0)
 
     def test_output_failure_is_nonfatal(self):
         with patch.object(metrics.sys, "stdout") as output:
             output.write.side_effect = OSError("disk/pipe error")
-            metrics.record_llm_cost(0.1)
+            metrics.record_llm_attempt({"cost": 0.1}, 10, False)
 
     def test_observer_preserves_exceptions_and_counts_attempt(self):
         @metrics.observe_llm_call
@@ -91,13 +93,15 @@ class MetricsTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()) as output, self.assertRaises(RuntimeError):
             failing()
         self.assertEqual(events(output)[0]["LLMCostMissing"], 1)
+        self.assertEqual(events(output)[0]["LLMCallsFailed"], 1)
+        self.assertGreaterEqual(events(output)[0]["LLMCallTimeMs"], 0)
         self.assertNotIn("private", output.getvalue())
 
     def test_observer_preserves_result_when_metrics_break(self):
         @metrics.observe_llm_call
         def call():
             return {"usage": {"cost": 0.12}}
-        with patch.object(metrics, "record_llm_cost", side_effect=RuntimeError):
+        with patch.object(metrics, "record_llm_attempt", side_effect=RuntimeError):
             self.assertEqual(call(), {"usage": {"cost": 0.12}})
 
 
@@ -108,7 +112,7 @@ class MiddlewareTests(unittest.IsolatedAsyncioTestCase):
         self.addCleanup(self.flag.stop)
 
     async def invoke(self, status=200, path="/api/patient-routing", method="POST",
-                     error=False, incomplete=False, background_error=False, send_error=False):
+                     error=False, incomplete=False, background_error=False, send_error=False, headers=()):
         sent = []
         async def app(scope, receive, send):
             if error:
@@ -129,7 +133,7 @@ class MiddlewareTests(unittest.IsolatedAsyncioTestCase):
         with contextlib.redirect_stdout(io.StringIO()) as output:
             try:
                 await wrapped({"type": "http", "method": method, "path": path,
-                               "query_string": b"secret"}, receive, send)
+                               "query_string": b"secret", "headers": headers}, receive, send)
             except (RuntimeError, OSError):
                 if not (error or background_error or send_error):
                     raise
@@ -145,6 +149,16 @@ class MiddlewareTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result[0]["QueriesRejected"], 0)
         self.assertGreaterEqual(result[0]["QueryTimeMs"], 0)
         self.assertEqual(len(sent), 3)
+
+    async def test_only_patient_routing_marked_retries_count(self):
+        for headers, path, expected in (
+            ([(b"x-mediroute-retry", b"1")], "/api/patient-routing", 1),
+            ([(b"x-mediroute-retry", b"0")], "/api/patient-routing", 0),
+            ([(b"x-mediroute-retry", b"1")], "/api/analyze", 0),
+            ([], "/api/patient-routing", 0),
+        ):
+            result, _ = await self.invoke(headers=headers, path=path)
+            self.assertEqual(result[0]["QueriesRetried"], expected)
 
     async def test_http_failures_and_rejections(self):
         for status, failed, rejected in [(500, 1, 0), (503, 1, 0), (400, 0, 1), (422, 0, 1)]:
@@ -208,7 +222,7 @@ class MiddlewareTests(unittest.IsolatedAsyncioTestCase):
 
 class Stream:
     def __init__(self, content="{}", cost=0.02, include_cost=True):
-        usage = {"cost": cost} if include_cost else {}
+        usage = {"cost": cost, "prompt_tokens": 120, "completion_tokens": 30} if include_cost else {}
         self.lines = [
             b'data: {"choices":[{"delta":{"content":' + json.dumps(content).encode() + b'}}]}\n',
             ("data: " + json.dumps({"usage": usage}) + "\n").encode(),
@@ -235,6 +249,10 @@ class ProviderTests(unittest.TestCase):
         self.assertTrue(result.ok)
         self.assertEqual(len(events(output)), 1)
         self.assertEqual(events(output)[0]["LLMCostUSD"], 0.02)
+        self.assertEqual(events(output)[0]["LLMInputTokens"], 120)
+        self.assertEqual(events(output)[0]["LLMOutputTokens"], 30)
+        self.assertEqual(events(output)[0]["LLMCallsFailed"], 0)
+        self.assertGreaterEqual(events(output)[0]["LLMCallTimeMs"], 0)
         self.assertNotIn("synthetic-test-key", output.getvalue())
         self.assertNotIn("private", output.getvalue())
 
@@ -250,6 +268,8 @@ class ProviderTests(unittest.TestCase):
              contextlib.redirect_stdout(io.StringIO()) as output:
             self.client.generate_json("private", {}, "test")
         self.assertNotIn("LLMCostUSD", events(output)[0])
+        self.assertNotIn("LLMInputTokens", events(output)[0])
+        self.assertNotIn("LLMOutputTokens", events(output)[0])
         self.assertEqual(events(output)[0]["LLMCostMissing"], 1)
 
     def test_rate_limit_retry_is_two_attempts(self):
@@ -272,8 +292,35 @@ class ProviderTests(unittest.TestCase):
         self.assertEqual(output.getvalue(), "")
 
 
+class HealthTests(unittest.TestCase):
+    healthy = (200, b'{"status":"healthy","service":"MediRoute API"}')
+    page = (200, b'<body class="patient-page">')
+
+    def check(self, direct, page, proxy):
+        responses = {(8000, "/api/health"): direct, (8080, "/patient.html"): page,
+                     (8080, "/api/health"): proxy}
+        return health_monitor.check_health(8000, get=lambda port, path: responses[port, path])
+
+    def test_combined_app_requires_direct_api_frontend_and_proxy(self):
+        self.assertEqual(self.check(self.healthy, self.page, self.healthy),
+                         {"ApiProbeSuccess": 1, "AppProbeSuccess": 1})
+        self.assertEqual(self.check(self.healthy, (200, b"wrong page"), self.healthy),
+                         {"ApiProbeSuccess": 1, "AppProbeSuccess": 0})
+        self.assertEqual(self.check(self.healthy, self.page, (502, b"bad gateway")),
+                         {"ApiProbeSuccess": 1, "AppProbeSuccess": 0})
+        self.assertEqual(self.check((200, b"[]"), self.page, self.healthy),
+                         {"ApiProbeSuccess": 0, "AppProbeSuccess": 0})
+
+    def test_probe_exits_on_shutdown_without_recording_a_sample(self):
+        with patch.object(health_monitor, "emit") as emit:
+            stop = threading.Event()
+            stop.set()
+            health_monitor.monitor_health(stop)
+        emit.assert_not_called()
+
+
 class DashboardTests(unittest.TestCase):
-    def test_only_seven_fixed_series_and_no_container_insights(self):
+    def test_fixed_metric_series_and_no_container_insights(self):
         body = dashboard.build()
         found = set()
         for widget in body["widgets"]:
@@ -286,7 +333,7 @@ class DashboardTests(unittest.TestCase):
                 else:
                     self.assertNotIn("FILL(", item[0]["expression"])
         self.assertEqual(found, set(metrics.UNITS))
-        self.assertEqual(len(found), 7)
+        self.assertEqual(len(found), 14)
         self.assertNotIn("ECS/ContainerInsights", json.dumps(body))
         self.assertNotIn("AWS/Route53", json.dumps(body))
 
