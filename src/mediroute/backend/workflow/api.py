@@ -27,6 +27,7 @@ logger = get_logger()
 router = APIRouter(tags=["Workflow - Step 1 + Step 2"])
 
 MAX_REPORTS = 5
+MAX_REQUIREMENT_CHARS = 2000  # the patient form allows 1,000; a longer text only costs LLM tokens
 MAX_PDF_BYTES = 10 * 1024 * 1024  # 10 MB per report
 MAX_TOTAL_BYTES = 30 * 1024 * 1024
 
@@ -79,7 +80,7 @@ def _step1_view(step1: dict | None) -> dict | None:
 @router.post("/api/patient-routing")
 async def run_patient_routing(
     files: list[UploadFile] | None = File(default=None, description="Optional PDF medical reports (max 5)"),
-    requirement: str = Form(default="", description="What the patient types"),
+    requirement: str = Form(default="", max_length=MAX_REQUIREMENT_CHARS, description="What the patient types"),
     preferred_city: str | None = Form(default=None),
     preferred_state: str | None = Form(default=None),
     top_k: int = Form(default=5, ge=1, le=20),

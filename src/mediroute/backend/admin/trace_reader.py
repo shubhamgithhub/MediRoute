@@ -49,7 +49,8 @@ def _first(events: list[dict], stage: str) -> dict:
 def _step1_summary(rid: str, events: list[dict]) -> dict:
     inp, out = _first(events, "input"), _first(events, "response")
     decision, summary = _first(events, "decision"), _first(events, "votes_summary")
-    emergency = _first(events, "emergency_check")
+    # the last check is the final state: the LLM self-harm quote (stage 3a) can add to the rules' result
+    emergency = next((e for e in reversed(events) if e.get("stage") == "emergency_check"), {})
     llm_ms = sum(e.get("duration_ms") or 0 for e in events if e.get("stage") == "llm_call")
     text_info = inp.get("patient_text") or {}
     return {

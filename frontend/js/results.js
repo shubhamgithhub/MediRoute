@@ -104,6 +104,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (careCategoryElement) {
       careCategoryElement.append(createIconSafe("stethoscope"), ` ${careCategory}`);
     }
+    // emergency / crisis notice first, above the request and the hospital list (it was only on the patient page)
+    if (step1.emergency && step1.emergency_message && !document.querySelector("#emergency-banner")) {
+      const banner = document.createElement("div");
+      banner.id = "emergency-banner";
+      banner.className = "emergency-banner";
+      banner.setAttribute("role", "alert");
+      const message = document.createElement("p");
+      message.textContent = step1.emergency_message;
+      banner.append(createIconSafe("siren"), message);
+      document.querySelector("#results-content")?.prepend(banner);
+    }
     if (step1.notice && !document.querySelector("#llm-notice")) {
       const notice = document.createElement("p");
       notice.id = "llm-notice";

@@ -96,6 +96,18 @@ signs, chest pain with breathlessness, heavy bleeding, suicidal intent). A match
 `emergency: true` and a fixed notice to seek local emergency care, then routing continues. Rules
 only, no LLM, so the check is predictable.
 
+*Crisis safety (23 Nov 2026).* A live request "commiting sucide" got no crisis message because the
+rule knew only the exact spelling. Now: (a) the rules also run on a copy with suicide words
+spelling-corrected ("sucide" -> suicide; limited to suicide words because correcting other words
+raised false alarms on the gold sets, where this change alters nothing); (b) suicidal words with
+acute intent ("committing", "going to kill", "tonight", pills, a note) route to Emergency
+Medicine with the crisis message, while thoughts alone keep Psychiatry with the crisis message
+(pending doctor review); (c) the evidence LLM (prompt `evidence_v4`) also copies the patient's own
+words about self-harm; code keeps the quote only if it is in the text and then adds the crisis
+message. The LLM can add the message, never remove one, and never decides on its own. Tested by
+`tests/specialty_routing/test_step1_crisis_safety.py` and the 30-case
+`data/evaluation/step1_safety_set.csv` (`scripts/eval_safety_set.py`).
+
 **2. Extract.** The LLM fills the existing `MedicalContext` fields (`symptoms`, `diagnoses`,
 `procedures`) from the query plus any report text, using a JSON schema. The current rule-based
 extractor stays as the fallback and as an extraction baseline. Extraction quality is evaluated
@@ -242,7 +254,7 @@ false. "Checked" means measured on 2026-11-06 on Pravin's laptop.
 | A8 | **Patients need a few specialties that no hospital lists yet** (Ophthalmology, ENT, Dermatology, Psychiatry, General Medicine) | Common medical-travel needs; the rules already had them | The gold set covers them | Step 2 shows "no verified hospital yet"; the data team may add them |
 | A9 | **Input is English text** of 1–5 sentences; report text arrives already extracted (no OCR) | The TA ranks translation as secondary; the PDF parser has no OCR | The gold set is English | Noted as a limitation with a fix path (translate first) |
 | A10 | **The agreement thresholds (High / Medium / Low) are starting values** | No data yet to tune them | Tune on the gold set: few wrong answers among High, clarification rate under about 20% | Change the rule; it is config, not code |
-| A11 | **Red-flag rules are a safety net, not triage**: a short keyword list (stroke signs, chest pain with breathlessness, heavy bleeding, suicidal intent) | Predictable and explainable; the TA asked to keep discovery separate from clinical decisions | Emergency recall on the gold set's emergency cases | Add keywords; never let the LLM decide emergencies alone |
+| A11 | **Red-flag rules are a safety net, not triage**: a short keyword list (stroke signs, chest pain with breathlessness, heavy bleeding, suicidal intent) | Predictable and explainable; the TA asked to keep discovery separate from clinical decisions | Emergency recall on the gold set's emergency cases; 30-case safety set (23 Nov) | Add keywords; never let the LLM decide emergencies alone (its self-harm quote is checked by code and can only add the crisis message) |
 | A12 | **LLM extraction of symptoms and diagnoses improves routing enough to justify about 4 s more** | Not known yet | Run with and without step 2 on the gold set | Turn it off (`extract = rules`) |
 | A13 | **The gold set is synthetic and labelled by the team**, ideally reviewed by a doctor | The TA asked for independent review; real patient data is not allowed | Review status recorded on each row | Report the limitation; keep the labels versioned |
 | A14 | **The model licences allow academic, non-commercial use** (Llama 3.2 Community, Qwen Research for the 3B) | The capstone is non-commercial | Licence noted in the README | Use the Apache-2.0 `qwen2.5:7b` or another permissive model |

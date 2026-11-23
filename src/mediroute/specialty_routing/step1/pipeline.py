@@ -41,7 +41,7 @@ from mediroute.specialty_routing.step1.judge import JUDGE_PROMPT_VERSION, LLMJud
 from mediroute.specialty_routing.step1.lookup import LookupIndex
 from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
 from mediroute.specialty_routing.step1.protect import redact
-from mediroute.specialty_routing.step1.safety import check_emergency, routes_to_emergency
+from mediroute.specialty_routing.step1.safety import add_llm_self_harm, check_emergency, routes_to_emergency
 from mediroute.specialty_routing.step1.trace import Step1Trace, log_patient_text, text_for_log
 from mediroute.specialty_routing.step1.voters import HybridLookupVoter, LLMVoter, Vote
 from mediroute.utils.logging_config import get_logger
@@ -213,6 +213,19 @@ class Step1Pipeline:
                   **_llm_event(evidence.llm_call, self.extractor.build_prompt(text), EVIDENCE_PROMPT_VERSION))
         trace.log("evidence", method=evidence.method, kept=evidence.kept, dropped=evidence.dropped,
                   routing_phrases=evidence.routing_phrases, checks=evidence.checks)
+
+        # 3a. safety net: self-harm words the rules missed (LLM quote, checked against the text) ------
+        checked = add_llm_self_harm(emergency, evidence.self_harm, text)
+        if checked is not emergency:
+            newly_acute = routes_to_emergency(checked) and not routes_to_emergency(emergency)
+            emergency = checked
+            trace.log("emergency_check", method="llm_self_harm_quote", quote=evidence.self_harm, **emergency)
+            if newly_acute:
+                reason = "The message describes an intent to end life now; this needs emergency care."
+                trace.log("decision", method="emergency_rule", selected_specialty=EMERGENCY,
+                          matched_rules=emergency["matched_rules"], reason=reason)
+                return self._respond(trace, inp, "emergency_rule", EMERGENCY, emergency, evidence.phrases, {},
+                                     reason=reason)
 
         # 3b. body areas (code) -------------------------------------------------
         answer = str((inp.clarification or {}).get("body_area") or "").strip()

@@ -199,13 +199,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ])));
 
     // emergency
-    const em = one("emergency_check");
-    if (em.stage) {
-      detail.append(section("Emergency check (fixed rules)", "siren",
+    // one section per check: the fixed rules, then (if it added something) the LLM self-harm quote
+    byStage("emergency_check").forEach((em) => {
+      const byLlm = em.method === "llm_self_harm_quote";
+      detail.append(section(byLlm ? "Emergency check (LLM self-harm quote, checked in the text)" : "Emergency check (fixed rules)", "siren",
         kv([["Result", em.is_emergency ? badge("EMERGENCY notice shown", "b-emergency") : "no red flags"],
             ["Rules matched", (em.matched_rules || []).join(", ") || "—"],
+            ...(byLlm ? [["Quote", em.quote || "—"]] : []),
             ["Message", em.message || "—"]])));
-    }
+    });
 
     // evidence
     const ev = one("evidence");
