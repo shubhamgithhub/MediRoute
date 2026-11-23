@@ -2,7 +2,10 @@
 
 // Admin: request history from /api/admin/requests (reads logs/step1_trace.jsonl). No auth yet.
 document.addEventListener("DOMContentLoaded", () => {
-  const API = "/api/admin/requests";
+  // local pages (scripts/serve_frontend.py, port 5500) call the API on 8000; on AWS the same server
+  const API_BASE = window.location.port === "5500" || window.location.protocol === "file:"
+    ? "http://127.0.0.1:8000" : "";
+  const API = `${API_BASE}/api/admin/requests`;
   const list = document.querySelector("#request-list");
   const detail = document.querySelector("#request-detail");
   const statsBox = document.querySelector("#admin-stats");
