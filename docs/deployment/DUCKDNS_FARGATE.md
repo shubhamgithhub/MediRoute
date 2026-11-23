@@ -12,9 +12,10 @@ This uses the existing public subnet with a route through the internet gateway.
 It uses the task's existing public IPv4 allocation. A separately allocated
 Elastic IP, EC2 VM, load balancer, and port 80 are unnecessary. The existing
 AWS charges for task runtime and public IPv4 still apply. The DuckDNS option
-does not use Cloudflare's proxy protections, so keep it for synthetic demo data.
-Nginx blocks `/admin.html`, `/api/admin`, and `/api/admin/*` on this endpoint.
-It allows 32 MiB at the proxy to fit the API's 30 MiB combined PDF limit plus
+does not use Cloudflare's proxy protections. The educational demo serves
+`/admin.html` and its trace API without authentication. Use only synthetic
+demo data. Accounts and saved searches are stored in task-local SQLite and
+reset when the task is replaced. Nginx allows 32 MiB at the proxy to fit the API's 30 MiB combined PDF limit plus
 multipart overhead.
 
 ## 1. Reserve a name and issue a certificate
@@ -120,7 +121,8 @@ the AWS operator review the exact new security group for the deployment role.
    set **public_endpoint** to **duckdns**. Keep `auto_deploy: false`.
 4. Open the job summary and check for the URL and health result. For a
    direct check, request `https://<label>.duckdns.org/api/health` over HTTPS,
-   open `/patient.html`, and confirm `/api/admin/requests` returns 404.
+   open `/patient.html` and `/admin.html`, and confirm `/api/admin/requests`
+   returns JSON. Test signup and login with a synthetic account.
    Use the task ARN and stop controls as usual.
 
 If health shows pending, check the frontend stream in `/ecs/mediroute-demo`
