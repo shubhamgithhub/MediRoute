@@ -589,7 +589,7 @@
     "detail_source": "team 150 sheet (not verified)",
     "international_patient_service": "Not found on website",
     "url_Internantional_patients": "",
-    "nabh_status": "Needs verification",
+    "nabh_status": "Accredited",
     "jci_status": "Not listed",
     "verification_status": "Needs verification",
     "evidence_quality_score": "Medium",
@@ -1506,23 +1506,23 @@
     "city": "Navi Mumbai",
     "state": "Maharashtra",
     "verified_specialties": "Oncology; Organ Transplant; Cardiology; Neurology; Paediatrics; Urology; Obstetrics & Gynaecology; Orthopaedics; Nephrology; Gastroenterology; Pulmonology; Cardiothoracic Surgery; Bariatric Surgery; Hematology & Bone Marrow Transplant; Neurosurgery; Endocrinology; Emergency Medicine; Critical Care",
-    "team_claimed_specialties": "",
-    "subspecialties": "",
-    "procedures": "",
-    "facilities": "",
-    "languages": "",
-    "detail_source": "",
+    "team_claimed_specialties": "Cardiology;Critical Care;Gastroenterology;Nephrology;Neurology;Neurosurgery;Oncology;Organ Transplant;Pediatric Cardiology",
+    "subspecialties": "Liver and Kidney Transplantation; Pediatric Cardiac Care; Robotic Cancer Surgery",
+    "procedures": "Living Donor Transplants; Robotic Prostatectomy; Primary Angioplasty; Chemotherapy",
+    "facilities": "Bi-plane Cath Lab; Advanced Robotics; 128-slice CT; Dedicated BMT and Solid Organ Transplant ICUs",
+    "languages": "English; Hindi; Marathi; Arabic",
+    "detail_source": "team 150 sheet (not verified)",
     "international_patient_service": "Not found on website",
     "url_Internantional_patients": "",
-    "nabh_status": "Needs verification",
+    "nabh_status": "Accredited",
     "jci_status": "Accredited",
     "verification_status": "Partially verified",
     "evidence_quality_score": "High",
-    "cost_band_inr": "NA",
+    "cost_band_inr": "Moderate-High (3.5 - 5.0 Lakhs)",
     "official_source_url": "https://www.apollohospitals.com/mumbai",
     "record_origin": "team city lists",
-    "team150_id": "",
-    "hospital_search_text": "Location: Navi Mumbai, Maharashtra. Specialties: Oncology; Organ Transplant; Cardiology; Neurology; Paediatrics; Urology; Obstetrics & Gynaecology; Orthopaedics; Nephrology; Gastroenterology; Pulmonology; Cardiothoracic Surgery; Bariatric Surgery; Hematology & Bone Marrow Transplant; Neurosurgery; Endocrinology; Emergency Medicine; Critical Care. International patient service: Not found on website."
+    "team150_id": "H016",
+    "hospital_search_text": "Location: Navi Mumbai, Maharashtra. Specialties: Oncology; Organ Transplant; Cardiology; Neurology; Paediatrics; Urology; Obstetrics & Gynaecology; Orthopaedics; Nephrology; Gastroenterology; Pulmonology; Cardiothoracic Surgery; Bariatric Surgery; Hematology & Bone Marrow Transplant; Neurosurgery; Endocrinology; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Pediatric Cardiology. Subspecialties: Liver and Kidney Transplantation; Pediatric Cardiac Care; Robotic Cancer Surgery. Procedures: Living Donor Transplants; Robotic Prostatectomy; Primary Angioplasty; Chemotherapy. Facilities: Bi-plane Cath Lab; Advanced Robotics; 128-slice CT; Dedicated BMT and Solid Organ Transplant ICUs. International patient service: Not found on website."
   },
   {
     "vector_position": 61,
@@ -2289,7 +2289,7 @@
     "detail_source": "",
     "international_patient_service": "Not found on website",
     "url_Internantional_patients": "",
-    "nabh_status": "Needs verification",
+    "nabh_status": "Accredited",
     "jci_status": "Not listed",
     "verification_status": "Needs verification",
     "evidence_quality_score": "Low",
@@ -2551,31 +2551,6 @@
   },
   {
     "vector_position": 102,
-    "hospital_id": "H103",
-    "hospital_name": "Apollo Hospitals, Navi Mumbai",
-    "city": "Navi Mumbai",
-    "state": "Maharashtra",
-    "verified_specialties": "",
-    "team_claimed_specialties": "Cardiology;Critical Care;Gastroenterology;Nephrology;Neurology;Neurosurgery;Oncology;Organ Transplant;Pediatric Cardiology",
-    "subspecialties": "Liver and Kidney Transplantation; Pediatric Cardiac Care; Robotic Cancer Surgery",
-    "procedures": "Living Donor Transplants; Robotic Prostatectomy; Primary Angioplasty; Chemotherapy",
-    "facilities": "Bi-plane Cath Lab; Advanced Robotics; 128-slice CT; Dedicated BMT and Solid Organ Transplant ICUs",
-    "languages": "English; Hindi; Marathi; Arabic",
-    "detail_source": "team 150 sheet (not verified)",
-    "international_patient_service": "Not found on website",
-    "url_Internantional_patients": "",
-    "nabh_status": "Needs verification",
-    "jci_status": "Accredited",
-    "verification_status": "Partially verified",
-    "evidence_quality_score": "Low",
-    "cost_band_inr": "Moderate-High (3.5 - 5.0 Lakhs)",
-    "official_source_url": "https://www.apollohospitals.com/mumbai/",
-    "record_origin": "team 150 sheet",
-    "team150_id": "H016",
-    "hospital_search_text": "Location: Navi Mumbai, Maharashtra. Also listed: Cardiology; Critical Care; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Pediatric Cardiology. Subspecialties: Liver and Kidney Transplantation; Pediatric Cardiac Care; Robotic Cancer Surgery. Procedures: Living Donor Transplants; Robotic Prostatectomy; Primary Angioplasty; Chemotherapy. Facilities: Bi-plane Cath Lab; Advanced Robotics; 128-slice CT; Dedicated BMT and Solid Organ Transplant ICUs. International patient service: Not found on website."
-  },
-  {
-    "vector_position": 103,
     "hospital_id": "H104",
     "hospital_name": "Jupiter Hospital, Baner",
     "city": "Pune",
@@ -2600,7 +2575,7 @@
     "hospital_search_text": "Location: Pune, Maharashtra. Specialties: Bariatric Surgery; Neurosurgery; Cardiology; Gastroenterology; Oncology; Organ Transplant; Orthopaedics; Cardiothoracic Surgery; Obstetrics & Gynaecology; Paediatrics; ENT; Nephrology; Hematology & Bone Marrow Transplant; General Medicine; Endocrinology; Ophthalmology; Dermatology; Neurology; Plastic & Reconstructive Surgery; Urology; Pulmonology. Also listed: Cardiology; Gastroenterology; Hematology & Bone Marrow Transplant; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics; Pediatric Cardiology. Subspecialties: Living-Donor Liver Transplant; Bone Marrow Transplant; Robotic Surgery; Pediatric Cardiac Surgery. Procedures: Robotic Joint Replacement; Liver Resection; Chemotherapy & Radiotherapy; Dialysis. Facilities: Digital Cath Lab; TrueBeam Radiotherapy System; Clean-air Operating Theatres; Dedicated BMT Suites. International patient service: Available."
   },
   {
-    "vector_position": 104,
+    "vector_position": 103,
     "hospital_id": "H105",
     "hospital_name": "Rela Hospital",
     "city": "Chennai",
@@ -2625,7 +2600,7 @@
     "hospital_search_text": "Location: Chennai, Tamil Nadu. Specialties: Gastroenterology; Oncology; Organ Transplant; Orthopaedics; Nephrology; Cardiology; Paediatrics; Endocrinology; Neurosurgery; Obstetrics & Gynaecology; Reproductive Medicine; Neurology; Urology; Pulmonology; General Medicine; Ophthalmology; Dermatology; Psychiatry; Hematology & Bone Marrow Transplant; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Gastroenterology; Oncology; Organ Transplant; Paediatrics. Subspecialties: Pediatric Liver Transplant; Living Donor Liver Transplant; Critical Care Hepatology; Surgical Oncology. Procedures: Complex Liver Resections; Split-liver Transplants; Pediatric Cardiac Interventions; Chemotherapy. Facilities: Dedicated Liver ICU; Advanced Endoscopy Suites; Specialized Pediatric Intensive Care Units; High-speed CT. International patient service: Available."
   },
   {
-    "vector_position": 105,
+    "vector_position": 104,
     "hospital_id": "H106",
     "hospital_name": "Yashoda Hospitals, Secunderabad",
     "city": "Hyderabad",
@@ -2650,7 +2625,7 @@
     "hospital_search_text": "Location: Hyderabad, Telangana. Specialties: Organ Transplant; Gastroenterology; Oncology; Orthopaedics; Cardiology; Pulmonology; Neurology; General Medicine; Nephrology; Urology; Paediatrics; ENT; Neurosurgery; Endocrinology; Hematology & Bone Marrow Transplant; Bariatric Surgery; Ophthalmology; Dermatology; Obstetrics & Gynaecology; Cardiothoracic Surgery; Pediatric Cardiology; Psychiatry; Critical Care; Emergency Medicine. Also listed: Cardiology; Cardiothoracic Surgery; Nephrology; Neurology; Neurosurgery; Oncology; Pulmonology. Subspecialties: RapidArc Radiation Therapy; Interventional Pulmonology; Robotic Thoracic Surgery. Procedures: Bronchial Thermoplasty; Linear Accelerator Radiation; Complex PCI; Kidney Transplant. Facilities: Varian RapidArc LINAC; Advanced Cath Labs; Dedicated Bone Marrow Unit; Dialysis Suite. International patient service: Available."
   },
   {
-    "vector_position": 106,
+    "vector_position": 105,
     "hospital_id": "H107",
     "hospital_name": "CARE Hospitals, Banjara Hills",
     "city": "Hyderabad",
@@ -2675,7 +2650,7 @@
     "hospital_search_text": "Location: Hyderabad, Telangana. Specialties: Oncology; Orthopaedics; Neurosurgery; Gastroenterology; Organ Transplant; Cardiology; Nephrology; Urology; Neurology; Paediatrics; Cardiothoracic Surgery; Pulmonology; Endocrinology; General Medicine; ENT; Hematology & Bone Marrow Transplant; Bariatric Surgery; Ophthalmology; Dermatology; Psychiatry; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Organ Transplant; Pediatric Cardiology. Subspecialties: Pediatric Cardiac Surgery; Electrophysiology; Renal Transplantation; Trauma Care. Procedures: CABG; Angioplasty; Renal Transplant; Arthroscopy; Stroke Thrombolysis. Facilities: Dedicated Pediatric Cath Lab; Multi-slice CT; Dialysis Wing; 24/7 Cardiac Emergency. International patient service: Available."
   },
   {
-    "vector_position": 107,
+    "vector_position": 106,
     "hospital_id": "H111",
     "hospital_name": "SGPGI Lucknow",
     "city": "Lucknow",
@@ -2700,7 +2675,7 @@
     "hospital_search_text": "Location: Lucknow, Uttar Pradesh. Specialties: Organ Transplant; Gastroenterology; Endocrinology; Nephrology; Urology; Oncology; Pulmonology; Cardiothoracic Surgery; Ophthalmology; Orthopaedics; Neurosurgery; Cardiology; Neurology; Emergency Medicine; Critical Care. Also listed: Endocrinology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant. Subspecialties: Living-Donor Kidney Transplantation; Endocrine Surgery; Interventional Radiology. Procedures: Renal Transplant; Pituitary Tumor Surgeries; Complex GI Resections; Dialysis. Facilities: State-of-the-art Renal Transplant Center; Dedicated Endocrine Labs; Advanced Neuro ICUs. International patient service: Not found on website."
   },
   {
-    "vector_position": 108,
+    "vector_position": 107,
     "hospital_id": "H112",
     "hospital_name": "Medanta Lucknow",
     "city": "Lucknow",
@@ -2725,7 +2700,7 @@
     "hospital_search_text": "Location: Lucknow, Uttar Pradesh. Specialties: Orthopaedics; Oncology; Neurosurgery; Organ Transplant; Neurology; Nephrology; Obstetrics & Gynaecology; Hematology & Bone Marrow Transplant; Gastroenterology; ENT; Cardiology; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Gastroenterology; Neurology; Neurosurgery; Orthopaedics; Pulmonology. Subspecialties: Interventional Cardiology; Minimally Invasive Spine Surgery; Critical Care Pulmonology. Procedures: Angioplasty; Joint Replacement; Stroke Thrombolysis; Complex Dialysis. Facilities: Bi-plane Cath Lab; Advanced Critical Care Beds; 3T MRI; 24/7 Level-1 Emergency. International patient service: Available."
   },
   {
-    "vector_position": 109,
+    "vector_position": 108,
     "hospital_id": "H113",
     "hospital_name": "Fortis Escorts Hospital, Jaipur",
     "city": "Jaipur",
@@ -2750,7 +2725,7 @@
     "hospital_search_text": "Location: Jaipur, Rajasthan. Specialties: Oncology; Organ Transplant; Orthopaedics; Cardiology; Gastroenterology; Endocrinology; Obstetrics & Gynaecology; Pulmonology; Neurology; Neurosurgery; Hematology & Bone Marrow Transplant; General Medicine; Nephrology; ENT; Paediatrics; Urology; Ophthalmology; Dermatology; Bariatric Surgery; Cardiothoracic Surgery; Psychiatry; Critical Care; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Organ Transplant; Orthopaedics. Subspecialties: Transcatheter Interventions; Kidney Transplantation; Joint Replacement. Procedures: Coronary Angioplasty; CABG; Renal Transplant; Total Knee Replacement. Facilities: Digital Cath Lab; Dedicated Kidney Transplant Unit; Intensive Coronary Care Unit; International Desk. International patient service: Available."
   },
   {
-    "vector_position": 110,
+    "vector_position": 109,
     "hospital_id": "H114",
     "hospital_name": "KMC Hospital, Mangalore",
     "city": "Mangalore",
@@ -2775,7 +2750,7 @@
     "hospital_search_text": "Location: Mangalore, Karnataka. Specialties: Obstetrics & Gynaecology; Orthopaedics; Oncology; Neurosurgery; Cardiology; Nephrology; Neurology; Urology; Reproductive Medicine; Bariatric Surgery; General Medicine; Organ Transplant; Endocrinology; Ophthalmology; Dermatology; Pulmonology; Psychiatry; Plastic & Reconstructive Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Replacement; Renal Care; Trauma Care. Procedures: Coronary Angioplasty; CABG; Total Knee Arthroplasty; Hemodialysis. Facilities: Digital Cath Lab; Modern ICU/CCU; Dialysis Wing; 24/7 Emergency Care. International patient service: Not found on website."
   },
   {
-    "vector_position": 111,
+    "vector_position": 110,
     "hospital_id": "H115",
     "hospital_name": "Father Muller Medical College Hospital",
     "city": "Mangalore",
@@ -2800,7 +2775,7 @@
     "hospital_search_text": "Location: Mangalore, Karnataka. Also listed: Cardiology; Nephrology; Oncology; Orthopaedics. Subspecialties: Joint Replacement; Interventional Cardiology; Renal Dialysis; Radiation Therapy. Procedures: Angioplasty; Total Knee/Hip Replacement; Chemotherapy; Cobalt/LINAC Radiotherapy. Facilities: Cath Lab Complex; Linear Accelerator; Dialysis Facility; 24/7 Trauma. International patient service: Not found on website."
   },
   {
-    "vector_position": 112,
+    "vector_position": 111,
     "hospital_id": "H116",
     "hospital_name": "A.J. Hospital and Research Centre",
     "city": "Mangalore",
@@ -2825,7 +2800,7 @@
     "hospital_search_text": "Location: Mangalore, Karnataka. Specialties: Oncology; Plastic & Reconstructive Surgery; Nephrology; Orthopaedics; Gastroenterology; Cardiology; Dermatology; Paediatrics; Obstetrics & Gynaecology; Endocrinology; Neurology; Urology; ENT; Pulmonology; General Medicine; Ophthalmology; Psychiatry; Emergency Medicine; Critical Care. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant. Subspecialties: Renal Transplantation; Liver Transplantation; Interventional Cardiology. Procedures: Kidney Transplant; Living-Donor Liver Transplant; CABG; Brain Tumor Surgery. Facilities: Bi-plane Cath Lab; Dedicated Organ Transplant ICU; Linear Accelerator; 1.5T MRI. International patient service: Available."
   },
   {
-    "vector_position": 113,
+    "vector_position": 112,
     "hospital_id": "H117",
     "hospital_name": "Medanta Super Speciality Hospital, Indore",
     "city": "Indore",
@@ -2850,7 +2825,7 @@
     "hospital_search_text": "Location: Indore, Madhya Pradesh. Specialties: Orthopaedics; Oncology; Neurosurgery; Organ Transplant; Neurology; Nephrology; Obstetrics & Gynaecology; Hematology & Bone Marrow Transplant; Gastroenterology; ENT; Cardiology; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Gastroenterology; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Minimally Invasive Spine Surgery; Renal Care. Procedures: Coronary Angioplasty; CABG; Robotic Joint Surgery; Stroke Interventions. Facilities: Digital Cath Lab; Modular Operation Theatres; Advanced CCU; 24/7 Stroke Unit. International patient service: Available."
   },
   {
-    "vector_position": 114,
+    "vector_position": 113,
     "hospital_id": "H118",
     "hospital_name": "CHL Hospitals",
     "city": "Indore",
@@ -2875,7 +2850,7 @@
     "hospital_search_text": "Location: Indore, Madhya Pradesh. Also listed: Cardiology; Cardiothoracic Surgery; Emergency Medicine; Gastroenterology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Complex Joint Replacement; Trauma Management. Procedures: Angioplasty; Total Knee Replacement; Hemodialysis; Brain Surgery. Facilities: State-of-the-art Cath Lab; Dedicated Cardiac ICU; Modern Dialysis Unit. International patient service: Not found on website."
   },
   {
-    "vector_position": 115,
+    "vector_position": 114,
     "hospital_id": "H119",
     "hospital_name": "Apollo Hospitals, Indore",
     "city": "Indore",
@@ -2900,7 +2875,7 @@
     "hospital_search_text": "Location: Indore, Madhya Pradesh. Specialties: Oncology; Organ Transplant; ENT; Gastroenterology; Cardiology; Orthopaedics; Neurosurgery; Obstetrics & Gynaecology; Neurology; Pulmonology; General Medicine; Nephrology; Urology; Bariatric Surgery; Endocrinology; Dermatology; Hematology & Bone Marrow Transplant; Ophthalmology; Paediatrics; Cardiothoracic Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Interventional Cardiology; Medical Oncology; Renal Transplantation. Procedures: CABG; Angioplasty; Kidney Transplant; Total Knee Replacement; Chemotherapy. Facilities: Cath Lab; Dedicated Transplant Beds; LINAC Radiotherapy; International Lounge. International patient service: Not found on website."
   },
   {
-    "vector_position": 116,
+    "vector_position": 115,
     "hospital_id": "H120",
     "hospital_name": "Bansal Hospital",
     "city": "Bhopal",
@@ -2925,7 +2900,7 @@
     "hospital_search_text": "Location: Bhopal, Madhya Pradesh. Specialties: Gastroenterology; Orthopaedics; Oncology; ENT; Cardiology; Dermatology; Organ Transplant; Neurology; Obstetrics & Gynaecology; Endocrinology; Pulmonology; General Medicine; Ophthalmology; Nephrology; Urology; Reproductive Medicine; Paediatrics; Plastic & Reconstructive Surgery; Neurosurgery; Cardiothoracic Surgery; Psychiatry; Emergency Medicine; Critical Care. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Liver and Kidney Transplantation; Interventional Oncology; Joint Replacement. Procedures: Living-Donor Liver Transplant; Kidney Transplant; CABG; Robotic Arthroplasty. Facilities: Bi-plane Cath Lab; TrueBeam LINAC; Organ Transplant ICU; 3T MRI. International patient service: Not found on website."
   },
   {
-    "vector_position": 117,
+    "vector_position": 116,
     "hospital_id": "H121",
     "hospital_name": "AIIMS Bhopal",
     "city": "Bhopal",
@@ -2950,7 +2925,7 @@
     "hospital_search_text": "Location: Bhopal, Madhya Pradesh. Specialties: Oncology. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Surgical Oncology; Interventional Cardiology; Joint Arthroplasty; Renal Care. Procedures: CABG; Angioplasty; Chemotherapy; Linear Accelerator Radiotherapy; Dialysis. Facilities: State-of-the-art Cath Lab; Modern Modular OTs; High-energy LINAC; Government ICU. International patient service: Not found on website."
   },
   {
-    "vector_position": 118,
+    "vector_position": 117,
     "hospital_id": "H122",
     "hospital_name": "AIIMS Patna",
     "city": "Patna",
@@ -2975,7 +2950,7 @@
     "hospital_search_text": "Location: Patna, Bihar. Specialties: Neurology; Oncology; Paediatrics; Gastroenterology; Obstetrics & Gynaecology; Ophthalmology; Orthopaedics; Neurosurgery; Dermatology; Cardiology; Nephrology; Psychiatry; Urology; ENT; Cardiothoracic Surgery; Pulmonology; General Medicine; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Neurosurgical Trauma; Surgical Oncology. Procedures: Angioplasty; CABG; Brain Tumor Surgeries; Dialysis; Radical Resections. Facilities: Advanced Cardiac Cath Lab; Trauma Care Centre; Multi-slice CT; Dialysis Wing. International patient service: Not found on website."
   },
   {
-    "vector_position": 119,
+    "vector_position": 118,
     "hospital_id": "H123",
     "hospital_name": "Paras HMRI Hospital",
     "city": "Patna",
@@ -3000,7 +2975,7 @@
     "hospital_search_text": "Location: Patna, Bihar. Specialties: Gastroenterology; Organ Transplant; General Medicine; Orthopaedics; Oncology; Obstetrics & Gynaecology; Nephrology; Endocrinology; Ophthalmology; Cardiology; ENT; Dermatology; Paediatrics; Psychiatry; Pulmonology; Neurosurgery; Neurology; Urology; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Comprehensive Cancer Care; Joint Replacement; Interventional Cardiology. Procedures: Coronary Angioplasty; Total Knee Replacement; Chemotherapy & Radiotherapy; Dialysis. Facilities: LINAC Radiotherapy Suite; Digital Cath Lab; 3T MRI; 24/7 Level-1 Emergency. International patient service: Available."
   },
   {
-    "vector_position": 120,
+    "vector_position": 119,
     "hospital_id": "H124",
     "hospital_name": "Ruban Memorial Hospital",
     "city": "Patna",
@@ -3025,7 +3000,7 @@
     "hospital_search_text": "Location: Patna, Bihar. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Organ Transplant; Urology. Subspecialties: Interventional Cardiology; Renal Transplantation; Minimally Invasive Surgery. Procedures: Kidney Transplant; Angioplasty; Laparoscopic GI Surgery; Hemodialysis. Facilities: Flat Panel Cath Lab; Dedicated Renal ICU; Advanced Lithotripsy; Modern OTs. International patient service: Not found on website."
   },
   {
-    "vector_position": 121,
+    "vector_position": 120,
     "hospital_id": "H125",
     "hospital_name": "Mahavir Cancer Sansthan",
     "city": "Patna",
@@ -3050,7 +3025,7 @@
     "hospital_search_text": "Location: Patna, Bihar. Specialties: Oncology; Hematology & Bone Marrow Transplant. Also listed: Obstetrics & Gynaecology; Oncology. Subspecialties: Head & Neck Oncology; Gynecological Oncology; Linear Accelerator Radiation. Procedures: Radical Tumor Resections; Chemotherapy; External Beam Radiation; Palliative Support. Facilities: Multiple High-Energy LINACs; Brachytherapy; Dedicated Cancer ICUs; Subsidized Pharmacy. International patient service: Not found on website."
   },
   {
-    "vector_position": 122,
+    "vector_position": 121,
     "hospital_id": "H126",
     "hospital_name": "AIIMS Bhubaneswar",
     "city": "Bhubaneswar",
@@ -3075,7 +3050,7 @@
     "hospital_search_text": "Location: Bhubaneswar, Odisha. Specialties: Gastroenterology; Oncology; Organ Transplant; Psychiatry; Orthopaedics; Neurology; Paediatrics; Obstetrics & Gynaecology; Nephrology; Neurosurgery; Pulmonology; Endocrinology; Urology; General Medicine; Ophthalmology; Dermatology; Cardiology; ENT; Critical Care; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Neuro-Oncology; Joint Arthroplasty; Renal Care. Procedures: CABG; Angioplasty; Brain Tumor Surgery; Total Knee Replacement; Hemodialysis. Facilities: Cath Lab Suite; Modern Modular OTs; High-energy LINAC; Government Critical Care Unit. International patient service: Not found on website."
   },
   {
-    "vector_position": 123,
+    "vector_position": 122,
     "hospital_id": "H127",
     "hospital_name": "KIMS Super Speciality Hospital",
     "city": "Bhubaneswar",
@@ -3089,7 +3064,7 @@
     "detail_source": "team 150 sheet (not verified)",
     "international_patient_service": "Not found on website",
     "url_Internantional_patients": "",
-    "nabh_status": "Needs verification",
+    "nabh_status": "Accredited",
     "jci_status": "Not listed",
     "verification_status": "Needs verification",
     "evidence_quality_score": "Medium",
@@ -3100,7 +3075,7 @@
     "hospital_search_text": "Location: Bhubaneswar, Odisha. Specialties: Oncology; Organ Transplant; Psychiatry. Also listed: Cardiology; Hematology & Bone Marrow Transplant; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant. Subspecialties: Interventional Cardiology; Bone Marrow Transplant; Renal Transplantation. Procedures: Angioplasty; Kidney Transplant; Stem Cell Transplant; Joint Replacement. Facilities: Bi-plane Cath Lab; Linear Accelerator; Dedicated BMT Unit; 100+ ICU Beds. International patient service: Not found on website."
   },
   {
-    "vector_position": 124,
+    "vector_position": 123,
     "hospital_id": "H128",
     "hospital_name": "Apollo Hospitals, Bhubaneswar",
     "city": "Bhubaneswar",
@@ -3125,7 +3100,7 @@
     "hospital_search_text": "Location: Bhubaneswar, Odisha. Specialties: Oncology; Organ Transplant; ENT; Cardiology; Gastroenterology; Neurosurgery; Orthopaedics; Neurology; Cardiothoracic Surgery; Urology; Hematology & Bone Marrow Transplant; Bariatric Surgery; General Medicine; Paediatrics; Pulmonology; Obstetrics & Gynaecology; Nephrology; Ophthalmology; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Spine Surgery; Surgical Oncology; Renal Care. Procedures: CABG; Angioplasty; Brain Tumor Resection; Total Knee Replacement; Dialysis. Facilities: Cath Lab Complex; 64-slice CT; Linear Accelerator; Dedicated CCU/MICU. International patient service: Not found on website."
   },
   {
-    "vector_position": 125,
+    "vector_position": 124,
     "hospital_id": "H129",
     "hospital_name": "AMRI Hospitals, Bhubaneswar",
     "city": "Bhubaneswar",
@@ -3150,7 +3125,7 @@
     "hospital_search_text": "Location: Bhubaneswar, Odisha. Specialties: Organ Transplant; Nephrology; Oncology; Obstetrics & Gynaecology; Orthopaedics; Urology; Gastroenterology; Neurosurgery; Cardiology; Neurology; Bariatric Surgery; General Medicine; Endocrinology; Ophthalmology; Dermatology; Pulmonology; Psychiatry; Plastic & Reconstructive Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Emergency Medicine; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Emergency Percutaneous Intervention; Joint Replacement; Trauma Management. Procedures: Primary Angioplasty; Total Knee/Hip Replacement; Stroke Thrombolysis. Facilities: Digital Cath Lab; Advanced Critical Care Beds; 24/7 Level-1 Trauma. International patient service: Not found on website."
   },
   {
-    "vector_position": 126,
+    "vector_position": 125,
     "hospital_id": "H130",
     "hospital_name": "Wockhardt Super Speciality Hospital, Nagpur",
     "city": "Nagpur",
@@ -3175,7 +3150,7 @@
     "hospital_search_text": "Location: Nagpur, Maharashtra. Specialties: Oncology; Organ Transplant; Gastroenterology; Obstetrics & Gynaecology; Orthopaedics; Nephrology; Neurology; General Medicine; Urology; Endocrinology; Pulmonology; Neurosurgery; Ophthalmology; Dermatology; Cardiology; ENT; Cardiothoracic Surgery; Bariatric Surgery; Plastic & Reconstructive Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Minimally Invasive Spine Surgery; Arthroplasty. Procedures: Primary Angioplasty; CABG; Total Knee Replacement; Stroke Management. Facilities: Flat Panel Cath Lab; Dedicated Cardiac ICU; Modern Trauma Complex. International patient service: Available."
   },
   {
-    "vector_position": 127,
+    "vector_position": 126,
     "hospital_id": "H131",
     "hospital_name": "G. Kuppuswamy Naidu Memorial Hospital (GKNM)",
     "city": "Coimbatore",
@@ -3200,7 +3175,7 @@
     "hospital_search_text": "Location: Coimbatore, Tamil Nadu. Specialties: Oncology; Obstetrics & Gynaecology; Neurology; Paediatrics; Cardiology; Pulmonology; Nephrology; Neurosurgery; Psychiatry; Orthopaedics; Ophthalmology; Urology; Cardiothoracic Surgery; Organ Transplant; Endocrinology; ENT; General Medicine; Gastroenterology; Dermatology; Hematology & Bone Marrow Transplant; Bariatric Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Cardiothoracic Surgery; Obstetrics & Gynaecology; Oncology; Paediatrics; Pediatric Cardiology. Subspecialties: Pediatric Cardiac Surgery; Radiation Oncology; Minimally Invasive Cardiac Surgery. Procedures: Pediatric Heart Repair; CABG; Varian LINAC Radiotherapy; Chemotherapy. Facilities: Dedicated Pediatric Cardiac ICU; High-energy Linear Accelerators; Cath Labs. International patient service: Available."
   },
   {
-    "vector_position": 128,
+    "vector_position": 127,
     "hospital_id": "H132",
     "hospital_name": "Kovai Medical Center and Hospital (KMCH)",
     "city": "Coimbatore",
@@ -3225,7 +3200,7 @@
     "hospital_search_text": "Location: Coimbatore, Tamil Nadu. Specialties: Cardiology; Oncology; Orthopaedics; Paediatrics; Obstetrics & Gynaecology; Organ Transplant; Gastroenterology; Neurology; Dermatology; Nephrology; Urology; ENT; Reproductive Medicine; Neurosurgery; Pulmonology; Plastic & Reconstructive Surgery; General Medicine; Cardiothoracic Surgery; Endocrinology; Emergency Medicine; Critical Care. Also listed: Cardiology; Gastroenterology; Neurology; Neurosurgery; Oncology; Organ Transplant. Subspecialties: Liver and Heart Transplants; Interventional Neuro-Radiology; Robotic Surgery. Procedures: Living-Donor Liver Transplant; Heart Transplant; Mobile Stroke Unit Response; Chemotherapy. Facilities: India's first Mobile Stroke Unit; CyberKnife VSI; Multi-organ Transplant ICUs; Digital Cath Labs. International patient service: Available."
   },
   {
-    "vector_position": 129,
+    "vector_position": 128,
     "hospital_id": "H133",
     "hospital_name": "PSG Hospitals",
     "city": "Coimbatore",
@@ -3250,7 +3225,7 @@
     "hospital_search_text": "Location: Coimbatore, Tamil Nadu. Also listed: Cardiology; Critical Care; Nephrology; Neurology; Neurosurgery; Organ Transplant; Orthopaedics. Subspecialties: Interventional Cardiology; Renal Transplantation; Complex Trauma Arthroplasty. Procedures: Kidney Transplant; Angioplasty; Total Knee/Hip Replacement; Hemodialysis. Facilities: Bi-plane Cath Lab; NABL-accredited Central Lab; Dedicated Dialysis Suite; 24/7 Trauma. International patient service: Not found on website."
   },
   {
-    "vector_position": 130,
+    "vector_position": 129,
     "hospital_id": "H134",
     "hospital_name": "Meenakshi Mission Hospital and Research Centre",
     "city": "Madurai",
@@ -3275,7 +3250,7 @@
     "hospital_search_text": "Location: Madurai, Tamil Nadu. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Paediatrics. Subspecialties: Pediatric Oncology; Liver & Kidney Transplantation; Radiation Therapy. Procedures: Bone Marrow Transplant; Living-Donor Liver Transplant; Primary PCI; Smile Train Cleft Surgeries. Facilities: Elekta Versa HD LINAC; Cath Labs; Dedicated Pediatric ICU; Organ Transplant Units. International patient service: Not found on website."
   },
   {
-    "vector_position": 131,
+    "vector_position": 130,
     "hospital_id": "H135",
     "hospital_name": "Apollo Hospitals, Ramnagar",
     "city": "Visakhapatnam",
@@ -3300,7 +3275,7 @@
     "hospital_search_text": "Location: Visakhapatnam, Andhra Pradesh. Also listed: Cardiology; Critical Care; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Spine Surgery; Trauma Management; Renal Care. Procedures: Coronary Angioplasty; CABG; Joint Replacement; Hemodialysis; Stroke Treatment. Facilities: Digital Cath Lab; Modern Intensive Coronary Care Unit; Dialysis Department. International patient service: Not found on website."
   },
   {
-    "vector_position": 132,
+    "vector_position": 131,
     "hospital_id": "H136",
     "hospital_name": "Care Hospitals, Ramnagar",
     "city": "Visakhapatnam",
@@ -3325,7 +3300,7 @@
     "hospital_search_text": "Location: Visakhapatnam, Andhra Pradesh. Specialties: Oncology; Orthopaedics; Neurosurgery; Gastroenterology; Organ Transplant; Cardiology; Nephrology; Urology; Neurology; Paediatrics; Cardiothoracic Surgery; Pulmonology; Endocrinology; General Medicine; ENT; Hematology & Bone Marrow Transplant; Bariatric Surgery; Ophthalmology; Dermatology; Psychiatry; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Emergency Medicine; Nephrology; Pulmonology. Subspecialties: Interventional Cardiology; Renal Care; Emergency Trauma Care. Procedures: Primary Angioplasty; CABG; Dialysis; Complex Fracture Reconstructions. Facilities: Advanced Cath Lab; Dedicated CCU; Dialysis Units; 24/7 Cardiac Emergency. International patient service: Available."
   },
   {
-    "vector_position": 133,
+    "vector_position": 132,
     "hospital_id": "H137",
     "hospital_name": "Manipal Hospital, Tadepalli",
     "city": "Vijayawada",
@@ -3350,7 +3325,7 @@
     "hospital_search_text": "Location: Vijayawada, Andhra Pradesh. Specialties: Cardiology; Oncology; Organ Transplant; Orthopaedics; Bariatric Surgery; Nephrology; Neurology; Urology; Obstetrics & Gynaecology; General Medicine; Endocrinology; Ophthalmology; Dermatology; Pulmonology; Plastic & Reconstructive Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Renal Transplantation; Interventional Oncology; Joint Arthroplasty. Procedures: Kidney Transplant; Angioplasty; Total Knee Replacement; Chemotherapy. Facilities: Digital Flat Panel Cath Lab; LINAC; Dedicated Renal Transplant Unit; 24/7 Emergency. International patient service: Not found on website."
   },
   {
-    "vector_position": 134,
+    "vector_position": 133,
     "hospital_id": "H138",
     "hospital_name": "Ramesh Hospitals",
     "city": "Vijayawada",
@@ -3375,7 +3350,7 @@
     "hospital_search_text": "Location: Vijayawada, Andhra Pradesh. Specialties: ENT; Hematology & Bone Marrow Transplant; Oncology; Organ Transplant; Gastroenterology; Orthopaedics; Urology; Obstetrics & Gynaecology; Paediatrics; Nephrology; Pulmonology; Cardiology; Neurosurgery; Neurology; General Medicine; Dermatology; Psychiatry; Cardiothoracic Surgery; Endocrinology; Pediatric Cardiology; Ophthalmology; Plastic & Reconstructive Surgery; Bariatric Surgery; Critical Care; Emergency Medicine. Also listed: Cardiology; Cardiothoracic Surgery; Emergency Medicine; Nephrology; Neurology; Neurosurgery. Subspecialties: Primary PCI; Endovascular Interventions; Stroke Intervention; Trauma Care. Procedures: Emergency Angioplasty; CABG; Stroke Thrombolysis; Joint Replacement. Facilities: Bi-plane Cath Lab; Dedicated Cardiac ICU; Modern Dialysis Centre; 24/7 Ambulance. International patient service: Available."
   },
   {
-    "vector_position": 135,
+    "vector_position": 134,
     "hospital_id": "H139",
     "hospital_name": "AIIMS Raipur",
     "city": "Raipur",
@@ -3400,7 +3375,7 @@
     "hospital_search_text": "Location: Raipur, Chhattisgarh. Specialties: Neurosurgery; Oncology; Psychiatry; Gastroenterology; Cardiothoracic Surgery; Endocrinology; Orthopaedics; Dermatology; Cardiology; Nephrology; Paediatrics; Urology; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics; Pulmonology. Subspecialties: Surgical Oncology; Interventional Cardiology; Joint Arthroplasty; Renal Care. Procedures: CABG; Angioplasty; Radical Tumor Excision; Dialysis; Total Knee Replacement. Facilities: Digital Cath Lab; Linear Accelerator; Government Critical Care Unit; Blood Bank. International patient service: Not found on website."
   },
   {
-    "vector_position": 136,
+    "vector_position": 135,
     "hospital_id": "H140",
     "hospital_name": "NH MMI Narayana Multispeciality Hospital",
     "city": "Raipur",
@@ -3425,7 +3400,7 @@
     "hospital_search_text": "Location: Raipur, Chhattisgarh. Specialties: Oncology; Gastroenterology; Orthopaedics; Cardiology; Neurosurgery; Hematology & Bone Marrow Transplant; Obstetrics & Gynaecology; Pulmonology; Nephrology; Neurology; Organ Transplant; Bariatric Surgery; Cardiothoracic Surgery; Endocrinology; Ophthalmology; Paediatrics; Psychiatry; Urology; Reproductive Medicine; General Medicine; Dermatology; Critical Care; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Interventional Cardiology; Complex Joint Surgery; Kidney Transplantation. Procedures: Coronary Angioplasty; CABG; Kidney Transplant; Total Knee Arthroplasty. Facilities: Cath Lab Complex; Dedicated Renal Care Unit; Intensive Coronary Care Unit. International patient service: Not found on website."
   },
   {
-    "vector_position": 137,
+    "vector_position": 136,
     "hospital_id": "H141",
     "hospital_name": "Sir Sunderlal Hospital, IMS BHU",
     "city": "Varanasi",
@@ -3450,7 +3425,7 @@
     "hospital_search_text": "Location: Varanasi, Uttar Pradesh. Specialties: Oncology; Organ Transplant; Gastroenterology; Orthopaedics; Neurosurgery; Hematology & Bone Marrow Transplant; Cardiology; Nephrology; Neurology; Dermatology; General Medicine; Urology; Cardiothoracic Surgery; Endocrinology; Ophthalmology; Obstetrics & Gynaecology; Paediatrics; ENT; Pulmonology; Plastic & Reconstructive Surgery; Psychiatry; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Renal Care; Neurosurgical Trauma; Joint Surgery. Procedures: Angioplasty; Dialysis; Brain Surgery; Complex Trauma Reconstruction. Facilities: Centenary Super Speciality Block; Cath Lab; Dedicated Dialysis; Trauma Centre. International patient service: Available."
   },
   {
-    "vector_position": 138,
+    "vector_position": 137,
     "hospital_id": "H142",
     "hospital_name": "Homi Bhabha Cancer Hospital & MPMMCC",
     "city": "Varanasi",
@@ -3475,7 +3450,7 @@
     "hospital_search_text": "Location: Varanasi, Uttar Pradesh. Also listed: Hematology & Bone Marrow Transplant; Oncology. Subspecialties: Comprehensive Cancer Surgery; Advanced Linear Accelerator Radiotherapy; BMT. Procedures: Radical Tumor Resection; Chemotherapy; Bone Marrow Transplant; Brachytherapy. Facilities: Multiple Versa HD LINACs; Dedicated BMT Unit; PET-CT; In-house Pathology Lab. International patient service: Not found on website."
   },
   {
-    "vector_position": 139,
+    "vector_position": 138,
     "hospital_id": "H143",
     "hospital_name": "Regency Hospital, Tower 1",
     "city": "Kanpur",
@@ -3500,7 +3475,7 @@
     "hospital_search_text": "Location: Kanpur, Uttar Pradesh. Specialties: Nephrology; Oncology; Endocrinology; Cardiology; Plastic & Reconstructive Surgery; Pulmonology; General Medicine; Ophthalmology; Orthopaedics; Obstetrics & Gynaecology; Neurology; Urology; Gastroenterology; Paediatrics; Cardiothoracic Surgery; Dermatology; Psychiatry; ENT; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Renal Transplantation; Interventional Cardiology; Joint Arthroplasty. Procedures: Kidney Transplant; Primary Angioplasty; Total Knee Replacement; Hemodialysis. Facilities: Digital Flat Panel Cath Lab; Dedicated Renal Unit; TrueBeam LINAC; 24/7 Trauma. International patient service: Not found on website."
   },
   {
-    "vector_position": 140,
+    "vector_position": 139,
     "hospital_id": "H144",
     "hospital_name": "SMS Medical College & Hospital",
     "city": "Jaipur",
@@ -3525,7 +3500,7 @@
     "hospital_search_text": "Location: Jaipur, Rajasthan. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Organ Transplant; Orthopaedics. Subspecialties: Cadaveric and Living Donor Organ Transplants; Interventional Cardiology. Procedures: Heart Transplant; Kidney Transplant; CABG; Complex Joint Replacement. Facilities: Dedicated Super Speciality Block; Cath Labs; Dialysis Wings; Level-1 Trauma. International patient service: Not found on website."
   },
   {
-    "vector_position": 141,
+    "vector_position": 140,
     "hospital_id": "H145",
     "hospital_name": "Eternal Hospital (EHCC)",
     "city": "Jaipur",
@@ -3550,7 +3525,7 @@
     "hospital_search_text": "Location: Jaipur, Rajasthan. Specialties: Orthopaedics; Neurosurgery; Neurology; Nephrology; Obstetrics & Gynaecology; Bariatric Surgery; General Medicine; Cardiothoracic Surgery; Gastroenterology; Endocrinology; Paediatrics; Pulmonology; Cardiology; Organ Transplant; Oncology; Urology; ENT; Emergency Medicine; Critical Care. Also listed: Cardiology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Transcatheter Aortic Valve Replacement (TAVR); Robotic Joint Surgery; Organ Transplants. Procedures: TAVR; Robotic Knee Replacement; Kidney Transplant; CABG; Complex Angioplasty. Facilities: State-of-the-art Hybrid Cath Lab; Da Vinci Robotic Surgery; Dedicated Heart ICU. International patient service: Available."
   },
   {
-    "vector_position": 142,
+    "vector_position": 141,
     "hospital_id": "H146",
     "hospital_name": "Manipal Hospital, Jaipur",
     "city": "Jaipur",
@@ -3575,7 +3550,7 @@
     "hospital_search_text": "Location: Jaipur, Rajasthan. Specialties: Obstetrics & Gynaecology; Orthopaedics; Neurosurgery; Cardiology; Nephrology; Neurology; Urology; Oncology; Organ Transplant; General Medicine; Gastroenterology; Endocrinology; Ophthalmology; Dermatology; Pulmonology; Psychiatry; Plastic & Reconstructive Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Arthroplasty; Radiation Oncology; Renal Care. Procedures: Angioplasty; CABG; Total Knee Replacement; Chemotherapy & Radiotherapy. Facilities: Modern Cath Lab; LINAC; Comprehensive Dialysis Centre; 24/7 Stroke Unit. International patient service: Not found on website."
   },
   {
-    "vector_position": 143,
+    "vector_position": 142,
     "hospital_id": "H147",
     "hospital_name": "AIIMS Jodhpur",
     "city": "Jodhpur",
@@ -3600,7 +3575,7 @@
     "hospital_search_text": "Location: Jodhpur, Rajasthan. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics; Paediatrics. Subspecialties: Surgical Oncology; Interventional Cardiology; Complex Joint Reconstruction. Procedures: CABG; Angioplasty; Radical Cancer Surgeries; Knee Arthroplasty; Dialysis. Facilities: Modern Cath Lab; TrueBeam LINAC; Modular OT Complex; Government Critical Care. International patient service: Not found on website."
   },
   {
-    "vector_position": 144,
+    "vector_position": 143,
     "hospital_id": "H148",
     "hospital_name": "Max Super Speciality Hospital, Mohali",
     "city": "Mohali",
@@ -3625,7 +3600,7 @@
     "hospital_search_text": "Location: Mohali, Punjab. Specialties: Cardiology; Cardiothoracic Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Arthroplasty; Linear Accelerator Radiation. Procedures: Angioplasty; Robotic Knee Replacement; Chemotherapy & Radiotherapy; Dialysis. Facilities: Cath Lab; TrueBeam LINAC; Dialysis Wing; 24/7 Level-1 Emergency. International patient service: Available."
   },
   {
-    "vector_position": 145,
+    "vector_position": 144,
     "hospital_id": "H149",
     "hospital_name": "Dayanand Medical College and Hospital (DMCH)",
     "city": "Ludhiana",
@@ -3650,7 +3625,7 @@
     "hospital_search_text": "Location: Ludhiana, Punjab. Specialties: Oncology; Gastroenterology; Cardiology; Ophthalmology; Obstetrics & Gynaecology; Neurology; General Medicine; Orthopaedics; Dermatology; Paediatrics; Psychiatry; Organ Transplant; ENT; Emergency Medicine; Critical Care. Also listed: Cardiology; Emergency Medicine; Gastroenterology; Nephrology; Neurology; Neurosurgery; Organ Transplant. Subspecialties: Renal Transplantation; Interventional Cardiology; Complex Trauma Surgery. Procedures: Kidney Transplant; CABG; Angioplasty; Total Knee/Hip Replacement; Hemodialysis. Facilities: Hero DMC Heart Institute; Bi-plane Cath Lab; Dialysis Centre; Level-1 Trauma. International patient service: Available."
   },
   {
-    "vector_position": 146,
+    "vector_position": 145,
     "hospital_id": "H150",
     "hospital_name": "Sri Guru Ram Das Charitable Hospital",
     "city": "Amritsar",
@@ -3675,7 +3650,7 @@
     "hospital_search_text": "Location: Amritsar, Punjab. Also listed: Cardiology; Nephrology; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Radiation Oncology; Joint Replacement; Renal Care. Procedures: Angioplasty; Total Knee Arthroplasty; Chemotherapy; Dialysis. Facilities: Digital Cath Lab; Linear Accelerator; Modern Dialysis Facility; 24/7 Emergency. International patient service: Not found on website."
   },
   {
-    "vector_position": 147,
+    "vector_position": 146,
     "hospital_id": "H151",
     "hospital_name": "AIIMS Rishikesh",
     "city": "Rishikesh",
@@ -3700,7 +3675,7 @@
     "hospital_search_text": "Location: Rishikesh, Uttarakhand. Specialties: Oncology; Urology; Neurology; Paediatrics; ENT; Gastroenterology; Emergency Medicine. Also listed: Cardiology; Critical Care; Neurology; Neurosurgery; Oncology; Orthopaedics; Pulmonology. Subspecialties: Interventional Cardiology; Surgical Oncology; Complex Spine Surgery; Hyperbaric Medicine. Procedures: CABG; Angioplasty; Brain Tumor Resection; Joint Replacement; Dialysis. Facilities: Cath Lab; TrueBeam LINAC; Heliport for Emergency Evacuation; Government ICU. International patient service: Not found on website."
   },
   {
-    "vector_position": 148,
+    "vector_position": 147,
     "hospital_id": "H152",
     "hospital_name": "Max Super Speciality Hospital, Dehradun",
     "city": "Dehradun",
@@ -3725,7 +3700,7 @@
     "hospital_search_text": "Location: Dehradun, Uttarakhand. Specialties: Cardiology; Cardiothoracic Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Arthroplasty; Minimally Invasive Spine Surgery. Procedures: Angioplasty; CABG; Robotic Knee Replacement; Chemotherapy & Radiotherapy; Dialysis. Facilities: Digital Cath Lab; LINAC; Dialysis Wing; 24/7 Trauma & Emergency Centre. International patient service: Available."
   },
   {
-    "vector_position": 149,
+    "vector_position": 148,
     "hospital_id": "H153",
     "hospital_name": "SKIMS (Sher-i-Kashmir Institute of Medical Sciences)",
     "city": "Srinagar",
@@ -3750,7 +3725,7 @@
     "hospital_search_text": "Location: Srinagar, Jammu and Kashmir. Specialties: Oncology; Endocrinology; General Medicine; Nephrology; Paediatrics; Gastroenterology; Cardiology; Obstetrics & Gynaecology; Organ Transplant; Neurology; Urology; Pulmonology; Cardiothoracic Surgery; Ophthalmology; Psychiatry; Emergency Medicine. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant. Subspecialties: Interventional Cardiology; Renal Transplantation; Surgical Oncology. Procedures: Kidney Transplant; CABG; Angioplasty; Radical Tumor Excision; Dialysis. Facilities: Dedicated State Oncology Centre; Cath Labs; Renal Transplant Unit; 24/7 Emergency. International patient service: Not found on website."
   },
   {
-    "vector_position": 150,
+    "vector_position": 149,
     "hospital_id": "H154",
     "hospital_name": "AIIMS Jammu (Vijaypur)",
     "city": "Jammu",
@@ -3775,7 +3750,7 @@
     "hospital_search_text": "Location: Jammu, Jammu and Kashmir. Specialties: Paediatrics; Gastroenterology; Obstetrics & Gynaecology; ENT; Cardiothoracic Surgery; Pulmonology; Oncology; General Medicine; Endocrinology; Ophthalmology; Neurosurgery; Dermatology; Orthopaedics; Cardiology; Nephrology; Psychiatry; Neurology; Urology; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Replacement; Surgical Oncology. Procedures: Coronary Angioplasty; Brain Surgery; Total Knee Replacement; Dialysis. Facilities: Digital Cath Lab; Modern Modular Theatres; Government Critical Care Units. International patient service: Not found on website."
   },
   {
-    "vector_position": 151,
+    "vector_position": 150,
     "hospital_id": "H155",
     "hospital_name": "AIIMS Guwahati",
     "city": "Guwahati",
@@ -3789,7 +3764,7 @@
     "detail_source": "team 150 sheet (not verified)",
     "international_patient_service": "Not found on website",
     "url_Internantional_patients": "",
-    "nabh_status": "Needs verification",
+    "nabh_status": "Accredited",
     "jci_status": "Not listed",
     "verification_status": "Needs verification",
     "evidence_quality_score": "Medium",
@@ -3800,7 +3775,7 @@
     "hospital_search_text": "Location: Guwahati, Assam. Specialties: Oncology; Obstetrics & Gynaecology; Pulmonology; General Medicine; Ophthalmology; Orthopaedics; Neurosurgery; Dermatology; Paediatrics; Cardiology; Psychiatry; Neurology; Urology; ENT; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Radiation Oncology; Joint Arthroplasty; Renal Care. Procedures: CABG; Angioplasty; Chemotherapy; Linear Accelerator Radiotherapy; Dialysis. Facilities: Cath Lab Suite; High-energy LINAC; Modern Government Critical Care Block. International patient service: Not found on website."
   },
   {
-    "vector_position": 152,
+    "vector_position": 151,
     "hospital_id": "H156",
     "hospital_name": "Dr. B. Borooah Cancer Institute (BBCI)",
     "city": "Guwahati",
@@ -3825,7 +3800,7 @@
     "hospital_search_text": "Location: Guwahati, Assam. Also listed: Oncology. Subspecialties: Linear Accelerator Radiation; Radical Cancer Surgeries; Chemotherapy. Procedures: Tumor Resections; Versa HD Radiotherapy; Brachytherapy; Palliative Oncology. Facilities: Versa HD LINAC; PET-CT; In-house Histopathology; Dedicated Cancer ICUs. International patient service: Not found on website."
   },
   {
-    "vector_position": 153,
+    "vector_position": 152,
     "hospital_id": "H157",
     "hospital_name": "Health City Hospital",
     "city": "Guwahati",
@@ -3850,7 +3825,7 @@
     "hospital_search_text": "Location: Guwahati, Assam. Specialties: Oncology; General Medicine; Organ Transplant; Cardiology; Orthopaedics; Obstetrics & Gynaecology; Gastroenterology; Nephrology; Neurology; Cardiothoracic Surgery; Neurosurgery; Ophthalmology; Dermatology; Pulmonology; Paediatrics; Urology; ENT; Emergency Medicine; Critical Care. Also listed: Cardiology; Gastroenterology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Minimally Invasive Spine Surgery; Joint Replacement. Procedures: Emergency Angioplasty; CABG; Total Knee Arthroplasty; Stroke Thrombolysis. Facilities: Bi-plane Cath Lab; Advanced Neuro-navigation; 24/7 Level-1 Trauma Emergency. International patient service: Available."
   },
   {
-    "vector_position": 154,
+    "vector_position": 153,
     "hospital_id": "H158",
     "hospital_name": "AIIMS Deoghar",
     "city": "Deoghar",
@@ -3875,7 +3850,7 @@
     "hospital_search_text": "Location: Deoghar, Jharkhand. Specialties: Oncology; General Medicine; Orthopaedics; Paediatrics; Psychiatry; Emergency Medicine. Also listed: Cardiology; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Arthroplasty; Dialysis; Trauma Care. Procedures: Coronary Angioplasty; Fracture Fixations; Dialysis; Laparoscopic Surgeries. Facilities: Modern Cath Lab; Dialysis Facility; Government Critical Care Unit; Blood Bank. International patient service: Not found on website."
   },
   {
-    "vector_position": 155,
+    "vector_position": 154,
     "hospital_id": "H159",
     "hospital_name": "Rajendra Institute of Medical Sciences (RIMS)",
     "city": "Ranchi",
@@ -3900,7 +3875,7 @@
     "hospital_search_text": "Location: Ranchi, Jharkhand. Also listed: Cardiology; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Interventional Cardiology; Renal Transplantation; Trauma Resuscitation. Procedures: Kidney Transplant; Angioplasty; Brain Surgery; Dialysis; Total Knee Replacement. Facilities: Dedicated Super Speciality Block; Cath Lab; Trauma Center; Dialysis Complex. International patient service: Not found on website."
   },
   {
-    "vector_position": 156,
+    "vector_position": 155,
     "hospital_id": "H160",
     "hospital_name": "Tata Main Hospital (TMH)",
     "city": "Jamshedpur",
@@ -3925,7 +3900,7 @@
     "hospital_search_text": "Location: Jamshedpur, Jharkhand. Specialties: Oncology; Orthopaedics; Obstetrics & Gynaecology; Ophthalmology; Neurosurgery; Dermatology; Paediatrics; Pulmonology; Cardiology; Nephrology; Psychiatry; Neurology; Urology; ENT; Gastroenterology; Critical Care; Emergency Medicine. Also listed: Cardiology; Critical Care; Nephrology; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Replacement; Cancer Chemotherapy. Procedures: Coronary Angioplasty; Total Knee/Hip Arthroplasty; Hemodialysis; Trauma Care. Facilities: Modern Flat Panel Cath Lab; Dialysis Wing; Dedicated Burn & Trauma ICU. International patient service: Not found on website."
   },
   {
-    "vector_position": 157,
+    "vector_position": 156,
     "hospital_id": "H161",
     "hospital_name": "AIIMS Mangalagiri",
     "city": "Mangalagiri",
@@ -3950,7 +3925,7 @@
     "hospital_search_text": "Location: Mangalagiri, Andhra Pradesh. Specialties: Oncology; Gastroenterology; Obstetrics & Gynaecology; Cardiothoracic Surgery; Pulmonology; General Medicine; Endocrinology; Ophthalmology; Orthopaedics; Dermatology; Paediatrics; Cardiology; Nephrology; Psychiatry; Neurology; Urology; ENT; Emergency Medicine. Also listed: Cardiology; Critical Care; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Radiation Oncology; Joint Replacement; Renal Care. Procedures: CABG; Angioplasty; Chemotherapy; Linear Accelerator Radiotherapy; Dialysis. Facilities: Cath Lab Suite; Modern High-energy LINAC; Multi-bed Government ICU. International patient service: Not found on website."
   },
   {
-    "vector_position": 158,
+    "vector_position": 157,
     "hospital_id": "H162",
     "hospital_name": "Kamineni Hospitals, LB Nagar",
     "city": "Hyderabad",
@@ -3975,7 +3950,7 @@
     "hospital_search_text": "Location: Hyderabad, Telangana. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Organ Transplant; Orthopaedics. Subspecialties: Renal Transplantation; Joint Replacement; Interventional Cardiology. Procedures: Kidney Transplant; Angioplasty; Total Knee Arthroplasty; Dialysis. Facilities: Cath Lab; Dedicated Transplant Beds; NABL Accredited Diagnostic Centre. International patient service: Not found on website."
   },
   {
-    "vector_position": 159,
+    "vector_position": 158,
     "hospital_id": "H163",
     "hospital_name": "Medicover Hospitals, Hitec City",
     "city": "Hyderabad",
@@ -4000,7 +3975,7 @@
     "hospital_search_text": "Location: Hyderabad, Telangana. Also listed: Cardiology; Critical Care; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Robotic Joint Surgery; Medical Oncology. Procedures: Primary Angioplasty; Robotic Knee Replacement; Chemotherapy; Dialysis. Facilities: Flat Panel Cath Lab; Modern Modular Theatres; Dedicated Oncology Daycare. International patient service: Not found on website."
   },
   {
-    "vector_position": 160,
+    "vector_position": 159,
     "hospital_id": "H164",
     "hospital_name": "Baby Memorial Hospital",
     "city": "Kozhikode",
@@ -4025,7 +4000,7 @@
     "hospital_search_text": "Location: Kozhikode, Kerala. Specialties: Oncology; Gastroenterology; Organ Transplant; Neurosurgery; Orthopaedics; Cardiology; Cardiothoracic Surgery; Urology; Obstetrics & Gynaecology; Hematology & Bone Marrow Transplant; Nephrology; Endocrinology; Neurology; Dermatology; General Medicine; Pulmonology; Reproductive Medicine; Ophthalmology; Paediatrics; Psychiatry; ENT; Bariatric Surgery; Plastic & Reconstructive Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Organ Transplant; Orthopaedics. Subspecialties: Living-donor Liver & Kidney Transplants; Interventional Cardiology; Joint Arthroplasty. Procedures: Liver Transplant; Kidney Transplant; Angioplasty; Total Knee Replacement. Facilities: Bi-plane Cath Lab; Dedicated Organ Transplant ICUs; 800-bed Tertiary Complex. International patient service: Available."
   },
   {
-    "vector_position": 161,
+    "vector_position": 160,
     "hospital_id": "H165",
     "hospital_name": "Aster MIMS, Calicut",
     "city": "Kozhikode",
@@ -4050,7 +4025,7 @@
     "hospital_search_text": "Location: Kozhikode, Kerala. Specialties: Oncology; Gastroenterology; Orthopaedics; Obstetrics & Gynaecology; General Medicine; Neurosurgery; Nephrology; Neurology; Urology; Cardiology; Organ Transplant; Ophthalmology; Paediatrics; Pediatric Cardiology; Pulmonology; ENT; Cardiothoracic Surgery; Endocrinology; Dermatology; Psychiatry; Hematology & Bone Marrow Transplant; Critical Care; Emergency Medicine. Also listed: Cardiology; Hematology & Bone Marrow Transplant; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Multi-organ Transplants; Bone Marrow Transplant; Robotic Surgery. Procedures: Kidney Transplant; Liver Transplant; BMT; Robotic Joint Replacement. Facilities: Cath Lab; Linear Accelerator; Dedicated BMT Suites; International Desk. International patient service: Available."
   },
   {
-    "vector_position": 162,
+    "vector_position": 161,
     "hospital_id": "H166",
     "hospital_name": "KIMSHEALTH",
     "city": "Thiruvananthapuram",
@@ -4075,7 +4050,7 @@
     "hospital_search_text": "Location: Thiruvananthapuram, Kerala. Also listed: Cardiology; Gastroenterology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Heart & Liver Transplants; Radiation Oncology; Complex Joint Arthroplasty. Procedures: Heart Transplant; Liver Transplant; Versa HD Radiotherapy; CABG. Facilities: Versa HD LINAC; Digital Bi-plane Cath Lab; Dedicated Transplant ICUs. International patient service: Not found on website."
   },
   {
-    "vector_position": 163,
+    "vector_position": 162,
     "hospital_id": "H167",
     "hospital_name": "Regional Cancer Centre (RCC)",
     "city": "Thiruvananthapuram",
@@ -4100,7 +4075,7 @@
     "hospital_search_text": "Location: Thiruvananthapuram, Kerala. Specialties: Oncology. Also listed: Hematology & Bone Marrow Transplant; Oncology; Paediatrics. Subspecialties: Intensity-Modulated Radiotherapy; Hemato-Oncology; Radical Resections. Procedures: Linear Accelerator Radiation; Bone Marrow Transplant; Chemotherapy. Facilities: Multiple High-Energy LINACs; CyberKnife/Tomotherapy; Dedicated Pediatric Cancer Block. International patient service: Available."
   },
   {
-    "vector_position": 164,
+    "vector_position": 163,
     "hospital_id": "H168",
     "hospital_name": "Sree Chitra Tirunal Institute for Medical Sciences and Technology (SCTIMST)",
     "city": "Thiruvananthapuram",
@@ -4125,7 +4100,7 @@
     "hospital_search_text": "Location: Thiruvananthapuram, Kerala. Specialties: Cardiology; Neurology; Neurosurgery; Hematology & Bone Marrow Transplant; Cardiothoracic Surgery; Pediatric Cardiology; Orthopaedics; Emergency Medicine. Also listed: Cardiology; Cardiothoracic Surgery; Neurology; Neurosurgery. Subspecialties: Advanced Structural Heart Disease; Epilepsy Surgery; Deep Brain Stimulation; Aneurysm Coiling. Procedures: TAVR; Epilepsy Surgery; DBS; Complex Aortic Aneurysm Repair; Pediatric Cardiac Surgery. Facilities: Bi-plane Neuro Cath Lab; Intraoperative Monitoring; Advanced Biomaterials Wing. International patient service: Not found on website."
   },
   {
-    "vector_position": 165,
+    "vector_position": 164,
     "hospital_id": "H169",
     "hospital_name": "Kiran Multi Super Speciality Hospital",
     "city": "Surat",
@@ -4150,7 +4125,7 @@
     "hospital_search_text": "Location: Surat, Gujarat. Specialties: Oncology; Organ Transplant; Gastroenterology; Cardiology; Orthopaedics; Paediatrics; Pulmonology; Neurology; Obstetrics & Gynaecology; General Medicine; Endocrinology; Dermatology; Nephrology; Urology; Plastic & Reconstructive Surgery; Pediatric Cardiology; Hematology & Bone Marrow Transplant; Bariatric Surgery; Cardiothoracic Surgery; Neurosurgery; Ophthalmology; Psychiatry; ENT; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Heart & Kidney Transplants; Interventional Cardiology; Joint Arthroplasty. Procedures: Heart Transplant; Kidney Transplant; CABG; Total Knee Replacement. Facilities: Ultra-modern Cath Labs; TrueBeam Radiotherapy; Dedicated Transplant ICU; Helipad. International patient service: Available."
   },
   {
-    "vector_position": 166,
+    "vector_position": 165,
     "hospital_id": "H170",
     "hospital_name": "Sunshine Global Hospital",
     "city": "Surat",
@@ -4175,7 +4150,7 @@
     "hospital_search_text": "Location: Surat, Gujarat. Also listed: Cardiology; Critical Care; Gastroenterology; Nephrology; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Replacement; Renal Care. Procedures: Angioplasty; Total Knee/Hip Replacement; Hemodialysis; Fracture Fixation. Facilities: Digital Cath Lab; Clean Air Operation Theatres; Dialysis Centre. International patient service: Not found on website."
   },
   {
-    "vector_position": 167,
+    "vector_position": 166,
     "hospital_id": "H171",
     "hospital_name": "Bhailal Amin General Hospital (BAGH)",
     "city": "Vadodara",
@@ -4200,7 +4175,7 @@
     "hospital_search_text": "Location: Vadodara, Gujarat. Also listed: Cardiology; Gastroenterology; Nephrology; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Kidney and Liver Transplants; Radiation Oncology; Joint Arthroplasty. Procedures: Renal Transplant; Liver Transplant; LINAC Radiotherapy; Knee Replacement. Facilities: Linear Accelerator; Modern Cath Lab; Dedicated Organ Transplant Unit. International patient service: Not found on website."
   },
   {
-    "vector_position": 168,
+    "vector_position": 167,
     "hospital_id": "H172",
     "hospital_name": "Sterling Hospital, Rajkot",
     "city": "Rajkot",
@@ -4225,7 +4200,7 @@
     "hospital_search_text": "Location: Rajkot, Gujarat. Also listed: Cardiology; Critical Care; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Emergency Percutaneous Intervention; Joint Replacement; Renal Care. Procedures: Angioplasty; CABG; Total Knee Arthroplasty; Dialysis; Stroke Treatment. Facilities: Flat Panel Cath Lab; Dedicated Coronary Care Unit; Dialysis Wing. International patient service: Not found on website."
   },
   {
-    "vector_position": 169,
+    "vector_position": 168,
     "hospital_id": "H173",
     "hospital_name": "AIIMS Rajkot",
     "city": "Rajkot",
@@ -4250,7 +4225,7 @@
     "hospital_search_text": "Location: Rajkot, Gujarat. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Arthroplasty; Renal Care; Surgical Oncology. Procedures: CABG; Angioplasty; Joint Replacement; Dialysis; Chemotherapy. Facilities: Cath Lab Suite; Modern Modular OTs; Government ICU; Blood Bank. International patient service: Not found on website."
   },
   {
-    "vector_position": 170,
+    "vector_position": 169,
     "hospital_id": "H174",
     "hospital_name": "HCG Manavata Cancer Centre",
     "city": "Nashik",
@@ -4275,7 +4250,7 @@
     "hospital_search_text": "Location: Nashik, Maharashtra. Also listed: Hematology & Bone Marrow Transplant; Oncology. Subspecialties: Robotic Cancer Surgery; Stereotactic Radiosurgery; Stem Cell Transplants. Procedures: Bone Marrow Transplant; Versa HD Radiotherapy; Radical Resections; Immunotherapy. Facilities: Elekta Versa HD LINAC; Dedicated BMT Unit; Da Vinci Robot; PET-CT. International patient service: Not found on website."
   },
   {
-    "vector_position": 171,
+    "vector_position": 170,
     "hospital_id": "H175",
     "hospital_name": "Wockhardt Hospital, Nashik",
     "city": "Nashik",
@@ -4300,7 +4275,7 @@
     "hospital_search_text": "Location: Nashik, Maharashtra. Specialties: Oncology; Organ Transplant; Obstetrics & Gynaecology; Gastroenterology; Pulmonology; General Medicine; Nephrology; Orthopaedics; Cardiology; Urology; Endocrinology; Neurology; Dermatology; Neurosurgery; Ophthalmology; ENT; Plastic & Reconstructive Surgery; Bariatric Surgery; Cardiothoracic Surgery; Critical Care; Emergency Medicine. Also listed: Cardiology; Critical Care; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Replacement; Spine Surgery; Trauma Management. Procedures: Angioplasty; CABG; Total Knee Replacement; Stroke Thrombolysis; Dialysis. Facilities: Modern Cath Lab; Intensive Cardiac Care Unit; Dialysis Centre; 24/7 Trauma. International patient service: Available."
   },
   {
-    "vector_position": 172,
+    "vector_position": 171,
     "hospital_id": "H176",
     "hospital_name": "MGM Medical College and Hospital",
     "city": "Chhatrapati Sambhajinagar",
@@ -4325,7 +4300,7 @@
     "hospital_search_text": "Location: Chhatrapati Sambhajinagar, Maharashtra. Specialties: ENT. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Renal Transplantation; Interventional Cardiology; Joint Arthroplasty. Procedures: Kidney Transplant; Angioplasty; Total Knee Replacement; Hemodialysis. Facilities: Cath Lab Suite; Dedicated Renal Transplant Unit; 1000-bed Teaching Hospital. International patient service: Not found on website."
   },
   {
-    "vector_position": 173,
+    "vector_position": 172,
     "hospital_id": "H177",
     "hospital_name": "United CIIGMA Hospital",
     "city": "Chhatrapati Sambhajinagar",
@@ -4350,7 +4325,7 @@
     "hospital_search_text": "Location: Chhatrapati Sambhajinagar, Maharashtra. Also listed: Cardiology; Critical Care; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Linear Accelerator Radiotherapy; Spine Surgery. Procedures: Coronary Angioplasty; CABG; Chemotherapy & Radiotherapy; Brain Surgery. Facilities: Digital Cath Lab; Medical LINAC; Modern Critical Care; 24/7 Emergency. International patient service: Not found on website."
   },
   {
-    "vector_position": 174,
+    "vector_position": 173,
     "hospital_id": "H178",
     "hospital_name": "Aster Aadhar Hospital",
     "city": "Kolhapur",
@@ -4375,7 +4350,7 @@
     "hospital_search_text": "Location: Kolhapur, Maharashtra. Specialties: Oncology; General Medicine; Neurosurgery; Orthopaedics; Neurology; Cardiology; Endocrinology; Organ Transplant; Obstetrics & Gynaecology; Gastroenterology; Pulmonology; Paediatrics; Nephrology; Ophthalmology; Cardiothoracic Surgery; Dermatology; Plastic & Reconstructive Surgery; ENT; Hematology & Bone Marrow Transplant; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Radiation Oncology; Interventional Cardiology; Joint Arthroplasty; Renal Care. Procedures: Angioplasty; CABG; Linear Accelerator Radiotherapy; Knee Replacement; Dialysis. Facilities: Digital Cath Lab; Elekta LINAC; Modern Dialysis Centre; 24/7 Emergency. International patient service: Available."
   },
   {
-    "vector_position": 175,
+    "vector_position": 174,
     "hospital_id": "H179",
     "hospital_name": "Apollo BGS Hospitals, Mysuru",
     "city": "Mysuru",
@@ -4400,7 +4375,7 @@
     "hospital_search_text": "Location: Mysuru, Karnataka. Specialties: Organ Transplant; Oncology; ENT; Gastroenterology; Cardiology; Neurosurgery; Neurology; Paediatrics; Urology; Orthopaedics; Obstetrics & Gynaecology; General Medicine; Cardiothoracic Surgery; Endocrinology; Bariatric Surgery; Pulmonology; Hematology & Bone Marrow Transplant; Ophthalmology; Nephrology; Reproductive Medicine; Dermatology; Psychiatry; Emergency Medicine; Critical Care. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Liver and Kidney Transplants; Interventional Cardiology; Robotic Joint Surgery. Procedures: Living-Donor Liver Transplant; Kidney Transplant; CABG; Robotic Knee Arthroplasty. Facilities: Digital Cath Lab; TrueBeam LINAC; Dedicated Transplant ICU; 24/7 Stroke Unit. International patient service: Not found on website."
   },
   {
-    "vector_position": 176,
+    "vector_position": 175,
     "hospital_id": "H180",
     "hospital_name": "Narayana Multispeciality Hospital, Mysuru",
     "city": "Mysuru",
@@ -4425,7 +4400,7 @@
     "hospital_search_text": "Location: Mysuru, Karnataka. Specialties: Oncology; Gastroenterology; Orthopaedics; Cardiology; Neurosurgery; Hematology & Bone Marrow Transplant; Nephrology; Obstetrics & Gynaecology; Pulmonology; Neurology; Organ Transplant; Bariatric Surgery; Cardiothoracic Surgery; Endocrinology; Ophthalmology; Paediatrics; Psychiatry; Reproductive Medicine; General Medicine; Dermatology; Urology; Critical Care; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Complex Joint Surgery; Renal Care. Procedures: Primary Angioplasty; CABG; Total Knee Replacement; Hemodialysis. Facilities: Flat Panel Cath Lab; Dedicated Cardiac ICU; Dialysis Suite; 24/7 Trauma. International patient service: Not found on website."
   },
   {
-    "vector_position": 177,
+    "vector_position": 176,
     "hospital_id": "H181",
     "hospital_name": "KLE Centenary Charitable Hospital",
     "city": "Belagavi",
@@ -4450,7 +4425,7 @@
     "hospital_search_text": "Location: Belagavi, Karnataka. Specialties: Oncology; Neurology; Cardiology; Gastroenterology; Orthopaedics; Nephrology; Ophthalmology; Urology; Endocrinology; Neurosurgery; ENT; Pulmonology; Paediatrics; Obstetrics & Gynaecology; General Medicine; Psychiatry; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Renal Transplantation; Radiation Oncology; Joint Arthroplasty. Procedures: Kidney Transplant; Angioplasty; Total Knee/Hip Replacement; LINAC Radiation. Facilities: Digital Cath Lab; Linear Accelerator; Dedicated Transplant Units; 1000+ Beds. International patient service: Available."
   },
   {
-    "vector_position": 178,
+    "vector_position": 177,
     "hospital_id": "H182",
     "hospital_name": "Tatwadarsha Hospital",
     "city": "Hubballi",
@@ -4475,7 +4450,7 @@
     "hospital_search_text": "Location: Hubballi, Karnataka. Also listed: Cardiology; Critical Care; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Arthroplasty; Trauma Management. Procedures: Angioplasty; Total Knee Replacement; Dialysis; Stroke Thrombolysis. Facilities: Flat Panel Cath Lab; Intensive Coronary Care Unit; Dialysis Facility. International patient service: Not found on website."
   },
   {
-    "vector_position": 179,
+    "vector_position": 178,
     "hospital_id": "H183",
     "hospital_name": "Goa Medical College and Hospital (GMC)",
     "city": "Bambolim",
@@ -4500,7 +4475,7 @@
     "hospital_search_text": "Location: Bambolim, Goa. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Renal Transplantation; Interventional Cardiology; Surgical Oncology. Procedures: Kidney Transplant; CABG; Angioplasty; Radical Resections; Dialysis. Facilities: Dedicated Super Speciality Block; Cath Lab; State Cancer Centre; Trauma Centre. International patient service: Not found on website."
   },
   {
-    "vector_position": 180,
+    "vector_position": 179,
     "hospital_id": "H184",
     "hospital_name": "Manipal Hospital, Dona Paula",
     "city": "Panaji",
@@ -4525,7 +4500,7 @@
     "hospital_search_text": "Location: Panaji, Goa. Specialties: Orthopaedics; Oncology; Neurosurgery; Cardiology; Nephrology; Neurology; Urology; Obstetrics & Gynaecology; Bariatric Surgery; General Medicine; Organ Transplant; Endocrinology; Ophthalmology; Dermatology; Pulmonology; Psychiatry; Plastic & Reconstructive Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Gastroenterology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Radiation Oncology; Joint Arthroplasty. Procedures: Angioplasty; Total Knee Replacement; Chemotherapy & Radiotherapy; Dialysis. Facilities: Cath Lab; Linear Accelerator; Dialysis Unit; International Patient Lounge. International patient service: Not found on website."
   },
   {
-    "vector_position": 181,
+    "vector_position": 180,
     "hospital_id": "H185",
     "hospital_name": "AIIMS Bilaspur",
     "city": "Bilaspur",
@@ -4550,7 +4525,7 @@
     "hospital_search_text": "Location: Bilaspur, Himachal Pradesh. Specialties: Oncology; Obstetrics & Gynaecology; Cardiothoracic Surgery; Pulmonology; General Medicine; Endocrinology; Ophthalmology; Neurosurgery; Dermatology; Cardiology; Nephrology; Psychiatry; Paediatrics; Neurology; Urology; Orthopaedics; Critical Care; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics; Pulmonology. Subspecialties: Interventional Cardiology; Joint Arthroplasty; Radiation Oncology; Renal Care. Procedures: CABG; Angioplasty; Radical Cancer Surgeries; Dialysis; Knee Replacement. Facilities: Cath Lab Suite; Modern Modular OTs; High-energy LINAC; Government ICU. International patient service: Not found on website."
   },
   {
-    "vector_position": 182,
+    "vector_position": 181,
     "hospital_id": "H186",
     "hospital_name": "Indira Gandhi Medical College (IGMC)",
     "city": "Shimla",
@@ -4575,7 +4550,7 @@
     "hospital_search_text": "Location: Shimla, Himachal Pradesh. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Interventional Cardiology; Neurosurgical Trauma; Joint Arthroplasty. Procedures: Angioplasty; Brain Surgery; Total Knee Replacement; Dialysis. Facilities: Modern Cath Lab; Dialysis Centre; State Cancer Unit; Level-1 Trauma. International patient service: Not found on website."
   },
   {
-    "vector_position": 183,
+    "vector_position": 182,
     "hospital_id": "H187",
     "hospital_name": "Hi-Tech Medical College and Hospital",
     "city": "Rourkela",
@@ -4600,7 +4575,7 @@
     "hospital_search_text": "Location: Rourkela, Odisha. Specialties: Orthopaedics; Psychiatry; Paediatrics; Obstetrics & Gynaecology; General Medicine; Dermatology; Emergency Medicine. Also listed: Cardiology; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Trauma Management; Joint Replacement. Procedures: Angioplasty; Total Knee Arthroplasty; Hemodialysis; Fracture Fixation. Facilities: Flat Panel Cath Lab; Dialysis Centre; 24/7 Trauma & Emergency Unit. International patient service: Not found on website."
   },
   {
-    "vector_position": 184,
+    "vector_position": 183,
     "hospital_id": "H188",
     "hospital_name": "MKCG Medical College and Hospital",
     "city": "Berhampur",
@@ -4625,7 +4600,7 @@
     "hospital_search_text": "Location: Berhampur, Odisha. Specialties: Ophthalmology; Paediatrics; Pulmonology; Psychiatry; Orthopaedics; Obstetrics & Gynaecology; General Medicine; Cardiology; ENT; Dermatology; Nephrology; Urology; Endocrinology; Emergency Medicine. Also listed: Cardiology; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Renal Dialysis; Trauma Resuscitation. Procedures: Angioplasty; Dialysis; Complex Fracture Fixation; Brain Surgery. Facilities: Modern Super Speciality Block; Cath Lab; Dedicated Dialysis Facility. International patient service: Not found on website."
   },
   {
-    "vector_position": 185,
+    "vector_position": 184,
     "hospital_id": "H189",
     "hospital_name": "Medica North Bengal Clinic",
     "city": "Siliguri",
@@ -4650,7 +4625,7 @@
     "hospital_search_text": "Location: Siliguri, West Bengal. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Arthroplasty; Stroke Intervention. Procedures: Angioplasty; CABG; Total Knee Replacement; Dialysis; Thrombolysis. Facilities: Digital Cath Lab; Modern ICU/CCU; Dialysis Wing; 24/7 Emergency Care. International patient service: Not found on website."
   },
   {
-    "vector_position": 186,
+    "vector_position": 185,
     "hospital_id": "H190",
     "hospital_name": "Desun Hospital, Siliguri",
     "city": "Siliguri",
@@ -4675,7 +4650,7 @@
     "hospital_search_text": "Location: Siliguri, West Bengal. Specialties: Orthopaedics; General Medicine; Oncology; Cardiology; Obstetrics & Gynaecology; Gastroenterology; Endocrinology; Dermatology; Paediatrics; Pulmonology; Nephrology; Urology; ENT; Plastic & Reconstructive Surgery; Neurosurgery; Neurology; Psychiatry; Emergency Medicine; Critical Care. Also listed: Cardiology; Cardiothoracic Surgery; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Primary Angioplasty; Joint Replacement; Renal Dialysis; Trauma Care. Procedures: Coronary Angioplasty; CABG; Total Knee Replacement; Hemodialysis. Facilities: Modern Cath Lab Complex; Advanced Burns & Trauma Unit; Dialysis Facility. International patient service: Available."
   },
   {
-    "vector_position": 187,
+    "vector_position": 186,
     "hospital_id": "H191",
     "hospital_name": "The Mission Hospital",
     "city": "Durgapur",
@@ -4700,7 +4675,7 @@
     "hospital_search_text": "Location: Durgapur, West Bengal. Specialties: Oncology; Orthopaedics; Cardiology; Obstetrics & Gynaecology; Pediatric Cardiology; Pulmonology; General Medicine; Gastroenterology; Endocrinology; Nephrology; Psychiatry; Urology; ENT; Neurosurgery; Ophthalmology; Dermatology; Paediatrics; Hematology & Bone Marrow Transplant; Emergency Medicine; Critical Care. Also listed: Cardiology; Cardiothoracic Surgery; Neurology; Neurosurgery; Oncology; Orthopaedics. Subspecialties: Minimally Invasive Cardiac Surgery; Radiation Oncology; Joint Replacement. Procedures: CABG; Angioplasty; Linear Accelerator Radiation; Total Knee Replacement. Facilities: State-of-the-art Cath Labs; Elekta LINAC; Helipad for Emergency Flights. International patient service: Not found on website."
   },
   {
-    "vector_position": 188,
+    "vector_position": 187,
     "hospital_id": "H192",
     "hospital_name": "Max Smart Super Speciality Hospital, Saket",
     "city": "New Delhi",
@@ -4725,7 +4700,7 @@
     "hospital_search_text": "Location: New Delhi, Delhi. Specialties: Cardiology; Cardiothoracic Surgery; Emergency Medicine; Critical Care. Also listed: Cardiology; Neurology; Neurosurgery; Orthopaedics; Urology. Subspecialties: Robotic Joint Replacement; Robotic Urological Surgery; Interventional Cardiology. Procedures: Robotic Knee Arthroplasty; Da Vinci Robotic Prostatectomy; Angioplasty. Facilities: Da Vinci Xi Robot; Mako Robotic Arm; Modern Digital Cath Lab; 250+ Beds. International patient service: Available."
   },
   {
-    "vector_position": 189,
+    "vector_position": 188,
     "hospital_id": "H193",
     "hospital_name": "Manipal Hospital, Dwarka",
     "city": "New Delhi",
@@ -4750,7 +4725,7 @@
     "hospital_search_text": "Location: New Delhi, Delhi. Specialties: Organ Transplant. Also listed: Cardiology; Gastroenterology; Hematology & Bone Marrow Transplant; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Liver and Kidney Transplants; Bone Marrow Transplant; Robotic Surgery. Procedures: Living-donor Liver Transplant; Kidney Transplant; Allogeneic BMT; Robotic Surgeries. Facilities: TrueBeam LINAC; Digital Bi-plane Cath Lab; Dedicated BMT Unit; International Desk. International patient service: Not found on website."
   },
   {
-    "vector_position": 190,
+    "vector_position": 189,
     "hospital_id": "H194",
     "hospital_name": "Jaypee Hospital",
     "city": "Noida",
@@ -4775,7 +4750,7 @@
     "hospital_search_text": "Location: Noida, Uttar Pradesh. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Living-Donor Liver & Kidney Transplantation; Robotic Cancer Surgery; Joint Replacement. Procedures: Liver Transplant; Kidney Transplant; CABG; Robotic Prostatectomy; LINAC Radiation. Facilities: Modern Bi-plane Cath Lab; TrueBeam LINAC; Dedicated Organ Transplant ICUs. International patient service: Not found on website."
   },
   {
-    "vector_position": 191,
+    "vector_position": 190,
     "hospital_id": "H195",
     "hospital_name": "Fortis Hospital, Noida",
     "city": "Noida",
@@ -4800,7 +4775,7 @@
     "hospital_search_text": "Location: Noida, Uttar Pradesh. Specialties: Oncology; Organ Transplant; Orthopaedics; Cardiology; Gastroenterology; Endocrinology; Obstetrics & Gynaecology; Pulmonology; Neurology; Neurosurgery; Hematology & Bone Marrow Transplant; General Medicine; Nephrology; ENT; Paediatrics; Urology; Ophthalmology; Dermatology; Bariatric Surgery; Cardiothoracic Surgery; Psychiatry; Critical Care; Emergency Medicine. Also listed: Cardiology; Gastroenterology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Interventional Cardiology; Liver and Kidney Transplantation; Radiation Oncology. Procedures: Angioplasty; CABG; Kidney Transplant; Versa HD Radiotherapy; Knee Replacement. Facilities: Digital Cath Lab; Versa HD LINAC; Dedicated Renal Transplant Unit; 24/7 Trauma. International patient service: Available."
   },
   {
-    "vector_position": 192,
+    "vector_position": 191,
     "hospital_id": "H196",
     "hospital_name": "S. L. Raheja Hospital (Fortis Associate)",
     "city": "Mumbai",
@@ -4825,7 +4800,7 @@
     "hospital_search_text": "Location: Mumbai, Maharashtra. Specialties: Oncology; Organ Transplant; Orthopaedics; Urology; Cardiology; Neurosurgery; Plastic & Reconstructive Surgery; Obstetrics & Gynaecology; Bariatric Surgery; General Medicine; Endocrinology; Dermatology; Paediatrics; Pulmonology; Nephrology; ENT; Neurology; Emergency Medicine; Critical Care. Also listed: Cardiology; Critical Care; Endocrinology; Oncology; Orthopaedics. Subspecialties: Surgical Oncology; Diabetic Foot Salvage; Interventional Cardiology; Joint Arthroplasty. Procedures: Chemotherapy; Angioplasty; Total Knee Replacement; Complex Diabetic Foot Debridement. Facilities: Cath Lab; Dedicated Oncology Ward; Diabetic Foot Surgery Centre; 24/7 ICU. International patient service: Available."
   },
   {
-    "vector_position": 193,
+    "vector_position": 192,
     "hospital_id": "H197",
     "hospital_name": "Saifee Hospital",
     "city": "Mumbai",
@@ -4850,7 +4825,7 @@
     "hospital_search_text": "Location: Mumbai, Maharashtra. Also listed: Bariatric Surgery; Cardiology; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Robotic Bariatric Surgery; Interventional Cardiology; Joint Replacement; Renal Care. Procedures: Robotic Gastric Bypass; Coronary Angioplasty; Total Knee Replacement; Dialysis. Facilities: Da Vinci Robotic Suite; Digital Cath Lab; Modern Dialysis Centre; Sea-facing Critical Care. International patient service: Not found on website."
   },
   {
-    "vector_position": 194,
+    "vector_position": 193,
     "hospital_id": "H198",
     "hospital_name": "Bombay Hospital and Medical Research Centre",
     "city": "Mumbai",
@@ -4875,7 +4850,7 @@
     "hospital_search_text": "Location: Mumbai, Maharashtra. Specialties: Oncology; Orthopaedics; Ophthalmology; Obstetrics & Gynaecology; Cardiology; Nephrology; Neurosurgery; Urology; Pulmonology; Neurology; Gastroenterology; ENT; General Medicine; Dermatology; Paediatrics; Cardiothoracic Surgery; Endocrinology; Psychiatry; Organ Transplant; Critical Care; Emergency Medicine. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Spinal Arthroscopy; Renal Care; Joint Arthroplasty. Procedures: Angioplasty; CABG; Total Knee/Hip Replacement; Hemodialysis; Brain Tumor Surgery. Facilities: Multiple Digital Cath Labs; 800+ Beds; High-volume Dialysis Centre; 24/7 Emergency. International patient service: Available."
   },
   {
-    "vector_position": 195,
+    "vector_position": 194,
     "hospital_id": "H199",
     "hospital_name": "Manipal Hospital, Whitefield",
     "city": "Bengaluru",
@@ -4900,7 +4875,7 @@
     "hospital_search_text": "Location: Bengaluru, Karnataka. Specialties: Oncology; Obstetrics & Gynaecology; Organ Transplant; Cardiology; Orthopaedics; Neurology; Bariatric Surgery; Nephrology; Neurosurgery; Urology; General Medicine; Gastroenterology; Endocrinology; Ophthalmology; Dermatology; Pulmonology; Psychiatry; Plastic & Reconstructive Surgery; ENT; Emergency Medicine; Critical Care. Also listed: Cardiology; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics. Subspecialties: Radiation Oncology; Interventional Cardiology; Joint Arthroplasty; Renal Transplants. Procedures: Angioplasty; CABG; TrueBeam Radiotherapy; Kidney Transplant; Knee Replacement. Facilities: Digital Flat Panel Cath Lab; TrueBeam LINAC; Dedicated Renal Transplant Unit. International patient service: Not found on website."
   },
   {
-    "vector_position": 196,
+    "vector_position": 195,
     "hospital_id": "H200",
     "hospital_name": "Apollo Hospitals, Sheshadripuram",
     "city": "Bengaluru",
@@ -4925,7 +4900,7 @@
     "hospital_search_text": "Location: Bengaluru, Karnataka. Also listed: Cardiology; Emergency Medicine; Nephrology; Neurology; Neurosurgery; Orthopaedics. Subspecialties: Interventional Cardiology; Joint Replacement; Minimally Invasive Spine Surgery. Procedures: Primary Angioplasty; CABG; Total Knee/Hip Arthroplasty; Dialysis. Facilities: Flat Panel Digital Cath Lab; 24/7 Stroke Unit; Modern Dialysis Suite. International patient service: Not found on website."
   },
   {
-    "vector_position": 197,
+    "vector_position": 196,
     "hospital_id": "H201",
     "hospital_name": "BGS Gleneagles Global Hospitals, Kengeri",
     "city": "Bengaluru",
@@ -4950,7 +4925,7 @@
     "hospital_search_text": "Location: Bengaluru, Karnataka. Specialties: Organ Transplant; General Medicine; Orthopaedics; Oncology; Cardiology; Gastroenterology; Neurosurgery; Nephrology; Hematology & Bone Marrow Transplant; Endocrinology; Urology; Plastic & Reconstructive Surgery; ENT; Emergency Medicine; Critical Care. Also listed: Cardiology; Gastroenterology; Hematology & Bone Marrow Transplant; Nephrology; Neurology; Neurosurgery; Oncology; Organ Transplant. Subspecialties: Multi-organ Transplants (Liver, Kidney, Heart, Lung); Bone Marrow Transplant. Procedures: Living-Donor Liver Transplant; Kidney Transplant; Heart Transplant; BMT; CABG. Facilities: Dedicated Organ Transplant ICUs; Modern Cath Lab; Linear Accelerator Suite. International patient service: Available."
   },
   {
-    "vector_position": 198,
+    "vector_position": 197,
     "hospital_id": "H202",
     "hospital_name": "Apollo Health City, Jubilee Hills",
     "city": "Hyderabad",
@@ -4975,7 +4950,7 @@
     "hospital_search_text": "Location: Hyderabad, Telangana. Also listed: Cardiology; Neurology; Neurosurgery; Oncology; Organ Transplant; Orthopaedics; Pediatric Cardiology; Plastic & Reconstructive Surgery. Subspecialties: Robotic Transplants; CyberKnife Radiosurgery; Pediatric Cardiology. Procedures: TAVR; Robotic Kidney Transplant; CyberKnife; Liver Transplant; Bone Marrow Transplant. Facilities: CyberKnife VSI; PET-MRI; Dedicated Bone Marrow Unit; International Concierge Hub. International patient service: Not found on website."
   },
   {
-    "vector_position": 199,
+    "vector_position": 198,
     "hospital_id": "H203",
     "hospital_name": "ILC (Institute of Neurosciences Kolkata)",
     "city": "Kolkata",
@@ -5000,7 +4975,7 @@
     "hospital_search_text": "Location: Kolkata, West Bengal. Specialties: Neurology; Neurosurgery; Oncology; Endocrinology; Orthopaedics; Psychiatry; Gastroenterology; Paediatrics; Cardiology; ENT; Ophthalmology; Emergency Medicine; Critical Care. Also listed: Neurology; Neurosurgery. Subspecialties: Epilepsy Surgery; Microvascular Neurosurgery; Deep Brain Stimulation; Stroke Interventions. Procedures: Brain Tumor Surgery; DBS; Endovascular Coiling; Stroke Thrombolysis; Neuro-Rehabilitation. Facilities: Bi-plane Neuro Cath Lab; Comprehensive Neuro ICU; Advanced Neuro-Rehab Centre. International patient service: Not found on website."
   },
   {
-    "vector_position": 200,
+    "vector_position": 199,
     "hospital_id": "H204",
     "hospital_name": "Ruby General Hospital",
     "city": "Kolkata",

@@ -47,7 +47,7 @@ H081,H148,Peerless Hospital,Peerless Hospital and B. K. Roy Research Centre,0.48
 H030,H147,"SIMS Hospital, Vadapalani",SIMS Hospital (SRM Institutes for Medical Science),0.43,"same city + brand, name similarity; reviewed 2026-11-11"
 H101,H009,PGIMER Chandigarh,PGIMER Chandigarh,1.0,"added from the team 150 sheet, verified by build_hospital_master"
 H102,H010,"Fortis Hospital, Mohali","Fortis Hospital, Mohali",1.0,"added from the team 150 sheet, verified by build_hospital_master"
-H103,H016,"Apollo Hospitals, Navi Mumbai","Apollo Hospitals, Navi Mumbai",1.0,"added from the team 150 sheet, verified by build_hospital_master"
+H061,H016,"Apollo Hospitals, CBD Belapur","Apollo Hospitals, Navi Mumbai",1.0,"same city + brand + same JCI id (60006127) + same website; reviewed 2026-11-22 (was a duplicate H103)"
 H104,H020,"Jupiter Hospital, Baner","Jupiter Hospital, Baner",1.0,"added from the team 150 sheet, verified by build_hospital_master"
 H105,H024,Rela Hospital,Rela Hospital,1.0,"added from the team 150 sheet, verified by build_hospital_master"
 H106,H033,"Yashoda Hospitals, Secunderabad","Yashoda Hospitals, Secunderabad",1.0,"added from the team 150 sheet, verified by build_hospital_master"
