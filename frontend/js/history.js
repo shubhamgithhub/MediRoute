@@ -3,6 +3,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   "use strict";
   const account = window.MediRouteAccount;
+  if (window.lucide) window.lucide.createIcons();  // draws the logo and menu icons, as on the other pages
   const $ = (s) => document.querySelector(s);
   const el = (tag, cls, text) => {
     const e = document.createElement(tag);
