@@ -27,6 +27,8 @@ import urllib.request
 from dataclasses import dataclass, field
 from typing import Any
 
+from mediroute.utils.cloudwatch_metrics import observe_llm_call
+
 DEFAULT_MODEL = os.getenv("MEDIROUTE_LLM_MODEL", "llama3.2")
 # 127.0.0.1, not "localhost": on Windows "localhost" tries IPv6 (::1) first, Ollama listens on IPv4
 # only, and every call waited ~2 s for the fallback (measured 2026-11-10).
@@ -222,6 +224,7 @@ class OpenRouterClient:
         with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
             return json.loads(response.read().decode("utf-8"))
 
+    @observe_llm_call
     def _stream_chat(self, payload: dict) -> dict:
         """Streams the completion so we can time the wait before the first token ourselves.
 

@@ -22,6 +22,29 @@ EXPECTED = {
     "OPENROUTER_API_KEY_PARAMETER_ARN",
 }
 
+DUCKDNS_LABEL = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?")
+DUCKDNS_PARAMETER_PREFIX = (
+    "arn:aws:ssm:ap-southeast-2:299952487175:parameter/mediroute/dev/duckdns"
+)
+
+
+def configure_duckdns(task, label):
+    if not DUCKDNS_LABEL.fullmatch(label):
+        raise SystemExit("MEDIROUTE_DUCKDNS_LABEL must be one lowercase DuckDNS label")
+    frontend = next(c for c in task["containerDefinitions"] if c["name"] == "frontend")
+    frontend.setdefault("environment", []).append({"name": "MEDIROUTE_DUCKDNS_LABEL", "value": label})
+    frontend["portMappings"] = [{"containerPort": 443, "protocol": "tcp"}]
+    frontend["secrets"] = [
+        {"name": name, "valueFrom": f"{DUCKDNS_PARAMETER_PREFIX}/{parameter}"}
+        for name, parameter in [
+            ("MEDIROUTE_DUCKDNS_TOKEN", "token"),
+            ("MEDIROUTE_DUCKDNS_CERT", "fullchain"),
+            ("MEDIROUTE_DUCKDNS_KEY", "privkey"),
+        ]
+    ]
+    task["containerDefinitions"] = [c for c in task["containerDefinitions"] if c["name"] != "tunnel"]
+
+
 def main():
     if len(sys.argv) != 2 or sys.argv[1] not in ("validate", "render"):
         raise SystemExit("Usage: render_ecs_task.py validate|render")
@@ -77,6 +100,11 @@ def main():
     if "${" in json.dumps(rendered):
         raise SystemExit("Unresolved task-definition placeholder")
 
+    mode = os.getenv("MEDIROUTE_ENDPOINT_MODE", "quick-tunnel")
+    if mode == "duckdns":
+        configure_duckdns(rendered, os.getenv("MEDIROUTE_DUCKDNS_LABEL", ""))
+    elif mode != "quick-tunnel":
+        raise SystemExit("Invalid MEDIROUTE_ENDPOINT_MODE")
     print(json.dumps(rendered, indent=2))
 
 if __name__ == "__main__":

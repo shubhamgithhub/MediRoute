@@ -14,7 +14,7 @@ their history. The **My history** tab is shown only to a logged-in user.
 |---|---|
 | When to log in | **Optional.** Search, results and hospital pages work without an account. On the hospital page, "Save to my history" opens a Log in / Sign up dialog if needed; "Skip, don't save" is always possible. A "Log in" link is in the header of every page. |
 | What is saved | Request text (only if "Save my description" is ticked, on by default), city, language, the thread (each question and answer), suggested speciality and reason, a **shortlist of up to 3 hospitals** (snapshot of name, city, specialities, website), the trace request id. **No PDF and no report text.** |
-| Where | SQLite, `data/app/mediroute.db` (folder ignored by git; set `MEDIROUTE_APP_DB` to move it). On AWS it lives on the persistent disk with the logs (encrypted EBS volume). Not in the trace file: that is admin/debug data, pruned to 100 requests. |
+| Where | SQLite, `data/app/mediroute.db` (folder ignored by git; set `MEDIROUTE_APP_DB` to move it). The Fargate demo image uses writable task storage at `/var/lib/mediroute/mediroute.db`. Accounts and saved searches reset when the task is replaced. Not in the trace file: that is admin/debug data, pruned to 100 requests. |
 | Login method | Email + password. No email verification, no password reset (an admin can reset), no Google sign-in (possible later). |
 | Sign-up fields | **Required:** email, password (8+ characters), country of residence, consent tick. **Optional:** name, preferred language. **Not collected:** phone, age, sex, passport, address. |
 | Passwords | Salted hash with Python's built-in `hashlib.scrypt`; never stored or logged as text. |

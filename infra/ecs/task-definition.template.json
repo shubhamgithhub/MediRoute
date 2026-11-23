@@ -18,6 +18,7 @@
       "environment": [
         {"name": "MEDIROUTE_HOST", "value": "0.0.0.0"},
         {"name": "MEDIROUTE_PORT", "value": "8000"},
+        {"name": "MEDIROUTE_METRICS_ENABLED", "value": "true"},
         {"name": "MEDIROUTE_LLM_PROVIDER", "value": "openrouter"},
         {"name": "MEDIROUTE_OPENROUTER_MODEL", "value": "openai/gpt-6-luna"}
       ],

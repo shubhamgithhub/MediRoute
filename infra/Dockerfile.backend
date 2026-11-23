@@ -3,6 +3,7 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
     MEDIROUTE_HOST=0.0.0.0 MEDIROUTE_PORT=8000 \
     MEDIROUTE_DATA_DIR=/srv/mediroute/data \
+    MEDIROUTE_APP_DB=/var/lib/mediroute/mediroute.db \
     MEDIROUTE_LOG_DIR=/tmp/mediroute-logs \
     HF_HOME=/tmp/huggingface
 WORKDIR /srv/mediroute
@@ -21,7 +22,10 @@ RUN python -m pip install --no-cache-dir --timeout 120 --retries 8 "pip==26.3" "
     && python -m pip check
 RUN useradd --uid 10001 --create-home --shell /usr/sbin/nologin mediroute \
     && mkdir -p /tmp/mediroute-logs /tmp/huggingface \
-    && chown -R 10001:10001 /tmp/mediroute-logs /tmp/huggingface
+    && chown -R 10001:10001 /tmp/mediroute-logs /tmp/huggingface \
+    && install -d -m 0700 -o 10001 -g 10001 /var/lib/mediroute
 USER 10001
+# Check SQLite can create and write the database with the actual container UID.
+RUN python -c 'import os, sqlite3; path = os.environ["MEDIROUTE_APP_DB"]; db = sqlite3.connect(path); db.execute("CREATE TABLE build_probe (id INTEGER)"); db.close(); os.unlink(path)'
 EXPOSE 8000
 CMD ["uvicorn", "mediroute.backend.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -5,7 +5,7 @@ import json
 import pandas as pd
 import pytest
 
-from mediroute.common.locations import city_names, resolve_location
+from mediroute.common.locations import city_names, location_in_text, resolve_location, state_in_text
 from mediroute.common.specialties import (
     hospital_label_map,
     hospital_specialty_counts,
@@ -92,6 +92,8 @@ def test_search_index_matches_hospital_table(hospitals):
     ("Gurugram", {"New Delhi", "Gurugram"}),   # a city searches its whole area
     ("mumbai", {"Mumbai", "Navi Mumbai"}),
     ("Chennai", {"Chennai"}),
+    ("Bombay", {"Mumbai", "Navi Mumbai"}),     # other_names in cities.csv
+    ("Delhi", {"New Delhi", "Noida"}),
 ])
 def test_search_areas(choice, must_include):
     assert must_include <= resolve_location(choice)
@@ -101,6 +103,19 @@ def test_no_preference_and_unknown_city():
     assert resolve_location("No preference") is None
     assert resolve_location("") is None
     assert resolve_location("Atlantis") == {"Atlantis"}  # exact only, so the patient is asked
+
+
+@pytest.mark.parametrize("text, area", [
+    ("bypass heart surgery in mumbai", "Mumbai"),
+    ("IVF in Navi Mumbai", "Mumbai"),                      # city and its area agree
+    ("knee replacement in Bangalore", "Bengaluru"),
+    ("dialysis near Delhi", "Delhi NCR"),
+    ("from Mumbai, want surgery in Pune", None),           # two areas: do not guess
+    ("chest pain when I climb stairs", None),
+    ("Suratkal clinic", None),                             # whole words only
+])
+def test_location_in_patient_text(text, area):
+    assert location_in_text(text) == area
 
 
 # ---------------------------------------------------------------- ranking uses the new fields
@@ -134,3 +149,13 @@ def test_master_value_formats_score_and_website_evidence_ranks_first():
     assert "NABH accredited" in ranked[0]["ranking_reasons"]
     assert ranked[1]["business_bonus"] == 0
     assert any("not yet confirmed" in r for r in ranked[1]["ranking_reasons"])
+
+
+@pytest.mark.parametrize("text, state", [
+    ("cabg in uttar pradesh", "Uttar Pradesh"),
+    ("Knee replacement needed; anywhere in Maharashtra is fine.", "Maharashtra"),
+    ("dialysis in Kerala or Tamil Nadu", None),           # two states: do not guess
+    ("chest pain", None),
+])
+def test_state_in_patient_text(text, state):
+    assert state_in_text(text) == state

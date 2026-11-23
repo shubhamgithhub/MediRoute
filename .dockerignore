@@ -30,6 +30,9 @@ venv/
 **/id_rsa
 **/id_ed25519
 
+# Local account databases and saved searches
+data/app/
+
 # Logs and temporary files
 **/*.log
 **/logs/
