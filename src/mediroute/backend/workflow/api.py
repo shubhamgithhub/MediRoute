@@ -20,6 +20,7 @@ from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
 
 from mediroute.backend.workflow.patient_routing_graph import PatientRoutingGraph
+from mediroute.common.locations import NO_PREFERENCE, location_in_text, state_in_text
 from mediroute.utils.logging_config import get_logger
 
 logger = get_logger()
@@ -94,6 +95,15 @@ async def run_patient_routing(
     (ranked hospitals), or return a clarification. Raw PDF bytes are never returned."""
     report_files = await _read_reports(files or [])
     workflow_id = uuid.uuid4().hex[:12]
+    city_from_text = state_from_text = None
+    if (preferred_city or "").strip().casefold() in NO_PREFERENCE and not (preferred_state or "").strip():
+        # No location chosen on the page: use a city the patient typed ("bypass surgery in Mumbai"),
+        # else a state ("CABG in Uttar Pradesh"). A city is more precise, so it wins.
+        city_from_text = location_in_text(requirement)
+        preferred_city = city_from_text or preferred_city
+        if not city_from_text:
+            state_from_text = state_in_text(requirement)
+            preferred_state = state_from_text or preferred_state
     answers = {"body_area": clarification_body_area, "existing_diagnosis": clarification_existing_diagnosis,
                "recommended_procedure": clarification_recommended_procedure}
     initial_state = {
@@ -114,8 +124,10 @@ async def run_patient_routing(
         "clarification_reason": None,
         "error_message": None,
     }
-    logger.info("[workflow %s] start reports=%d text_chars=%d city=%s round=%d selected=%s parent=%s",
-                workflow_id, len(report_files), len(requirement), preferred_city, clarification_round,
+    logger.info("[workflow %s] start reports=%d text_chars=%d city=%s%s state=%s%s round=%d selected=%s parent=%s",
+                workflow_id, len(report_files), len(requirement), preferred_city,
+                " (from the text)" if city_from_text else "", preferred_state,
+                " (from the text)" if state_from_text else "", clarification_round,
                 selected_specialty, parent_request_id)
     try:
         # The graph is synchronous and runs model inference; keep it off the event loop.
