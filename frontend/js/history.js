@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const list = $("#history-list");
   const status = $("#history-status");
   let openId = null;
+  let loadSeq = 0;  // load() runs on page open and on every login change; only the newest may draw
 
   const renderDetail = (entry, holder) => {
     holder.replaceChildren();
@@ -116,17 +117,20 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const load = async () => {
+    const seq = ++loadSeq;
     const user = account.user() || await account.me();
+    if (seq !== loadSeq) return;
     $("#history-login").hidden = Boolean(user);
     $("#history-account").hidden = !user;
-    list.replaceChildren();
-    if (!user) { status.textContent = ""; $("#history-empty").hidden = true; return; }
+    if (!user) { list.replaceChildren(); status.textContent = ""; $("#history-empty").hidden = true; return; }
     $("#history-email").textContent = user.email;
     $("#history-country").textContent = user.country || "";
     status.textContent = "Loading…";
     let entries = [];
     try { entries = (await account.api("/api/history")).entries || []; }
-    catch (e) { status.textContent = e.message; return; }
+    catch (e) { if (seq === loadSeq) status.textContent = e.message; return; }
+    if (seq !== loadSeq) return;  // a newer load() is drawing; drawing here too showed entries twice
+    list.replaceChildren();
     status.textContent = entries.length ? `${entries.length} saved search${entries.length === 1 ? "" : "es"}` : "";
     $("#history-empty").hidden = entries.length > 0;
     entries.forEach((item) => {
