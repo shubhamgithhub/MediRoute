@@ -32,7 +32,7 @@ if [[ "$MODE" == validate ]]; then
   exit 0
 fi
 
-# Explicit constants: do not accept account, network or IAM role from caller.
+# Keep the account, subnet and IAM role fixed. DuckDNS selects its own HTTPS security group.
 readonly ACCOUNT=299952487175
 readonly REGION=ap-southeast-2
 readonly CLUSTER=mediroute-demo
@@ -42,6 +42,22 @@ readonly STOP_ROLE_ARN="arn:aws:iam::${ACCOUNT}:role/mediroute-demo-scheduler-st
 readonly SUBNET=subnet-0838d819c31bb2b38
 readonly SECURITY_GROUP=sg-016b1b2e95195c069
 readonly SECRET_ARN="arn:aws:ssm:${REGION}:${ACCOUNT}:parameter/mediroute/dev/openrouter/api-key"
+export MEDIROUTE_ENDPOINT_MODE="${MEDIROUTE_ENDPOINT_MODE:-quick-tunnel}"
+readonly ENDPOINT_MODE="$MEDIROUTE_ENDPOINT_MODE"
+TASK_SECURITY_GROUP="$SECURITY_GROUP"
+case "$ENDPOINT_MODE" in
+  quick-tunnel) ;;
+  duckdns)
+    [[ "${MEDIROUTE_DUCKDNS_SECURITY_GROUP:-}" =~ ^sg-([0-9a-f]{8}|[0-9a-f]{17})$ &&
+       "$MEDIROUTE_DUCKDNS_SECURITY_GROUP" != "$SECURITY_GROUP" ]] || {
+      echo 'STOP: Set a separate MEDIROUTE_DUCKDNS_SECURITY_GROUP for HTTPS' >&2
+      exit 1
+    }
+    TASK_SECURITY_GROUP="$MEDIROUTE_DUCKDNS_SECURITY_GROUP"
+    ;;
+  *) echo 'STOP: Invalid MEDIROUTE_ENDPOINT_MODE' >&2; exit 1 ;;
+esac
+readonly TASK_SECURITY_GROUP
 readonly CLOUDFLARED_PIN='cloudflare/cloudflared@sha256:b94b96edf2c9c4360f8879c8580cfaa99077f19c849ec595ca2f711b27d4f344'
 
 [[ "${AWS_REGION:-$REGION}" == "$REGION" ]] || { echo 'STOP: Unexpected AWS_REGION' >&2; exit 1; }
@@ -98,12 +114,15 @@ cleanup() {
 trap cleanup EXIT
 
 python3 scripts/render_ecs_task.py render > "$TMP_DIR/task.json"
-python3 - "$TMP_DIR/task.json" <<'PY'
+python3 - "$TMP_DIR/task.json" "$ENDPOINT_MODE" <<'PY'
 import json, sys
 x = json.load(open(sys.argv[1]))
 assert x['family'] == 'mediroute-demo'
 assert str(x['cpu']) == '1024' and str(x['memory']) == '4096'
-assert [c['name'] for c in x['containerDefinitions']] == ['api','frontend','tunnel']
+expected = ['api', 'frontend'] if sys.argv[2] == 'duckdns' else ['api', 'frontend', 'tunnel']
+assert [c['name'] for c in x['containerDefinitions']] == expected
+if sys.argv[2] == 'duckdns':
+    assert x['containerDefinitions'][1]['portMappings'] == [{'containerPort': 443, 'protocol': 'tcp'}]
 assert x['containerDefinitions'][0]['secrets'] == [{
     'name':'OPENROUTER_API_KEY',
     'valueFrom':'arn:aws:ssm:ap-southeast-2:299952487175:parameter/mediroute/dev/openrouter/api-key'}]
@@ -162,7 +181,7 @@ aws ecs run-task \
   --count 1 \
   --started-by "$STARTED_BY" \
   --client-token "$CLIENT_TOKEN" \
-  --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=ENABLED}" \
+  --network-configuration "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$TASK_SECURITY_GROUP],assignPublicIp=ENABLED}" \
   --output json > "$TMP_DIR/run.json"
 TASK_ARN=$(python3 - "$TMP_DIR/run.json" <<'PY'
 import json, sys

@@ -18,6 +18,14 @@ on:
           - register
           - deploy
           - stop
+      public_endpoint:
+        description: 'Endpoint for register/deploy'
+        type: choice
+        required: true
+        default: quick-tunnel
+        options:
+          - quick-tunnel
+          - duckdns
       task_arn:
         description: 'Exact ECS task ARN; required for stop only'
         required: false
@@ -54,6 +62,8 @@ jobs:
           python3 -m py_compile scripts/render_ecs_task.py
           bash scripts/deploy_ecs.sh validate
           bash scripts/stop_ecs.sh validate
+          sh -n infra/nginx/40-mediroute-duckdns.sh
+          python3 scripts/test_duckdns_deployment.py
           echo 'PASS: No AWS calls made by validation'
 
   control:
@@ -68,6 +78,9 @@ jobs:
       id-token: write
     env:
       OPERATION: ${{ inputs.operation }}
+      MEDIROUTE_ENDPOINT_MODE: ${{ inputs.public_endpoint || 'quick-tunnel' }}
+      MEDIROUTE_DUCKDNS_LABEL: ${{ vars.MEDIROUTE_DUCKDNS_LABEL }}
+      MEDIROUTE_DUCKDNS_SECURITY_GROUP: ${{ vars.MEDIROUTE_DUCKDNS_SECURITY_GROUP }}
       TASK_ARN_INPUT: ${{ inputs.task_arn }}
       AWS_REGION: ap-southeast-2
       AWS_DEFAULT_REGION: ap-southeast-2
@@ -190,7 +203,7 @@ jobs:
           esac
 
       - name: Report Cloudflare HTTPS URL in deployment summary
-        if: ${{ inputs.operation == 'deploy' }}
+        if: ${{ inputs.operation == 'deploy' && inputs.public_endpoint != 'duckdns' }}
         id: deployment_report
         continue-on-error: true
         timeout-minutes: 4
@@ -208,3 +221,37 @@ jobs:
             --stop-time-utc "$STOP_AT_UTC" \
             --branch "$DEPLOYED_BRANCH" \
             --commit "$DEPLOYED_COMMIT"
+
+      - name: Report DuckDNS HTTPS URL in deployment summary
+        if: ${{ inputs.operation == 'deploy' && inputs.public_endpoint == 'duckdns' }}
+        continue-on-error: true
+        timeout-minutes: 3
+        shell: bash
+        env:
+          DEPLOYED_TASK_ARN: ${{ steps.ecs_operation.outputs.task_arn }}
+          STOP_AT_UTC: ${{ steps.ecs_operation.outputs.stop_time_utc }}
+        run: |
+          set -euo pipefail
+          url="https://${MEDIROUTE_DUCKDNS_LABEL}.duckdns.org"
+          ready=false
+          for attempt in {1..12}; do
+            if response=$(curl --proto '=https' --ipv4 --fail --silent \
+                --connect-timeout 3 --max-time 5 "$url/api/health") &&
+                jq -e '.status == "healthy" and .service == "MediRoute API"' <<< "$response" >/dev/null 2>&1; then
+              ready=true
+              break
+            fi
+            sleep 5
+          done
+          {
+            printf '### MediRoute DuckDNS deployment\n\n'
+            printf -- '- Branch: %s\n- Commit: %s\n' "$GITHUB_REF_NAME" "$GITHUB_SHA"
+            printf -- '- URL: %s\n- Task: `%s`\n- Scheduled stop: %s UTC\n' \
+              "$url" "$DEPLOYED_TASK_ARN" "$STOP_AT_UTC"
+            if [[ "$ready" == true ]]; then
+              printf -- '- Public HTTPS API health check succeeded.\n'
+            else
+              printf -- '- Public HTTPS health check pending. Check frontend logs, DNS and the security group.\n'
+              echo '::warning::DuckDNS public HTTPS health check did not succeed in the reporting window.' >&2
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
