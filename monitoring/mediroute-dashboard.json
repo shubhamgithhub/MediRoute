@@ -19,74 +19,31 @@
       "width": 24,
       "height": 3,
       "properties": {
-        "markdown": "## Application status\n\n**1** healthy · **0** failed · **—** no recent check. In-task probes run about once a minute. App health checks the patient page and proxied API. The deployment workflow checks public HTTPS separately. This panel does not measure public uptime."
+        "markdown": "## Application status\n\nPublic HTTPS checks run when the dashboard opens or refreshes. The history chart shows checks inside the ECS task. **1** healthy · **0** failed · **—** no observation."
+      }
+    },
+    {
+      "type": "custom",
+      "x": 0,
+      "y": 6,
+      "width": 24,
+      "height": 18,
+      "properties": {
+        "title": "Live HTTPS status",
+        "endpoint": "arn:aws:lambda:ap-southeast-2:299952487175:function:customWidgetMediRouteStatus",
+        "params": {},
+        "updateOn": {
+          "refresh": true,
+          "resize": false,
+          "timeRange": false
+        }
       }
     },
     {
       "type": "metric",
       "x": 0,
-      "y": 6,
-      "width": 6,
-      "height": 6,
-      "properties": {
-        "title": "App · latest check",
-        "region": "ap-southeast-2",
-        "metrics": [
-          [
-            "MediRoute/Demo",
-            "AppProbeSuccess",
-            "Environment",
-            "dev",
-            {
-              "id": "app",
-              "stat": "Minimum",
-              "label": "App",
-              "color": "#007c78",
-              "visible": true
-            }
-          ]
-        ],
-        "period": 60,
-        "view": "singleValue",
-        "stacked": false,
-        "start": "-PT5M"
-      }
-    },
-    {
-      "type": "metric",
-      "x": 6,
-      "y": 6,
-      "width": 6,
-      "height": 6,
-      "properties": {
-        "title": "API · latest check",
-        "region": "ap-southeast-2",
-        "metrics": [
-          [
-            "MediRoute/Demo",
-            "ApiProbeSuccess",
-            "Environment",
-            "dev",
-            {
-              "id": "api",
-              "stat": "Minimum",
-              "label": "API",
-              "color": "#1769e0",
-              "visible": true
-            }
-          ]
-        ],
-        "period": 60,
-        "view": "singleValue",
-        "stacked": false,
-        "start": "-PT5M"
-      }
-    },
-    {
-      "type": "metric",
-      "x": 12,
-      "y": 6,
-      "width": 12,
+      "y": 24,
+      "width": 24,
       "height": 6,
       "properties": {
         "title": "Health check history · last 3 hours",
@@ -135,7 +92,7 @@
     {
       "type": "text",
       "x": 0,
-      "y": 12,
+      "y": 30,
       "width": 24,
       "height": 3,
       "properties": {
@@ -145,7 +102,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 15,
+      "y": 33,
       "width": 4,
       "height": 4,
       "properties": {
@@ -175,7 +132,7 @@
     {
       "type": "metric",
       "x": 4,
-      "y": 15,
+      "y": 33,
       "width": 4,
       "height": 4,
       "properties": {
@@ -205,7 +162,7 @@
     {
       "type": "metric",
       "x": 8,
-      "y": 15,
+      "y": 33,
       "width": 4,
       "height": 4,
       "properties": {
@@ -235,7 +192,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 15,
+      "y": 33,
       "width": 4,
       "height": 4,
       "properties": {
@@ -265,7 +222,7 @@
     {
       "type": "metric",
       "x": 16,
-      "y": 15,
+      "y": 33,
       "width": 4,
       "height": 4,
       "properties": {
@@ -295,7 +252,7 @@
     {
       "type": "metric",
       "x": 20,
-      "y": 15,
+      "y": 33,
       "width": 4,
       "height": 4,
       "properties": {
@@ -325,7 +282,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 19,
+      "y": 37,
       "width": 12,
       "height": 6,
       "properties": {
@@ -409,7 +366,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 19,
+      "y": 37,
       "width": 12,
       "height": 6,
       "properties": {
@@ -464,7 +421,7 @@
     {
       "type": "text",
       "x": 0,
-      "y": 25,
+      "y": 43,
       "width": 24,
       "height": 3,
       "properties": {
@@ -474,7 +431,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 28,
+      "y": 46,
       "width": 4,
       "height": 4,
       "properties": {
@@ -504,7 +461,7 @@
     {
       "type": "metric",
       "x": 4,
-      "y": 28,
+      "y": 46,
       "width": 4,
       "height": 4,
       "properties": {
@@ -534,7 +491,7 @@
     {
       "type": "metric",
       "x": 8,
-      "y": 28,
+      "y": 46,
       "width": 4,
       "height": 4,
       "properties": {
@@ -564,7 +521,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 28,
+      "y": 46,
       "width": 4,
       "height": 4,
       "properties": {
@@ -594,7 +551,7 @@
     {
       "type": "metric",
       "x": 16,
-      "y": 28,
+      "y": 46,
       "width": 4,
       "height": 4,
       "properties": {
@@ -624,7 +581,7 @@
     {
       "type": "metric",
       "x": 20,
-      "y": 28,
+      "y": 46,
       "width": 4,
       "height": 4,
       "properties": {
@@ -654,7 +611,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 32,
+      "y": 50,
       "width": 12,
       "height": 6,
       "properties": {
@@ -738,7 +695,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 32,
+      "y": 50,
       "width": 12,
       "height": 6,
       "properties": {
@@ -780,7 +737,7 @@
     {
       "type": "metric",
       "x": 0,
-      "y": 38,
+      "y": 56,
       "width": 12,
       "height": 6,
       "properties": {
@@ -822,7 +779,7 @@
     {
       "type": "metric",
       "x": 12,
-      "y": 38,
+      "y": 56,
       "width": 12,
       "height": 6,
       "properties": {

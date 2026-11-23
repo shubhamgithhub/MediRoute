@@ -22,6 +22,10 @@ spec = importlib.util.spec_from_file_location("dashboard", ROOT / "monitoring/bu
 dashboard = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(dashboard)
 
+spec = importlib.util.spec_from_file_location("status_widget", ROOT / "monitoring/status_widget.py")
+status_widget = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(status_widget)
+
 
 def events(output):
     return [json.loads(line) for line in output.getvalue().splitlines()]
@@ -324,7 +328,7 @@ class DashboardTests(unittest.TestCase):
         body = dashboard.build()
         found = set()
         for widget in body["widgets"]:
-            self.assertIn(widget["type"], {"text", "metric"})
+            self.assertIn(widget["type"], {"text", "metric", "custom"})
             for item in widget["properties"].get("metrics", []):
                 if isinstance(item[0], str):
                     self.assertEqual(item[0], "MediRoute/Demo")
@@ -336,6 +340,13 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(len(found), 14)
         self.assertNotIn("ECS/ContainerInsights", json.dumps(body))
         self.assertNotIn("AWS/Route53", json.dumps(body))
+
+    def test_status_widget_uses_the_demo_function_and_refreshes(self):
+        custom, = [w for w in dashboard.build()["widgets"] if w["type"] == "custom"]
+        self.assertEqual(custom["properties"]["endpoint"],
+                         "arn:aws:lambda:ap-southeast-2:299952487175:function:customWidgetMediRouteStatus")
+        self.assertEqual(custom["properties"]["updateOn"],
+                         {"refresh": True, "resize": False, "timeRange": False})
 
     def test_dashboard_layout_and_generated_file_match(self):
         body = dashboard.build()
@@ -364,6 +375,52 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("python scripts/test_cloudwatch_metrics.py",
                       (ROOT/".github/workflows/ci.yml").read_text())
         self.assertIn("auto_deploy: false", (ROOT/"infra/deployment-control.yaml").read_text())
+
+
+class StatusWidgetTests(unittest.TestCase):
+    @staticmethod
+    def fake_fetch(method, path, _limit):
+        if method == "OPTIONS":
+            return (404 if path == "/api/auth/signup" else 405), b""
+        if method != "GET":
+            raise AssertionError(f"Unexpected live method: {method}")
+        if path == "/api/health":
+            return 200, b'{"status":"healthy","service":"MediRoute API"}'
+        if path == "/patient.html":
+            return 200, b'<body class="patient-page">'
+        return next((expected, b"") for url, expected, _ in status_widget.DIRECT.values() if url == path)
+
+    def test_checks_are_read_only_with_expected_auth_and_validation_statuses(self):
+        app, routes = status_widget.snapshot(self.fake_fetch)
+        self.assertTrue(app)
+        self.assertEqual(len(routes), 22)
+        self.assertEqual(sum(up for up, _ in routes.values()), 21)
+        self.assertTrue(routes[("GET", "/api/auth/me")][0])
+        self.assertTrue(routes[("GET", "/api/hospitals/keyword-search")][0])
+        self.assertFalse(routes[("POST", "/api/auth/signup")][0])
+        html = status_widget.render(app, routes, "2026-11-23 09:00:00 UTC")
+        self.assertIn("21/22 UP", html)
+        self.assertIn("App · latest check", html)
+        self.assertIn('background-color:#166534', html)
+        self.assertIn('background-color:#991b1b', html)
+        self.assertEqual(html.count(">DOWN</span>"), 1)
+
+    def test_unreachable_app_and_api_are_down(self):
+        app, routes = status_widget.snapshot(lambda *_: (0, b""))
+        self.assertFalse(app)
+        self.assertFalse(any(up for up, _ in routes.values()))
+        html = status_widget.render(app, routes, "2026-11-23 09:00:00 UTC")
+        self.assertEqual(html.count(">DOWN</span>"), 23)
+
+    def test_unexpected_patient_html_marks_only_the_app_down(self):
+        def wrong_page(method, path, limit):
+            if path == "/patient.html":
+                return 200, b"An unexpected page"
+            return self.fake_fetch(method, path, limit)
+
+        app, routes = status_widget.snapshot(wrong_page)
+        self.assertFalse(app)
+        self.assertTrue(routes[("GET", "/api/health")][0])
 
 
 if __name__ == "__main__":

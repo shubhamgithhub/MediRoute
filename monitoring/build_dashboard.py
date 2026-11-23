@@ -6,6 +6,8 @@ from pathlib import Path
 
 REGION = "ap-southeast-2"
 NAMESPACE = "MediRoute/Demo"
+STATUS_FUNCTION_NAME = "customWidgetMediRouteStatus"
+STATUS_WIDGET_ARN = f"arn:aws:lambda:{REGION}:299952487175:function:{STATUS_FUNCTION_NAME}"
 DAY = 86400
 BLUE = "#1769e0"
 TEAL = "#007c78"
@@ -58,27 +60,26 @@ def build():
     widgets = [
         note("# MediRoute operations", "Sydney · Demo environment · **Last 24 hours** by default. "
              "Daily trends use UTC. A dash indicates missing observations.", y=0, height=3),
-        note("## Application status", "**1** healthy · **0** failed · **—** no recent check. "
-             "In-task probes run about once a minute. App health checks the patient page and proxied API. "
-             "The deployment workflow checks public HTTPS separately. This panel does not measure public uptime.",
-             y=3, height=3),
-    ]
-    health_y = 6
-    widgets += [
-        widget("App · latest check", [metric("AppProbeSuccess", "app", "App", stat="Minimum", color=TEAL)],
-               x=0, y=health_y, width=6, period=60, view="singleValue", start="-PT5M"),
-        widget("API · latest check", [metric("ApiProbeSuccess", "api", "API", stat="Minimum", color=BLUE)],
-               x=6, y=health_y, width=6, period=60, view="singleValue", start="-PT5M"),
+        note("## Application status", "Public HTTPS checks run when the dashboard opens or refreshes. "
+             "The history chart shows checks inside the ECS task. **1** healthy · **0** failed · "
+             "**—** no observation.", y=3, height=3),
+        {
+            "type": "custom", "x": 0, "y": 6, "width": 24, "height": 18,
+            "properties": {
+                "title": "Live HTTPS status", "endpoint": STATUS_WIDGET_ARN, "params": {},
+                "updateOn": {"refresh": True, "resize": False, "timeRange": False},
+            },
+        },
         widget("Health check history · last 3 hours", [
             metric("AppProbeSuccess", "app", "App", stat="Minimum", color=TEAL),
             metric("ApiProbeSuccess", "api", "API", stat="Minimum", color=BLUE),
-        ], x=12, y=health_y, width=12, period=60, start="-PT3H",
+        ], x=0, y=24, width=24, period=60, start="-PT3H",
             settings={"yAxis": {"left": {"min": 0, "max": 1, "showUnits": False}}}),
         note("## API performance", "Number cards cover the selected range. A query is a recommendation HTTP attempt. "
              "**Retried** counts the browser's Try again action. **Failed** counts server-side failures and "
-             "**Rejected** counts HTTP 4xx. Latency includes measured attempts.", y=12, height=3),
+             "**Rejected** counts HTTP 4xx. Latency includes measured attempts.", y=30, height=3),
     ]
-    widgets += total_tiles(15, [
+    widgets += total_tiles(33, [
         ("Queries", metric("Queries", "q", "Attempts")),
         ("Average latency (ms)", metric("QueryTimeMs", "avg", "Mean", stat="Average", color=TEAL)),
         ("p95 latency (ms)", metric("QueryTimeMs", "p95", "p95", stat="p95", color=PURPLE)),
@@ -93,18 +94,18 @@ def build():
             metric("QueriesRetried", "r", "Retried", color=ORANGE),
             metric("QueriesRejected", "rejected", "Rejected", color=GRAY),
             expression("IF(q>0,100*f/q)", "error_rate", "Server error rate (%)", color=PURPLE, axis="right"),
-        ], x=0, y=19, width=12,
+        ], x=0, y=37, width=12,
             settings={"yAxis": {"right": {"min": 0, "max": 100, "showUnits": False}}}),
         widget("Daily query latency · average, p50, p95 (ms)", [
             metric("QueryTimeMs", "avg", "Average", stat="Average", color=TEAL),
             metric("QueryTimeMs", "p50", "p50", stat="p50"),
             metric("QueryTimeMs", "p95", "p95", stat="p95", color=PURPLE),
-        ], x=12, y=19, width=12),
+        ], x=12, y=37, width=12),
         note("## LLM statistics", "One call means one OpenRouter network attempt, including retries and fallbacks. "
              "Latency is provider-call wall time. Token totals use reported input and output values. "
-             "Cost is recorded provider usage and can be partial.", y=25, height=3),
+             "Cost is recorded provider usage and can be partial.", y=43, height=3),
     ]
-    widgets += total_tiles(28, [
+    widgets += total_tiles(46, [
         ("LLM calls", metric("LLMCalls", "calls", "Attempts")),
         ("Average call time (ms)", metric("LLMCallTimeMs", "avg", "Mean", stat="Average", color=TEAL)),
         ("p95 call time (ms)", metric("LLMCallTimeMs", "p95", "p95", stat="p95", color=PURPLE)),
@@ -119,16 +120,16 @@ def build():
             metric("LLMCostMissing", "unknown_cost", "Calls with unknown cost", color=ORANGE),
             metric("LLMCostUSD", "samples", "Costs reported", stat="SampleCount", visible=False),
             expression("IF(calls>0,100*samples/calls)", "coverage", "Cost reporting (%)", axis="right"),
-        ], x=0, y=32, width=12,
+        ], x=0, y=50, width=12,
             settings={"yAxis": {"right": {"min": 0, "max": 100, "showUnits": False}}}),
         widget("Daily LLM tokens · provider-reported", [
             metric("LLMInputTokens", "input", "Input"),
             metric("LLMOutputTokens", "output", "Output", color=PURPLE),
-        ], x=12, y=32, width=12),
+        ], x=12, y=50, width=12),
         widget("Daily LLM response time (ms)", [
             metric("LLMCallTimeMs", "avg", "Average", stat="Average", color=TEAL),
             metric("LLMCallTimeMs", "p95", "p95", stat="p95", color=PURPLE),
-        ], x=0, y=38, width=12),
+        ], x=0, y=56, width=12),
         widget("Daily LLM cost (USD)", [
             metric("LLMCostUSD", "cost", "Known daily cost"),
             metric("Queries", "q", "Queries", visible=False),
@@ -137,7 +138,7 @@ def build():
             metric("LLMCostUSD", "samples", "Costs reported", stat="SampleCount", visible=False),
             expression("IF((q>0) AND (calls>0) AND (missing==0) AND (samples==calls),cost/q)",
                        "cost_per_query", "USD/query when cost is complete", axis="right"),
-        ], x=12, y=38, width=12),
+        ], x=12, y=56, width=12),
     ]
     return {"start": "-PT24H", "periodOverride": "inherit", "widgets": widgets}
 

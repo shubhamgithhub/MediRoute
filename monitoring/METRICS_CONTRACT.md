@@ -97,11 +97,18 @@ An API background thread checks direct API liveness, patient HTML served
 by Nginx, and API liveness through Nginx over shared task loopback. It
 waits about one minute for startup and runs about once a minute while the
 API process is alive. The combined result requires all three checks.
-The latest status cards show observations from the last five minutes.
-A blank status means there was no recent observation, such as during a
-planned stop. The checks do not exercise recommendations, provider
-availability, public DNS or TLS. The DuckDNS deployment workflow checks
-public HTTPS separately at deployment time.
+The history chart shows these one-minute observations; periods when the
+task is stopped have no observations.
+
+The live status widget checks the public DuckDNS hostname over HTTPS when
+opened or refreshed. App status requires both the patient page and the expected
+API liveness response. The API table checks individual paths using read-only
+GET requests or OPTIONS for operations that can change state, run inference,
+or read admin request details. Expected validation and authentication responses
+count as reachable. An OPTIONS result checks path reachability only and does
+not validate the handler, its dependencies or a particular HTTP method on a
+shared path. These direct checks do not publish additional metric series or
+measure historical public uptime.
 
 The dashboard uses request traffic, server errors and latency from SRE
 monitoring guidance. Average, p50 and p95 use per-attempt observations.

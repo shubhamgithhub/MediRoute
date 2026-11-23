@@ -47,6 +47,24 @@ Keep that backup until the new dashboard has been verified.
 
 ## 3. Apply setup manually
 
+The dashboard uses the Sydney Lambda function `customWidgetMediRouteStatus`.
+Its handler is `status_widget.lambda_handler` from `monitoring/status_widget.py`.
+It uses Python 3.12, 128 MB, a 20-second timeout, and the execution role
+`mediroute-cloudwatch-status-widget`. Its execution role needs only a trust
+relationship for `lambda.amazonaws.com`, since it makes public HTTPS requests
+and does not call AWS APIs or write logs. The function has no trigger or
+public Lambda URL. Viewers need permission to invoke this function.
+
+To publish a new widget version to the existing Lambda function:
+
+```bash
+widget_package=$(mktemp -d)
+python3 -m zipfile -c "$widget_package/status-widget.zip" monitoring/status_widget.py
+aws lambda update-function-code --function-name customWidgetMediRouteStatus \
+  --zip-file "fileb://$widget_package/status-widget.zip" --query FunctionArn --output text
+aws lambda wait function-updated --function-name customWidgetMediRouteStatus
+```
+
 Run only after the account check and any needed dashboard backup above.
 
 ```bash
@@ -84,8 +102,12 @@ aws ecs describe-clusters --clusters mediroute-demo --include SETTINGS \
 Open AWS Console > CloudWatch > Dashboards > MediRoute. Allow time for log
 ingestion and metric discovery (new metrics may take up to 15 minutes to appear
 in ListMetrics). Use a range containing the demo and select UTC for daily buckets.
-The Application status panel should show direct API and combined application checks
-within a few minutes. Check that the tiles read 1 once the task is healthy.
+In the **Live HTTPS status** widget, select **Allow always** on your first
+visit. The app and individual API routes show green **UP** and red **DOWN**
+when the widget refreshes. Protected reads can pass at the expected HTTP 401
+and validation checks can pass at HTTP 422. **Path check (OPTIONS)** confirms
+routing to the path without running write handlers or paid inference. The
+separate health history chart receives one-minute in-task observations.
 In API performance, a normal recommendation increments Queries. A validation
 rejection increments QueriesRejected, and the browser's Try again button after
 a timeout increments QueriesRetried. A clarification is a separate request.
@@ -102,8 +124,10 @@ the three-day source-log retention period.
 ## Cost and rollback
 
 There are 14 fixed metric series, one dashboard and small per-request and probe logs.
-Metric math and percentiles reuse those series. The probes run inside the existing task. Container Insights, public dashboard
-sharing, periodic log queries, and external canaries stay disabled. Free
+Metric math and percentiles reuse those series. Historical probes run inside
+the existing task. The live widget runs Lambda only when opened or refreshed
+and adds no metric series. Container Insights, public dashboard sharing,
+periodic log queries, and scheduled external canaries stay disabled. Free
 allowances are shared with the rest of the AWS account. Review actual billing;
 the dashboard is not a $10 spending cap. OpenRouter costs are billed separately.
 
