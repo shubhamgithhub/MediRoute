@@ -1,0 +1,10 @@
+{
+  "started": "2026-11-24T22:24:57",
+  "n": 50,
+  "sets": "core50=50",
+  "answer_once": true,
+  "spacing": 11.0,
+  "llm": "openai/gpt-6-luna (OpenRouter), doctor-reviewed core50 labels",
+  "judge": "openai/gpt-6-luna (OpenRouter)",
+  "base": "http://127.0.0.1:8010"
+}
