@@ -20,6 +20,14 @@ GENERAL_AI = ROOT / "data" / "evaluation" / "general_ai"
 CHART = ROOT / "docs" / "evaluation" / "step1_benchmark_chart.png"
 PORTAL_CHART = ROOT / "docs" / "evaluation" / "step1_portal_chart.png"
 PORTAL_RUN = ROOT / "data" / "evaluation" / "portal_runs" / "20261113_223410"  # 234 requests, 13 Nov
+PORTAL_RUNS = ROOT / "data" / "evaluation" / "portal_runs"
+
+
+def doctor_run() -> Path | None:
+    """Newest portal run of core50 only (the doctor-reviewed benchmark, section 7d)."""
+    runs = [d for d in sorted(PORTAL_RUNS.iterdir()) if (d / "meta.json").exists() and (d / "results.jsonl").exists()
+            and json.loads((d / "meta.json").read_text(encoding="utf-8")).get("sets") == "core50=50"]
+    return runs[-1] if runs else None
 
 
 def portal_counts() -> dict:
@@ -93,7 +101,8 @@ def s_summary():
     "<b>What it does not do:</b> no diagnosis, no treatment advice, no booking. Procedures are used only when the patient wrote them.",
     "<b>How AI is used:</b> an LLM extracts the evidence and votes; a guarded LLM judge settles disagreements. Code checks every AI output (closed lists, quotes must be in the text) and asks the patient when unsure.",
     "<b>Measured:</b> every design change was benchmarked against baselines (keyword search, meaning search, LLM only, voting). Where AI did not beat simple rules (Step 2 capability matching), we did not use it.",
-    "<b>Open:</b> test labels and mapping rules await doctor review; hospital procedure lists are unverified and speciality lists miss departments that NABH confirms; 200 hospitals only.",
+    "<b>Doctor-reviewed:</b> the 50 core test cases were reviewed and signed by a physician (23 Nov 2026, section 7d).",
+    "<b>Open:</b> mediroute and gretel labels and the mapping rules await doctor review; hospital procedure lists are unverified and speciality lists miss departments that NABH confirms; 200 hospitals only.",
 ])}
 """
 
@@ -384,7 +393,7 @@ def s_bench1():
      "“I have a burning sensation in my stomach that comes and goes. It's worse when I eat and when I lie down…” → Gastroenterology<br>“I've been having headaches and migraines, and I can't sleep…” → General Medicine"],
 ], ["17%", "41%", "42%"], "small")}
 {bullets([
-    "Each case has an expected speciality and optional accepted alternatives. All labels are <b>drafts awaiting doctor review</b> (data/evaluation/step1_gold_*.csv).",
+    "Each case has an expected speciality and optional accepted alternatives. <b>core50 labels are doctor-reviewed</b> (23 Nov 2026, section 7d); mediroute and gretel labels are team drafts (data/evaluation/step1_gold_*.csv).",
     f"The initial benchmark uses core50; the real portal test uses all of core50 and mediroute plus 100 gretel cases spread evenly over its 22 diagnoses ({pc['all']['n']} requests).",
     "<b>Correct</b> = the expected speciality or an accepted alternative; a question counts as not correct. <b>Confidently wrong</b> = answered and wrong (the costly error). <b>Asks</b> = asked the patient. <b>NDCG@3</b> = the right speciality near the top of the 3 candidates.",
 ])}
@@ -469,6 +478,85 @@ def s_bench1():
 RUN_BEFORE = ROOT / "data" / "evaluation" / "portal_runs" / "20261113_223410"   # 13 Nov, before the change
 RUN_AFTER = ROOT / "data" / "evaluation" / "portal_runs" / "20261114_123430"    # 14 Nov, red flags + areas (prompt v2)
 RUN_GRETEL_V3 = ROOT / "data" / "evaluation" / "portal_runs" / "20261114_140410"  # 14 Nov, gretel only, prompt v3
+
+
+def s_doctor_core50():
+    """7d: core50 reviewed and signed by a doctor (23 Nov 2026), then benchmarked through the portal."""
+    import csv
+    import statistics
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from compare_portal_runs import score
+    gold = {r["query_id"]: r for r in csv.DictReader((ROOT / "data" / "evaluation" / "step1_gold_core50.csv").open(encoding="utf-8-sig"))}
+    ok = {("core50", q): {g["expected_specialty"], *[a for a in g["acceptable_alternatives"].split(";") if a]} for q, g in gold.items()}
+    reviewed = sum(g["review_status"] == "reviewed" for g in gold.values())
+    run = doctor_run()
+    if not run:
+        return "<h1>7d · Doctor-reviewed core50</h1><p>No core50 portal run yet.</p>"
+    c = score(run, ok)["core50"]
+    rows = [json.loads(line) for line in (run / "results.jsonl").read_text(encoding="utf-8").splitlines()]
+    ms = sorted(r["client_ms"] for r in rows if r.get("client_ms"))
+    p95 = ms[min(len(ms) - 1, int(0.95 * len(ms)))] if ms else 0
+    emerg = {q for q, g in gold.items() if g["emergency"] == "true"}
+    emerg_ok = sum(1 for r in rows if r["query_id"] in emerg and r.get("emergency"))
+    by_type: dict[str, dict] = {}
+    for r in rows:
+        t = gold[r["query_id"]]["case_type"]
+        d = by_type.setdefault(t, {"n": 0, "correct": 0, "wrong": 0, "asks": 0, "after": 0})
+        good = ok[("core50", r["query_id"])]
+        first = r["specialty"]
+        final = r.get("specialty2") if first is None and "decision2" in r else first
+        d["n"] += 1
+        d["asks" if first is None else "correct" if first in good else "wrong"] += 1
+        d["after"] += final in good
+    type_rows = [[t.replace("_", " "), str(d["n"]), str(d["correct"]), str(d["wrong"]), str(d["asks"]), str(d["after"])]
+                 for t, d in sorted(by_type.items(), key=lambda kv: -kv[1]["n"])]
+    wrong = [r for r in rows if r["specialty"] is not None and r["specialty"] not in ok[("core50", r["query_id"])]]
+    wrong_rows = [[r["query_id"], e(gold[r["query_id"]]["query"][:90]), e(gold[r["query_id"]]["expected_specialty"]), e(r["specialty"])]
+                  for r in wrong]
+    changes = [
+        ["C019", "sleeve gastrectomy for weight loss", "Bariatric Surgery", "<b>Plastic &amp; Reconstructive Surgery</b> (Bariatric still accepted)"],
+        ["C009", "type 1 diabetes, insulin pump", "Endocrinology", "+ General Medicine (“physician”)"],
+        ["C029", "tubal block, infertility", "Reproductive Medicine", "+ Endocrinology"],
+        ["C032", "dilated cardiomyopathy, CRT-D advised", "Cardiology", "+ Cardiothoracic Surgery"],
+        ["C045, C046", "crushing chest pain; face drooping", "Emergency Medicine", "emergency confirmed; + General Medicine"],
+        ["C047", "thinking about ending my life", "Psychiatry", "confirmed: Psychiatry with the crisis message"],
+        ["C002, C004, C010, C017, C020, C028, C036", "valve replacement, colon cancer, child BMT, kidney transplant, spinal fusion, thyroid cancer, liver transplant", "as before", "comments only (e.g. “onco-surgeon”, “paediatric haematologist”); labels unchanged"],
+    ]
+    wait = f"median {statistics.median(ms) / 1000:.1f} s, p95 {p95 / 1000:.1f} s" if ms else "–"
+    wrong_html = ("<h2>Confidently wrong</h2>" + table(["Case", "Message", "Doctor's label", "MediRoute"], wrong_rows, ["10%", "50%", "20%", "20%"], "small")
+                  if wrong_rows else "<p><b>No confidently wrong answer.</b></p>")
+    return f"""
+<h1>7d · Doctor-reviewed core50: the ground truth</h1>
+<p><b>Why:</b> the TA's first critical point was “independently reviewed evaluation cases”. All core50 labels were team drafts.
+<b>How:</b> a physician (Dr. Ravi Patil, MBBS MD General Medicine, fellowships in diabetes and rheumatology) reviewed and signed
+every case on 23 Nov 2026: expected speciality, accepted alternatives, critical details, vague cases and emergency flags.
+{reviewed} of 50 rows are now marked <code>reviewed</code> in <code>data/evaluation/step1_gold_core50.csv</code>; mediroute and gretel stay drafts.</p>
+<h2>What the doctor changed</h2>
+{table(["Case", "Message (short)", "Draft label", "Doctor"], changes, ["14%", "34%", "18%", "34%"], "small")}
+{bullets([
+    "36 cases marked OK without a comment; all 5 vague cases confirmed as “should ask”; all 3 emergency cases confirmed.",
+    "Speciality list (section 3 of the review): 16 of 16 specialities on the scanned pages OK; “headache” added to Neurology. The last page (10 specialities) is missing from the scan.",
+    "<b>The draft labels held up:</b> rescoring every saved offline prediction (all baselines and designs, three runs of 11 Nov) with the doctor's labels changes no score, so the comparison of approaches in section 7 stands on reviewed labels.",
+])}
+<h2>Benchmark on the doctor-reviewed labels (real portal, {c['n']} requests)</h2>
+{table(["Measure", "Result"], [
+    ["Correct on the first message", f"<b>{c['correct'] / c['n']:.0%}</b> ({c['correct']} of {c['n']})"],
+    ["Confidently wrong", f"<b>{c['wrong'] / c['n']:.0%}</b> ({c['wrong']})"],
+    ["Asks the patient", f"{c['asks'] / c['n']:.0%} ({c['asks']})"],
+    ["Correct after one answer (simulated patient)", f"<b>{c['after_correct'] / c['n']:.0%}</b> ({c['after_correct']}); still open {c['after_open']}, wrong {c['after_wrong']}"],
+    ["Emergency or crisis notice shown (emergency-flagged cases)", f"{emerg_ok} of {len(emerg)} (C045, C046 → Emergency Medicine; C047 suicidal thoughts → crisis message + a question)"],
+    ["Wait per request", wait],
+], ["55%", "45%"])}
+<h2>By kind of case</h2>
+{table(["Case type", "n", "Correct", "Confidently wrong", "Asks", "Correct after 1 answer"], type_rows, ["30%", "10%", "14%", "18%", "12%", "16%"], "small")}
+{wrong_html}
+<p><b>Open point from the review:</b> the doctor confirmed C047 (“thinking about ending my life”) as Psychiatry. MediRoute shows the crisis message but then asks a question instead of answering Psychiatry; a fix is to route suicidal thoughts without acute intent to Psychiatry directly.</p>
+<p class="muted">Vague cases are expected to ask; a question counts as “not correct” on the first message. The simulated patient answers
+the body-area question once from the expected speciality (favourable by construction).</p>
+{where("scripts/portal_benchmark.py, scripts/compare_portal_runs.py", f"data/evaluation/step1_gold_core50.csv (reviewed), data/evaluation/portal_runs/{run.name}",
+       "python scripts/portal_benchmark.py --sets core50=50 --answer-once --spacing 11")}
+"""
 
 
 def s_red_flags_areas():
@@ -881,7 +969,7 @@ def s_limits():
 <h1>12 · Limitations and next steps</h1>
 <h2>Limitations</h2>
 {bullets([
-    "<b>Labels and rules are drafts:</b> test labels, 1,381 mapping rules and body-area rules await the doctor review; four “wrong” portal cases have questionable labels.",
+    "<b>Labels and rules are partly drafts:</b> core50 is doctor-reviewed (one physician); mediroute and gretel labels, 1,381 mapping rules and body-area rules still await review; four “wrong” portal cases have questionable labels.",
     "<b>Hospital data:</b> 200 hospitals; procedure lists come from the team sheet and are unverified (~50% recall), which limits procedure matching.",
     "<b>Grades:</b> section 8 grades are model-drafted from website snippets. Section 8d grades come from the official NABH scope (LLM quotes checked by code), but hospitals without a scope document are unknown, and no person has checked the grades yet (20% spot-check pending).",
     "<b>Rare specialities:</b> P@5 0.43 and Bad@5 0.71 (section 8d) because our speciality lists miss departments the NABH scope confirms (dermatology 25 vs 113 hospitals). Fix: fill them from the NABH scopes, checked by a person.",
@@ -889,7 +977,7 @@ def s_limits():
 ])}
 <h2>Next steps</h2>
 {bullets([
-    "Doctor review of the drafts (docs/review/MediRoute_doctor_review.pdf), the report critical-detail labels (section 8c.1) and the 20% grade spot-check.",
+    "Doctor review of the remaining drafts (mediroute, gretel, mapping rules, the missing last page of the speciality list), the report critical-detail labels (section 8c.1) and the 20% grade spot-check.",
     "Long reports: keep the end of the report (or its impression / diagnosis / plan sections) instead of only the first 6,000 characters; the one extraction failure in section 8c.1.",
     "Offline website extraction to fill the procedure lists, measured with the same Step 2 harness.",
     "Pick the final colour theme and remove the selector; replace the home-page demo card with real results.",
@@ -936,7 +1024,7 @@ in the repository). Open items are tracked in <code>docs/PROJECT_TRACKER.md</cod
     ["Cost and latency measured", part, "In evaluation runs (section 10); not tracked live per request."],
     ["Named versions of prompts, rules, configs", part, "Git history only; no list such as “judge prompt v3, ranker v2”."],
     ["Experiments log, one change per run", gap, "docs/EXPERIMENTS.md (tracker row 39); results already exist in data/evaluation/results."],
-    ["Domain expert involved", gap, "Doctor review pending (docs/review/MediRoute_doctor_review.pdf)."],
+    ["Domain expert involved", part, "core50 test cases and 16 of 26 speciality descriptions reviewed and signed by a physician (23 Nov 2026, section 7d); other sets pending."],
     ["Demo not hardcoded", ok, "Live pipeline; the home-page card is labelled as illustrative."],
 ], widths=["34%", "13%", "53%"])}
 
@@ -950,7 +1038,7 @@ in the repository). Open items are tracked in <code>docs/PROJECT_TRACKER.md</cod
     ["Test alternative ranking weights, not arbitrary ones", ok, "Section 8c.2 (13 Nov): bonuses help (p = 0.02), exact values do not matter (×0.5 to ×4 within noise)."],
     ["Robustness: incomplete queries, noisy reports", part, "Unseen set, 31 PDF tests, typo cases; not yet one robustness section."],
     ["Medical suitability before location", part, "Area filter comes first (outside hospitals fill in when fewer than 3 are in the area). Prepare the answer or add a “best anywhere in India” option."],
-    ["Expert-reviewed mappings and graded labels", gap, "Doctor review and 20% grade spot-check pending."],
+    ["Expert-reviewed mappings and graded labels", part, "core50 reviewed by a physician (section 7d); mapping rules and the 20% hospital-grade spot-check pending."],
     ["DPDP: consent, retention, access control", part, "Consent box, redaction, 100-request retention. Admin page has no login yet."],
 ], widths=["34%", "13%", "53%"])}
 
@@ -1004,7 +1092,7 @@ def build_html() -> str:
               '<span style="color:#3f8a60">■</span> code · <span style="color:#8c867b">■</span> input / data · '
               '<span style="color:#c98b20">■</span> output</p>')
     sections = [s_summary(), s_use_case(), s_architecture() + legend, s_step1(), s_step2(), s_data(), s_evolution(),
-                s_bench1(), s_red_flags_areas(), s_bench2(), s_bench2_portal(), s_ta_benchmarks(), s_general_ai(), s_latency(), s_setup(), s_limits(), s_readiness()]
+                s_bench1(), s_red_flags_areas(), s_doctor_core50(), s_bench2(), s_bench2_portal(), s_ta_benchmarks(), s_general_ai(), s_latency(), s_setup(), s_limits(), s_readiness()]
     body = "".join(f"<section>{s}</section>" for s in sections)
     return f'<!doctype html><html><head><meta charset="utf-8"><title>MediRoute team report</title><style>{CSS}</style></head><body>{body}</body></html>'
 
