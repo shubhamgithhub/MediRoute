@@ -1,4 +1,5 @@
 """Offline coverage of the deployment modes and their task/secret boundaries."""
+from datetime import datetime
 import json
 import os
 from pathlib import Path
@@ -6,6 +7,8 @@ import subprocess
 import tempfile
 import sys
 import unittest
+
+from demo_session import release_candidates, stop_deadline
 
 ROOT = Path(__file__).resolve().parents[1]
 DIGEST = "@sha256:" + "a" * 64
@@ -101,6 +104,42 @@ class DeploymentRuntimeTests(unittest.TestCase):
             )
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("max_runtime_minutes must be between 1 and 1440", result.stderr)
+
+
+class DemoSessionTests(unittest.TestCase):
+    def test_open_and_close_in_ist_through_final_demo_day(self):
+        cases = {
+            "2026-11-23T12:00:00+05:30": None,
+            "2026-12-06T07:59:59+05:30": None,
+            "2026-12-06T08:00:00+05:30": "2026-12-06T18:30:00+00:00",
+            "2026-12-06T23:50:00+05:30": "2026-12-06T18:30:00+00:00",
+            "2026-12-06T23:59:00+05:30": None,
+            "2026-12-07T00:00:00+05:30": None,
+            "2026-12-07T08:00:00+05:30": None,
+            "2027-12-06T09:00:00+05:30": None,
+        }
+        for start, expected in cases.items():
+            with self.subTest(start=start):
+                deadline = stop_deadline(datetime.fromisoformat(start))
+                self.assertEqual(deadline.isoformat() if deadline else None, expected)
+
+    def test_shorter_trusted_cap_still_applies(self):
+        started = datetime.fromisoformat("2026-12-06T08:00:00+05:30")
+        self.assertEqual(stop_deadline(started, 120).isoformat(), "2026-12-06T04:30:00+00:00")
+
+    def test_release_uses_newest_complete_active_immutable_pair(self):
+        def image(tag, digest, hour, status="ACTIVE"):
+            return {"imageTags": [tag], "imageDigest": "sha256:" + digest * 64,
+                    "imagePushedAt": f"2026-12-01T{hour:02d}:00:00+00:00", "imageStatus": status}
+
+        old, latest, partial, archived = ("sha-" + letter * 40 for letter in "abcd")
+        frontend = [image(old, "a", 11), image(latest, "b", 13), image(archived, "d", 15)]
+        backend = [image(old, "e", 11), image(latest, "f", 12), image(partial, "1", 14),
+                   image(archived, "2", 15, "ARCHIVED"), image("latest", "3", 16)]
+        pairs = release_candidates(backend, frontend)
+        self.assertEqual([p["sha"] for p in pairs], ["b" * 40, "a" * 40])
+        self.assertEqual(pairs[0]["backend"], "sha256:" + "f" * 64)
+        self.assertEqual(pairs[0]["frontend"], "sha256:" + "b" * 64)
 
 
 if __name__ == "__main__":

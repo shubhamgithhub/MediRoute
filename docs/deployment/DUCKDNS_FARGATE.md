@@ -18,6 +18,29 @@ demo data. Accounts and saved searches are stored in task-local SQLite and
 reset when the task is replaced. Nginx allows 32 MiB at the proxy to fit the API's 30 MiB combined PDF limit plus
 multipart overhead.
 
+## Academic testing through December 6, 2026
+
+In GitHub, open **Actions → MediRoute Demo - Start / Stop → Run workflow**
+and choose **main**.
+
+- **start** selects the most recently completed frontend and backend ECR pair
+  for the same immutable commit. The commit must be in main's history and
+  have a successful push CI run from an approved branch. A partially published
+  pair is skipped.
+- **stop** stops the single demo task. Leave the task ARN blank for normal use.
+  The next scheduled morning start still applies.
+- **publish-and-start** publishes missing images for the latest CI-passing
+  commit on main selected by the workflow, then starts that release. Use
+  **stop** first if a task is already running.
+- **list** reports whether ECS has a task in the demo cluster.
+
+Scheduled runs use **start** at 08:00 IST. Starts are allowed from 08:00 IST
+through the window ending at local midnight. Each launch creates a verified
+one-time EventBridge stop schedule for its exact task ARN. The final stop is
+midnight going into December 7 IST. Later starts are refused by the date
+guard. GitHub queues and task startup may delay availability after 08:00.
+Stopping the task clears its local SQLite data. Auto-deploy stays disabled.
+
 ## 1. Reserve a name and issue a certificate
 
 Sign into [DuckDNS](https://www.duckdns.org/) and create the label. Use a new
@@ -119,9 +142,9 @@ the AWS operator review the exact new security group for the deployment role.
 3. Confirm the current demo task has stopped. In **MediRoute CD - ECS
    Control**, select the branch with these changes, choose `deploy`, and
    set **public_endpoint** to **duckdns**. Keep `auto_deploy: false`. The
-workflow reads the runtime limit from `main` and schedules the stop for 24
-hours after launch. It uses the shorter limit if the selected commit specifies
-one. The one-time stop schedule remains enabled throughout the testing window.
+workflow reads the runtime limit from `main` and stops at midnight IST or
+the earlier policy limit. The one-time stop schedule remains enabled
+throughout the testing window.
 4. Open the job summary and check for the URL and health result. For a
    direct check, request `https://<label>.duckdns.org/api/health` over HTTPS,
    open `/patient.html` and `/admin.html`, and confirm `/api/admin/requests`

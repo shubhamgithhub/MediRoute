@@ -174,6 +174,12 @@ print(uuid.uuid4())
 PY
 )
 
+# Recheck the window after image preparation so a delayed job cannot start after midnight.
+DEMO_STOP_AT=''
+if [[ "${MEDIROUTE_DEMO_WINDOW:-}" == YES ]]; then
+  DEMO_STOP_AT=$(python3 scripts/demo_session.py deadline --max-minutes "$TTL_MINUTES")
+fi
+
 LAUNCH_ATTEMPTED=true
 aws ecs run-task \
   --cluster "$CLUSTER" \
@@ -202,7 +208,13 @@ PY
 }
 echo "PASS: Launched $TASK_ARN"
 
-STOP_AT=$(date -u -d "+${TTL_MINUTES} minutes" +%Y-%m-%dT%H:%M:%S)
+STOP_AT="$DEMO_STOP_AT"
+if [[ -z "$STOP_AT" ]]; then
+  STOP_AT=$(date -u -d "+${TTL_MINUTES} minutes" +%Y-%m-%dT%H:%M:%S)
+elif [[ "$STOP_AT" < "$(date -u -d '+1 minute' +%Y-%m-%dT%H:%M:%S)" ]]; then
+  echo 'STOP: Too late to verify the required demo stop schedule' >&2
+  exit 1
+fi
 STOP_EXPR="at(${STOP_AT})"
 SCHEDULE_NAME="mediroute-stop-$(date -u +%Y%m%d%H%M%S)-$(python3 - <<'PY'
 import uuid
