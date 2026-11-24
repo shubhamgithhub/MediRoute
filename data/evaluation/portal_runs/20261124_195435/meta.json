@@ -1,0 +1,10 @@
+{
+  "started": "2026-11-24T19:54:35",
+  "n": 134,
+  "sets": "core50=50,mediroute=84",
+  "answer_once": true,
+  "spacing": 11.0,
+  "llm": "openai/gpt-6-luna (OpenRouter), report vs text check",
+  "judge": "openai/gpt-6-luna (OpenRouter)",
+  "base": "http://127.0.0.1:8010"
+}
