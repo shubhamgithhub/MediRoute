@@ -7,8 +7,9 @@ import subprocess
 import tempfile
 import sys
 import unittest
+from unittest.mock import patch
 
-from demo_session import release_candidates, stop_deadline
+from demo_session import release_candidates, resolve_release, stop_deadline
 
 ROOT = Path(__file__).resolve().parents[1]
 DIGEST = "@sha256:" + "a" * 64
@@ -140,6 +141,29 @@ class DemoSessionTests(unittest.TestCase):
         self.assertEqual([p["sha"] for p in pairs], ["b" * 40, "a" * 40])
         self.assertEqual(pairs[0]["backend"], "sha256:" + "f" * 64)
         self.assertEqual(pairs[0]["frontend"], "sha256:" + "b" * 64)
+
+
+    def test_release_prefers_newest_complete_main_commit_over_late_older_build(self):
+        main, prior, merged_feature = ("a" * 40, "b" * 40, "c" * 40)
+        repo = "example/MediRoute"
+        history = f"{main}\n{prior}\n"
+
+        def read_json(*args):
+            if args[0] == "aws":
+                return {"imageDetails": []}
+            sha = args[-1].split("head_sha=")[1].split("&")[0]
+            return {"workflow_runs": [{"head_sha": sha, "event": "push",
+                                      "head_branch": "main", "conclusion": "success",
+                                      "head_repository": {"full_name": repo}}]}
+
+        pairs = [{"sha": sha} for sha in (prior, merged_feature, main)]
+        with patch.dict(os.environ, {"GITHUB_REPOSITORY": repo, "GITHUB_SHA": main}), \
+                patch("demo_session.release_candidates", return_value=pairs), \
+                patch("demo_session.subprocess.check_output", return_value=history), \
+                patch("demo_session.subprocess.run", return_value=subprocess.CompletedProcess([], 0)), \
+                patch("demo_session.read_json", side_effect=read_json):
+            self.assertEqual(resolve_release(None)["sha"], main)
+            self.assertEqual(resolve_release(prior)["sha"], prior)
 
 
 if __name__ == "__main__":

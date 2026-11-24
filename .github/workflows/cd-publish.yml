@@ -5,6 +5,10 @@ on:
     branches:
       - main
       - feature/aws_deployment
+  workflow_run:
+    workflows: ["MediRoute CI"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       publish_images:
@@ -17,22 +21,20 @@ permissions:
   contents: read
   actions: read
 
-concurrency:
-  group: mediroute-publish-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
   preflight:
     name: Deployment Preflight
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     outputs:
       publish: ${{ steps.gate.outputs.publish }}
-
+      source_sha: ${{ steps.gate.outputs.source_sha }}
     steps:
-      - name: Checkout
+      - name: Checkout for trusted policy inspection
+        if: github.event_name != 'push'
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Check authorization and CI
         id: gate
@@ -41,89 +43,92 @@ jobs:
           TARGET_BRANCH: ${{ github.ref_name }}
           MANUAL_PUBLISH: ${{ inputs.publish_images }}
           GH_TOKEN: ${{ github.token }}
+          CI_EVENT: ${{ github.event.workflow_run.event }}
+          CI_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          CI_PATH: ${{ github.event.workflow_run.path }}
+          CI_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          CI_REPOSITORY_ID: ${{ github.event.workflow_run.head_repository.id }}
+          CI_SHA: ${{ github.event.workflow_run.head_sha }}
         shell: bash
         run: |
           set -euo pipefail
-          echo "publish=false" >> "$GITHUB_OUTPUT"
+          echo 'publish=false' >> "$GITHUB_OUTPUT"
+          SOURCE_SHA="$GITHUB_SHA"
+          case "$EVENT_NAME" in
+            workflow_run)
+              if [[ "$CI_EVENT" != push || "$CI_CONCLUSION" != success ||
+                    "$CI_PATH" != '.github/workflows/ci.yml' || "$CI_BRANCH" != main ||
+                    "$CI_REPOSITORY_ID" != "$GITHUB_REPOSITORY_ID" ]]; then
+                echo 'SKIP: Only successful CI for a push to this repository main can auto-publish'
+                exit 0
+              fi
+              TARGET_BRANCH=main
+              SOURCE_SHA="$CI_SHA"
+              ;;
+            workflow_dispatch)
+              [[ "$MANUAL_PUBLISH" == true ]] || exit 0
+              ;;
+            *)
+              echo 'PASS: No image publishing requested'
+              exit 0
+              ;;
+          esac
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]] || {
+            echo 'STOP: Invalid source SHA' >&2; exit 1;
+          }
 
-          if [[ "$EVENT_NAME" != "workflow_dispatch" ||
-                "$MANUAL_PUBLISH" != "true" ]]; then
-            echo "PASS: No image publishing requested"
-            exit 0
+          # Inspect the current trusted policy before granting any AWS credentials.
+          policy_dir=$(mktemp -d)
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
+          if [[ "$EVENT_NAME" == workflow_run ]]; then
+            git merge-base --is-ancestor "$SOURCE_SHA" origin/main || {
+              echo 'STOP: CI source is no longer in main history' >&2; exit 1;
+            }
           fi
-
-          # Authoritative policy must come from default main.
-          git fetch --no-tags --depth=1 origin main
-
-          git show FETCH_HEAD:infra/deployment-control.yaml \
-            > /tmp/deployment-control.yaml || {
-            echo "STOP: Policy not yet present on main"
-            exit 1
-          }
-
-          git show FETCH_HEAD:scripts/check_deployment_policy.py \
-            > /tmp/check_deployment_policy.py || {
-            echo "STOP: Policy validator not on main"
-            exit 1
-          }
-
+          git show origin/main:infra/deployment-control.yaml > "$policy_dir/policy.yaml"
+          git show origin/main:scripts/check_deployment_policy.py > "$policy_dir/check.py"
           python3 -m pip install --quiet 'PyYAML==6.0.2'
+          python3 "$policy_dir/check.py" "$policy_dir/policy.yaml" "$TARGET_BRANCH" true false
 
-          # Validate policy structure through trusted main script.
-          python3 /tmp/check_deployment_policy.py \
-            /tmp/deployment-control.yaml \
-            "$TARGET_BRANCH" true false \
-            > /tmp/policy-result.json
+          # Publishing is independent of the auto_deploy flag.
+          python3 - "$policy_dir/policy.yaml" <<'PY'
+          import fnmatch, os, sys, yaml
 
-          # Manual publishing does not require auto_deploy=true.
-          # It still requires an approved branch and safety limits.
-          python3 - <<'PY'
-          import os
-          import yaml
-          import fnmatch
-
-          with open("/tmp/deployment-control.yaml") as f:
+          with open(sys.argv[1], encoding="utf-8") as f:
               rule = yaml.safe_load(f)["deployment"]
-
           branch = os.environ["TARGET_BRANCH"]
-
-          assert any(
-              fnmatch.fnmatchcase(branch, pattern)
-              for pattern in rule["allowed_branches"]
-          ), "Branch not approved by default-branch policy"
-
+          assert any(fnmatch.fnmatchcase(branch, pattern)
+                     for pattern in rule["allowed_branches"]), "Branch not approved by default-branch policy"
           assert rule["max_running_tasks"] == 1
           assert rule["on_existing_demo"] == "skip"
-
-          print("PASS: Trusted deployment policy validated")
           PY
 
-          # Require successful CI for this exact commit.
-          gh api \
-            "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$GITHUB_SHA&per_page=50" \
-            > /tmp/ci-runs.json
-
-          CI_COUNT=$(jq --arg sha "$GITHUB_SHA" \
-            '[.workflow_runs[] |
-              select(.head_sha == $sha and .conclusion == "success")] |
-              length' /tmp/ci-runs.json)
-
-          if [[ "$CI_COUNT" -lt 1 ]]; then
-            echo "STOP: No successful CI run for $GITHUB_SHA"
-            exit 1
+          if [[ "$EVENT_NAME" == workflow_dispatch ]]; then
+            gh api \
+              "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$SOURCE_SHA&per_page=50" \
+              | jq -e --arg sha "$SOURCE_SHA" \
+                'any(.workflow_runs[]; .head_sha == $sha and .conclusion == "success")' >/dev/null || {
+                echo "STOP: No successful CI run for $SOURCE_SHA" >&2
+                exit 1
+              }
           fi
 
-          echo "publish=true" >> "$GITHUB_OUTPUT"
-          echo "PASS: Manual ECR publication authorized"
+          echo "source_sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
+          echo 'publish=true' >> "$GITHUB_OUTPUT"
+          echo "PASS: ECR publication authorized for $SOURCE_SHA"
 
   publish:
     name: Publish Immutable ECR Images
     needs: preflight
     if: needs.preflight.outputs.publish == 'true'
+    concurrency:
+      group: mediroute-publish-${{ needs.preflight.outputs.source_sha }}
+      cancel-in-progress: false
 
     runs-on: ubuntu-latest
     timeout-minutes: 60
-
+    env:
+      SOURCE_SHA: ${{ needs.preflight.outputs.source_sha }}
     permissions:
       contents: read
       id-token: write
@@ -131,6 +136,9 @@ jobs:
     steps:
       - name: Checkout exact commit
         uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.preflight.outputs.source_sha }}
+          persist-credentials: false
 
       - name: Authenticate to AWS
         uses: aws-actions/configure-aws-credentials@v6.3.0
@@ -144,4 +152,4 @@ jobs:
 
       - name: Build and publish Docker images
         shell: bash
-        run: bash scripts/publish_ecs_images.sh "$GITHUB_SHA"
+        run: bash scripts/publish_ecs_images.sh "$SOURCE_SHA"

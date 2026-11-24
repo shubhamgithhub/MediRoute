@@ -21,6 +21,12 @@ for component in frontend backend; do
     exit 1
   fi
   docker build --platform linux/amd64 -f "infra/Dockerfile.$component" -t "$image" .
-  docker push "$image"
-  echo "PASS: Published $image"
+  if docker push "$image"; then
+    echo "PASS: Published $image"
+  else
+    # Another run can publish this same immutable tag between our check and push.
+    aws ecr describe-images --repository-name "$repository" \
+      --image-ids "imageTag=$IMAGE_TAG" >/dev/null
+    echo "PASS: $image was published by another run"
+  fi
 done
