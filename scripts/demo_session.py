@@ -62,7 +62,14 @@ def resolve_release(required_sha):
                   "--filter", "tagStatus=TAGGED", "--output", "json")["imageDetails"]
         for component in COMPONENTS
     ]
-    for pair in release_candidates(*images):
+    pairs = release_candidates(*images)
+    if not required_sha:
+        history = subprocess.check_output(
+            ["git", "rev-list", "--first-parent", revision], text=True, timeout=30,
+        ).splitlines()
+        main_order = {sha: index for index, sha in enumerate(history)}
+        pairs.sort(key=lambda pair: main_order.get(pair["sha"], len(history)))
+    for pair in pairs:
         sha = pair["sha"]
         if required_sha and sha != required_sha:
             continue

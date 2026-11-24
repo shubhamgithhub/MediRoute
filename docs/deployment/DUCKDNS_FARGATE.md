@@ -23,16 +23,20 @@ multipart overhead.
 In GitHub, open **Actions → MediRoute Demo - Start / Stop → Run workflow**
 and choose **main**.
 
-- **start** selects the most recently completed frontend and backend ECR pair
-  for the same immutable commit. The commit must be in main's history and
-  have a successful push CI run from an approved branch. A partially published
-  pair is skipped.
+- **start** prefers the newest main commit with a complete frontend and backend
+  ECR pair. Both images must refer to the same immutable commit with successful
+  push CI. Older approved releases remain available when a newer pair is incomplete.
 - **stop** stops the single demo task. Leave the task ARN blank for normal use.
   The next scheduled morning start still applies.
 - **publish-and-start** publishes missing images for the latest CI-passing
   commit on main selected by the workflow, then starts that release. Use
   **stop** first if a task is already running.
 - **list** reports whether ECS has a task in the demo cluster.
+
+A successful push CI run on **main** publishes the tested commit's images
+automatically in **MediRoute CD - Publish Images**. The publication workflow
+leaves the running ECS task alone. The morning start uses the newest complete
+pair available when it launches.
 
 Scheduled runs use **start** at 08:00 IST. Starts are allowed from 08:00 IST
 through the window ending at local midnight. Each launch creates a verified
