@@ -1,0 +1,11 @@
+case_id,group,text,report_text,expected,notice,note
+M01,mismatch,I get chest tightness when I climb stairs and it goes away when I rest.,Preoperative examination before total knee arthroplasty. 68-year-old male. 3D shows both knees have significant varus deformities.,Cardiology,yes,the live test of 24 Nov
+M02,mismatch,"My vision has become blurry, the doctor said I have a cataract in my right eye.",MRI LEFT KNEE: Complete tear of the anterior cruciate ligament. Grade II tear of the medial meniscus.,Ophthalmology,yes,
+M03,mismatch,Itchy red rash on both arms for two weeks that keeps spreading.,ECHOCARDIOGRAPHY: LVEF 25%. Severe LV systolic dysfunction. Impression: dilated cardiomyopathy.,Dermatology,yes,
+M04,mismatch,I have a kidney stone and severe pain in my side while passing urine.,HISTOPATHOLOGY: Right breast lump core biopsy. DIAGNOSIS: Invasive ductal carcinoma grade 2.,Urology,yes,
+M05,mismatch,My knee hurts when I climb stairs and it is swollen.,CORONARY ANGIOGRAPHY: LAD 90% proximal stenosis. LCx 80% stenosis. RCA 70% mid stenosis. Advised CABG.,Orthopaedics,yes,
+M06,mismatch,Frequent heartburn and acid reflux after meals for months.,BERA: bilateral profound sensorineural hearing loss. No benefit from hearing aids.,Gastroenterology,yes,
+A01,agrees,Knee pain for months after a fall while playing football.,MRI LEFT KNEE: Complete tear of the anterior cruciate ligament. Grade II tear of the medial meniscus.,Orthopaedics,no,
+A02,agrees,Chest pain when I walk fast.,CORONARY ANGIOGRAPHY: LAD 90% proximal stenosis. LCx 80% stenosis. RCA 70% mid stenosis.,Cardiology;Cardiothoracic Surgery,no,
+A03,agrees,I found a lump in my breast.,HISTOPATHOLOGY: Right breast lump core biopsy. DIAGNOSIS: Invasive ductal carcinoma grade 2.,Oncology,no,
+A04,agrees,Swelling in the front of my neck.,USG NECK: 3.2 cm solid nodule in the right thyroid lobe. FNAC: Bethesda category V suspicious for malignancy.,Oncology;Endocrinology;ENT,no,

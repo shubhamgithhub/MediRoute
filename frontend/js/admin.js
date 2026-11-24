@@ -404,8 +404,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function step1Algorithms(events) {
     const one = (stage, pred = () => true) => events.find((e) => e.stage === stage && pred(e)) || {};
     const input = one("input");
-    const ev = one("evidence");
-    const evCall = one("llm_call", (e) => e.stage_for === "evidence_extraction");
+    const last = (stage, pred = () => true) => events.filter((e) => e.stage === stage && pred(e)).slice(-1)[0] || {};
+    // the last evidence is the one used: after a report mismatch it is re-run on the typed text only
+    const ev = last("evidence");
+    const evCall = last("llm_call", (e) => e.stage_for === "evidence_extraction");
+    const rc = one("report_check");
     const v1 = one("vote", (e) => e.voter === "V1_lookup");
     const v2 = one("vote", (e) => e.voter === "V2_llm");
     const v2Call = one("llm_call", (e) => e.stage_for === "specialty_vote");
@@ -440,6 +443,19 @@ document.addEventListener("DOMContentLoaded", () => {
     evParts.push(el("div", "s1-io-label", "Keyword matches added by code (everyday terms found word for word)"), chips((ev.kept || {}).keyword_matches));
     evParts.push(el("div", "s1-io-label", "→ Phrases given to the lookup voter (body parts only if nothing else was found)"), chips(ev.routing_phrases));
     out.append(stageBox("3", "Evidence: LLM call 1 + code check", "llm", ...evParts));
+
+    // 3c · typed text vs report (code + lookup) -------------------------------------
+    if (rc.stage) {
+      const names = (t) => (t || []).map((x) => `${x[0]} (${Number(x[1]).toFixed(3)})`).join(", ") || "—";
+      const rcParts = [el("p", "muted", "Why: a report about another problem must not steer the answer. Words are split into typed text vs report only; if the two sides share no strong speciality in the lookup's top 3 (score at least a quarter of that side's best), the typed text decides (evidence and AI vote re-run without the report) and the patient sees a notice.")];
+      rcParts.push(table(["side", "phrases", "lookup top 3"], [
+        ["typed text", (rc.text_phrases || []).join(", ") || "—", names(rc.text_top3)],
+        ["report only", (rc.report_phrases || []).join(", ") || "—", names(rc.report_top3)]]));
+      rcParts.push(el("p", rc.mismatch ? "s1-drop" : "muted", rc.mismatch
+        ? `→ mismatch: report ${rc.report_specialty} vs text ${rc.text_specialty}; the typed text was used`
+        : "→ no mismatch: text and report used together"));
+      out.append(stageBox("3c", "Typed text vs report: code", "code", ...rcParts));
+    }
 
     // 3b · body areas (code) ------------------------------------------------------
     const ac = one("area_check");

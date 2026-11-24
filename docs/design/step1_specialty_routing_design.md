@@ -108,6 +108,20 @@ message. The LLM can add the message, never remove one, and never decides on its
 `tests/specialty_routing/test_step1_crisis_safety.py` and the 30-case
 `data/evaluation/step1_safety_set.csv` (`scripts/eval_safety_set.py`).
 
+*Typed text vs attached report (24 Nov 2026).* Text and report were one block, so a report about
+another problem could steer the answer: "chest tightness when I climb stairs" with a knee
+arthroplasty report made the lookup vote Orthopaedics and the request ended in a question. Now code
+splits the evidence into phrases found in the typed text and phrases only in the report. Generic
+test names ("CT scan", "MRI", "report") do not count as text evidence. It is a mismatch only when
+(a) no meaningful word of the typed evidence appears in the report (so "lump in breast" with a
+breast biopsy is the same problem), and (b) the lookup's strong specialities for the two sides
+(score at least a quarter of that side's best) have nothing in common. On a mismatch the typed text
+decides: evidence and the AI vote re-run without the report, and the patient sees a notice naming
+both specialities. Otherwise, including vague text such as "report attached", nothing changes.
+Tested by `tests/specialty_routing/test_step1_report_mismatch.py` and
+`data/evaluation/step1_report_mismatch_set.csv` plus the 15 core50 report cases
+(`scripts/eval_report_mismatch.py`).
+
 **2. Extract.** The LLM fills the existing `MedicalContext` fields (`symptoms`, `diagnoses`,
 `procedures`) from the query plus any report text, using a JSON schema. The current rule-based
 extractor stays as the fallback and as an extraction baseline. Extraction quality is evaluated

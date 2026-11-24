@@ -69,6 +69,7 @@ class Step1Trace:
         self.parent_request_id = parent_request_id
         self.events: list[dict[str, Any]] = []
         self.evidence_kept: dict[str, list[str]] = {}  # evidence by kind, returned as evidence_detail
+        self.report_notice: str | None = None  # set when the report and the typed text disagree
         self._start = time.perf_counter()
         self._trace = _trace_logger()
         self._summary = get_logger()

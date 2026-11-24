@@ -122,6 +122,14 @@ document.addEventListener("DOMContentLoaded", () => {
       notice.append(createIconSafe("info"), ` ${step1.notice}`);
       document.querySelector(".request-facts")?.after(notice);
     }
+    // the report and the typed text point to different specialities: the text was used (Step 1, 24 Nov)
+    if (step1.report_notice && !document.querySelector("#report-notice")) {
+      const notice = document.createElement("p");
+      notice.id = "report-notice";
+      notice.className = "llm-notice report-notice";
+      notice.append(createIconSafe("info"), ` ${step1.report_notice}`);
+      document.querySelector(".request-facts")?.after(notice);
+    }
     const location = typeof patientData.location === "string" && patientData.location.trim()
       ? patientData.location.trim()
       : "No preference";
