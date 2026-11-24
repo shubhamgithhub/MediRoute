@@ -7,6 +7,9 @@
                                     ("emergency_rule", no LLM call); suicidal intent keeps routing
     3 extract evidence    LLM+code  conditions / procedures / body parts, named diagnoses, and a
                                     body-area tag per symptom; kept only if in the text
+    3c text vs report     code      typed text and an attached report point to specialities with
+                                    nothing in common (lookup top 3) -> the typed text decides
+                                    (evidence and votes re-run without the report) + a notice
     3b body areas         code      no named diagnosis or procedure and symptoms in 2+ body areas
                                     (body_area_tags.csv, neighbour pairs in body_area_neighbours.csv)
                                     -> ask which area; "More than one / whole body" or "Other / not
@@ -31,17 +34,17 @@ from __future__ import annotations
 
 import threading
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any
 
 from mediroute.common.specialties import (body_area_options, body_area_specialties, care_category,
                                           count_body_areas, get_specialty, specialty_names)
-from mediroute.specialty_routing.step1.evidence import EVIDENCE_PROMPT_VERSION, EvidenceExtractor
+from mediroute.specialty_routing.step1.evidence import EVIDENCE_PROMPT_VERSION, EvidenceExtractor, _tokens, verify_phrase
 from mediroute.specialty_routing.step1.judge import JUDGE_PROMPT_VERSION, LLMJudge
 from mediroute.specialty_routing.step1.lookup import LookupIndex
 from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
 from mediroute.specialty_routing.step1.protect import redact
-from mediroute.specialty_routing.step1.safety import check_emergency, routes_to_emergency
+from mediroute.specialty_routing.step1.safety import add_llm_self_harm, check_emergency, routes_to_emergency
 from mediroute.specialty_routing.step1.trace import Step1Trace, log_patient_text, text_for_log
 from mediroute.specialty_routing.step1.voters import HybridLookupVoter, LLMVoter, Vote
 from mediroute.utils.logging_config import get_logger
@@ -56,6 +59,20 @@ MULTI_AREA_MIN = 2  # body areas (after neighbour pairs) that make a symptom-onl
 MULTI_AREA_ANSWER = "More than one / whole body"
 NOT_SURE = "Other / not sure"
 SHORTLIST_SIZE = 4  # specialities offered when the user picks
+# a lookup speciality counts for the text-vs-report check only when it scores at least this share of
+# that side's best score (the lookup's top 3 often ends in near-zero noise, e.g. 0.003 vs 0.033)
+REPORT_STRONG_SHARE = 0.25
+# a test named in the text ("CT scan of my father") says nothing about the problem: such phrases are not
+# text evidence for the check (core50 C027). Tests tied to one speciality (echo, endoscopy) still count.
+GENERIC_TEST_WORDS = {"ct", "scan", "scans", "mri", "x", "ray", "xray", "rays", "ultrasound", "usg", "sonography",
+                      "report", "reports", "test", "tests", "result", "results", "blood", "imaging", "pet",
+                      "lab", "investigation", "investigations"}
+# words too general to show that text and report are about the same problem
+GENERIC_OVERLAP_WORDS = {"pain", "painful", "ache", "severe", "mild", "moderate", "left", "right", "both",
+                         "chronic", "acute", "problem", "issue", "since", "months", "weeks", "days", "years"}
+REPORT_MISMATCH_NOTICE = ("Your uploaded report points to {report}, but your message points to {text}. "
+                          "We used your message. If you want hospitals for the report instead, describe it "
+                          "in your message and search again.")
 LLM_DOWN_NOTICE = ("The AI language model is not available on this server, so this suggestion comes from "
                    "the medical lookup only and may need an extra question.")
 _logger = get_logger()
@@ -214,6 +231,39 @@ class Step1Pipeline:
         trace.log("evidence", method=evidence.method, kept=evidence.kept, dropped=evidence.dropped,
                   routing_phrases=evidence.routing_phrases, checks=evidence.checks)
 
+        # 3a. safety net: self-harm words the rules missed (LLM quote, checked against the text) ------
+        checked = add_llm_self_harm(emergency, evidence.self_harm, text)
+        if checked is not emergency:
+            newly_acute = routes_to_emergency(checked) and not routes_to_emergency(emergency)
+            emergency = checked
+            trace.log("emergency_check", method="llm_self_harm_quote", quote=evidence.self_harm, **emergency)
+            if newly_acute:
+                reason = "The message describes an intent to end life now; this needs emergency care."
+                trace.log("decision", method="emergency_rule", selected_specialty=EMERGENCY,
+                          matched_rules=emergency["matched_rules"], reason=reason)
+                return self._respond(trace, inp, "emergency_rule", EMERGENCY, emergency, evidence.phrases, {},
+                                     reason=reason)
+
+        # 3c. typed text vs report (code + lookup) --------------------------------
+        # 24 Nov: text and report were one block, so a report about another problem could steer the
+        # AI voter and judge. When they point to specialities with nothing in common, the typed text
+        # decides and the patient is told. Otherwise (report supports the text, or the text is vague
+        # like "report attached") nothing changes.
+        report_check = self._report_check(inp, evidence)
+        if report_check:
+            trace.log("report_check", **report_check)
+        if report_check and report_check["mismatch"]:
+            trace.report_notice = REPORT_MISMATCH_NOTICE.format(report=report_check["report_specialty"],
+                                                                text=report_check["text_specialty"])
+            text, _ = redact(compose_text(replace(inp, report_text="")))
+            v3_future = None  # the parallel AI vote read the report; vote again on the typed text
+            evidence = self.extractor.extract(text)
+            trace.evidence_kept = evidence.kept
+            trace.log("llm_call", stage_for="evidence_extraction",
+                      **_llm_event(evidence.llm_call, self.extractor.build_prompt(text), EVIDENCE_PROMPT_VERSION))
+            trace.log("evidence", method=evidence.method, kept=evidence.kept, dropped=evidence.dropped,
+                      routing_phrases=evidence.routing_phrases, checks=evidence.checks, typed_text_only=True)
+
         # 3b. body areas (code) -------------------------------------------------
         answer = str((inp.clarification or {}).get("body_area") or "").strip()
         named = evidence.named_diagnoses + evidence.kept["procedures"]
@@ -318,6 +368,41 @@ class Step1Pipeline:
                              reason=reason, agreeing=agreeing)
 
     # ------------------------------------------------------------------ helpers
+    def _report_check(self, inp: Step1Input, evidence) -> dict | None:
+        """Splits the evidence into words from the typed text and words only in the report, and
+        asks the lookup voter (no LLM) for each side's top 3. A mismatch only when both sides have
+        evidence and their strong specialities (>= REPORT_STRONG_SHARE of the side's best score)
+        share none, and no meaningful word of the typed evidence appears in the report."""
+        if not (inp.report_text.strip() and inp.text.strip() and evidence.routing_phrases):
+            return None
+        typed, _ = redact(compose_text(replace(inp, report_text="")))
+        tokens = set(_tokens(typed))
+        in_text = [p for p in evidence.routing_phrases if verify_phrase(p, tokens)[0]]
+        from_report = [p for p in evidence.routing_phrases if p not in in_text]
+        from_text = [p for p in in_text if not set(_tokens(p)) <= GENERIC_TEST_WORDS]
+        check: dict[str, Any] = {"text_phrases": from_text, "report_phrases": from_report, "mismatch": False,
+                                 "text_specialty": None, "report_specialty": None, "text_top3": [], "report_top3": []}
+        if not (from_text and from_report):
+            return check
+        # the same body part or condition word on both sides ("lump in breast" + "breast lump core
+        # biopsy") means the same problem, whatever specialities the lookup gives each side
+        def words(text: str) -> set[str]:
+            return {w.rstrip("s") if len(w) > 3 else w for w in _tokens(text)}
+        shared_words = (words(" ".join(from_text)) - {w.rstrip("s") for w in GENERIC_TEST_WORDS | GENERIC_OVERLAP_WORDS}
+                        ) & words(inp.report_text)
+        check["shared_words"] = sorted(shared_words)
+        if shared_words:
+            return check
+        text_vote, report_vote = self.v1.vote(from_text), self.v1.vote(from_report)
+        check.update(text_top3=text_vote.top3, report_top3=report_vote.top3,
+                     text_specialty=text_vote.top1, report_specialty=report_vote.top1)
+        def strong(top3: list) -> set[str]:
+            best = max((score for _, score in top3), default=0.0)
+            return {name for name, score in top3 if best and score >= REPORT_STRONG_SHARE * best}
+        shared = strong(text_vote.top3) & strong(report_vote.top3)
+        check["mismatch"] = bool(text_vote.top1 and report_vote.top1 and not shared)
+        return check
+
     @staticmethod
     def _answer_decides(inp: Step1Input, candidates: list[str]) -> str | None:
         """The one candidate that fits the patient's body-area answer, else None. Only ever picks
@@ -399,6 +484,7 @@ class Step1Pipeline:
             "disclaimer": DISCLAIMER,
             "llm_available": llm_ok,
             "notice": None if llm_ok else LLM_DOWN_NOTICE,
+            "report_notice": getattr(trace, "report_notice", None),
             "latency_ms": trace.elapsed_ms(),
             # kept for the current frontend
             "relevantSpecialty": specialty,

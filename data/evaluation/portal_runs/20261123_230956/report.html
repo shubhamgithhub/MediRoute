@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Benchmark</title>
+<style>
+:root { --bg:#f7f8f6; --card:#fff; --fg:#1b2321; --muted:#5d6b68; --line:#d8e0de; --head:#e6f0ee; --good-bg:#e3f3e8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#121716; --card:#1b2321; --fg:#e4ebe9; --muted:#9aaba7; --line:#2f3b39; --head:#1f3330; --good-bg:#17331f; color-scheme:dark; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 "Segoe UI",system-ui,Arial,sans-serif; padding:28px max(16px,3vw) 56px; }
+main { max-width:980px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+h1 { margin:0; font-size:1.7rem; } h2 { margin:0 0 6px; font-size:1.15rem; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+.scroll { overflow-x:auto; } table { width:100%; border-collapse:collapse; font-size:.92rem; font-variant-numeric:tabular-nums; }
+th, td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+th { background:var(--head); font-size:.85rem; } tr.win td { background:var(--good-bg); font-weight:600; }
+.m, .muted { color:var(--muted); font-size:.85rem; font-weight:400; } code { font-family:Consolas,monospace; font-size:.85em; }
+</style></head><body><main>
+<header><h1>Portal benchmark: 134 real requests</h1>
+<p class="muted">2026-11-23T23:09:56 · each gold message sent to the running portal (<code>POST /api/patient-routing</code>: Step 1 → Step 2),
+one request every 11 s. "Correct" = expected speciality or an accepted alternative; a clarification question counts as not correct.</p></header>
+
+<section class="card"><h2>Setup</h2><div class="scroll"><table>
+<tr><th>Part</th><th>Model / setting</th></tr>
+<tr><td>Evidence + LLM voter</td><td>openai/gpt-6-luna (OpenRouter), crisis safety (evidence_v4)</td></tr>
+<tr><td>LLM judge (only on disagreements)</td><td>openai/gpt-6-luna (OpenRouter)</td></tr>
+<tr><td>Lookup voter</td><td>TF-IDF + all-MiniLM-L6-v2 embeddings, local</td></tr>
+<tr><td>Models seen in the LLM calls</td><td>dots-studio/dots-3-note-preview:free (252), openai/gpt-6-luna (38)</td></tr>
+</table></div></section>
+
+<section class="card"><h2>Accuracy (Step 1)</h2><div class="scroll"><table>
+<tr><th>Gold set</th><th>Queries</th><th>Correct (95% CI)</th><th>NDCG@3</th><th>Confidently wrong</th><th>Asks a question</th></tr>
+<tr class='win'><td>All 134 queries</td><td>134</td><td>87% <span class='m'>(81%–92%)</span></td><td>0.84</td><td>0%</td><td>13%</td></tr><tr><td>core50</td><td>50</td><td>86% <span class='m'>(74%–93%)</span></td><td>0.85</td><td>0%</td><td>14%</td></tr><tr><td>mediroute</td><td>84</td><td>88% <span class='m'>(80%–93%)</span></td><td>0.84</td><td>0%</td><td>12%</td></tr></table></div>
+<p class="muted">Decisions: agreement 98, clarification_required 17, judge 15, emergency_rule 4.
+LLM judge used on 19 requests: accepted 15, order-swap flip 4; its accepted answers were right 15 of 15.</p></section>
+
+<section class="card"><h2>Latency</h2><div class="scroll"><table>
+<tr><th>What</th><th>Typical (p50)</th><th>Slow (p95)</th><th>Slowest</th></tr>
+<tr><td>Patient waits (portal request, Step 1 + Step 2)</td><td>3.2 s</td><td>5.6 s</td><td>9.0 s</td></tr><tr><td>Step 1 only</td><td>3.1 s</td><td>5.6 s</td><td>8.9 s</td></tr><tr><td>LLM call: evidence <span class='m'>(130 calls)</span></td><td>2.4 s</td><td>3.7 s</td><td>6.4 s</td></tr><tr><td>LLM call: judge (each of 2) <span class='m'>(38 calls)</span></td><td>1.6 s</td><td>2.6 s</td><td>2.7 s</td></tr><tr><td>LLM call: LLM voter <span class='m'>(122 calls)</span></td><td>2.9 s</td><td>4.4 s</td><td>8.9 s</td></tr></table></div>
+<p class="muted">The evidence call and the LLM voter run in parallel for hosted models, so the patient waits about one call, plus the judge on disagreements.</p></section>
+
+<section class="card"><h2>Cost and reliability</h2><div class="scroll"><table>
+<tr><th>Item</th><th>Result</th></tr>
+<tr><td>LLM calls</td><td>290 (414,297 input + 17,488 output tokens)</td></tr>
+<tr><td>Total cost</td><td>$0.0027 (≈ $0.00002 per request)</td></tr>
+<tr><td>Failed LLM calls</td><td>0</td></tr>
+<tr><td>Failed portal requests (HTTP ≠ 200)</td><td>0</td></tr>
+<tr><td>Step 2 outcome</td><td>success 117, None 17</td></tr>
+</table></div></section>
+
+<section class="card"><h2>Answered with a wrong speciality (0)</h2><div class="scroll"><table>
+<tr><th>Set</th><th>ID</th><th>Message</th><th>Expected</th><th>Answered</th><th>How</th></tr><tr><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td></tr></table></div>
+<p class="muted">Gold labels are team-written drafts awaiting doctor review; some "wrong" answers may be acceptable.</p></section>
+<p class="muted">Raw results: <code>data\evaluation\portal_runs\20261123_230956/results.jsonl</code> · script: <code>scripts/portal_benchmark.py</code></p>
+</main></body></html>

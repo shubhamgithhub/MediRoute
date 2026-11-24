@@ -1,0 +1,26 @@
+case_id,group,expected,got,decision,notice_expected,notice_shown,notice_ok,specialty,request_id
+M01,mismatch,Cardiology,Cardiology,agreement,yes,True,True,correct,ce057076f03b
+M02,mismatch,Ophthalmology,Ophthalmology,agreement,yes,True,True,correct,535853e89d8b
+M03,mismatch,Dermatology,Dermatology,agreement,yes,True,True,correct,0592beb00524
+M04,mismatch,Urology,Urology,agreement,yes,True,True,correct,35b32c363c9f
+M05,mismatch,Orthopaedics,Orthopaedics,agreement,yes,True,True,correct,9ba12fe26dbf
+M06,mismatch,Gastroenterology,Gastroenterology,agreement,yes,True,True,correct,649545b818c5
+A01,agrees,Orthopaedics,Orthopaedics,agreement,no,False,True,correct,b35861fa655b
+A02,agrees,Cardiology;Cardiothoracic Surgery,Cardiology,agreement,no,False,True,correct,b0b31de90d31
+A03,agrees,Oncology,Oncology,agreement,no,False,True,correct,44370ec80bf1
+A04,agrees,Oncology;Endocrinology;ENT,Oncology,judge,no,False,True,correct,fceb7a0fdeb2
+C021,core50 report,Cardiothoracic Surgery;Cardiology,Cardiothoracic Surgery,judge,no,False,True,correct,d79eb737cc6c
+C022,core50 report,Orthopaedics,Orthopaedics,agreement,no,False,True,correct,9294bed4d1c0
+C023,core50 report,Oncology,Oncology,agreement,no,False,True,correct,7792410cc04a
+C024,core50 report,Nephrology;Organ Transplant,Nephrology,agreement,no,False,True,correct,fb0c64bcac68
+C025,core50 report,Ophthalmology;Endocrinology,Ophthalmology,agreement,no,False,True,correct,33643ee9c704
+C026,core50 report,Pediatric Cardiology;Cardiothoracic Surgery,Pediatric Cardiology,judge,no,False,True,correct,56e6057bde47
+C027,core50 report,Gastroenterology;Organ Transplant,Gastroenterology,agreement,no,False,True,correct,477c24443bd6
+C028,core50 report,Oncology;Endocrinology;ENT,Oncology,judge,no,False,True,correct,66a92b6bdce6
+C029,core50 report,Reproductive Medicine;Obstetrics & Gynaecology,Reproductive Medicine,agreement,no,False,True,correct,9a3ad760face
+C030,core50 report,ENT;Paediatrics,ENT,agreement,no,False,True,correct,7302b23121f2
+C031,core50 report,Orthopaedics,Orthopaedics,agreement,no,False,True,correct,2858c09d4834
+C032,core50 report,Cardiology,Cardiology,agreement,no,False,True,correct,bd664127d6c5
+C033,core50 report,Neurosurgery;Oncology,Neurosurgery,agreement,no,False,True,correct,17df29249f6c
+C034,core50 report,Gastroenterology,Gastroenterology,agreement,no,False,True,correct,0be728e90047
+C035,core50 report,Obstetrics & Gynaecology,Obstetrics & Gynaecology,agreement,no,False,True,correct,123e53322090

@@ -104,11 +104,30 @@ document.addEventListener("DOMContentLoaded", () => {
     if (careCategoryElement) {
       careCategoryElement.append(createIconSafe("stethoscope"), ` ${careCategory}`);
     }
+    // emergency / crisis notice first, above the request and the hospital list (it was only on the patient page)
+    if (step1.emergency && step1.emergency_message && !document.querySelector("#emergency-banner")) {
+      const banner = document.createElement("div");
+      banner.id = "emergency-banner";
+      banner.className = "emergency-banner";
+      banner.setAttribute("role", "alert");
+      const message = document.createElement("p");
+      message.textContent = step1.emergency_message;
+      banner.append(createIconSafe("siren"), message);
+      document.querySelector("#results-content")?.prepend(banner);
+    }
     if (step1.notice && !document.querySelector("#llm-notice")) {
       const notice = document.createElement("p");
       notice.id = "llm-notice";
       notice.className = "llm-notice";
       notice.append(createIconSafe("info"), ` ${step1.notice}`);
+      document.querySelector(".request-facts")?.after(notice);
+    }
+    // the report and the typed text point to different specialities: the text was used (Step 1, 24 Nov)
+    if (step1.report_notice && !document.querySelector("#report-notice")) {
+      const notice = document.createElement("p");
+      notice.id = "report-notice";
+      notice.className = "llm-notice report-notice";
+      notice.append(createIconSafe("info"), ` ${step1.report_notice}`);
       document.querySelector(".request-facts")?.after(notice);
     }
     const location = typeof patientData.location === "string" && patientData.location.trim()

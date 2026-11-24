@@ -17,7 +17,7 @@ from mediroute.common.specialties import area_tag_names, lay_terms, load_area_ta
 from mediroute.specialty_routing.step1.ollama_client import LLMCall, OllamaClient, make_llm_client
 
 PROMPT_DIR = Path(__file__).resolve().parents[1] / "prompts"
-EVIDENCE_PROMPT_VERSION = "evidence_v3"  # v2 (14 Nov): + named_diagnoses, a body-area tag per symptom; v3: every symptom tagged, "general" only for whole-body symptoms
+EVIDENCE_PROMPT_VERSION = "evidence_v4"  # v2 (14 Nov): + named_diagnoses, a body-area tag per symptom; v3: every symptom tagged, "general" only for whole-body symptoms; v4 (23 Nov): + self_harm quote (safety net for the crisis rule)
 KINDS = ("conditions", "procedures", "body_parts")
 # keyword_matches: strong lay terms (specialty_mapping.csv) found word-for-word in the text. They are
 # always added, because the small local LLM sometimes misses obvious phrases ("vision is blurry").
@@ -71,13 +71,15 @@ def is_generic(phrase: str) -> bool:
 
 
 def evidence_schema() -> dict:
-    """v2: the three phrase lists, named diagnoses, and each symptom with a tag from body_area_tags.csv."""
+    """v2: the three phrase lists, named diagnoses, and each symptom with a tag from body_area_tags.csv.
+    v4: self_harm = the patient's own words about wanting to die or harm themselves, or ""."""
     lists = {kind: {"type": "array", "items": {"type": "string"}, "maxItems": 6}
              for kind in KINDS + ("named_diagnoses",)}
     lists["symptom_areas"] = {"type": "array", "maxItems": 10, "items": {
         "type": "object",
         "properties": {"phrase": {"type": "string"}, "tag": {"type": "string", "enum": area_tag_names()}},
         "required": ["phrase", "tag"]}}
+    lists["self_harm"] = {"type": "string"}
     return {"type": "object", "properties": lists, "required": list(lists)}
 
 
@@ -118,6 +120,8 @@ class Evidence:
     symptom_areas: list[dict] = field(default_factory=list)
     # every LLM phrase and what the code check did with it (admin page: share of words found, kept or why not)
     checks: list[dict] = field(default_factory=list)
+    # v4: the patient's words about self-harm, kept only if found in the text (safety.add_llm_self_harm)
+    self_harm: str = ""
 
     @property
     def phrases(self) -> list[str]:
@@ -195,7 +199,21 @@ class EvidenceExtractor:
                 else:
                     evidence.dropped.append({"kind": kind, "phrase": phrase, "matched_share": share})
         self._areas(call.parsed, source, evidence)
+        self._self_harm(call.parsed, source, evidence)
         return evidence
+
+    @staticmethod
+    def _self_harm(parsed: dict, source: set[str], evidence: Evidence) -> None:
+        """The LLM's self-harm quote counts only if its words are in the text (same check as the
+        other phrases), so the LLM cannot raise the crisis message from words the patient never wrote."""
+        quote = str(parsed.get("self_harm") or "").strip()
+        if not quote:
+            return
+        supported, share = verify_phrase(quote, source)
+        evidence.checks.append({"kind": "self_harm", "phrase": quote, "share": share, "kept": supported,
+                                "why": "" if supported else "under 60% of its words are in the text"})
+        if supported:
+            evidence.self_harm = quote
 
     @staticmethod
     def _areas(parsed: dict, source: set[str], evidence: Evidence) -> None:
