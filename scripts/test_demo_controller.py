@@ -22,7 +22,7 @@ DEFINITION = {
         {"name": "api", "image": controller.REGISTRY + "/mediroute-backend@" + RELEASE["backend"]},
         {"name": "frontend", "image": controller.REGISTRY + "/mediroute-frontend@" + RELEASE["frontend"],
          "environment": [{"name": "MEDIROUTE_DUCKDNS_LABEL", "value": "mediroute-demo"}],
-         "portMappings": [{"containerPort": 443, "protocol": "tcp"}]},
+         "portMappings": [{"containerPort": 443, "hostPort": 443, "protocol": "tcp"}]},
     ],
 }
 
@@ -101,6 +101,14 @@ class ControllerTests(unittest.TestCase):
                 self.ecs.describe_task_definition.return_value = {"taskDefinition": broken}
                 with self.assertRaises(ValueError):
                     self.call()
+        self.ecs.run_task.assert_not_called()
+
+    def test_non_https_host_port_is_rejected(self):
+        broken = copy.deepcopy(DEFINITION)
+        broken["containerDefinitions"][1]["portMappings"][0]["hostPort"] = 80
+        self.ecs.describe_task_definition.return_value = {"taskDefinition": broken}
+        with self.assertRaisesRegex(ValueError, "public port"):
+            self.call()
         self.ecs.run_task.assert_not_called()
 
     def test_wrong_image_digest_is_rejected(self):

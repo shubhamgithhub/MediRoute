@@ -69,6 +69,11 @@ def schedule(name, expression, timezone_name, target, **extra):
                   "ActionAfterCompletion", "Target"):
         if actual[field] != data[field]:
             raise RuntimeError("Schedule verification failed: " + field)
+    if "EndDate" in data:
+        expected_end = datetime.fromisoformat(data["EndDate"].replace("Z", "+00:00"))
+        actual_end = datetime.fromisoformat(actual["EndDate"].replace("Z", "+00:00"))
+        if actual_end != expected_end:
+            raise RuntimeError("Schedule end-date verification failed")
     print(json.dumps({key: actual.get(key) for key in
                       ("Name", "State", "ScheduleExpression", "ScheduleExpressionTimezone", "EndDate")}))
 

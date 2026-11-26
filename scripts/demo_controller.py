@@ -52,7 +52,9 @@ def validate_release(release, task):
                 "Task image does not match the approved release")
     env = {e["name"]: e["value"] for e in containers["frontend"].get("environment", [])}
     require(env.get("MEDIROUTE_DUCKDNS_LABEL") == "mediroute-demo", "Unexpected public hostname")
-    require(containers["frontend"]["portMappings"] == [{"containerPort": 443, "protocol": "tcp"}],
+    ports = containers["frontend"].get("portMappings", [])
+    require(len(ports) == 1 and ports[0].get("containerPort") == 443 and
+            ports[0].get("hostPort", 443) == 443 and ports[0].get("protocol") == "tcp",
             "Unexpected public port")
 
 
