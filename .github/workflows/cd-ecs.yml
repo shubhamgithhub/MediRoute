@@ -5,10 +5,7 @@ on:
     branches:
       - main
       - feature/aws_deployment
-  schedule:
-    # 02:30 UTC is 08:00 IST. The Python window also enforces the year and last day.
-    - cron: '30 2 24-30 11 *'
-    - cron: '30 2 1-6 12 *'
+  # Daily wake-up is owned by AWS EventBridge Scheduler (Asia/Kolkata).
   workflow_dispatch:
     inputs:
       operation:
@@ -25,7 +22,7 @@ on:
           - register
           - deploy
       public_endpoint:
-        description: 'Endpoint for register/deploy'
+        description: 'Endpoint for register; Start/Deploy always use DuckDNS'
         type: choice
         required: true
         default: quick-tunnel
@@ -75,7 +72,7 @@ jobs:
   control:
     name: Demo ECS Operation
     needs: validate
-    if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.operation != 'validate') }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.operation != 'validate' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -83,8 +80,8 @@ jobs:
       actions: read
       id-token: write
     env:
-      OPERATION: ${{ github.event_name == 'schedule' && 'start' || inputs.operation }}
-      MEDIROUTE_ENDPOINT_MODE: ${{ (github.event_name == 'schedule' || inputs.operation == 'start' || inputs.operation == 'publish-and-start') && 'duckdns' || inputs.public_endpoint || 'quick-tunnel' }}
+      OPERATION: ${{ inputs.operation }}
+      MEDIROUTE_ENDPOINT_MODE: ${{ (inputs.operation == 'start' || inputs.operation == 'publish-and-start' || inputs.operation == 'deploy') && 'duckdns' || inputs.public_endpoint || 'quick-tunnel' }}
       MEDIROUTE_DUCKDNS_LABEL: ${{ vars.MEDIROUTE_DUCKDNS_LABEL }}
       MEDIROUTE_DUCKDNS_SECURITY_GROUP: ${{ vars.MEDIROUTE_DUCKDNS_SECURITY_GROUP }}
       TASK_ARN_INPUT: ${{ inputs.task_arn }}
@@ -117,28 +114,19 @@ jobs:
           # Emergency stop/list should work even when CI is failing.
           case "$OPERATION" in
             list|stop) echo "PASS: $OPERATION is a manual operational action"; exit 0 ;;
-            start|publish-and-start)
+            start|publish-and-start|deploy)
               [[ "$GITHUB_REF" == refs/heads/main ]] || {
-                echo 'STOP: Run Start or Publish-and-start from main.' >&2
+                echo 'STOP: Run Start, Publish-and-start or Deploy from main.' >&2
                 exit 1
               }
               ;;
-            register|deploy) ;;
+            register) ;;
             *) echo 'STOP: Invalid operation'; exit 1 ;;
           esac
 
           if [[ "$OPERATION" != register ]]; then
-            if python3 scripts/demo_session.py deadline; then
-              echo 'MEDIROUTE_DEMO_WINDOW=YES' >> "$GITHUB_ENV"
-            else
-              result=$?
-              if [[ "$result" == 3 && "$GITHUB_EVENT_NAME" == schedule ]]; then
-                echo 'skip=true' >> "$GITHUB_OUTPUT"
-                echo 'Scheduled start skipped outside the academic demo window.' >> "$GITHUB_STEP_SUMMARY"
-                exit 0
-              fi
-              exit "$result"
-            fi
+            python3 scripts/demo_session.py deadline
+            echo 'MEDIROUTE_DEMO_WINDOW=YES' >> "$GITHUB_ENV"
           fi
 
           # Never trust deployment authorization from the selectable branch.
@@ -215,6 +203,12 @@ jobs:
         shell: bash
         run: bash scripts/publish_ecs_images.sh "$GITHUB_SHA"
 
+      - name: Prepare published main release
+        if: steps.guard.outputs.skip != 'true' && steps.existing.outputs.active != 'true' && env.OPERATION == 'publish-and-start'
+        env:
+          SOURCE_SHA: ${{ github.sha }}
+        run: python3 scripts/prepare_demo_release.py
+
       - name: Execute demo operation
         if: steps.guard.outputs.skip != 'true' && steps.existing.outputs.active != 'true'
         id: ecs_operation
@@ -239,22 +233,16 @@ jobs:
                   *) echo 'STOP: More than one task found; specify the exact task ARN.' >&2; exit 1 ;;
                 esac
               fi
-              MEDIROUTE_CONFIRM_STOP=YES bash scripts/stop_ecs.sh stop "$task_arn"
-              aws ecs wait tasks-stopped --cluster mediroute-demo --tasks "$task_arn"
+              if [[ -z "$TASK_ARN_INPUT" ]]; then
+                python3 scripts/invoke_demo_controller.py stop
+              else
+                MEDIROUTE_CONFIRM_STOP=YES bash scripts/stop_ecs.sh stop "$task_arn"
+                aws ecs wait tasks-stopped --cluster mediroute-demo --tasks "$task_arn"
+              fi
               echo 'MediRoute ECS task stopped.' >> "$GITHUB_STEP_SUMMARY"
               ;;
             start|publish-and-start)
-              if [[ "$OPERATION" == publish-and-start ]]; then
-                pair=$(python3 scripts/demo_session.py release --sha "$GITHUB_SHA")
-              else
-                pair=$(python3 scripts/demo_session.py release)
-              fi
-              registry=299952487175.dkr.ecr.ap-southeast-2.amazonaws.com
-              sha=$(jq -er '.sha' <<< "$pair")
-              export BACKEND_IMAGE="$registry/mediroute-backend@$(jq -er '.backend' <<< "$pair")"
-              export FRONTEND_IMAGE="$registry/mediroute-frontend@$(jq -er '.frontend' <<< "$pair")"
-              echo "source_sha=$sha" >> "$GITHUB_OUTPUT"
-              MEDIROUTE_CONFIRM_BILLABLE_RUN=YES bash scripts/deploy_ecs.sh deploy
+              python3 scripts/invoke_demo_controller.py start
               ;;
             register|deploy)
               REGISTRY=299952487175.dkr.ecr.ap-southeast-2.amazonaws.com
@@ -277,7 +265,7 @@ jobs:
               done
               if [[ "$OPERATION" == deploy ]]; then
                 echo 'WARNING: Starting a billable ECS Fargate task'
-                MEDIROUTE_CONFIRM_BILLABLE_RUN=YES bash scripts/deploy_ecs.sh deploy
+                python3 scripts/invoke_demo_controller.py start
               else
                 bash scripts/deploy_ecs.sh register
               fi
