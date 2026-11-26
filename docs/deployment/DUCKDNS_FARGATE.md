@@ -23,27 +23,76 @@ multipart overhead.
 In GitHub, open **Actions → MediRoute Demo - Start / Stop → Run workflow**
 and choose **main**.
 
-- **start** prefers the newest main commit with a complete frontend and backend
-  ECR pair. Both images must refer to the same immutable commit with successful
-  push CI. Older approved releases remain available when a newer pair is incomplete.
+- **start** launches the latest prepared main release. Its backend/frontend images
+  are pinned to ECR digests and were published only after the same commit passed CI.
+  An existing active task is preserved.
 - **stop** stops the single demo task. Leave the task ARN blank for normal use.
   The next scheduled morning start still applies.
-- **publish-and-start** publishes missing images for the latest CI-passing
-  commit on main selected by the workflow, then starts that release. Use
-  **stop** first if a task is already running.
+- **publish-and-start** publishes the selected CI-passing main commit, prepares
+  its release, then starts it. Use **stop** first when replacing a running task.
 - **list** reports whether ECS has a task in the demo cluster.
 
-A successful push CI run on **main** publishes the tested commit's images
-automatically in **MediRoute CD - Publish Images**. The publication workflow
-leaves the running ECS task alone. The morning start uses the newest complete
-pair available when it launches.
+A successful push CI run on **main** publishes both images automatically in
+**MediRoute CD - Publish Images**. Its **Prepare Main Release for Daily Startup**
+job registers a task definition and writes the non-secret release metadata to
+SSM /mediroute/dev/demo/release. This does not start or replace an ECS task.
+A failed or incomplete build leaves the previous approved release available.
+An obsolete build cannot overwrite the current-main release pointer.
 
-Scheduled runs use **start** at 08:00 IST. Starts are allowed from 08:00 IST
-through the window ending at local midnight. Each launch creates a verified
-one-time EventBridge stop schedule for its exact task ARN. The final stop is
-midnight going into December 7 IST. Later starts are refused by the date
-guard. GitHub queues and task startup may delay availability after 08:00.
-Stopping the task clears its local SQLite data. Auto-deploy stays disabled.
+### Daily AWS schedule
+
+GitHub cron delivered a morning trigger nine hours late on November 25. Daily
+startup now uses **EventBridge Scheduler in Sydney**, independently of GitHub
+runner availability:
+
+- mediroute-demo-daily-start: 08:00 in Asia/Kolkata, through December 6, 2026.
+- mediroute-demo-daily-stop: 00:00 in Asia/Kolkata, through the midnight
+  entering December 7 (the end of December 6's testing session).
+- Both invoke mediroute-demo-control, a small Lambda with reserved concurrency
+  of one. GitHub's normal Start/Stop operations use that same controller.
+- Every launch also creates and reads back a separate one-time stop schedule
+  targeting the exact task ARN. Failure to verify it triggers an emergency stop.
+- The midnight sweep is a second stop path, including for manually launched tasks.
+- Starts outside 08:00–midnight or after December 6 are refused in code. Scheduled
+  events older than 15 minutes are ignored. Retried starts use a stable ECS client
+  token and never replace an existing task.
+- AWS evaluates schedules with minute precision; container boot and DNS propagation
+  add time before the public endpoint is ready. This is not an exact-second
+  availability guarantee.
+
+The ECS containers, public subnet, DuckDNS hostname and TLS handling remain the
+same. The scheduling function receives no DuckDNS token, TLS private key, LLM
+key or GitHub token. **auto_deploy remains false**; Container Insights is unchanged.
+Stopping the task clears its local SQLite data.
+
+### Install and verify the scheduler
+
+After reviewing the IAM scope in scripts/setup_demo_schedule.py, an authorized
+AWS operator can install or update it:
+
+    export AWS_PROFILE=mediroute-local AWS_REGION=ap-southeast-2
+    python3 scripts/setup_demo_schedule.py --apply --probe
+
+The installer requires an existing prepared release. On the initial migration,
+--bootstrap-release /path/to/release.json accepts non-secret JSON containing
+sha, task_definition, backend and frontend for an already CI-verified main
+release. It validates the task definition and both immutable ECR image tags before
+saving the pointer. Do not use a release that has not passed main CI.
+
+--probe adds a self-deleting, one-time **read-only** Scheduler invocation two
+minutes later. It validates the release and reads the active task list without
+launching or stopping anything. Check CloudWatch log group
+/aws/lambda/mediroute-demo-control (seven-day retention) for status: verified.
+
+    aws scheduler get-schedule --name mediroute-demo-daily-start --group-name default
+    aws scheduler get-schedule --name mediroute-demo-daily-stop --group-name default
+    aws ssm get-parameter --name /mediroute/dev/demo/release --query Parameter.Value --output text
+    aws logs tail /aws/lambda/mediroute-demo-control --since 1h
+    curl --fail https://mediroute-demo.duckdns.org/api/health
+
+Schedules have explicit end dates and auto-delete after completion. For an early
+permanent shutdown, disable both daily schedules as well as stopping the ECS
+task; otherwise the next authorized morning start remains active.
 
 ## 1. Reserve a name and issue a certificate
 
@@ -141,14 +190,11 @@ the AWS operator review the exact new security group for the deployment role.
 1. In GitHub **Settings → Secrets and variables → Actions → Variables**,
    set `MEDIROUTE_DUCKDNS_LABEL` to the reserved label and
    `MEDIROUTE_DUCKDNS_SECURITY_GROUP` to the dedicated group's ID.
-2. Commit/push the repository changes, wait for CI, and manually publish
-   images for the exact passing commit.
-3. Confirm the current demo task has stopped. In **MediRoute CD - ECS
-   Control**, select the branch with these changes, choose `deploy`, and
-   set **public_endpoint** to **duckdns**. Keep `auto_deploy: false`. The
-workflow reads the runtime limit from `main` and stops at midnight IST or
-the earlier policy limit. The one-time stop schedule remains enabled
-throughout the testing window.
+2. Merge changes to main and wait for CI, automatic image publication and
+   **Prepare Main Release for Daily Startup** to succeed.
+3. Confirm the current demo task has stopped. In **MediRoute Demo - Start / Stop**,
+   choose **main** and **start**. It uses DuckDNS automatically. Keep auto_deploy
+   false. The controller verifies the exact task's midnight stop.
 4. Open the job summary and check for the URL and health result. For a
    direct check, request `https://<label>.duckdns.org/api/health` over HTTPS,
    open `/patient.html` and `/admin.html`, and confirm `/api/admin/requests`

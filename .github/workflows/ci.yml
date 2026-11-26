@@ -48,6 +48,9 @@ jobs:
       - name: Test CloudWatch application metrics (no AWS)
         run: python scripts/test_cloudwatch_metrics.py
 
+      - name: Test AWS daily startup controller (no AWS)
+        run: python scripts/test_demo_controller.py
+
       - name: Validate Docker Compose
         run: docker compose -f infra/docker-compose.demo.yaml config --quiet
 
