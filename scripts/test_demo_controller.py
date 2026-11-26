@@ -185,5 +185,48 @@ class ReleasePreparationTests(unittest.TestCase):
         self.assertNotIn(("bash", "scripts/deploy_ecs.sh", "deploy"), commands)
         self.assertEqual(commands[-1][:3], ("aws", "ssm", "put-parameter"))
 
+class LeaseTests(unittest.TestCase):
+    def setUp(self):
+        from unittest.mock import Mock
+        self.db = Mock()
+        class Conflict(Exception):
+            pass
+        self.db.exceptions.ConditionalCheckFailedException = Conflict
+
+    def test_busy_lock_never_reaches_ecs_or_deletes_another_lease(self):
+        from unittest.mock import patch
+        self.db.update_item.side_effect = self.db.exceptions.ConditionalCheckFailedException()
+        with patch("demo_controller.execute") as execute:
+            with self.assertRaisesRegex(RuntimeError, "busy"):
+                controller.run_locked({"operation": "start"}, None, None, None, self.db, NOW, "owner")
+            execute.assert_not_called()
+        self.db.delete_item.assert_not_called()
+
+    def test_failure_releases_only_its_own_lease(self):
+        from unittest.mock import patch
+        with patch("demo_controller.execute", side_effect=RuntimeError("simulated launch error")):
+            with self.assertRaisesRegex(RuntimeError, "launch error"):
+                controller.run_locked({"operation": "start"}, None, None, None, self.db, NOW, "owner")
+        lock = self.db.update_item.call_args.kwargs
+        self.assertEqual(int(lock["ExpressionAttributeValues"][":expires"]["N"]) - int(NOW.timestamp()), 180)
+        release = self.db.delete_item.call_args.kwargs
+        self.assertEqual(release["ConditionExpression"], "#owner = :owner")
+        self.assertEqual(release["ExpressionAttributeValues"][":owner"], {"S": "owner"})
+
+    def test_old_owner_cannot_remove_successors_lease(self):
+        from unittest.mock import patch
+        self.db.delete_item.side_effect = self.db.exceptions.ConditionalCheckFailedException()
+        with patch("demo_controller.execute", return_value={"status": "started"}):
+            result = controller.run_locked({"operation": "start"}, None, None, None, self.db, NOW, "owner")
+        self.assertEqual(result["status"], "started")
+
+    def test_readonly_probe_needs_no_lock(self):
+        from unittest.mock import patch
+        with patch("demo_controller.execute", return_value={"status": "verified"}):
+            controller.run_locked({"operation": "verify"}, None, None, None, self.db, NOW, "owner")
+        self.db.update_item.assert_not_called()
+        self.db.delete_item.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()

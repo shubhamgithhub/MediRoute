@@ -13,7 +13,7 @@ import tempfile
 import zipfile
 
 from demo_controller import (ACCOUNT, REGION, CLUSTER_ARN, TASK_PREFIX, DEFINITION_PREFIX,
-                             RELEASE_PARAMETER, STOP_ROLE, validate_release)
+                             RELEASE_PARAMETER, STOP_ROLE, LOCK_TABLE, validate_release)
 
 FUNCTION = "mediroute-demo-control"
 FUNCTION_ARN = f"arn:aws:lambda:{REGION}:{ACCOUNT}:function:{FUNCTION}"
@@ -89,6 +89,8 @@ def main():
     execution = role(EXECUTION_ROLE, "lambda.amazonaws.com", [
         statement(["logs:CreateLogStream", "logs:PutLogEvents"],
                   f"arn:aws:logs:{REGION}:{ACCOUNT}:log-group:{LOG_GROUP}:*"),
+        statement(["dynamodb:UpdateItem", "dynamodb:DeleteItem"],
+                  f"arn:aws:dynamodb:{REGION}:{ACCOUNT}:table/{LOCK_TABLE}"),
         statement("ssm:GetParameter", f"arn:aws:ssm:{REGION}:{ACCOUNT}:parameter{RELEASE_PARAMETER}"),
         statement("ecs:ListTasks", "*", Condition=cluster_condition),
         statement("ecs:DescribeTaskDefinition", DEFINITION_PREFIX + "*"),
@@ -108,6 +110,12 @@ def main():
                     "ArnEquals": {"aws:SourceArn": f"arn:aws:scheduler:{REGION}:{ACCOUNT}:schedule-group/default"}})
     aws("logs", "create-log-group", optional=True, logGroupName=LOG_GROUP)
     aws("logs", "put-retention-policy", logGroupName=LOG_GROUP, retentionInDays=7)
+    if not aws("dynamodb", "describe-table", optional=True, TableName=LOCK_TABLE):
+        aws("dynamodb", "create-table", TableName=LOCK_TABLE, BillingMode="PAY_PER_REQUEST",
+            AttributeDefinitions=[{"AttributeName": "Control", "AttributeType": "S"}],
+            KeySchema=[{"AttributeName": "Control", "KeyType": "HASH"}])
+    subprocess.run(["aws", "dynamodb", "wait", "table-exists", "--region", REGION,
+                    "--table-name", LOCK_TABLE], check=True)
     with tempfile.TemporaryDirectory() as folder:
         archive = Path(folder) / "controller.zip"
         with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as bundle:
@@ -133,8 +141,8 @@ def main():
                         "--function-name", FUNCTION], check=True)
         subprocess.run(["aws", "lambda", "wait", "function-updated-v2", "--region", REGION,
                         "--function-name", FUNCTION], check=True)
-    # Both GitHub and scheduled starts go through this serialized controller.
-    aws("lambda", "put-function-concurrency", FunctionName=FUNCTION, ReservedConcurrentExecutions=1)
+    # A conditional DynamoDB lease serializes controls even in accounts with only
+    # ten Lambda slots, where AWS disallows reserving any function concurrency.
     aws("lambda", "put-function-event-invoke-config", FunctionName=FUNCTION,
         MaximumRetryAttempts=2, MaximumEventAgeInSeconds=900)
     aws("iam", "put-role-policy", RoleName="mediroute-github-deployment",

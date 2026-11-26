@@ -18,6 +18,7 @@ TASK_PREFIX = f"arn:aws:ecs:{REGION}:{ACCOUNT}:task/{CLUSTER}/"
 DEFINITION_PREFIX = f"arn:aws:ecs:{REGION}:{ACCOUNT}:task-definition/{CLUSTER}:"
 REGISTRY = f"{ACCOUNT}.dkr.ecr.{REGION}.amazonaws.com"
 RELEASE_PARAMETER = "/mediroute/dev/demo/release"
+LOCK_TABLE = "mediroute-demo-control-lock"
 STOP_ROLE = f"arn:aws:iam::{ACCOUNT}:role/mediroute-demo-scheduler-stop"
 NETWORK = {"awsvpcConfiguration": {
     "subnets": ["subnet-0838d819c31bb2b38"],
@@ -162,12 +163,42 @@ def execute(event, ecs, scheduler, ssm, now):
             "stop_time_utc": deadline.isoformat()}
 
 
+
+def run_locked(event, ecs, scheduler, ssm, dynamodb, now, owner):
+    if event.get("operation") == "verify":
+        return execute(event, ecs, scheduler, ssm, now)
+    key = {"Control": {"S": CLUSTER}}
+    # The lease outlives the function's 120-second timeout. A terminated invocation
+    # cannot overlap its successor; conditional deletion cannot release another owner.
+    try:
+        dynamodb.update_item(
+            TableName=LOCK_TABLE, Key=key,
+            UpdateExpression="SET #owner = :owner, #expires = :expires",
+            ConditionExpression="attribute_not_exists(#expires) OR #expires < :now",
+            ExpressionAttributeNames={"#owner": "Owner", "#expires": "ExpiresAt"},
+            ExpressionAttributeValues={":owner": {"S": owner},
+                                       ":expires": {"N": str(int(now.timestamp()) + 180)},
+                                       ":now": {"N": str(int(now.timestamp()))}})
+    except dynamodb.exceptions.ConditionalCheckFailedException:
+        raise RuntimeError("Demo controller busy; retry shortly") from None
+    try:
+        return execute(event, ecs, scheduler, ssm, now)
+    finally:
+        try:
+            dynamodb.delete_item(
+                TableName=LOCK_TABLE, Key=key, ConditionExpression="#owner = :owner",
+                ExpressionAttributeNames={"#owner": "Owner"},
+                ExpressionAttributeValues={":owner": {"S": owner}})
+        except dynamodb.exceptions.ConditionalCheckFailedException:
+            pass
+
+
 def handler(event, context):
     import boto3
     from botocore.config import Config
     config = Config(connect_timeout=3, read_timeout=10, retries={"max_attempts": 2})
     clients = [boto3.client(service, region_name=REGION, config=config)
-               for service in ("ecs", "scheduler", "ssm")]
-    result = execute(event, *clients, datetime.now(timezone.utc))
+               for service in ("ecs", "scheduler", "ssm", "dynamodb")]
+    result = run_locked(event, *clients, datetime.now(timezone.utc), context.aws_request_id)
     print(json.dumps(result))
     return result

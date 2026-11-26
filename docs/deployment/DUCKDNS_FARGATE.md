@@ -48,8 +48,8 @@ runner availability:
 - mediroute-demo-daily-start: 08:00 in Asia/Kolkata, through December 6, 2026.
 - mediroute-demo-daily-stop: 00:00 in Asia/Kolkata, through the midnight
   entering December 7 (the end of December 6's testing session).
-- Both invoke mediroute-demo-control, a small Lambda with reserved concurrency
-  of one. GitHub's normal Start/Stop operations use that same controller.
+- Both invoke mediroute-demo-control, a small Lambda using a conditional DynamoDB lease
+  to serialize controls within the existing Lambda concurrency quota. GitHub's normal Start/Stop operations use that same controller.
 - Every launch also creates and reads back a separate one-time stop schedule
   targeting the exact task ARN. Failure to verify it triggers an emergency stop.
 - The midnight sweep is a second stop path, including for manually launched tasks.
@@ -61,7 +61,10 @@ runner availability:
   availability guarantee.
 
 The ECS containers, public subnet, DuckDNS hostname and TLS handling remain the
-same. The scheduling function receives no DuckDNS token, TLS private key, LLM
+same. The DynamoDB table mediroute-demo-control-lock uses on-demand capacity and stores
+only a temporary control lease; it is not an application database. The 180-second
+lease outlives the Lambda timeout, and conditional deletion protects newer owners.
+The scheduling function receives no DuckDNS token, TLS private key, LLM
 key or GitHub token. **auto_deploy remains false**; Container Insights is unchanged.
 Stopping the task clears its local SQLite data.
 
