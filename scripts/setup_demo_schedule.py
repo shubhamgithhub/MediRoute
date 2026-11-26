@@ -98,7 +98,9 @@ def main():
                   f"arn:aws:dynamodb:{REGION}:{ACCOUNT}:table/{LOCK_TABLE}"),
         statement("ssm:GetParameter", f"arn:aws:ssm:{REGION}:{ACCOUNT}:parameter{RELEASE_PARAMETER}"),
         statement("ecs:ListTasks", "*", Condition=cluster_condition),
-        statement("ecs:DescribeTaskDefinition", DEFINITION_PREFIX + "*"),
+        # ECS does not support resource-level authorization for this read action.
+        statement("ecs:DescribeTaskDefinition", "*",
+                  Condition={"StringEquals": {"aws:RequestedRegion": REGION}}),
         statement("ecs:RunTask", DEFINITION_PREFIX + "*", Condition=cluster_condition),
         statement("ecs:StopTask", TASK_PREFIX + "*", Condition=cluster_condition),
         statement(["scheduler:CreateSchedule", "scheduler:GetSchedule"],
